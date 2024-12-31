@@ -453,3 +453,4 @@ roslaunch humanoid_controllers load_kuavo_real_with_vr.launch
 - 选择对应的日期 ROSBAG 文件，下载日志(文件结尾以 `.bag` 或者 `.bag.active` 结尾)，如下图
 ![download_ros_logs](./imgs/download_ros_logs.png)
 
+
