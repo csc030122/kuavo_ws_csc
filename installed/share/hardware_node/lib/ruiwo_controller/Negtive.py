@@ -122,7 +122,7 @@ if __name__ == "__main__":
         time.sleep(0.05)
         x = state[1]
         for i in range(100):
-            x = x + 0.001
+            x = x + 0.003
             state = ruiwo.run_ptm_mode(DEV_ID, x, 0, 10, 3, 0)
             if state == False:
                 print("Motor run failed.")

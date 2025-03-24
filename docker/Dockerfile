@@ -113,8 +113,13 @@ ENV LC_ALL C.UTF-8
 # ocs2
 RUN apt-get update -y && apt-get install git -y \
     && apt-get install liburdfdom-dev liboctomap-dev libassimp-dev ros-noetic-rqt-multiplot ros-noetic-grid-map-rviz-plugin -y \
-    # Clone pinocchio and hpp-fcl
-    && apt install ros-noetic-pinocchio ros-noetic-hpp-fcl-dbgsym ros-noetic-hpp-fcl -y 
+    # Add ROS snapshot repository for specific pinocchio version
+    && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key 4B63CF8FDE49746E98FA01DDAD19BAB3CBF125EA \
+    && sh -c 'echo "deb http://snapshots.ros.org/noetic/2024-10-31/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-snapshots.list' \
+    && apt-get update -y \
+    # Install specific version of pinocchio
+    && apt install ros-noetic-pinocchio=2.6.21-1focal.20240830.092123 --reinstall -y \
+    && apt install ros-noetic-hpp-fcl-dbgsym ros-noetic-hpp-fcl -y 
     
     # && cd /root/kuavo_ws \
     # && catkin init \

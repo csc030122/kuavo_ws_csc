@@ -350,6 +350,7 @@ initialModeSchedule
   }
 }
 
+default_stance_duration_              0.4;
 defaultModeSequenceTemplate
 {
   modeSequence

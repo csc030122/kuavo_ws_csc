@@ -205,7 +205,7 @@ void MobileManipulatorDummyVisualization::publishOptimizedTrajectory(const ros::
   std::for_each(mpcStateTrajectory.begin(), mpcStateTrajectory.end(), [&](const Eigen::VectorXd& state) {
     pinocchio::forwardKinematics(model, data, state);
     pinocchio::updateFramePlacements(model, data);
-    const auto eeIndex = model.getBodyId(modelInfo_.eeFrame);
+    const auto eeIndex = model.getBodyId(modelInfo_.eeFrames[0]);//TODO: support multiple end-effectors
     const vector_t eePosition = data.oMf[eeIndex].translation();
     endEffectorTrajectory.push_back(ros_msg_helpers::getPointMsg(eePosition));
   });

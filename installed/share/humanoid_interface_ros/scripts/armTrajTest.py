@@ -43,9 +43,9 @@ def main():
     pub = rospy.Publisher('kuavo_arm_target_poses', armTargetPoses, queue_size=10)
 
     # 使用您指定的CSV文件路径
-    csv_directory = '/root/kuavo_ws/src/humanoid-control/humanoid_interface_ros/data/actions'
-    csv_file_name = 'scene2.csv'  # 请替换为您的CSV文件名
-    file_path = os.path.join(csv_directory, csv_file_name)
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    csv_file_name = '../data/poses_0.csv'  # 请替换为您的CSV文件名
+    file_path = os.path.join(script_dir, csv_file_name)
 
     if not os.path.isfile(file_path):
         rospy.logerr("文件不存在: %s", file_path)

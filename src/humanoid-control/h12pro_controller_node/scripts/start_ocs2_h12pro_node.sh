@@ -8,8 +8,8 @@ export PYTHONPATH=$PYTHONPATH:$H12PRO_CONTROLLER_NODE_DIR
 cd $H12PRO_CONTROLLER_NODE_DIR
 
 echo "current robot version: $ROBOT_VERSION"
-
-pip3 install -r requirements.txt
+echo "ROS_MASTER_URI: $ROS_MASTER_URI"
+echo "ROS_IP: $ROS_IP"
 
 # Check if both nodes are not running
 if ! rosnode list | grep -q "/h12pro_channel_publisher" && ! rosnode list | grep -q "/joy_node"; then

@@ -15,6 +15,7 @@ set(CATKIN_PACKAGE_DEPENDENCIES
   ocs2_ros_interfaces
   ocs2_core
   ocs2_ddp
+  ocs2_sqp
   ocs2_mpc
   ocs2_robotic_tools
   ocs2_robotic_assets
@@ -90,6 +91,18 @@ target_link_libraries(mobile_manipulator_mpc_node
 )
 target_compile_options(mobile_manipulator_mpc_node PUBLIC ${FLAGS})
 
+# Sqp MPC node
+add_executable(mobile_manipulator_sqp_mpc_node
+  src/MobileManipulatorSqpMpcNode.cpp
+)
+add_dependencies(mobile_manipulator_sqp_mpc_node
+  ${catkin_EXPORTED_TARGETS}
+)
+target_link_libraries(mobile_manipulator_sqp_mpc_node
+  ${catkin_LIBRARIES}
+)
+target_compile_options(mobile_manipulator_sqp_mpc_node PUBLIC ${FLAGS})
+
 # DistanceVisualization node
 add_executable(mobile_manipulator_distance_visualization
   src/MobileManipulatorDistanceVisualization.cpp
@@ -127,6 +140,7 @@ target_link_libraries(mobile_manipulator_target
 )
 target_compile_options(mobile_manipulator_target PUBLIC ${FLAGS})
 
+add_subdirectory(test)
 ####################
 ## Clang tooling ###
 ####################

@@ -101,6 +101,13 @@ class PinocchioEndEffectorSpatialKinematics final : public EndEffectorSpatialKin
    */
   std::vector<vector3_t> getOrientationError(const vector_t& state, const std::vector<quaternion_t>& referenceOrientations) const override;
 
+  /** Get the end effector orientation.
+   * @note requires pinocchioInterface to be updated with:
+   *       pinocchio::forwardKinematics(model, data, q)
+   *       pinocchio::updateFramePlacements(model, data)
+   */
+  std::vector<quaternion_t> getOrientation(const vector_t& state) const;
+
   std::vector<vector3_t> getAngularVelocity(const vector_t& state, const vector_t& input) const override;
 
   /** Get the end effector position linear approximation.

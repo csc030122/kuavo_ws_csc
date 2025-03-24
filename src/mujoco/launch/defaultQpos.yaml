@@ -1,4 +1,4 @@
-mujoco_init_state:
+robot_init_state_param:
   - -0.00505
   - 0.00000
   - 0.84414

@@ -13,6 +13,7 @@ import os
 import signal
 import sys
 from ocs2_msgs.msg import mpc_observation
+from kuavo_msgs.msg import sensorsData
 from kuavo_ros_interfaces.msg import robotHandPosition, robotHeadMotionData
 from sensor_msgs.msg import JointState
 import math
@@ -36,7 +37,7 @@ class Config:
     VALID_STATES = {"ready_stance", "stance", "walk", "trot"}
     TRIGGER_CHANNEL_MAP = {
         "stop": 8,
-        "ready_stance": 5,
+        # "ready_stance": 5,
         "stance": 9,
         "walk": 6,
         "trot": 7
@@ -206,12 +207,19 @@ class H12PROControllerNode:
             queue_size=1
         )
 
-        self.mpc_obs_sub = rospy.Subscriber(
-            '/humanoid_mpc_observation', 
-            mpc_observation, 
-            self._mpc_obs_callback,
-            queue_size=1
+        self.sensor_data_sub = rospy.Subscriber(
+            '/sensors_data_raw', 
+            sensorsData, 
+            self._sensor_data_callback, 
+            queue_size=1, 
+            tcp_nodelay=True
         )
+        # self.mpc_obs_sub = rospy.Subscriber(
+        #     '/humanoid_mpc_observation', 
+        #     mpc_observation, 
+        #     self._mpc_obs_callback,
+        #     queue_size=1
+        # )
         self.traj_sub = rospy.Subscriber(
             '/bezier/arm_traj', 
             JointTrajectory, 
@@ -286,8 +294,13 @@ class H12PROControllerNode:
         self.should_pub_head_motion_data.joint_data = [math.degrees(pos) for pos in point.positions[26:]]
 
 
-    def _mpc_obs_callback(self, msg):
-        self.current_arm_joint_state = msg.state.value[24:]
+    # def _mpc_obs_callback(self, msg):
+    #     self.current_arm_joint_state = msg.state.value[24:]
+    #     self.current_arm_joint_state = [round(pos, 2) for pos in self.current_arm_joint_state]
+    #     self.current_arm_joint_state.extend([0] * 14)
+    
+    def _sensor_data_callback(self, msg):
+        self.current_arm_joint_state = msg.joint_data.joint_q[12:26]
         self.current_arm_joint_state = [round(pos, 2) for pos in self.current_arm_joint_state]
         self.current_arm_joint_state.extend([0] * 14)
 

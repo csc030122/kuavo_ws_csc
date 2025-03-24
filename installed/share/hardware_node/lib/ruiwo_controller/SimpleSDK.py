@@ -22,6 +22,7 @@ class RUIWOTools:
             "data_rate": 1000000,
             "terminal_res": True,
             "timeout": 1,
+            "notimeout": 0,
         }
         self.can_com_param = {
             "CAN_COM_THETA_MIN": -12.5,
@@ -77,6 +78,47 @@ class RUIWOTools:
     def __int_to_float(self, int_num, min_num, max_num, bit_num):
         return int_num / (2**bit_num - 1) * (max_num - min_num) + min_num
 
+    def return_motor_state(self, feedback_frame):
+        state_list = []
+
+        id = feedback_frame[0]
+        state_list.append(id)
+
+        pos = feedback_frame[1] << 8 | feedback_frame[2]
+        pos = self.__int_to_float(
+            pos,
+            self.can_com_param["CAN_COM_THETA_MIN"],
+            self.can_com_param["CAN_COM_THETA_MAX"],
+            16,
+        )
+        state_list.append(pos)
+
+        vel = (feedback_frame[3] << 4) | ((feedback_frame[4] >> 4) & 0x0F)
+        vel = self.__int_to_float(
+            vel,
+            self.can_com_param["CAN_COM_VELOCITY_MIN"],
+            self.can_com_param["CAN_COM_VELOCITY_MAX"],
+            12,
+        )
+        state_list.append(vel)
+
+        torque = ((feedback_frame[4] & 0x0F) << 8) | feedback_frame[5]
+        torque = self.__int_to_float(
+            torque,
+            self.can_com_param["CAN_COM_TORQUE_MIN"],
+            self.can_com_param["CAN_COM_TORQUE_MAX"],
+            12,
+        )
+        state_list.append(torque)
+
+        tempera = feedback_frame[6]
+        state_list.append(tempera)
+
+        errcode = feedback_frame[7]
+        state_list.append(errcode)
+
+        return state_list
+    
     def __return_motor_state(self, feedback_frame):
         state_list = []
 
@@ -327,6 +369,62 @@ class RUIWOTools:
         except Exception as exc:
             exc_msg = str(exc)
         return exc_msg
+
+    def run_ptm_mode_No_response(self, dev_id, pos, vel, pos_kp, pos_kd, torque):
+        try:
+            pos = self.__float_to_int(
+                pos,
+                self.can_com_param["CAN_COM_THETA_MIN"],
+                self.can_com_param["CAN_COM_THETA_MAX"],
+                16,
+            )
+            vel = self.__float_to_int(
+                vel,
+                self.can_com_param["CAN_COM_VELOCITY_MIN"],
+                self.can_com_param["CAN_COM_VELOCITY_MAX"],
+                12,
+            )
+            pos_kp = self.__float_to_int(
+                pos_kp,
+                self.can_com_param["CAN_COM_POS_KP_MIN"],
+                self.can_com_param["CAN_COM_POS_KP_MAX"],
+                12,
+            )
+            pos_kd = self.__float_to_int(
+                pos_kd,
+                self.can_com_param["CAN_COM_POS_KD_MIN"],
+                self.can_com_param["CAN_COM_POS_KD_MAX"],
+                12,
+            )
+            torque = self.__float_to_int(
+                torque,
+                self.can_com_param["CAN_COM_TORQUE_MIN"],
+                self.can_com_param["CAN_COM_TORQUE_MAX"],
+                12,
+            )
+
+            tx_msg = can.Message(
+                arbitration_id=dev_id,
+                is_extended_id=False,
+                dlc=0x08,
+                data=[
+                    (pos >> 8) & 0xFF,
+                    pos & 0xFF,
+                    (vel & 0xFF0) >> 4,
+                    (vel & 0x0F) << 4 | (pos_kp & 0xF00) >> 8,
+                    pos_kp & 0xFF,
+                    (pos_kd & 0xFF0) >> 4,
+                    (pos_kd & 0x0F) << 4 | (torque & 0xF00) >> 8,
+                    torque & 0xFF,
+                ],
+            )
+
+            self.dev.send(tx_msg, self.dev_info["notimeout"])
+
+        except Exception as exc:
+            # 若需要记录或处理异常，可在此处进行
+            pass
+
 
     def run_vel_mode(self, dev_id, vel, vel_kp, vel_kd, vel_ki):
         try:

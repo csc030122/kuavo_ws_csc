@@ -34,6 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "humanoid_interface/foot_planner/InverseKinematics.h"
 #include "humanoid_interface/foot_planner/SwingTrajectoryPlanner.h"
+#include "humanoid_interface/foot_planner/SingleStepPlanner.h"
 #include "humanoid_interface/gait/GaitSchedule.h"
 #include "humanoid_interface/gait/MotionPhaseDefinition.h"
 
@@ -42,11 +43,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <kuavo_msgs/changeArmCtrlMode.h>
 #include <kuavo_msgs/singleStepControl.h>
 #include <kuavo_msgs/changeTorsoCtrlMode.h>
+#include "kuavo_msgs/footPoseTargetTrajectoriesSrv.h"
 
 #include <ocs2_msgs/mpc_target_trajectories.h>
 #include "std_srvs/SetBool.h"
 #include <geometry_msgs/Twist.h>
 #include <ros/ros.h>
+#include "humanoid_interface/common/TopicLogger.h"
+#include <std_srvs/Empty.h>
 
 #define X_MAX_SINGLE_STEP_SIZE 0.15
 #define Y_MAX_SINGLE_STEP_SIZE 0.05
@@ -122,7 +126,12 @@ class SwitchedModelReferenceManager : public ReferenceManager {
   void setMatrixQByGaitPair(const std::string &gait_name, const scalar_t &time);
   void setupSubscriptions(std::string nodeHandleName = "humanoid") override;
 
+  vector_t getLocalPlannerVel(double initTime, const TargetTrajectories& targetTraj);
+  vector_t getLocalPlannerVel(double initTime);
+
  private:
+  double calTerrainHeight(const contact_flag_t& contact_flags, const feet_array_t<vector3_t>& feet_pos);
+
   void modifyReferences(scalar_t initTime, scalar_t finalTime, const vector_t& initState, TargetTrajectories& targetTrajectories,
                         ModeSchedule& modeSchedule) override;
   TargetTrajectories generateTargetwithVelcmd(scalar_t initTime, scalar_t finalTime, const vector_t &initState,
@@ -130,8 +139,12 @@ class SwitchedModelReferenceManager : public ReferenceManager {
   TargetTrajectories generateTargetwithModeSchedule(scalar_t initTime, scalar_t finalTime, const vector_t &initState,
                                                     const TargetTrajectories &targetTrajectories, const ModeSchedule &modeSchedule);
 
-  TargetTrajectories generateTargetwithPoscmd(scalar_t initTime, const vector_t &initState,
-                                                                           TargetTrajectories &targetTrajectories, ModeSchedule &modeSchedule, const vector_t &cmdPos); 
+    TargetTrajectories generateTargetwithPoscmd(scalar_t initTime, const vector_t &initState,
+                                                                           TargetTrajectories &targetTrajectories, ModeSchedule &modeSchedule, const vector_t &cmdPos);
+
+  TargetTrajectories generateTargetwithPoscmdInCurrentPose(scalar_t initTime, const vector_t &initState, TargetTrajectories &targetTrajectories, ModeSchedule &modeSchedule, const vector_t &cmdPos); 
+
+  TargetTrajectories generateTargetAsCurrent(scalar_t initTime, scalar_t finalTime, const vector_t &initState);
 
   bool checkAndApplyCommandLine(scalar_t initTime, scalar_t finalTime, const vector_t& initState, vector_t& cmdVel);
 
@@ -139,7 +152,10 @@ class SwitchedModelReferenceManager : public ReferenceManager {
 
   
   void calculateJointRef(scalar_t initTime, scalar_t finalTime, const vector_t& initState,
-              TargetTrajectories& targetTrajectories);
+              TargetTrajectories& targetTrajectories, const ModeSchedule& modeSchedule);
+
+  bool footPoseTargetTrajectoriesSrvCallback(kuavo_msgs::footPoseTargetTrajectoriesSrv::Request &req, kuavo_msgs::footPoseTargetTrajectoriesSrv::Response &res);
+
   bool armControlModeSrvCallback(kuavo_msgs::changeArmCtrlMode::Request &req, kuavo_msgs::changeArmCtrlMode::Response &res);
 
   bool torsoControlModeSrvCallback(kuavo_msgs::changeTorsoCtrlMode::Request &req, kuavo_msgs::changeTorsoCtrlMode::Response &res);
@@ -161,6 +177,8 @@ class SwitchedModelReferenceManager : public ReferenceManager {
     return true;
   }
   
+  bool stopSingleStepControlCallback(std_srvs::Empty::Request &req, std_srvs::Empty::Response &res);
+
   bool singleStepControlCallback(kuavo_msgs::singleStepControl::Request &req, kuavo_msgs::singleStepControl::Response &res);
 
   void armTargetTrajectoriesCallback(const ocs2_msgs::mpc_target_trajectories::ConstPtr &msg);
@@ -168,7 +186,11 @@ class SwitchedModelReferenceManager : public ReferenceManager {
 
   void publishFootContactPoint();
 
+  void publishFootDesiredPoint(scalar_t time);
+
   std::pair<Eigen::Vector3d, Eigen::Vector3d> generate_steps(const Eigen::Vector3d& torso_pos, const double torso_yaw, const double foot_bias = 0.1);
+
+  void checkSingleStepControlAndStop();
 
   std::shared_ptr<GaitSchedule> gaitSchedulePtr_;
   std::shared_ptr<SwingTrajectoryPlanner> swingTrajectoryPtr_;
@@ -188,6 +210,16 @@ class SwitchedModelReferenceManager : public ReferenceManager {
     matrix_t Walk = matrix_t::Zero(24, 24);;
     matrix_t Jump = matrix_t::Zero(24, 24);;
   };
+
+  inline double normalizedYaw(double yaw)
+  {
+    while (yaw > M_PI)
+      yaw -= 2*M_PI;
+    while(yaw < -M_PI)
+      yaw += 2*M_PI;
+    return yaw;
+  };
+
   baseTrackingQ baseTrackingQ_;
   std::string dynamic_qr_file_;
   bool dynamic_qr_flag_ = false;
@@ -197,25 +229,38 @@ class SwitchedModelReferenceManager : public ReferenceManager {
 
   ros::Subscriber targetVelocitySubscriber_;
   ros::Subscriber targetPoseSubscriber_;
+  ros::Subscriber targetPoseWorldSubscriber_;
   ros::Subscriber armTargetTrajectoriesSubscriber_;
   ros::Subscriber poseTargetTrajectoriesSubscriber_;
   ros::Subscriber footPoseTargetTrajectoriesSubscriber_;
+  ros::Subscriber estContactStateSubscriber_;
   ros::Publisher footContactPointPublisher_;
+  ros::Publisher footDesiredPointPublisher_;
   ros::Publisher gaitTimeNamePublisher_;
   ros::Publisher armTargetCommandedPublisher_;
+  ros::Publisher isCustomGaitPublisher_;
+  ros::Publisher singleStepModePublisher_;
   ros::ServiceServer change_arm_control_service_;
   ros::ServiceServer get_arm_control_mode_service_;
   ros::ServiceServer singleStepControlService_;
   ros::ServiceServer change_torso_control_service_;
   ros::ServiceServer footPoseTargetTrajectoriesService_;
   ros::ServiceServer current_mode_service_;
+  ros::ServiceServer stopSingleStepControlService_;
   vector_t cmdVel_;
   vector_t cmdPose_;
+  vector_t cmdPoseWorld_;
   vector_t tempCmdPose_;
+  TopicLogger *ros_logger_ = nullptr;
+  int estContactState_ = ModeNumber::SS;
+  bool isContactStateUpdated_ = false;
+
 
   scalar_t cmdHeight_;
+  scalar_t cmdPitch_;
   bool velCmdUpdated_ = false;
   bool PoseCmdUpdated_ = false;
+  bool PoseWorldCmdUpdated_ = false;
   bool isCmdPoseCached = false;
   bool poseTargetUpdated_ = false;
   bool armTargetUpdated_ = false;
@@ -226,6 +271,7 @@ class SwitchedModelReferenceManager : public ReferenceManager {
   TorsoControlMode torsoControlMode_ = TorsoControlMode::SIX_DOF;
   bool isArmControlModeChanged_ = false;
   bool isArmControlModeChangedTrigger_ = false;
+  bool update_stop_single_step_ = false;
 
   vector_t TargetState_, initTargetState_;
   scalar_array_t lastTimeTrajectoryWithVel;
@@ -236,12 +282,15 @@ class SwitchedModelReferenceManager : public ReferenceManager {
   
   std::mutex cmdvel_mtx_;
   std::mutex cmdPose_mtx_;
+  std::mutex cmdPoseWorld_mtx_;
   std::mutex armTargetCommanded_mtx_;
 
   vector_t currentCmdVel_ = vector_t::Zero(6);
   vector_t currentCmdPose_ = vector_t::Zero(6);
+  vector_t cachedCmdPoseInWorldFrame_ = vector_t::Zero(6);
+  bool ismdPoseInWorldFrameCached_ = false;
 
-  ocs2::scalar_array_t c_relative_base_limit_{0.4, 0.15, 0.3, 0.4};
+  ocs2::scalar_array_t c_relative_base_limit_{0.4, 0.15, 0.3, 0.4, 0.4, 0.4};
   double cmd_threshold = 0.02;
 
   InverseKinematics inverseKinematics_;
@@ -260,6 +309,11 @@ class SwitchedModelReferenceManager : public ReferenceManager {
 
 
   double arm_move_spd_{1.2};
+  double terrainHeight_ = 0.0;
+  double terrainHeightPrev_ = 0.0;
+  std::string last_gait_name_="stance";
+  double vel_norm_{0};
+  bool only_half_up_body_{false};
 };
 
 }  // namespace humanoid

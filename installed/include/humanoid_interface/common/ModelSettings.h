@@ -47,6 +47,11 @@ struct ModelSettings {
   scalar_t positionErrorGain = 0.0;
   scalar_t positionErrorGain_xy = 0.0;
   scalar_t velocityErrorGain_xy = 0.0;
+  scalar_t positionErrorGain_zero = 0.0; // velocity error gain for zero velocity
+
+  scalar_t velocityErrorGainXYStepControl = 0.0;
+  scalar_t positionErrorGainXYStepControl = 0.0;
+
   int mpcArmsDof = 14;
   int mpcLegsDof = 12;
   int modelDof = 26;
@@ -70,7 +75,7 @@ struct ModelSettings {
   humanoidModelInfo info;
 };
 
-ModelSettings loadModelSettings(const std::string& filename, const std::string& fieldName = "model_settings", bool verbose = false);
+ModelSettings loadModelSettings(const std::string& filename, const std::string& urdfFile = "default", const std::string& fieldName = "model_settings", bool verbose = false);
 
 }  // namespace humanoid
 }  // namespace ocs2

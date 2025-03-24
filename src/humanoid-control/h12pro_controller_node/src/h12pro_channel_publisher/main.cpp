@@ -27,13 +27,13 @@ int main(int argc, char **argv) {
     signal(SIGINT, signalHandler);
     signal(SIGTERM, signalHandler);
 
+    ros::init(argc, argv, "h12pro_channel_publisher_node");
+    ros::NodeHandle nh;
+
     while (initSbus() == -1) {
         ROS_ERROR("Sbus init failed, retrying...");
         ros::Duration(1.0).sleep();  // 暂停 1 秒
     }
-    
-    ros::init(argc, argv, "h12pro_channel_publisher_node");
-    ros::NodeHandle nh;
 
     ros::Publisher pub_channel = nh.advertise<h12pro_controller_node::h12proRemoteControllerChannel>("h12pro_channel", 1);
     h12pro_controller_node::h12proRemoteControllerChannel channel_msg;

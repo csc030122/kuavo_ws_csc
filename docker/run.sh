@@ -9,7 +9,7 @@ DIR_HASH=$(echo "$PARENT_DIR" | md5sum | cut -c1-8)
 echo "Directory $PARENT_DIR hash: $DIR_HASH"
 CONTAINER_NAME="kuavo_container_${DIR_HASH}"
 # 自动使用最新的镜像版本
-IMAGE_NAME=$(docker images kuavo_mpc_wbc_img --format "{{.Repository}}:{{.Tag}}" | sort -V | tail -n1)
+IMAGE_NAME=$(docker images kuavo_opensource_mpc_wbc_img --format "{{.Repository}}:{{.Tag}}" | sort -V | tail -n1)
 
 show_container_info() {
     local div_line="━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

@@ -32,6 +32,7 @@ add_message_files(
   robotTorsoState.msg
   robotPhase.msg
   h12proRemoteControllerChannel.msg
+  RobotActionState.msg
 )
 
 add_service_files(
@@ -40,6 +41,8 @@ add_service_files(
   srvChangePhases.srv
   changeAMBACCtrlMode.srv
   changeHandArmPosesByConfigName.srv
+  playmusic.srv
+  ExecuteArmAction.srv
 )
 
 generate_messages(

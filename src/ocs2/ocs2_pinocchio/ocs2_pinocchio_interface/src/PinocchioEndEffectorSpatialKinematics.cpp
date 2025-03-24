@@ -197,6 +197,26 @@ auto PinocchioEndEffectorSpatialKinematics::getOrientationError(const vector_t& 
 /******************************************************************************************************/
 /******************************************************************************************************/
 /******************************************************************************************************/
+auto PinocchioEndEffectorSpatialKinematics::getOrientation(const vector_t& state) const
+    -> std::vector<quaternion_t> {
+  if (pinocchioInterfacePtr_ == nullptr) {
+    throw std::runtime_error("[PinocchioEndEffectorSpatialKinematics] pinocchioInterfacePtr_ is not set. Use setPinocchioInterface()");
+  }
+
+  const pinocchio::ReferenceFrame rf = pinocchio::ReferenceFrame::LOCAL_WORLD_ALIGNED;
+  const pinocchio::Data& data = pinocchioInterfacePtr_->getData();
+
+  std::vector<quaternion_t> quats;
+  for (int i = 0; i < endEffectorFrameIds_.size(); i++) {
+    const size_t frameId = endEffectorFrameIds_[i];
+    quats.emplace_back(matrixToQuaternion(data.oMf[frameId].rotation()));
+  }
+  return quats;
+}
+
+/******************************************************************************************************/
+/******************************************************************************************************/
+/******************************************************************************************************/
 auto PinocchioEndEffectorSpatialKinematics::getAngularVelocity(const vector_t& state, const vector_t& input) const -> std::vector<vector3_t> {
   if (pinocchioInterfacePtr_ == nullptr) {
     throw std::runtime_error("[PinocchioEndEffectorSpatialKinematics] pinocchioInterfacePtr_ is not set. Use setPinocchioInterface()");

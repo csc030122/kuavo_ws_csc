@@ -5,6 +5,8 @@
       <arg name="rviz"   default="true" />
       <!-- Set nodes on debug mode -->
       <arg name="debug"  default="false" />
+      <!-- mpc_type 1 for SQP and 0 for DDP  -->
+      <arg name="sqp_mpc"  default="0" />
 
       <!-- The URDF model of the robot -->
       <arg name="urdfFile" />
@@ -24,10 +26,17 @@
             </include>
       </group>
 
-      <node if="$(arg debug)" pkg="ocs2_mobile_manipulator_ros" type="mobile_manipulator_mpc_node" name="mobile_manipulator_mpc_node" 
-            output="screen" launch-prefix="gnome-terminal -- gdb -ex run --args" />
-      <node unless="$(arg debug)" pkg="ocs2_mobile_manipulator_ros" type="mobile_manipulator_mpc_node" name="mobile_manipulator_mpc_node" 
-            output="screen" launch-prefix="" />
+      <group unless="$(arg sqp_mpc)">
+            <node if="$(arg debug)" pkg="ocs2_mobile_manipulator_ros" type="mobile_manipulator_mpc_node" name="mobile_manipulator_mpc_node" 
+                  output="screen" launch-prefix="gnome-terminal -- gdb -ex run --args" />
+            <node unless="$(arg debug)" pkg="ocs2_mobile_manipulator_ros" type="mobile_manipulator_mpc_node" name="mobile_manipulator_mpc_node" 
+                  output="screen" launch-prefix="" />
+      </group>
+
+      <group if="$(arg sqp_mpc)">
+            <node unless="$(arg debug)" pkg="ocs2_mobile_manipulator_ros" type="mobile_manipulator_sqp_mpc_node" name="mobile_manipulator_sqp_mpc_node" 
+                  output="screen" launch-prefix="" />
+      </group>
 
       <node pkg="ocs2_mobile_manipulator_ros" type="mobile_manipulator_dummy_mrt_node" name="mobile_manipulator_dummy_mrt_node" 
             output="screen" launch-prefix="gnome-terminal --" />

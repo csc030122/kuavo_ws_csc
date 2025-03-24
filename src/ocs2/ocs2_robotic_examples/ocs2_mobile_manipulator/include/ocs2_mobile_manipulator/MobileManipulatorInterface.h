@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ocs2_core/Types.h>
 #include <ocs2_core/initialization/Initializer.h>
 #include <ocs2_ddp/DDP_Settings.h>
+#include <ocs2_sqp/SqpSettings.h>
 #include <ocs2_mpc/MPC_Settings.h>
 #include <ocs2_oc/rollout/TimeTriggeredRollout.h>
 #include <ocs2_oc/synchronized_module/ReferenceManager.h>
@@ -65,6 +66,8 @@ class MobileManipulatorInterface final : public RobotInterface {
 
   ddp::Settings& ddpSettings() { return ddpSettings_; }
 
+  sqp::Settings& sqpSettings() { return sqpSettings_; }
+
   mpc::Settings& mpcSettings() { return mpcSettings_; }
 
   const OptimalControlProblem& getOptimalControlProblem() const override { return problem_; }
@@ -83,13 +86,18 @@ class MobileManipulatorInterface final : public RobotInterface {
   std::unique_ptr<StateInputCost> getQuadraticInputCost(const std::string& taskFile);
   std::unique_ptr<StateCost> getEndEffectorConstraint(const PinocchioInterface& pinocchioInterface, const std::string& taskFile,
                                                       const std::string& prefix, bool useCaching, const std::string& libraryFolder,
-                                                      bool recompileLibraries);
+                                                      bool recompileLibraries, int eefIdx);
   std::unique_ptr<StateCost> getSelfCollisionConstraint(const PinocchioInterface& pinocchioInterface, const std::string& taskFile,
                                                         const std::string& urdfFile, const std::string& prefix, bool useCaching,
                                                         const std::string& libraryFolder, bool recompileLibraries);
   std::unique_ptr<StateInputCost> getJointLimitSoftConstraint(const PinocchioInterface& pinocchioInterface, const std::string& taskFile);
 
+  std::unique_ptr<StateInputCost> getBaseStateCost(const std::string& taskFile);
+
+  std::unique_ptr<StateConstraint> getBaseStateConstraint(const std::string& taskFile);
+
   ddp::Settings ddpSettings_;
+  sqp::Settings sqpSettings_;
   mpc::Settings mpcSettings_;
 
   OptimalControlProblem problem_;

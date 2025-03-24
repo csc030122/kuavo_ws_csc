@@ -106,7 +106,7 @@ protected:
     MobileManipulatorPinocchioMappingCppAd pinocchioMapping(modelInfo);
     const auto& pinocchioInterface = mobileManipulatorInterfacePtr->getPinocchioInterface();
     eeKinematicsPtr.reset(new PinocchioEndEffectorKinematicsCppAd(
-        pinocchioInterface, pinocchioMapping, {modelInfo.eeFrame},
+        pinocchioInterface, pinocchioMapping, modelInfo.eeFrames,
         modelInfo.stateDim, modelInfo.inputDim, modelName));
     return true;
   }

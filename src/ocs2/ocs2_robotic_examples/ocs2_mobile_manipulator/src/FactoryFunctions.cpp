@@ -76,6 +76,15 @@ PinocchioInterface createPinocchioInterface(const std::string& robotUrdfPath, co
       // return pinocchio interface
       return getPinocchioInterfaceFromUrdfFile(robotUrdfPath, jointComposite);
     }
+    case ManipulatorModelType::ActuatedXYZYawPitchManipulator: {
+      // add XYZ-Yaw-Pitch joint for the free-floating base
+      pinocchio::JointModelComposite jointComposite(3);
+      jointComposite.addJoint(pinocchio::JointModelTranslation());
+      jointComposite.addJoint(pinocchio::JointModelRZ());
+      jointComposite.addJoint(pinocchio::JointModelRY());
+      // return pinocchio interface
+      return getPinocchioInterfaceFromUrdfFile(robotUrdfPath, jointComposite);
+    }
     default:
       throw std::invalid_argument("Invalid manipulator model type provided.");
   }
@@ -117,7 +126,8 @@ PinocchioInterface createPinocchioInterface(const std::string& robotUrdfPath, co
       jointComposite.addJoint(pinocchio::JointModelTranslation());
       jointComposite.addJoint(pinocchio::JointModelSphericalZYX());
       // return pinocchio interface
-      return getPinocchioInterfaceFromUrdfFile(robotUrdfPath, jointComposite);
+      // return getPinocchioInterfaceFromUrdfFile(robotUrdfPath, jointComposite);
+      return getPinocchioInterfaceFromUrdfModel(newModel, jointComposite);
     }
     case ManipulatorModelType::WheelBasedMobileManipulator: {
       // add XY-yaw joint for the wheel-base
@@ -125,6 +135,15 @@ PinocchioInterface createPinocchioInterface(const std::string& robotUrdfPath, co
       jointComposite.addJoint(pinocchio::JointModelPX());
       jointComposite.addJoint(pinocchio::JointModelPY());
       jointComposite.addJoint(pinocchio::JointModelRZ());
+      // return pinocchio interface
+      return getPinocchioInterfaceFromUrdfModel(newModel, jointComposite);
+    }
+    case ManipulatorModelType::ActuatedXYZYawPitchManipulator: {
+      // add XYZ-Yaw-Pitch joint for the free-floating base
+      pinocchio::JointModelComposite jointComposite(3);
+      jointComposite.addJoint(pinocchio::JointModelTranslation());
+      jointComposite.addJoint(pinocchio::JointModelRZ());
+      jointComposite.addJoint(pinocchio::JointModelRY());
       // return pinocchio interface
       return getPinocchioInterfaceFromUrdfModel(newModel, jointComposite);
     }
@@ -137,7 +156,7 @@ PinocchioInterface createPinocchioInterface(const std::string& robotUrdfPath, co
 /******************************************************************************************************/
 /******************************************************************************************************/
 ManipulatorModelInfo createManipulatorModelInfo(const PinocchioInterface& interface, const ManipulatorModelType& type,
-                                                const std::string& baseFrame, const std::string& eeFrame) {
+                                                const std::string& baseFrame, const std::vector<std::string>& eeFrames) {
   const auto& model = interface.getModel();
 
   ManipulatorModelInfo info;
@@ -169,12 +188,18 @@ ManipulatorModelInfo createManipulatorModelInfo(const PinocchioInterface& interf
       info.armDim = info.inputDim - 2;
       break;
     }
+    case ManipulatorModelType::ActuatedXYZYawPitchManipulator: {
+      // for XYZ-Yaw-Pitch base, the input dimension is (v_x, v_y, v_z, omega, dtheta, dq_j) while state dimension is (x, y, z, psi, theta, q_j).
+      info.inputDim = info.stateDim;
+      info.armDim = info.inputDim - 5;
+      break;
+    }
     default:
       throw std::invalid_argument("Invalid manipulator model type provided.");
       break;
   }
   // store frame names for using later.
-  info.eeFrame = eeFrame;
+  info.eeFrames = eeFrames;
   info.baseFrame = baseFrame;
   // get name of arm joints.
   const auto& jointNames = model.names;

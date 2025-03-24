@@ -63,6 +63,7 @@ class BmCanBus(BusABC):
             bmapi.BM_Init()
             bmapi.BM_SetLogLevel(bmapi.BM_LOG_ERR)
             BmCanBus.__initialized = True
+            print(">>>>>>>> BMAPI initialized!")
 
     def __init__(self, channel, 
                  fd=True, receive_own_messages=False, listen_only=False,

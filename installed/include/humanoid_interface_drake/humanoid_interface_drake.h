@@ -43,8 +43,10 @@ namespace HighlyDynamic
         HumanoidInterfaceDrake(const HumanoidInterfaceDrake &) = delete;
         HumanoidInterfaceDrake &operator=(const HumanoidInterfaceDrake &) = delete;
         inline const vector_t &getInitialState() const { return initial_state_; }
+        inline const vector_t &getSquatInitialState() const { return squat_initial_state_; }
         inline const vector_t &getDefaultJointState() const { return default_joint_state_; }
         inline const vector_t &getDrakeState() const { return q_initial_; }
+        inline const vector_t &getDrakeSquatState() const { return q_squat_initial_; }
         inline double getIntialHeight() const { return initial_state_[8]; }
         inline double getPlantMass() const { return plant_ptr_->CalcTotalMass(*plant_context_); }
         inline double getPlantWithArmMass() const { return plant_with_arm_ptr_->CalcTotalMass(*plant_with_arm_context_); }
@@ -94,6 +96,7 @@ namespace HighlyDynamic
         JSONConfigReader *getRobotConfig() const { return robot_config_; }
 
         Eigen::VectorXd calInitialState(multibody::MultibodyPlant<double> *plant, systems::Context<double> *plant_context);
+        void calcSquatState(multibody::MultibodyPlant<double> *plant, systems::Context<double> *plant_context);
         
         RobotVersion getRobotVersion() const { return robot_version_; }
     private:
@@ -119,7 +122,7 @@ namespace HighlyDynamic
         std::unique_ptr<drake::geometry::SceneGraph<double>> scene_graph_ptr_;
         drake::systems::DiagramBuilder<double> builder_;
 
-        vector_t initial_state_, default_joint_state_, q_initial_;
+        vector_t initial_state_, default_joint_state_, q_initial_, squat_initial_state_, q_squat_initial_;
         KuavoSettings kuavo_settings_;
         JSONConfigReader *robot_config_;
 

@@ -30,11 +30,33 @@ if 'Linux' in platform.system():
 else:
     DLL_NAME = './bmapi64.dll' if platform.architecture()[0] == '64bit' else './bmapi.dll'
 import os
+
+def load_library_from_ld_path(dll_name):
+    try:
+        return ctypes.cdll.LoadLibrary(dll_name)
+    except OSError:
+        return None
+
+def load_library_with_fallback(dll_name, fallback_path):
+    library = load_library_from_ld_path(dll_name)
+    if library is None:
+        try:
+            print(">>>>>>>> BMAPI: Loading {dll_name} from LD_LIBRARY_PATH failed, trying absolute path...")
+            library = ctypes.cdll.LoadLibrary(fallback_path)
+        except OSError as e:
+            print(f"Failed to load {dll_name}: {e}")
+            raise
+    else:
+        print(f">>>>>>>> BMAPI: Loaded {dll_name} from LD_LIBRARY_PATH")
+    return library  
+
 current_path = os.path.dirname(os.path.abspath(__file__))
 library_path = os.path.join(current_path, DLL_NAME)
 
-bmapi_dll = ctypes.cdll.LoadLibrary(library_path)
-
+if 'Linux' in platform.system():
+    bmapi_dll = load_library_with_fallback(DLL_NAME, library_path)
+else:
+    bmapi_dll = ctypes.cdll.LoadLibrary(library_path)
 #/**
 # * @def   BM_DATA_HEADER_SIZE
 # * @brief Size (in bytes) of BM Data header, which contains type, routing, length and timestamp.

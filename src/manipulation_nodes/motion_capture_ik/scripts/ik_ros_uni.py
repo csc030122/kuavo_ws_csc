@@ -8,6 +8,7 @@ import argparse
 from std_msgs.msg import Float32, Float32MultiArray
 from sensor_msgs.msg import JointState
 from handcontrollerdemorosnode.msg import armPoseWithTimeStamp, robotHandPosition
+from kuavo_msgs.srv import controlLejuClaw, controlLejuClawRequest
 import time
 import math
 import sys
@@ -97,6 +98,7 @@ def set_thread_priority(thread, policy, priority):
     
 QIANGNAO = "qiangnao"
 JODELL = "jodell"
+LEJUCLAW = "lejuclaw"
 control_finger_type = 0
 control_torso = 0
 
@@ -190,10 +192,18 @@ class IkRos:
             else:
                 ros_end_effector_type_param = rospy.get_param("/end_effector_type")
                 # TODO should compatible more ee types
-                self.end_effector_type = QIANGNAO if QIANGNAO in ros_end_effector_type_param else JODELL
+                end_effector_mapping = {
+                    QIANGNAO: QIANGNAO,
+                    JODELL: JODELL,
+                    LEJUCLAW: LEJUCLAW
+                }
+                if ros_end_effector_type_param in end_effector_mapping:
+                    self.end_effector_type = end_effector_mapping[ros_end_effector_type_param]
+                else:
+                    self.end_effector_type = QIANGNAO
         except KeyError:
             self.end_effector_type = QIANGNAO
-        print(f"End effector type: {self.end_effector_type}")
+        print(f"\033[93mEnd effector type: {self.end_effector_type}\033[0m")        
         signal.signal(signal.SIGINT, self.shutdown)
         signal.signal(signal.SIGTERM, self.shutdown)
         self.stop_event = threading.Event()
@@ -276,6 +286,26 @@ class IkRos:
             changeHandTrackingMode_srv(mode)
         except rospy.ROSException:
             rospy.logerr(f"Service {service_name} not available")
+
+    @staticmethod
+    def control_lujuclaw(pos:list):
+        # print(f">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> control_lujuclaw: {pos}")
+        service_name = "/control_robot_leju_claw"
+        try:
+            rospy.wait_for_service("/control_robot_leju_claw", timeout=1)
+            control_lejucalw_srv = rospy.ServiceProxy(
+                service_name, controlLejuClaw
+            )
+            req = controlLejuClawRequest()
+            req.data.name = ['left_claw', 'right_claw']
+            req.data.position = pos
+            req.data.velocity = [90, 90]
+            # print(f">>>>>>>>>>>>>>>> control_lejucalw_srv: {req}")
+            control_lejucalw_srv(req)
+        except rospy.ROSException:
+            rospy.logerr(f"Service {service_name} not available")
+        except Exception as e:
+            rospy.logerr(f"Error: {e}")   
 
     def pub_solved_arm_eef_pose(self, q_robot, current_pose, current_pose_right):
         msg = twoArmHandPose()
@@ -700,7 +730,30 @@ class IkRos:
             robot_hand_position.left_hand_position = left_hand_position
             robot_hand_position.right_hand_position = right_hand_position
             self.control_robot_hand_position_pub.publish(robot_hand_position)
-
+        elif self.end_effector_type == LEJUCLAW:
+            if joyStick_data is not None:
+                if joyStick_data.left_second_button_pressed and self.__button_y_last is False:
+                    print(f"\033[91mButton Y is pressed.\033[0m")
+                    self.__freeze_finger = not self.__freeze_finger
+                self.__button_y_last = joyStick_data.left_second_button_pressed
+                if self.__freeze_finger is True:
+                    # print(f"\033[91mFinger is frozen.\033[0m")
+                    return
+                pos = [0.0] * 2
+                pos[0] = int(100.0 * joyStick_data.left_trigger)
+                pos[1] = int(100.0 * joyStick_data.right_trigger)
+                pos[0] = limit_value(pos[0], 0, 100)
+                pos[1] = limit_value(pos[1], 0, 100)
+                self.control_lujuclaw(pos)
+            elif hand_finger_data is not None:
+                left_qpos = hand_finger_data[0]
+                right_qpos = hand_finger_data[1]
+                left_claw_pos = limit_value(int(100.0 * left_qpos[2] / 1.70), 0, 100)
+                right_claw_pos = limit_value(int(100.0 * right_qpos[2] / 1.70), 0, 100)
+                self.control_lujuclaw([left_claw_pos, right_claw_pos])
+                # print(f"left_claw_pos: {left_claw_pos}, right_claw_pos: {right_claw_pos}")
+            else:
+                return
 
 if __name__ == "__main__":
     rospy.init_node("diff_ik_node", anonymous=True)
@@ -718,7 +771,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--ctrl_arm_idx", type=int, default=0, help="Control left or right arm, 0 for left, 1 for right.2 for both.")
     parser.add_argument("--ik_type_idx", type=int, default=0, help="Ik type, 0 for TorsoIK, 1 for DiffIK.")
-    parser.add_argument("--ee_type", "--end_effector_type", dest="end_effector_type", type=str, default="", help="End effector type, jodell or qiangnao.")
+    parser.add_argument("--ee_type", "--end_effector_type", dest="end_effector_type", type=str, default="", help="End effector type, jodell , qiangnao or lejuclaw.")
     parser.add_argument("--send_srv", type=int, default=1, help="Send arm control service, True or False.")
     parser.add_argument("--control_finger_type", type=int, default=0, help="0: control all fingers by upper-gripper. 1: control thumb and index fingers by upper-gripper, control other fingers by lower-gripper.")
     parser.add_argument("--control_torso", type=int, default=0, help="0: do NOT control, 1: control torso.")
@@ -773,7 +826,7 @@ if __name__ == "__main__":
 
     arm_min = np.array([-3.14, -0.70, -1.57, -1.57, -1.57, -1.57, -1.57, -3.14, -2.09, -1.57, -1.57, -1.57, -1.57, -1.57], dtype=float)
     arm_max = np.array([0.520, 2.09, 1.570, 0.000, 1.570, 1.570, 1.570, 0.7, 1.000, 1.570, 0.000, 1.570, 1.570, 1.570], dtype=float)
-    q_limit = [arm_min, arm_max]
+    q_limit = None
     if ik_type_idx == IkTypeIdx.DiffIK:        
         arm_ik = DiffIK(
             model_file, 

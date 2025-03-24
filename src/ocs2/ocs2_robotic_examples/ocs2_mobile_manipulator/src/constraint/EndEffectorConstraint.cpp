@@ -39,9 +39,10 @@ namespace mobile_manipulator {
 /******************************************************************************************************/
 /******************************************************************************************************/
 EndEffectorConstraint::EndEffectorConstraint(const EndEffectorKinematics<scalar_t>& endEffectorKinematics,
-                                             const ReferenceManager& referenceManager)
+                                             const ReferenceManager& referenceManager, int eefIdx)
     : StateConstraint(ConstraintOrder::Linear),
       endEffectorKinematicsPtr_(endEffectorKinematics.clone()),
+      eefIdx_(eefIdx),
       referenceManagerPtr_(&referenceManager) {
   if (endEffectorKinematics.getIds().size() != 1) {
     throw std::runtime_error("[EndEffectorConstraint] endEffectorKinematics has wrong number of end effector IDs.");
@@ -112,6 +113,7 @@ auto EndEffectorConstraint::interpolateEndEffectorPose(scalar_t time) const -> s
   vector_t position;
   quaternion_t orientation;
 
+  const size_t Nb = stateTrajectory[0].size() - 14;// base state dim
   if (stateTrajectory.size() > 1) {
     // Normal interpolation case
     int index;
@@ -120,14 +122,14 @@ auto EndEffectorConstraint::interpolateEndEffectorPose(scalar_t time) const -> s
 
     const auto& lhs = stateTrajectory[index];
     const auto& rhs = stateTrajectory[index + 1];
-    const quaternion_t q_lhs(lhs.tail<4>());
-    const quaternion_t q_rhs(rhs.tail<4>());
+    const quaternion_t q_lhs(lhs.segment<4>(7*eefIdx_+3+Nb));
+    const quaternion_t q_rhs(rhs.segment<4>(7*eefIdx_+3+Nb));
 
-    position = alpha * lhs.head<3>() + (1.0 - alpha) * rhs.head<3>();
+    position = alpha * lhs.segment<3>(7*eefIdx_+Nb) + (1.0 - alpha) * rhs.segment<3>(7*eefIdx_+Nb);
     orientation = q_lhs.slerp((1.0 - alpha), q_rhs);
   } else {  // stateTrajectory.size() == 1
-    position = stateTrajectory.front().head<3>();
-    orientation = quaternion_t(stateTrajectory.front().tail<4>());
+    position = stateTrajectory.front().segment<3>(7*eefIdx_+Nb);
+    orientation = quaternion_t(stateTrajectory.front().segment<4>(7*eefIdx_+3+Nb));
   }
 
   return {position, orientation};

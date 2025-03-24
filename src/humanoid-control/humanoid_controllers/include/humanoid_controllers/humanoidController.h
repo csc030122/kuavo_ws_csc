@@ -40,6 +40,7 @@
 #include "humanoid_controllers/LowPassFilter.h"
 #include "humanoid_interface/gait/GaitSchedule.h"
 #include "kuavo_msgs/robotHeadMotionData.h"
+#include "gazebo-sim/shm_manager.h"
 
 namespace humanoid_controller
 {
@@ -165,6 +166,8 @@ namespace humanoid_controller
     ~humanoidController();
     void keyboard_thread_func();
     bool init(HybridJointInterface *robot_hw, ros::NodeHandle &controller_nh, bool is_nodelet_node = false);
+    void preUpdate(const ros::Time &time);
+    bool preUpdateComplete() {return isPreUpdateComplete;}
     void update(const ros::Time &time, const ros::Duration &period);
     void starting(const ros::Time &time);
     void stopping(const ros::Time & /*time*/) { mpcRunning_ = false; }
@@ -186,6 +189,7 @@ namespace humanoid_controller
     void real_init_wait();
     void swingArmPlanner(double st, double current_time, double stepDuration, Eigen::VectorXd &desire_arm_q, Eigen::VectorXd &desire_arm_v);
     void headCmdCallback(const kuavo_msgs::robotHeadMotionData::ConstPtr &msg);
+    void visualizeWrench(const Eigen::VectorXd &wrench, bool is_left);
     
     /**
      * Creates MPC Policy message.
@@ -212,6 +216,7 @@ namespace humanoid_controller
     std::shared_ptr<PinocchioEndEffectorKinematics> eeKinematicsPtr_;
     std::shared_ptr<PinocchioEndEffectorKinematics> eeKinematicsWBCPtr_;
     std::shared_ptr<PinocchioEndEffectorSpatialKinematics> eeSpatialKinematicsPtr_;
+    std::shared_ptr<PinocchioInterface> pinocchioInterfaceEstimatePtr_;
 
     // State Estimation
     SystemObservation currentObservation_, currentObservationWBC_, lastObservation_;
@@ -234,6 +239,10 @@ namespace humanoid_controller
     std::shared_ptr<MPC_MRT_Interface> mpcMrtInterface_;
     std::shared_ptr<MRT_ROS_Interface> mrtRosInterface_;
 
+    // preUpdate, 介于蹲姿启动和进MPC之间的状态处理
+    bool isPreUpdateComplete{false};
+    std::shared_ptr<WbcBase> standUpWbc_;
+
     // Visualization
     std::shared_ptr<HumanoidVisualizer> robotVisualizer_;
     // std::shared_ptr<biped_robot::BipedRobotVisualizer> bipedRobotVisualizer_;//TODO: check if this is needed
@@ -250,6 +259,8 @@ namespace humanoid_controller
     ros::Publisher wbcTimeCostPub_;
     ros::Publisher feettargetTrajectoriesPublisher_;
     ros::Publisher stop_pub_;
+    ros::Publisher lHandWrenchPub_;
+    ros::Publisher rHandWrenchPub_;
     ros::Subscriber jointPosVelSub_;
     ros::Subscriber sensorsDataSub_;
     ros::Subscriber jointAccSub_;
@@ -260,6 +271,8 @@ namespace humanoid_controller
     ros::Subscriber head_sub_;
     ros::Subscriber arm_joint_traj_sub_;
     ros::Subscriber arm_target_traj_sub_;//最终的手臂目标位置
+    ros::Subscriber foot_pos_des_sub_;
+    ros::Subscriber hand_wrench_sub_;
     ros::Publisher mpcPolicyPublisher_;
 
     ros::ServiceServer enableArmCtrlSrv_;
@@ -268,6 +281,8 @@ namespace humanoid_controller
     PinocchioInterface *pinocchioInterface_ptr_;
     CentroidalModelInfo centroidalModelInfo_;
     CentroidalModelInfo centroidalModelInfoWBC_;
+    Eigen::VectorXd hand_wrench_cmd_ = Eigen::VectorXd::Zero(12);
+    CentroidalModelInfo centroidalModelInfoEstimate_;
 
     // Node Handle
     ros::NodeHandle controllerNh_;
@@ -311,6 +326,11 @@ namespace humanoid_controller
     vector_t jointPos_, jointVel_;
     vector_t jointAcc_;
     vector_t jointCurrent_;
+
+    vector_t jointPosWBC_, jointVelWBC_;
+    vector_t jointAccWBC_;
+    vector_t jointCurrentWBC_;
+
     vector_t motor_c2t_;
     bool init_input_ = false;
     Eigen::Quaternion<scalar_t> quat_;
@@ -318,6 +338,8 @@ namespace humanoid_controller
     vector3_t angularVel_, linearAccel_;
     matrix3_t orientationCovariance_, angularVelCovariance_, linearAccelCovariance_;
     size_t plannedMode_ = ModeNumber::SS;
+    size_t estPlannedMode_ = ModeNumber::SS;
+    size_t nextMode_ = ModeNumber::SS;
     vector_t defalutJointPos_;
     vector_t initial_status_;
     vector_t intail_input_;
@@ -326,12 +348,15 @@ namespace humanoid_controller
     Eigen::MatrixXd joint_state_limit_; // 26x2, lower and upper limit
     double contact_cst_st_ = 0.1;
     double contact_cst_et_ = 0.1;
-    
+    double robotMass_ = 50;
 
     const std::string robotName_ = "humanoid";
     bool use_external_mpc_{true};
     bool use_joint_filter_{false};
-
+    bool use_estimator_contact_{false};
+    bool is_stance_mode_{false};
+    bool only_half_up_body_{false};
+    
     TopicLogger *ros_logger_{nullptr};
     vector_t optimizedState2WBC_mrt_, optimizedInput2WBC_mrt_;
     size_t optimized_mode_;
@@ -358,6 +383,20 @@ namespace humanoid_controller
     double ruiwo_motor_velocities_factor_{0.0};
     gaitTimeName current_gait_{"stance", 0.0}, last_gait_{"stance", 0.0};
     vector_t desire_arm_q, desire_arm_v;
+
+    // 共享内存通讯
+    std::unique_ptr<gazebo_shm::ShmManager> shm_manager_;
+    bool use_shm_communication_{false};  // 是否使用共享内存通讯
+    bool updateSensorDataFromShm();      // 从共享内存更新传感器数据
+    void publishJointCmdToShm(const kuavo_msgs::jointCmd& jointCmdMsg);         // 发布关节命令到共享内存
+    
+    // 传感器数据发布
+    ros::Publisher sensor_data_raw_pub_;
+    feet_array_t<vector3_t> foot_pos_desired_;
+    bool visualizeHumanoid_ = true;
+
+    std::vector<std::pair<double, double> > head_joint_limits_ = {{-80, 80}, {-25, 25}};
+
   };
 
   class humanoidCheaterController : public humanoidController

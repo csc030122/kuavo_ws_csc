@@ -77,9 +77,17 @@ int main(int argc, char** argv) {
   initObservation.time = 0.0;
 
   // initial command
-  vector_t initTarget(7);
-  initTarget.head(3) << 1, 0, 1;
-  initTarget.tail(4) << Eigen::Quaternion<scalar_t>(1, 0, 0, 0).coeffs();
+  const size_t baseDim = interface.getManipulatorModelInfo().stateDim - interface.getManipulatorModelInfo().armDim;
+  vector_t initTarget(baseDim + 7*2);
+  initTarget.head(baseDim).setZero();
+  vector_t hand_pose(7);
+
+  hand_pose.head(3) << 1, 0, 0.4;
+  auto q = Eigen::Quaternion<scalar_t>(0.707, 0, -0.707, 0);
+  q.normalize();
+  hand_pose.tail(4) << q.coeffs();
+  initTarget.segment<7>(baseDim) = hand_pose;
+  initTarget.segment<7>(baseDim+7) = hand_pose;
   const vector_t zeroInput = vector_t::Zero(interface.getManipulatorModelInfo().inputDim);
   const TargetTrajectories initTargetTrajectories({initObservation.time}, {initTarget}, {zeroInput});
 

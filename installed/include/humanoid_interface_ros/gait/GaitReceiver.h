@@ -71,7 +71,8 @@ namespace ocs2
       void mpcWalkHeelSacleCallback(const std_msgs::Float32::ConstPtr &msg);
       void joyCallback(const sensor_msgs::Joy::ConstPtr &joy_msg);
       void autoGaitCheck(scalar_t initTime, scalar_t finalTime, const vector_t &currentState, const ReferenceManagerInterface &referenceManager);
-      bool checkTargetReached(const vector_t &currentPose);
+      bool checkTargetReached(const vector_t &currentPose, bool is_cmd_pose);
+      bool checkCmdInLimit(const vector_t &cmd_pose);
       bool checkFeetContactPos(const vector_t &currentPose, size_t current_mode);
 
       bool autoGaitModeSrvCallback(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res)
@@ -85,6 +86,15 @@ namespace ocs2
         return true;
       }
 
+      inline double normalizedYaw(double yaw)
+      {
+        while (yaw > M_PI)
+          yaw -= 2*M_PI;
+        while(yaw < -M_PI)
+          yaw += 2*M_PI;
+        return yaw;
+      };
+
       std::shared_ptr<GaitSchedule> gaitSchedulePtr_;
       std::shared_ptr<SwingTrajectoryPlanner> swingTrajectoryPlannerPtr_;
 
@@ -97,6 +107,7 @@ namespace ocs2
       ::ros::ServiceServer auto_gait_mode_service_;
       ::ros::Subscriber targetVelocitySubscriber_;
       ::ros::Subscriber targetPoseSubscriber_;
+      ::ros::Subscriber targetPoseWorldSubscriber_;
 
       ::ros::Subscriber feet_sub_ ;
       ::ros::Subscriber policy_sub_;
@@ -123,10 +134,14 @@ namespace ocs2
       vector_t current_target_ = vector_t::Zero(6);
       vector_t cmdVel_ = vector_t::Zero(6);
       vector_t cmdPose_ = vector_t::Zero(6);
+      vector_t cmdPoseWorld_ = vector_t::Zero(6);
 
       bool velCmdUpdated_ = false;
       bool PoseCmdUpdated_ = false;
+      bool PoseCmdWorldUpdated_ = false;
       bool waitting_for_walk_ = false;
+      bool single_step_yaw_computed_ = false;
+      double single_step_yaw_threshold_ = 0.5; // rad
     };
 
   } // namespace humanoid

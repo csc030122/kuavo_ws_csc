@@ -15,6 +15,7 @@ from motion_capture_ik.msg import twoArmHandPoseCmd, ikSolveParam
 from motion_capture_ik.srv import changeArmCtrlMode
 from noitom_hi5_hand_udp_python.msg import PoseInfo, PoseInfoList, JoySticks
 from handcontrollerdemorosnode.msg import robotHandPosition
+from kuavo_msgs.srv import controlLejuClaw, controlLejuClawRequest
 
 def get_package_path(package_name):
     try:
@@ -81,7 +82,28 @@ class Quest3Node:
             self.handle_qiangnao(joyStick_data, hand_finger_data, left_hand_position, right_hand_position, robot_hand_position)
         elif self.end_effector_type == "jodell":
             self.handle_jodell(hand_finger_data, left_hand_position, right_hand_position, robot_hand_position)
+        elif self.end_effector_type == "lejuclaw":
+            self.handle_lejuclaw(hand_finger_data)
 
+    @staticmethod
+    def control_lujuclaw(pos:list, vel:list, effort:list):
+        service_name = "/control_robot_leju_claw"
+        try:
+            rospy.wait_for_service("/control_robot_leju_claw", timeout=1)
+            control_lejucalw_srv = rospy.ServiceProxy(
+                service_name, controlLejuClaw
+            )
+            req = controlLejuClawRequest()
+            req.data.name = ['left_claw', 'right_claw']
+            req.data.position = pos
+            req.data.velocity = vel
+            req.data.effort = effort
+            control_lejucalw_srv(pos)
+        except rospy.ROSException:
+            rospy.logerr(f"Service {service_name} not available")
+        except Exception as e:
+            rospy.logerr(f"Error: {e}")  
+            
     def handle_qiangnao(self, joyStick_data, hand_finger_data, left_hand_position, right_hand_position, robot_hand_position):
         if joyStick_data is not None:
             if joyStick_data.left_second_button_pressed and not self.button_y_last:
@@ -131,6 +153,17 @@ class Quest3Node:
         robot_hand_position.right_hand_position = right_hand_position
         if not self.freeze_finger:
             self.control_robot_hand_position_pub.publish(robot_hand_position)
+
+    def handle_lejuclaw(self, hand_finger_data, vel=[90, 90], tor = [1.0, 1.0]):
+        pos = [0.0, 0.0] 
+        if hand_finger_data is not None:
+            left_qpos = hand_finger_data[0]
+            right_qpos = hand_finger_data[1]
+            pos[0] = max(0, min(int(100.0 * left_qpos[2] / 1.70), 100))
+            pos[1] = max(0, min(int(100.0 * right_qpos[2] / 1.70), 100))
+            self.control_lujuclaw(pos, vel, tor)
+        else:
+            return
 
     def change_arm_ctrl_mode(self, mode: int):
         service_name = "/change_arm_ctrl_mode"
@@ -187,7 +220,7 @@ if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     parser = argparse.ArgumentParser()
     parser.add_argument("--send_srv", type=int, default=1, help="Send arm control service, True or False.")
-    parser.add_argument("--ee_type", "--end_effector_type", dest="end_effector_type", type=str, default="", help="End effector type, jodell or qiangnao.")
+    parser.add_argument("--ee_type", "--end_effector_type", dest="end_effector_type", type=str, default="", help="End effector type, jodell, qiangnao or lejuclaw.")
     parser.add_argument("--control_torso", type=int, default=0, help="0: do NOT control, 1: control torso.")
     args, unknown = parser.parse_known_args()
     

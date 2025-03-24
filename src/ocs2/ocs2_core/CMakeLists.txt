@@ -144,6 +144,7 @@ add_library(${PROJECT_NAME}
   src/soft_constraint/StateSoftConstraint.cpp
   src/soft_constraint/StateInputSoftConstraint.cpp
   src/soft_constraint/StateInputSoftBoxConstraint.cpp
+  src/soft_constraint/StateInputSoftErrBoxConstraint.cpp
   src/penalties/MultidimensionalPenalty.cpp
   src/penalties/Penalties.cpp
   src/penalties/penalties/RelaxedBarrierPenalty.cpp

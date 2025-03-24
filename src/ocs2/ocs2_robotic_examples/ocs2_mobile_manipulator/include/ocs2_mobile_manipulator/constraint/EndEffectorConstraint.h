@@ -45,9 +45,9 @@ class EndEffectorConstraint final : public StateConstraint {
   using vector3_t = Eigen::Matrix<scalar_t, 3, 1>;
   using quaternion_t = Eigen::Quaternion<scalar_t>;
 
-  EndEffectorConstraint(const EndEffectorKinematics<scalar_t>& endEffectorKinematics, const ReferenceManager& referenceManager);
+  EndEffectorConstraint(const EndEffectorKinematics<scalar_t>& endEffectorKinematics, const ReferenceManager& referenceManager, int eefIdx);
   ~EndEffectorConstraint() override = default;
-  EndEffectorConstraint* clone() const override { return new EndEffectorConstraint(*endEffectorKinematicsPtr_, *referenceManagerPtr_); }
+  EndEffectorConstraint* clone() const override { return new EndEffectorConstraint(*endEffectorKinematicsPtr_, *referenceManagerPtr_, eefIdx_); }
 
   size_t getNumConstraints(scalar_t time) const override;
   vector_t getValue(scalar_t time, const vector_t& state, const PreComputation& preComputation) const override;
@@ -65,6 +65,7 @@ class EndEffectorConstraint final : public StateConstraint {
   quaternion_t eeDesiredOrientation_;
   std::unique_ptr<EndEffectorKinematics<scalar_t>> endEffectorKinematicsPtr_;
   const ReferenceManager* referenceManagerPtr_;
+  int eefIdx_;
 };
 
 }  // namespace mobile_manipulator

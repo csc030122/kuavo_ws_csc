@@ -26,7 +26,7 @@ namespace ocs2
       void loadTasksSetting(const std::string &taskFile, bool verbose, bool is_real) override;
 
     protected:
-      virtual Task formulateConstraints();
+      virtual Task formulateConstraints(const vector_t &inputDesired);
       virtual Task formulateWeightedTasks(const vector_t &stateDesired, const vector_t &inputDesired, scalar_t period);
       Task formulateStanceBaseAccelTask(const vector_t &stateDesired, const vector_t &inputDesired, scalar_t period);
 

@@ -307,6 +307,17 @@ void SqpSolver::runImpl(scalar_t initTime, const vector_t& initState, scalar_t f
   for (auto& ocpDefinition : ocpDefinitions_) {
     const auto& targetTrajectories = this->getReferenceManager().getTargetTrajectories();
     ocpDefinition.targetTrajectoriesPtr = &targetTrajectories;
+    if(this->getReferenceManager().getChangeQTime() < initTime 
+    && this->getReferenceManager().getUpdatedQ()){
+      std::cout << "Change Q matrices" << std::endl;
+      ocpDefinition.costPtr->get("baseTrackingCost").setMatrixQ(this->getReferenceManager().getMatrixQ());
+      this->getReferenceManager().setUpdatedQ(false);
+    }
+    if(this->getReferenceManager().getChangeRTime() < initTime 
+    && this->getReferenceManager().getUpdatedR()){
+      ocpDefinition.costPtr->get("baseTrackingCost").setMatrixR(this->getReferenceManager().getMatrixR());
+      this->getReferenceManager().setUpdatedR(false);
+    }
   }
 
   // Trajectory spread of primalSolution_

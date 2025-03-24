@@ -1,5 +1,6 @@
 topics:
   - /cmd_vel
+  - /cmd_pose
   - /joint_cmd.*
   - /cmd.*
   - /sensors_data_raw
@@ -19,6 +20,7 @@ topics:
   - /external_wrench
   - /ground_truth/state
   - /humanoid.*
+  - /mobile_manipulator.*
   - /inekf_state/.*
   - /visualization_marker.*
   - /route_plan_pose_array
@@ -28,3 +30,13 @@ topics:
   - /SwitchedModelReferenceManager/.*
   - /motor_cmd/.*
   - /sensor_data_motor/.*
+  - /imu
+  - /joint_states
+  - /share_memory/.*
+  - /mm_eef_poses
+  - /mm_eef_poses_error
+  - /humanoid_eef_poses
+  - /mm_base_error
+  - /ik.*
+  - /hand_wrench.*
+  - /tag_world_pose

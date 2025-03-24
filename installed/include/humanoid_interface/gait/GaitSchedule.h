@@ -43,14 +43,23 @@ namespace ocs2
   namespace humanoid
   {
 
-    enum class FootIdx { Left, Right };
+    enum class FootIdx { Left, Right, Stance };
     struct FootPoseSchedule
     {
       std::vector<scalar_t> eventTimes;  // event times
       std::vector<FootIdx> footIndices;  // foot indices
       std::vector<Eigen::Vector4d> footPoseSequence;  // pose(xyz yaw) of each step at each event time
       std::vector<Eigen::Vector4d> torsoPoseSequence;  // torso pose(xyz yaw) of each step at each event time
+      void clear()
+      {
+        eventTimes.clear();
+        footIndices.clear();
+        footPoseSequence.clear();
+        torsoPoseSequence.clear();
+      }
     };
+
+    std::ostream& operator<<(std::ostream& os, const FootPoseSchedule& schedule);
 
     class GaitManager
     {
@@ -211,7 +220,7 @@ namespace ocs2
       /**
        * 拓展足端位姿序列, 并更新模式位姿序列.
        */
-      ModeSchedule modifyModePoseSchedules(scalar_t currentTime, const Eigen::Vector4d &currentTorsoPose, const FootPoseSchedule& footPoseSchedule);
+      ModeSchedule modifyModePoseSchedules(scalar_t currentTime, const Eigen::Vector4d &currentTorsoPose, const FootPoseSchedule& footPoseSchedule, const feet_array_t<vector3_t> &foot_pos);
 
       inline scalar_t getCustomGaitEndTime() const
       {
@@ -226,6 +235,14 @@ namespace ocs2
           }
         }
         return eventTimes[eventIdx];
+      }
+
+      inline void disableFoot(scalar_t currentTime)
+      {
+        const auto &eventTimes = modeSchedule_.eventTimes;
+        const size_t index = 1 + std::lower_bound(eventTimes.begin(), eventTimes.end(), currentTime) - eventTimes.begin();
+        for(size_t i = index; i < modeSchedule_.enableFootSequence.size(); ++i) modeSchedule_.enableFootSequence[i] = false;
+        for(size_t i = index; i < modeSchedule_.modeSequence.size(); ++i) modeSchedule_.modeSequence[i] = ModeNumber::SS;
       }
 
     private:
@@ -251,6 +268,7 @@ namespace ocs2
       bool autoGaitEnabled_ = true; 
       std::map<std::string, ModeSequenceTemplate> gaitMap_;
       std::vector<std::string> gaitList_;
+      double default_stance_duration_ = 0.4;
     };
 
   } // namespace humanoid

@@ -67,6 +67,8 @@ add_message_files(
   footPoseTargetTrajectories.msg
   gestureInfo.msg
   gestureTask.msg
+  lejuClawState.msg
+  Metadata.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -81,6 +83,9 @@ add_service_files(
   gestureExecute.srv
   gestureList.srv
   gestureExecuteState.srv
+  controlLejuClaw.srv
+  setTagId.srv
+  footPoseTargetTrajectoriesSrv.srv
 )
 
 ## Generate actions in the 'action' folder

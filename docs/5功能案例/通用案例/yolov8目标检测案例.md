@@ -27,10 +27,9 @@
   - `test_detect.py` (实时检测)
   - `test_image.py` (指定图片检测)
 
-  <iframe src="//player.bilibili.com/player.html?isOutside=true&aid=113667282575205&bvid=BV1d1k7YWE7n&cid=27387363937&p=1" 
-          width="320" height="320" 
-          scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">
-  </iframe>
+![yolov8目标检测案例](images/yolov8案例检测效果图.png)
+
+
 
 ## 📡 箱子识别 ROS 话题订阅
 

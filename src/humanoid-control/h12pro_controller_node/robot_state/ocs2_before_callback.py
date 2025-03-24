@@ -10,6 +10,20 @@ import time
 import signal
 import datetime
 import json
+from std_srvs.srv import Trigger, TriggerRequest
+
+import threading
+from h12pro_controller_node.srv import playmusic, playmusicRequest, playmusicResponse
+from h12pro_controller_node.srv import ExecuteArmAction, ExecuteArmActionRequest, ExecuteArmActionResponse
+from h12pro_controller_node.msg import RobotActionState
+import os
+# import netifaces
+import json
+import hashlib
+import math
+import numpy as np
+from sensor_msgs.msg import Joy
+from geometry_msgs.msg import Twist
 
 console = console.Console()
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -19,13 +33,168 @@ ROS_BAG_LOG_SAVE_PATH = "~/.log/vr_remote_control/rosbag"
 HUMANOID_ROBOT_SESSION_NAME = "humanoid_robot"
 VR_REMOTE_CONTROL_SESSION_NAME = "vr_remote_control"
 LAUNCH_HUMANOID_ROBOT_SIM_CMD = "roslaunch humanoid_controllers load_kuavo_mujoco_sim.launch joystick_type:=h12 start_way:=auto"
+# LAUNCH_HUMANOID_ROBOT_SIM_CMD = "roslaunch humanoid_controllers load_kuavo_mujoco_sim.launch joystick_type:=h12"
 LAUNCH_HUMANOID_ROBOT_REAL_CMD = "roslaunch humanoid_controllers load_kuavo_real.launch joystick_type:=h12 start_way:=auto"
 LAUNCH_VR_REMOTE_CONTROL_CMD = "roslaunch noitom_hi5_hand_udp_python launch_quest3_ik.launch"
+ROS_MASTER_URI = os.getenv("ROS_MASTER_URI")
+ROS_IP = os.getenv("ROS_IP")
 kuavo_ros_control_ws_path = os.getenv("KUAVO_ROS_CONTROL_WS_PATH")
+# 录制话题的格式
 record_topics_path = os.path.join(config_dir, "record_topics.json")
 with open(record_topics_path, "r") as f:
     record_topics = json.load(f)["record_topics"]
 record_vr_rosbag_pid = None
+# 自定义动作json文件
+customize_config_path = os.path.join(config_dir, "customize_config.json")
+# 定义质心规划类动作/步态切换类动作json文件
+comGaitSwitch_config_path = os.path.join(config_dir, "com_gait_switch.json")
+
+with open(customize_config_path, "r") as f:
+    customize_config_data = json.load(f)
+
+with open(comGaitSwitch_config_path, "r") as f:
+    comGaitSwitch_config_data = json.load(f)
+
+# 手臂状态定义
+ROBOT_ACTION_STATUS = 0 # 手臂完成状态 | 0 没开始 | 1 执行中 |  2 完成
+def robot_action_state_callback(msg):
+    global ROBOT_ACTION_STATUS
+    ROBOT_ACTION_STATUS = msg.state
+    # rospy.loginfo(f" ---------- ROBOT_ACTION_STATUS ---------- : {ROBOT_ACTION_STATUS}")
+rospy.Subscriber('/robot_action_state', RobotActionState, robot_action_state_callback)
+
+# 全局话题发布
+joy_pub = rospy.Publisher('/joy', Joy, queue_size=10)
+com_pose_pub = rospy.Publisher('/cmd_pose', Twist, queue_size=10)
+
+# 控制拨杆
+BUTTON_A = 0
+BUTTON_B = 1
+BUTTON_X = 2
+BUTTON_Y = 3
+BUTTON_LB = 4
+BUTTON_RB = 5
+BUTTON_BACK = 6
+BUTTON_START = 7
+
+COM_SQUAT_DATA = -0.25 # 下蹲的高度
+COM_STAND_DATA = 0.0   # 站立的默认高度 
+
+COM_PITCH_DATA = 0.4   # 质心pitch角度为0.4
+COM_PITCH_ZERO = 0.0   # 质心站立高度为0.0
+
+def call_robot_control_mode_action(action_name):
+    """
+        按键控制让机器人进去 原地踏步 / stance 站立模式
+    """
+    global joy_pub
+    joy_msg = Joy()
+    joy_msg.axes = [0.0] * 8  # Initialize 8 axes
+    joy_msg.buttons = [0] * 11  # Initialize 11 buttons
+    
+    # 步态切换接口模式
+    if action_name == "start_marching":
+        joy_msg.buttons[BUTTON_B] = 1  # trot模式
+    elif action_name == "end_marching":
+        joy_msg.buttons[BUTTON_A] = 1  # stance模式
+    # 发布话题
+    try:
+        joy_pub.publish(joy_msg)
+        rospy.loginfo(f" 步态控制模式 :{action_name}")
+        return True
+    except rospy.ServiceException as e:
+        rospy.logerr(f"Service call to 步态控制模式/踏步 failed: {e}")
+        return False
+
+def call_robot_mpc_target_action(action_name):
+    """
+        质心发布器，控制机器人质心上下 以及前后左右走
+    """
+    global com_pose_pub
+    global COM_SQUAT_DATA 
+    global COM_STAND_DATA 
+    global COM_PITCH_DATA
+    global COM_PITCH_ZERO
+    com_msg = Twist()
+    if action_name == "squatting": # 下蹲
+        data = COM_SQUAT_DATA
+        pitch = COM_PITCH_DATA
+    elif action_name == "stand_up": # 站起来
+        data = COM_STAND_DATA
+        pitch = COM_PITCH_ZERO
+    com_msg.linear.x = 0.0
+    com_msg.linear.y = 0.0
+    com_msg.linear.z = float(data)
+
+    com_msg.angular.x = 0.0
+    com_msg.angular.y = float(pitch)
+    com_msg.angular.z = 0.0
+    # 发布话题
+    try:
+        com_pose_pub.publish(com_msg)
+        rospy.loginfo(f" 质心控制模式 :{action_name} | 高度为 {data}")
+        return True
+    
+    except rospy.ServiceException as e:
+        rospy.logerr(f"Service call to 质心控制模式/蹲下 failed: {e}")
+        return False
+
+# def get_wifi_ip():
+#     try:
+#         # Get all network interfaces
+#         interfaces = netifaces.interfaces()
+
+#         # Find the WiFi interface (usually starts with 'en')
+#         wifi_interface = next(
+#             (iface for iface in interfaces if iface.startswith("en")), None
+#         )
+
+#         if wifi_interface:
+#             # Get the IPv4 address of the WiFi interface
+#             addresses = netifaces.ifaddresses(wifi_interface)
+#             if netifaces.AF_INET in addresses:
+#                 return addresses[netifaces.AF_INET][0]["addr"]
+
+#         return "WiFi not connected"
+#     except Exception as e:
+#         return f"Error: {e}"
+
+def call_execute_arm_action(action_name):
+    """Call the /execute_arm_action service
+    :param action_name 动作名字
+    :return: bool， 服务调用结果
+    """
+    try:
+        _execute_arm_action_client = rospy.ServiceProxy('/execute_arm_action', ExecuteArmAction)
+        request = ExecuteArmActionRequest()
+        request.action_name = action_name
+
+        response = _execute_arm_action_client(request)
+        rospy.loginfo(f"ExecuteArmAction service response:\nsuccess: {response.success}\nmessage: {response.message}")
+        return response.success, response.message
+    except rospy.ServiceException as e:
+        rospy.logerr(f"Service call to '/execute_arm_action' failed: {e}")
+        return False, f"Service exception: {e}"
+
+def set_robot_play_music(music_file_name:str, music_volume:int)->bool:
+    """机器人播放指定文件的音乐
+    :param music_file_name, 音乐文件名字
+    :param music_volume, 音乐音量
+    :return: bool, 服务调用结果 
+    """
+    try:
+        _robot_music_play_client = rospy.ServiceProxy("/play_music", playmusic)
+        request = playmusicRequest()
+        request.music_number = music_file_name
+        request.volume = music_volume
+        # 客户端接收
+        response = _robot_music_play_client(request)
+        rospy.loginfo(f"Service call /play_music call: {response.success_flag}")
+        return response.success_flag
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        rospy.loginfo("Service /play_music call: fail!...please check again!")
+        return False
 
 def call_change_arm_ctrl_mode_service(arm_ctrl_mode):
     result = True
@@ -94,6 +263,20 @@ def plan_arm_trajectory_bezier_curve_client(req):
         rospy.logerr(f"PlService call failed: {e}")
         return False
 
+def call_real_initialize_srv():
+    client = rospy.ServiceProxy('/humanoid_controller/real_initial_start', Trigger)
+    req = TriggerRequest()
+
+    try:
+        # Call the service
+        if client.call(req):
+            rospy.loginfo("[JoyControl] Service call successful")
+        else:
+            rospy.logerr("Failed to callRealInitializeSrv service")
+    except rospy.ServiceException as e:
+        rospy.logerr(f"Service call failed: {e}")
+
+
 def print_state_transition(trigger, source, target) -> None:
     console.print(
         f"Trigger: [bold blue]{trigger}[/bold blue] From [bold green]{source}[/bold green] to [bold green]{target}[/bold green]"
@@ -123,6 +306,8 @@ def launch_humanoid_robot(real_robot=True,calibrate=False):
         "-d",  
         f"source ~/.bashrc && \
             source {kuavo_ros_control_ws_path}/devel/setup.bash && \
+            export ROS_MASTER_URI={ROS_MASTER_URI} && \
+            export ROS_IP={ROS_IP} && \
             export ROBOT_VERSION={robot_version} && \
             {launch_cmd}; exec bash"
     ]
@@ -155,6 +340,8 @@ def start_vr_remote_control_callback(event):
         "-d",  
         f"bash -c -i 'source ~/.bashrc && \
           source {kuavo_ros_control_ws_path}/devel/setup.bash && \
+          export ROS_MASTER_URI={ROS_MASTER_URI} && \
+          export ROS_IP={ROS_IP} && \
           {LAUNCH_VR_REMOTE_CONTROL_CMD}; exec bash'"
     ]
     subprocess.run(["tmux", "kill-session", "-t", VR_REMOTE_CONTROL_SESSION_NAME], 
@@ -198,7 +385,13 @@ def calibrate_callback(event):
     
 def ready_stance_callback(event):
     source = event.kwargs.get("source")
+    call_real_initialize_srv()
     print_state_transition("ready_stance", source, "stance")
+
+def cali_to_ready_stance_callback(event):
+    source = event.kwargs.get("source")
+    call_real_initialize_srv()
+    print_state_transition("cali_to_ready_stance", source, "ready_stance")
 
 def stance_callback(event):
     source = event.kwargs.get("source")
@@ -241,6 +434,96 @@ def arm_pose_callback(event):
     except Exception as e:
         rospy.logerr(f"Error in arm_pose_callback: {e}")
     pass
+
+# 等待动作完成的函数，增加超时机制
+def wait_for_action_completion(timeout=10.0):
+    """
+    等待动作完成，直到 ROBOT_ACTION_STATUS 为 2 或超时。
+    
+    :param timeout: 超时时间（秒）
+    """
+    global ROBOT_ACTION_STATUS
+    start_time = time.time()  # 记录开始时间
+    while ROBOT_ACTION_STATUS != 2:
+        if time.time() - start_time > timeout:  # 检查是否超时
+            rospy.logwarn("等待动作完成超时，自动退出等待循环")
+            break
+        rospy.sleep(0.1)  # 等待0.1秒后再检查状态
+
+# 执行动作的线程函数
+def execute_arm_poses(arm_pose_names):
+    for arm_pose in arm_pose_names:
+        rospy.loginfo(f"Executing arm pose: {arm_pose}")
+        call_execute_arm_action(arm_pose)
+        wait_for_action_completion(timeout=10.0)  # 设置超时时间为10秒 | 等待动作完成
+
+# 播放音乐的线程函数
+def play_music(music_names):
+    for music in music_names:
+        rospy.loginfo(f"Playing music: {music}")
+        set_robot_play_music(music, 100)
+
+def customize_action_callback(event):
+    global customize_config_data
+    global comGaitSwitch_config_data
+
+    # 打印动作类型
+    source = event.kwargs.get("source")
+    trigger = event.kwargs.get("trigger")
+    print_state_transition(trigger, source, "stance")
+    try:
+        # 根据 trigger 查找对应的配置
+        if trigger in customize_config_data:
+            action_config = customize_config_data[trigger]
+            arm_pose_names = action_config.get("arm_pose_name", [])
+            music_names = action_config.get("music_name", [])
+            
+            # 打印匹配到的动作和音乐信息
+            rospy.loginfo(f"Trigger: {trigger}")
+            rospy.loginfo(f"Received Arm Pose Names: {arm_pose_names}")
+            rospy.loginfo(f"Received Music Names: {music_names}") 
+
+            # 检查是否需要切换到质心规划模式或步态控制模式
+            gait_control_interfaces = set(comGaitSwitch_config_data.get("gait_control_interface", []))
+            com_control_interfaces = set(comGaitSwitch_config_data.get("com_control_interface", []))
+
+            # 判断是否有匹配的接口
+            matched_gait_interfaces = gait_control_interfaces.intersection(arm_pose_names)
+            matched_com_interfaces = com_control_interfaces.intersection(arm_pose_names)
+
+            # arm_pose_names移除接口
+            arm_pose_names = [pose for pose in arm_pose_names if pose not in matched_gait_interfaces and pose not in matched_com_interfaces]
+            rospy.loginfo(f"real Execute Arm Pose Names: {arm_pose_names}")
+
+            if matched_gait_interfaces:
+                rospy.loginfo(f"Matched Gait Control Interfaces: {matched_gait_interfaces}")
+                # 在这里切换到步态控制模式的逻辑
+                for action_name in matched_gait_interfaces:
+                    call_robot_control_mode_action(action_name)
+            if matched_com_interfaces:
+                rospy.loginfo(f"Matched COM Control Interfaces: {matched_com_interfaces}")
+                # 在这里切换到质心规划模式的逻辑
+                for action_name in matched_com_interfaces:
+                    call_robot_mpc_target_action(action_name)
+
+            # 创建线程
+            if arm_pose_names:
+                arm_pose_thread = threading.Thread(target=execute_arm_poses, args=(arm_pose_names,))
+                arm_pose_thread.start()
+            if music_names:
+                music_thread = threading.Thread(target=play_music, args=(music_names,))
+                music_thread.start()
+
+            # 等待线程完成
+            if arm_pose_names:
+                arm_pose_thread.join()
+            if music_names:
+                music_thread.join()
+
+        else:
+            rospy.logwarn(f"No configuration found for trigger: {trigger}")
+    except Exception as e:
+        rospy.logerr(f"Error in customize_action_callback: {e}")
 
 def record_vr_rosbag_callback(event):
     global record_vr_rosbag_pid

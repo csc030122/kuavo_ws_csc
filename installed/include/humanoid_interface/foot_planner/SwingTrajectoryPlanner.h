@@ -34,6 +34,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "humanoid_interface/common/Types.h"
 #include "humanoid_interface/foot_planner/SplineCpg.h"
+#include "humanoid_interface/foot_planner/CubicInterpolator.h"
+#include "humanoid_interface/foot_planner/SingleStepPlanner.h"
+#include "humanoid_interface/gait/GaitSchedule.h"
+
 
 #include "ocs2_core/thread_support/BufferedValue.h"
 
@@ -46,6 +50,7 @@ class SwingTrajectoryPlanner {
     scalar_t liftOffVelocity = 0.2;
     scalar_t touchDownVelocity = -0.4;
     scalar_t swingHeight = 0.1;
+    scalar_t climbStageSwingHeight = 0.3;
     scalar_t swingTimeScale = 0.15;  // swing phases shorter than this time will be scaled down in height and velocity
     scalar_t toeSwingHeight = 0.08;
     scalar_t heelSwingHeight = 0.08;
@@ -56,6 +61,8 @@ class SwingTrajectoryPlanner {
     scalar_t swing_shoulder_center = 0.2;
     scalar_t swing_shoulder_scale = 0.2;
     scalar_t swing_elbow_scale = 3.0;
+    bool enable_interrupt_with_est_mode = false; // 是否允许根据实际状态终止规划
+    bool enable_slope_planner = false; // 使能斜面规划
 
   };
 
@@ -64,6 +71,8 @@ class SwingTrajectoryPlanner {
   inline void updateConfig(const Config& cfg){config_ = cfg;}
   inline const Config& getConfig() const {return config_;}
   inline const Config& getDefaultConfig() const {return defaultConfig_;}
+  inline bool isWalkingOnSlope() const {return isWalkingOnSlope_;}
+  inline std::pair<Eigen::Vector3d, Eigen::Vector3d> getFeetNormalVectors() const {return std::make_pair(lf_normal_vector_, rf_normal_vector_);}
   void update(const ModeSchedule& modeSchedule, scalar_t terrainHeight, const TargetTrajectories& targetTrajectories, const scalar_t& initTime);
 
   void update(const ModeSchedule& modeSchedule, const feet_array_t<scalar_array_t>& liftOffHeightSequence,
@@ -74,7 +83,8 @@ class SwingTrajectoryPlanner {
               const feet_array_t<scalar_array_t>& maxHeightSequence, 
               const TargetTrajectories& targetTrajectories, 
               const scalar_t& initTime);
-
+  vector3_t findFootPosNext(int feet, int current_index, int swingStartIndex, int swingFinalIndex, const ModeSchedule& modeSchedule, const vector3_t &last_stance_position);
+  
   // 存储规划值到 vector 中
   std::vector<scalar_t> saveTrajectoryToVector() const {
     std::vector<scalar_t> trajectoryData;
@@ -188,6 +198,7 @@ class SwingTrajectoryPlanner {
         }
     }
   }
+  void modifyHeightSequences(const ModeSchedule &modeSchedule, feet_array_t<scalar_array_t> &liftOffHeightSequence, feet_array_t<scalar_array_t> &touchDownHeightSequence);
 
   scalar_t getXvelocityConstraint(size_t leg, scalar_t time) const;
   scalar_t getYvelocityConstraint(size_t leg, scalar_t time) const;
@@ -198,6 +209,7 @@ class SwingTrajectoryPlanner {
   scalar_t getXpositionConstraint(size_t leg, scalar_t time) const;
   scalar_t getYpositionConstraint(size_t leg, scalar_t time) const;
   scalar_t getZpositionConstraint(size_t leg, scalar_t time) const;
+  feet_array_t<vector3_t> getFootPositionConstraint(scalar_t time) const;
 
   // scalar_t getArmJointPositionConstraint(size_t hand, scalar_t time) const;
 
@@ -234,18 +246,33 @@ class SwingTrajectoryPlanner {
   {
     current_state_= current_state;
   }
+  inline void interruptSwing()
+  {
+    interrupt_swing_ = true;
+  }
   void printFeetPositions(size_t leg) const;
   inline void setArmDof(size_t num)
   {
     num_arm_joints_ = num;
     std::cout << "[SwingTrajectoryPlanner] num_arm_joints_ = " << num_arm_joints_ << std::endl;
   }
+  bool hasFeetTrajectory() const { return has_feet_trajectory_; }
+  inline bool isSingleStepPhase() const { return is_single_step_phase_; }
+  inline void setSingleStepPhase(bool is_single_step_phase) { is_single_step_phase_ = is_single_step_phase; }
+  inline FootPoseSchedule getfootPoseSchedule() const { return footPoseSchedule_; }
+  bool planSingleStep(scalar_t initTime, const vector_t& cmd_pose, Eigen::Vector3d xyYawTh);
+  inline double getTargetYaw() const { return target_yaw_; }
+  inline void setTargetYaw(double target_yaw) { target_yaw_ = target_yaw; }
+
+  inline bool getFinalYawSingleStepMode() const { return final_yaw_single_step_mode_; }
+  inline void setFinalYawSingleStepMode(bool mode) { final_yaw_single_step_mode_ = mode; }
+  inline double getFinalYawSingleStepTime() const { return final_yaw_single_step_time_; }
 
  private:
   vector3_t calNextFootPos(int feet, scalar_t current_time, scalar_t stop_time,
                                                          scalar_t next_middle_time, const vector_t &next_middle_body_pos,
                                                          const vector_t &current_body_pos, const vector3_t &current_body_vel,
-                                                         const TargetTrajectories& targetTrajectories, bool verbose = false);
+                                                         const TargetTrajectories& targetTrajectories, vector3_t &last_stance_position, bool verbose = false);
   vector3_t calNextFootPos(int feet, const scalar_t& swingInitTime, const scalar_t& swingFinalTime, 
                            const vector_t& currentBodyState, const TargetTrajectories& targetTrajectories);
   std::pair<bool, vector3_t> calNextFootPos(int feet, const ModeSchedule& modeSchedule, const scalar_t& initTime);
@@ -302,18 +329,36 @@ class SwingTrajectoryPlanner {
   feet_array_t<std::vector<SplineCpg>> feetHeightTrajectories_;
   feet_array_t<std::vector<scalar_t>> feetHeightTrajectoriesEvents_;
 
+  feet_array_t<std::vector<DrakeInterpolator>> footXInterpolators_;
+  feet_array_t<std::vector<DrakeInterpolator>> footYInterpolators_;
+  feet_array_t<std::vector<DrakeInterpolator>> footZInterpolators_;
+
   hand_array_t<std::vector<SplineCpg>> armJointTrajectories_;
   hand_array_t<std::vector<scalar_t>> armJointTrajectoriesEvents_;
   feet_array_t<vector3_t> feetXYOffset_;
   feet_array_t<vector3_t> feetXYOffsetLocalFrame_;
+  feet_array_t<double> feetZOffset_;
 
   BufferedValue<feet_array_t<vector3_t>> current_feet_position_buf_;
   BufferedValue<vector_t> current_body_state_buf_;
   BufferedValue<vector_t> body_vel_cmd_buf_;
   vector_t current_state_;
   feet_array_t<vector3_t> latestStanceposition_;
+  feet_array_t<vector3_t> stancePositionBeforeStepControl_;
+  feet_array_t<vector3_t> latestFullyStanceposition_;
   feet_array_t<vector3_t> des_latestStanceposition_;
   feet_array_t<vector3_t> calc_stance_position_;
+  feet_array_t<bool> visualize_stance_position_flag_;
+  feet_array_t<vector3_t> last_calc_stance_position_;
+  bool has_feet_trajectory_ = false;
+  bool interrupt_swing_ = false;
+  bool isWalkingOnSlope_ = false;
+  Eigen::Vector3d lf_normal_vector_, rf_normal_vector_;
+  bool is_single_step_phase_ = false;
+  FootPoseSchedule footPoseSchedule_;
+  double target_yaw_ = 0.0;
+  bool final_yaw_single_step_mode_ = false;
+  double final_yaw_single_step_time_ = 0.0;
 };
 
 SwingTrajectoryPlanner::Config loadSwingTrajectorySettings(const std::string& fileName,

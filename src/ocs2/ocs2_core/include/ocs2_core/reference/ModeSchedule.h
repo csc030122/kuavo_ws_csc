@@ -94,11 +94,25 @@ struct ModeSchedule {
   scalar_t timeSwitch(scalar_t time) const{return eventTimes[modeNextId(time)-1];};
 
   bool existValidFootPose() const{
+    size_t count = 0;
     for (const auto& enableFoot : enableFootSequence)
-      if(enableFoot) return true;
+      if(enableFoot)
+        count++;
+    if(count > 1)//最后一个
+      return true;
     return false;
   }
 
+  bool existValidFootPose(scalar_t time) const{
+    size_t count = 0;
+    const size_t index_start = std::lower_bound(eventTimes.begin(), eventTimes.end(), time) - eventTimes.begin();
+    for (int i = index_start+1; i < enableFootSequence.size(); i++)
+      if(enableFootSequence[i])
+        count++;
+    if(count > 0)//最后一个
+      return true;
+    return false;
+  }
 
 
 

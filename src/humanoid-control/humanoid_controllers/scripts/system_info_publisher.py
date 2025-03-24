@@ -53,11 +53,12 @@ def publish_system_info():
         rospy.loginfo("Publish_system_info is running in Docker, exiting.")
         return
 
+    rospy.init_node('system_info_publisher')
+
     pub_cpu_usage = rospy.Publisher('/monitor/system_info/cpu_usage', Float64MultiArray, queue_size=10)
     pub_cpu_temp = rospy.Publisher('/monitor/system_info/cpu_temperature', Float64MultiArray, queue_size=10)
     pub_cpu_freq = rospy.Publisher('/monitor/system_info/cpu_frequency', Float64MultiArray, queue_size=10)
 
-    rospy.init_node('system_info_publisher', anonymous=True)
     rate = rospy.Rate(5)  # 5 Hz
     rospy.loginfo("System Info Publisher Started")
     while not rospy.is_shutdown():

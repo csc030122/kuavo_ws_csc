@@ -26,6 +26,8 @@
     <arg name="joystick_type"      default="bt2"/>
     <!-- The reference related config file of the robot -->
     <arg name="start_way"         default="manual"/>
+    <arg name="use_estimator_contact"   default="false"/>
+    <arg name="only_half_up_body" default="false"/>
     <!-- The file defining gait definition -->
 
     <!-- multiplot -->
@@ -43,9 +45,10 @@
     <param name="estimator_type"     value="$(arg estimator_type)"/>
     <param name="use_joint_filter"     value="$(arg use_joint_filter)"/>
     <param name="joystick_type"  value="$(arg joystick_type)"/>
-
+    <param name="only_half_up_body"   value="$(arg only_half_up_body)"/>
     <param name="build_cppad_state"   value="0"/>  <!-- build_cppad_state is set to 0(waiting), 1(building), 2(done) -->
     <param name="start_way"  value="$(arg start_way)"/>
+    <param name="use_estimator_contact"  value="$(arg use_estimator_contact)"/>
 
     <!-- mpc node -->
     <group if="$(arg use_external_mpc)">
@@ -89,7 +92,12 @@
           <arg name="start_way" value="$(arg start_way)"/>
         </include>
       </group>
-      <group unless="$(eval arg('joystick_type') == 'h12')">
+      <group if="$(eval arg('joystick_type') == 'sim')">
+        <include file="$(find humanoid_controllers)/launch/joy/joy_control_sim.launch">
+          <arg name="joystick_type" value="$(arg joystick_type)"/>
+        </include>
+      </group>
+      <group if="$(eval arg('joystick_type') == 'bt2' or arg('joystick_type') == 'bt2pro')">
         <include file="$(find humanoid_controllers)/launch/joy/joy_control_bt.launch">
           <arg name="joystick_type" value="$(arg joystick_type)"/>
         </include>

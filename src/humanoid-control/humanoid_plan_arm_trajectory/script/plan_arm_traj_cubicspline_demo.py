@@ -8,17 +8,24 @@ from humanoid_plan_arm_trajectory.srv import planArmTrajectoryCubicSpline, planA
 from sensor_msgs.msg import JointState
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 from kuavo_msgs.srv import changeArmCtrlMode, changeArmCtrlModeRequest
-from ocs2_msgs.msg import mpc_observation
+from kuavo_msgs.msg import sensorsData
+# from ocs2_msgs.msg import mpc_observation
 
 current_arm_joint_state = []
 
 def deg_to_rad(deg):
     return math.radians(deg)
 
-def mpc_obs_callback(msg):
+def sensors_data_callback(msg):
     global current_arm_joint_state
-    current_arm_joint_state = msg.state.value[24:]
+    current_arm_joint_state = msg.joint_data.joint_q[12:26]
     current_arm_joint_state = [round(pos, 2) for pos in current_arm_joint_state]
+
+
+# def mpc_obs_callback(msg):
+#     global current_arm_joint_state
+#     current_arm_joint_state = msg.state.value[24:]
+#     current_arm_joint_state = [round(pos, 2) for pos in current_arm_joint_state]
 
 positions = [
 
@@ -100,7 +107,14 @@ def main():
     rospy.init_node('arm_trajectory_cubicspline_demo')
     traj_sub = rospy.Subscriber('/cubic_spline/arm_traj', JointTrajectory, traj_callback, queue_size=1, tcp_nodelay=True)
     kuavo_arm_traj_pub = rospy.Publisher('/kuavo_arm_traj', JointState, queue_size=1, tcp_nodelay=True)
-    mpc_obs_sub = rospy.Subscriber('/humanoid_mpc_observation', mpc_observation, mpc_obs_callback)
+    # mpc_obs_sub = rospy.Subscriber('/humanoid_mpc_observation', mpc_observation, mpc_obs_callback)
+    sensor_data_sub = rospy.Subscriber(
+            '/sensors_data_raw', 
+            sensorsData, 
+            sensors_data_callback, 
+            queue_size=1, 
+            tcp_nodelay=True
+    )
     call_change_arm_ctrl_mode_service(2)
     
     while len(current_arm_joint_state) != 0:

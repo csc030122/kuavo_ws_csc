@@ -1,6 +1,6 @@
 # 相关资源
 
-md5 1c643226cd5ffb064243d62a5e881099 https://kuavo.lejurobot.com/Quest_apks/leju_kuavo_hand-0.0.1-40-g8025c10.apk
+md5 4bf2e945fdd5e66e937b3e2053b9c448 https://kuavo.lejurobot.com/Quest_apks/leju_kuavo_hand-0.0.1-130-gf0c2546.apk
 
 [Quest3 激活和安装程序说明](./docs/Quest3_激活和安装说明.md)
 

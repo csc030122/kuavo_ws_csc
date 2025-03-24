@@ -86,7 +86,8 @@ enum EndEffectorType
 {
   none,
   jodell,
-  qiangnao
+  qiangnao,
+  lejuclaw,
 };
 enum MotorDriveType
 {

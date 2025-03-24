@@ -62,9 +62,9 @@ class SimulatedJoystick:
         elif key == 's':
             self.joy_msg.axes[AXIS_LEFT_STICK_X] = round(max(-1.0, self.joy_msg.axes[AXIS_LEFT_STICK_X] - 0.1), 3)
         elif key == 'a':
-            self.joy_msg.axes[AXIS_LEFT_STICK_Y] = round(max(-1.0, self.joy_msg.axes[AXIS_LEFT_STICK_Y] - 0.1), 3)
-        elif key == 'd':
             self.joy_msg.axes[AXIS_LEFT_STICK_Y] = round(min(1.0, self.joy_msg.axes[AXIS_LEFT_STICK_Y] + 0.1), 3)
+        elif key == 'd':
+            self.joy_msg.axes[AXIS_LEFT_STICK_Y] = round(max(-1.0, self.joy_msg.axes[AXIS_LEFT_STICK_Y] - 0.1), 3)
         elif key == 'i':
             self.joy_msg.axes[AXIS_RIGHT_STICK_Z] = round(min(1.0, self.joy_msg.axes[AXIS_RIGHT_STICK_Z] + 0.1), 3)
         elif key == 'k':
@@ -88,7 +88,7 @@ class SimulatedJoystick:
             
         cmdvel = [self.joy_msg.axes[AXIS_LEFT_STICK_X],self.joy_msg.axes[AXIS_LEFT_STICK_Y], 0, 0, 0, self.joy_msg.axes[AXIS_RIGHT_STICK_YAW]]
         print(f"cmdvel: {[f'{x * 100:.0f}%' for x in cmdvel]}", end='\r')
-        self.joy_pub.publish(self.joy_msg)
+        # self.joy_pub.publish(self.joy_msg)
 
     def run(self):
         try:
@@ -106,6 +106,7 @@ class SimulatedJoystick:
                     self.update_joy(key)
                 if (key == '\x03'):  # Ctrl-C
                     break
+                self.joy_pub.publish(self.joy_msg)
         finally:
             termios.tcsetattr(sys.stdin, termios.TCSADRAIN, self.old_settings)
 

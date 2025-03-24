@@ -39,7 +39,11 @@ TargetTrajectories goalPoseToTargetTrajectories(const Eigen::Vector3d& position,
   // time trajectory
   const scalar_array_t timeTrajectory{observation.time};
   // state trajectory: 3 + 4 for desired position vector and orientation quaternion
-  const vector_t target = (vector_t(7) << position, orientation.coeffs()).finished();
+  auto l_pose = (vector_t(7) << position, orientation.coeffs()).finished(); 
+  auto r_pose = l_pose;
+  l_pose(1) += 0.1;
+  r_pose(1) -= 0.1;
+  const vector_t target = (vector_t(14) << l_pose, r_pose).finished();
   const vector_array_t stateTrajectory{target};
   // input trajectory
   const vector_array_t inputTrajectory{vector_t::Zero(observation.input.size())};

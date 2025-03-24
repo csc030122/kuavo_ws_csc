@@ -11,9 +11,11 @@
     - [如何启动已安装的程序](#如何启动已安装的程序)
     - [如何导出已录制的视频](#如何导出已录制的视频)
     - [如何去除空间限制](#如何去除空间限制)
+    - [如何实时查看到 Quest3 投屏的屏幕](#如何实时查看到-quest3-投屏的屏幕)
   - [QUEST3 VR控制](#quest3-vr控制)
     - [准备](#准备)
     - [使用](#使用)
+    - [QUEST3 视频流](#quest3-视频流)
 
 
 ## 说明
@@ -70,6 +72,25 @@
 
 参考视频：[Quest3 突破空间限制](https://www.bilibili.com/video/BV1iYzwYqEwt/?share_source=copy_web&vd_source=2d815abfceff1874dd081e6eb77cc262 "Quest3 突破空间限制")
 
+### 如何实时查看到 Quest3 投屏的屏幕
+
+1. 先完成授权的步骤，请参考前面: <如何在 Quest3 里面授权的视频>
+
+2. 根据自己的系统安装 
+
+- [scrcpy-linux-x86_64-v3.1.tar.gz](https://kuavo.lejurobot.com/statics/scrcpy-linux-x86_64-v3.1.tar.gz)
+- [scrcpy-macos-aarch64-v3.1.tar.gz](https://kuavo.lejurobot.com/statics/scrcpy-macos-aarch64-v3.1.tar.gz)
+- [scrcpy-macos-x86_64-v3.1.tar.gz](https://kuavo.lejurobot.com/statics/scrcpy-macos-x86_64-v3.1.tar.gz)
+- [scrcpy-win64-v3.1.zip](https://kuavo.lejurobot.com/statics/scrcpy-win64-v3.1.zip)
+
+3. 各自解压之后在对应的目录下启动终端，确保当前电脑已经通过 USB 连接 Quest3, 并且 Quest3 已经开机
+
+4. 执行对应的 scrcpy 指令
+
+示例视频
+
+<iframe src="//player.bilibili.com/player.html?isOutside=true&aid=113683724243013&bvid=BV1kAk2Y1Edm&cid=27433897643&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+
 ## QUEST3 VR控制
 
 ### 准备
@@ -86,20 +107,62 @@
 
 - 启动VR节点
    - 运行
-  
   > 旧版镜像如果没有包含VR相关依赖，需要手动安装：`cd src/manipulation_nodes/noitom_hi5_hand_udp_python && pip install -r requirements.txt && cd -`
   
   ```bash
    source devel/setup.bash
 
-   # VR先和机器人连到同一局域网，查看VR里面的ip地址记下来
-   # 然后在机器人上运行以下命令，ip_address输入quest3的ip地址，
-   roslaunch noitom_hi5_hand_udp_python launch_quest3_ik.launch ip_address:=192.168.3.32
+   # VR先和机器人连到同一局域网, VR 会广播 自身IP 到局域网中
+   roslaunch noitom_hi5_hand_udp_python launch_quest3_ik.launch
   ```
-  > 如果希望同时映射躯干的运动（上下蹲和弯腰），可以增加选项`control_torso:=1`，使用前**务必在站立状态下长按VR右手柄的meta键**以标定躯干高度。
+
+  > 如果手动输入VR的IP地址, 在启动命令后追加参数 `ip_address:=192.168.3.32`(替换成VR的实际IP地址)
+
+  > 现在 VR 头盔中的 APP 会自动广播自身IP，启动节点不需要手动输入 ip，但是假如 VR 节点程序关掉了，你需要在 VR 头盔中重新打开 VR 程序，才会重新广播IP
+
+
+  > 如果希望同时映射躯干的运动（上下蹲和弯腰），可以增加选项`control_torso:=1`，使用前**务必在站立状态下长按VR右手柄的meta键**以标定躯干高度。**注意：不能长时间执行蹲下和弯腰动作，且在执行躯干运动时幅度不宜过大**
+
+  > 启动程序之后，将手柄放置视野外，会触发启动VR中的手势识别功能，手臂跟随模式下可以控制机器人手臂和手指跟随运动，这时要注意避免视角中出现多个检测目标（多双手），手势检测效果如下图：
+
+  > ![手势识别](./images/VR手势识别.jpg)
 
   > 默认控制双手，如果需要控制单手，可以增加选项`ctrl_arm_idx:=0`, 其中0，1，2分别对应左手，右手，双手
   - 参考[参考机器人VR控制教程](../../2快速开始/快速开始.md)
   
- > 开启手势识别，可以增加选项 `predict_gesture:=true`，利用神经网络预测手势，灵巧手会直接根据手势预测结果进行运动，目前支持的手势有（只有当预测结果同时满足：高置信度（>80%）明显优于第二预测（差值>0.3）预测分布集中（熵值<0.8）才会返回具体的手势类别。否则会认为预测失败，灵巧手会采用原来的方式控制）
+  > 开启手势识别，可以增加选项 `predict_gesture:=true`，利用神经网络预测手势，灵巧手会直接根据手势预测结果进行运动，目前支持的手势有（只有当预测结果同时满足：高置信度（>80%）明显优于第二预测（差值>0.3）预测分布集中（熵值<0.8）才会返回具体的手势类别。否则会认为预测失败，灵巧手会采用原来的方式控制）
   - 参考[灵巧手手势使用案例](灵巧手手势使用案例.md)
+- 同时启动VR节点和机器人
+  - 运行
+  ```bash
+  sudo su
+  source devel/setup.bash
+  roslaunch humanoid_controllers load_kuavo_real_with_vr.launch
+  ```
+
+### QUEST3 视频流
+
+在使用 VR 控制时，可以将上位机的摄像头画面传输到 VR 设备中显示。具体设置步骤如下：
+
+1. 在上位机（带有摄像头的设备）上安装依赖：
+- 需要克隆下位机kuavo-ros-opensource仓库，然后配置依赖：
+  ```bash
+  cd <kuavo-ros-opensource>
+  sudo apt install v4l-utils
+  git clone https://github.com/ros-perception/image_common.git  --branch noetic-devel src/image_common
+  git clone https://github.com/ros-perception/image_pipeline.git  --branch noetic src/image_pipeline
+  git clone https://github.com/ros-drivers/usb_cam.git --branch develop src/usb_cam
+  catkin build usb_cam noitom_hi5_hand_udp_python
+  ```
+
+2. 启动视频流：
+- 在上位机运行：
+   ```bash
+   source devel/setup.bash
+   roslaunch noitom_hi5_hand_udp_python usb_cam_node.launch
+   ```
+   
+- 在下位机运行：
+   ```bash
+   roslaunch noitom_hi5_hand_udp_python launch_quest3_ik_videostream_usb_cam.launch
+   ```

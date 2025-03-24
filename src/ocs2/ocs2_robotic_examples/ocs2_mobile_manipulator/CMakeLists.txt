@@ -7,11 +7,14 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CATKIN_PACKAGE_DEPENDENCIES
   ocs2_core
   ocs2_ddp
+  ocs2_sqp
   ocs2_mpc
   ocs2_robotic_tools
   ocs2_robotic_assets
   ocs2_pinocchio_interface
   ocs2_self_collision
+  ocs2_msgs
+  ocs2_ros_interfaces
 )
 
 find_package(catkin REQUIRED COMPONENTS
@@ -82,11 +85,14 @@ add_library(${PROJECT_NAME}
   src/MobileManipulatorPreComputation.cpp
   src/MobileManipulatorPinocchioMapping.cpp
   src/constraint/EndEffectorConstraint.cpp
+  src/constraint/BaseConstraint.cpp
   src/dynamics/WheelBasedMobileManipulatorDynamics.cpp
   src/dynamics/DefaultManipulatorDynamics.cpp
   src/dynamics/FloatingArmManipulatorDynamics.cpp
   src/dynamics/FullyActuatedFloatingArmManipulatorDynamics.cpp
+  src/dynamics/ActuatedXYZYawPitchManipulatorDynamics.cpp
   src/MobileManipulatorInterface.cpp
+  src/reference_manager/MobileManipulatorReferenceManager.cpp
 )
 add_dependencies(${PROJECT_NAME}
   ${catkin_EXPORTED_TARGETS}

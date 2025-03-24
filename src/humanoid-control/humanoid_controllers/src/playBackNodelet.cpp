@@ -580,7 +580,7 @@ namespace humanoid_controller
     bool is_mpc_updated = false;
 
     // Update the current state of the system
-    mrtRosInterface_->setCurrentObservation(currentObservation_);
+    // mrtRosInterface_->setCurrentObservation(currentObservation_);
     // Trigger MRT callbacks
     mrtRosInterface_->spinMRT();
     // Update the policy if a new on was received
@@ -725,9 +725,9 @@ namespace humanoid_controller
     }
     // last_time_ = current_time_ - ros::Duration(0.002);
     double diff_time = (current_time_ - last_time_).toSec();
-    auto est_mode = stateEstimate_->ContactDetection(plannedMode_, jointVel_, jointCurrent_, diff_time);
-    ros_logger_->publishValue("/state_estimate/mode", static_cast<double>(est_mode));
-    est_mode = plannedMode_;
+    // auto est_mode = stateEstimate_->ContactDetection(plannedMode_, jointVel_, jointCurrent_, diff_time);
+    // ros_logger_->publishValue("/state_estimate/mode", static_cast<double>(est_mode));
+    // est_mode = plannedMode_;
     // contactFlag = modeNumber2StanceLeg(est_mode);
     // std::cout << "mode: " << modeNumber2String(est_mode) << std::endl;
     last_time_ = current_time_;
@@ -735,7 +735,9 @@ namespace humanoid_controller
     stateEstimate_->estContactForce(period);
     auto est_contact_force = stateEstimate_->getEstContactForce();
     ros_logger_->publishVector("/state_estimate/contact_force", est_contact_force);
-
+    auto est_mode = stateEstimate_->ContactDetection(plannedMode_, is_stance_mode_, plannedMode_, 50, est_contact_force(2), est_contact_force(8), diff_time);
+    ros_logger_->publishValue("/state_estimate/mode", static_cast<double>(est_mode));
+    est_mode = plannedMode_;
     stateEstimate_->updateMode(est_mode);
 
     // rbdState_: Angular(zyx),pos(xyz),jointPos[info_.actuatedDofNum],angularVel(zyx),linervel(xyz),jointVel[info_.actuatedDofNum]

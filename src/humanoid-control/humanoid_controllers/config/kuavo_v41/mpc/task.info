@@ -10,14 +10,17 @@ humanoid_interface
 model_settings
 {
   positionErrorGain             20.0 ; 20.0
-  positionErrorGain_xy          25.0 ; 20.0
-  velocityErrorGain_xy          0.0;
+  positionErrorGain_xy          0.0 ; 20.0
+  velocityErrorGain_xy          0.0;;
+  positionErrorGain_zero        0.0; // positionErrorGain for zero velocity constraint
+  positionErrorGainXYStepControl     50 ;
+  velocityErrorGainXYStepControl     1.0;
 
   phaseTransitionStanceTime     0.4
 
   verboseCppAd                  false
   recompileLibrariesCppAd       false
-  modelFolderCppAd              /var/ocs2/full_v41 ; will save in <modelFolderCppAd>/<centroidalModelType>/<dof>
+  modelFolderCppAd              /var/ocs2/kuavo_v41 ; will save in <modelFolderCppAd>/md5_<urdf>/<centroidalModelType>/<dof>
 
   modelDof                     26 ; total dof of the model, including the arms and legs
   mpcArmsDof                   8 ; mpc dof of the arms, you can simplify the model by reducing this value(will automatically reduce the QR size)
@@ -25,7 +28,6 @@ model_settings
 
   jointNames
   {
-
     [0]   "leg_l1_joint"
     [1]   "leg_l2_joint"
     [2]   "leg_l3_joint"
@@ -52,9 +54,10 @@ model_settings
     [23]  "zarm_r5_joint"
     [24]  "zarm_r6_joint"
     [25]  "zarm_r7_joint"
-  
+
   };
-  jointNamesReal
+
+jointNamesReal
   {
     [0]   "leg_l1_joint"
     [1]   "leg_l2_joint"
@@ -83,7 +86,7 @@ model_settings
     [24]  "zarm_r6_joint"
     [25]  "zarm_r7_joint"
   };
-
+  
   contactNames6DoF
   {
     [0] "zarm_l7_end_effector"
@@ -120,17 +123,20 @@ swing_trajectory_config
   liftOffVelocity               0.065
   touchDownVelocity            -0.01
   swingHeight                   0.06
+  climbStageSwingHeight         0.06
   swingTimeScale                0.15
 
   toeSwingHeight                0.03
   heelSwingHeight               0.04
+  enable_slope_planner                                 true
+  enable_interrupt_with_est_mode              false
 
   deadBandVelocity             0.1
   heelToeMaxHeightVelocity     0.3
 
-  swing_shoulder_center         0.1
-  swing_shoulder_scale          0.2
-  swing_elbow_scale             0.5
+  swing_shoulder_center         0.15
+  swing_shoulder_scale          0.3
+  swing_elbow_scale             0.8
 }
 
 ; Multiple_Shooting SQP settings
@@ -249,7 +255,6 @@ mpc
   mpcDesiredFrequency             50  ; [Hz]
   mrtDesiredFrequency             1000 ; [Hz] Useless
 }
-
 
 ; standard state weight matrix
 Q
@@ -478,16 +483,16 @@ basePitchLimits
   {
     mu      0.1       ; relaxed log barrier mu
     delta   1e-3      ; relaxed log barrier delta
-    lowerBound      0.04
-    upperBound      0.06
+    lowerBound      -0.01
+    upperBound      0.01
   }
 
   vel
   {
     mu      0.1       ; relaxed log barrier mu
     delta   1e-3      ; relaxed log barrier delta
-    lowerBound      -0.2
-    upperBound      0.2
+    lowerBound      -0.02
+    upperBound      0.02
   }
 }
 
@@ -596,6 +601,22 @@ swingLegTask
     }
 
 }
+
+stanceLegTask
+{
+  real
+  {
+    kp                   10  
+    kd                   2    
+  }
+  
+  sim
+  {
+    kp                   24  
+    kd                   10    
+  }
+}
+
 baseAccelTask
 {
     kp                   0
@@ -687,6 +708,30 @@ weight
   }
 }
 
+standUpJointAccelTask
+{
+  leg
+  {
+    kp    200
+    kd    10.2
+    kp_sim    500
+    kd_sim    10.2
+  }
+  arm
+  {
+    kp    200
+    kd    10.2
+  }
+}
+
+standUpWeight
+{
+    Linear          1
+    Angular         10
+    JointAcc        20
+    contactForce    0.1 
+}
+
 ; State Estimation
 kalmanFilter
 {
@@ -699,29 +744,30 @@ kalmanFilter
     footSensorNoisePosition     0.5
     footSensorNoiseVelocity     1.0
     footHeightSensorNoise       0.005
+    resetGroundHeight          true
 }
 
 contactForceEsimation
 {
-   cutoffFrequency    250 ；estimation contact force
-   contactThreshold   75
+    cutoffFrequency    250 ；estimation contact force
+    contactThreshold   75
 
-   detectCutoffFrequency    20 ；contact detection contact force
+    detectCutoffFrequency    500 ；contact detection contact force
 
-   maxEnergyThreshold   1
-   minEnergyThreshold   -0.3
-   maxEnergyThreshold2  15
-   minEnergyThreshold2  -10
-   timeTreshold         0.15
+    maxEnergyThreshold   0.3
+    minEnergyThreshold   0.13
+    maxEnergyThreshold2  1.6
+    minEnergyThreshold2  0.5
+    timeTreshold         0.15
 }
 
 MonitorParams
 {
   totalNum                  10
-  recentNum                 5
+  recentNum                 3
   warningThreshold          3.0
   errorThreshold            2.0
-  mpcFrequencyBiasPercent   30.0
+  mpcFrequencyBiasPercent   20.0
   wbcFrequencyBiasPercent   30.0
   printWarning              false
 }

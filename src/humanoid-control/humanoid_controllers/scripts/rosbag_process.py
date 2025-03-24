@@ -80,7 +80,8 @@ class BagProcessor:
                 for topic, msg, t in input_bag.read_messages():
                     if topic == '/humanoid_mpc_observation':
                         self.policy_initial_ros_time = t - rospy.Duration(msg.time)
-
+                    if self.policy_initial_ros_time is None:
+                        continue
                     if topic == '/humanoid_mpc_policy':
                         self.process_mpc_policy(msg)
                     if topic == '/humanoid_controller/feet_target_policys': # feets state

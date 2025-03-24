@@ -58,6 +58,7 @@ class HumanoidPreComputation : public PreComputation {
 
   const std::vector<EndEffectorLinearConstraint::Config>& getEeNormalVelocityConstraintConfigs() const { return eeNormalVelConConfigs_; }
   const std::vector<EndEffectorLinearConstraint::Config>& getEeXYReferenceConstraintConfigs() const { return eeXYRefConConfigs_; }
+  const std::vector<EndEffectorLinearConstraint::Config>& getEeZeroVelocityConstraintConfigs() const { return eeZeroVelConConfigs_; }
 
   PinocchioInterface& getPinocchioInterface() { return pinocchioInterface_; }
   const PinocchioInterface& getPinocchioInterface() const { return pinocchioInterface_; }
@@ -76,6 +77,7 @@ class HumanoidPreComputation : public PreComputation {
 
   std::vector<EndEffectorLinearConstraint::Config> eeNormalVelConConfigs_;
   std::vector<EndEffectorLinearConstraint::Config> armSwingPosConConfigs_;
+  std::vector<EndEffectorLinearConstraint::Config> eeZeroVelConConfigs_;
 
   std::unique_ptr<PinocchioEndEffectorKinematics> feetKinematicsPtr_;
 

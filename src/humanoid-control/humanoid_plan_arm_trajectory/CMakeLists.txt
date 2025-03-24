@@ -62,6 +62,7 @@ add_message_files(
   bezierCurveCubicPoint.msg
   jointBezierTrajectory.msg
   planArmState.msg
+  RobotActionState.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -69,6 +70,7 @@ add_service_files(
   FILES
   planArmTrajectoryBezierCurve.srv
   planArmTrajectoryCubicSpline.srv
+  ExecuteArmAction.srv
 )
 
 ## Generate actions in the 'action' folder

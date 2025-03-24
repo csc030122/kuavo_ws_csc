@@ -62,6 +62,7 @@ namespace ocs2
       virtual void updateImu(const Eigen::Quaternion<scalar_t> &quat, const vector3_t &angularVelLocal,
                              const vector3_t &linearAccelLocal, const matrix3_t &orientationCovariance,
                              const matrix3_t &angularVelCovariance, const matrix3_t &linearAccelCovariance);
+      virtual void setFixFeetHeights(bool isFix) {};
 
       virtual Eigen::Quaternion<scalar_t> getImuOrientation()
       {
@@ -70,7 +71,16 @@ namespace ocs2
       
       virtual vector_t update(const ros::Time &time, const ros::Duration &period) = 0;
 
-      size_t ContactDetection(size_t mode_des, const Eigen::VectorXd &joint_v, const Eigen::VectorXd &joint_current, double dt);
+      inline void updateFootPosDesired(const feet_array_t<vector3_t> &foot_pos_desired)
+      {
+        if(!update_foot_pos_desired_)
+          update_foot_pos_desired_ = true;
+        foot_pos_desired_ = foot_pos_desired;
+        // std::cout << "[StateEstimateBase] Foot pos desired[0]: " << foot_pos_desired_[0].transpose() << std::endl;
+      }
+
+      size_t ContactDetection(const size_t nextMode_, const bool stanceMode_, const size_t plannedMode_, double robotMass, const double fzLeft, const double fzRight, double dt);
+      void updateContactProbabilities(double l_Fz_filter, double r_Fz_filter, double robotMass, double dt);
 
       size_t getMode()
       {
@@ -103,6 +113,9 @@ namespace ocs2
         cmdTorque_ = cmd_torque;
       }
       void estContactForce(const ros::Duration &period);
+
+      vector_t getEstArmContactForce(vector_t &jointPosWBC, vector_t &jointVelWBC, vector_t &cmd_torque_wbc, const ros::Duration &period);
+
       contact_flag_t estContactState(const scalar_t &time);
       void loadSettings(const std::string &taskFile, bool verbose);
 
@@ -130,6 +143,9 @@ namespace ocs2
 
       }
 
+      void initializeEstArmContactForce(PinocchioInterface &pinocchioInterfaceWBC, CentroidalModelInfo &infoWBC);
+      Eigen::VectorXd lowPassFilter(const Eigen::VectorXd& currentFrame, Eigen::VectorXd& previousOutput, double alpha);
+
     protected:
       void earlyContactDetection(const ModeSchedule &modeSchedule, scalar_t current_time);
       void lateContactDetection(const ModeSchedule &modeSchedule, scalar_t current_time);
@@ -140,6 +156,8 @@ namespace ocs2
       PinocchioInterface pinocchioInterface_;
       CentroidalModelInfo info_;
       std::unique_ptr<PinocchioEndEffectorKinematics> eeKinematics_;
+
+
 
       vector3_t zyxOffset_ = vector3_t::Zero();
       vector_t rbdState_;
@@ -152,6 +170,7 @@ namespace ocs2
       vector3_t angularVelLocal_, linearAccelLocal_;
       vector3_t angularVelWorld_, linearAccelWorld_;
       vector_t jointPos_, jointVel_;
+      vector_t cmdTorqueLast_;
 
       matrix3_t orientationCovariance_, angularVelCovariance_, linearAccelCovariance_;
 
@@ -169,6 +188,14 @@ namespace ocs2
       vector_t estDisturbancetorque_;
       vector_t cmdTorque_;
 
+      std::unique_ptr<PinocchioInterface> pinocchioInterfaceWBC_;
+      std::unique_ptr<CentroidalModelInfo> infoWBC_;
+      vector_t rbdStateWBC_;
+      vector_t cmdTorqueWBC_;
+      vector_t pSCgZinvlastWBC_;
+      vector_t estDisturbancetorqueWBC_;
+      vector_t estArmContactforce_;
+
       scalar_t cutoffFrequency_ = 150;
       scalar_t detectCutoffFrequency_ = 150;
       scalar_t contactThreshold_ = 23;
@@ -180,17 +207,48 @@ namespace ocs2
       std::deque<std::pair<scalar_t, contact_flag_t>> estConHistory_;
 
       // contact detection
-      double prve_r_EC_filter{0};
-      double prve_l_EC_filter{0};
-      size_t contact_state_ = ModeNumber::SS;
-      size_t prev_contact_state_ = ModeNumber::SS;
+      double preFzFilterRight_{0};
+      double preFzFilterLeft_{0};
+      double preDFzFilterLeft_{0};
+      double preDFzFilterRight_{0};
+      // size_t contact_state_ = ModeNumber::SS;
+      size_t prePlannedMode_ = ModeNumber::SS;
+      size_t preContactState_ = ModeNumber::SS;
+      // double preContactProbability_ = 0;
       size_t mode_ = ModeNumber::SS;
       // bool contact_updata_check_{true};
-      double change_contact_time_sum_{0};
+      double contactHoldTime_{0};
+      double leftCountHoldTime_{0};
+      double rightCountHoldTime_{0};
+      std::chrono::steady_clock::time_point contactEstimateTime_ = std::chrono::steady_clock::now();
+      std::chrono::steady_clock::time_point contactPlannedTime_ = std::chrono::steady_clock::now();
       TopicLogger *ros_logger_{nullptr};
       double max_energy_threshold_ = 10, min_energy_threshold_ = -10;
       double max_energy_threshold2_ = 20, min_energy_threshold2_ = -20;
-      double time_treshold_ = 0.15;
+      double holdTime_ = 0.15;
+      double contactProbabilityLeft_ = 0.5;
+      double contactProbabilityRight_ = 0.5;
+      double preContactProbabilityLeft_ = 0.5;
+      double preContactProbabilityRight_ = 0.5;
+      double alpha_ = 0.1;  // 平滑因子
+      feet_array_t<vector3_t> foot_pos_desired_;
+      bool update_foot_pos_desired_{false};
+      bool usePlannedMode_{true};
+      // bool delayContact_{false};
+      bool upChangeLeftContact_{true};
+      bool upChangeRightContact_{true};
+      bool downChangeLeftContact_{true};
+      bool downChangeRightContact_{true};
+      bool unknewContact_{false};
+      int cantactLeft_ = 1;
+      int cantactRight_ = 1;
+      int plannedModeCount_ = 0;
+      int estModeCount_ = 0;
+      double totalValue = 0.0;
+      int sumCount_ = 0;
+      int leftCount_ = 0;
+      int rightCount_ = 0;
+      
     };
 
     template <typename T>

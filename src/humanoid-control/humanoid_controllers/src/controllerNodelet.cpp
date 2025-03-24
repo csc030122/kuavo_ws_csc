@@ -86,6 +86,11 @@ private:
         clock_gettime(CLOCK_MONOTONIC, &next_time);
         ros::Rate rate(controlFrequency);
         uint64_t cycle_count = 0;
+        while (ros::ok() && controller_ptr_->preUpdateComplete() != true)
+        {
+            controller_ptr_->preUpdate(ros::Time::now());
+        }
+
         while (ros::ok())
         {
             // std::cout << "\n\nControlLoop: "<<cycle_count++ << std::endl;

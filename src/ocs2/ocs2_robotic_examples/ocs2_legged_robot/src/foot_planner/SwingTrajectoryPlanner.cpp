@@ -236,6 +236,7 @@ SwingTrajectoryPlanner::Config loadSwingTrajectorySettings(const std::string& fi
   loadData::loadPtreeValue(pt, config.liftOffVelocity, prefix + "liftOffVelocity", verbose);
   loadData::loadPtreeValue(pt, config.touchDownVelocity, prefix + "touchDownVelocity", verbose);
   loadData::loadPtreeValue(pt, config.swingHeight, prefix + "swingHeight", verbose);
+  loadData::loadPtreeValue(pt, config.climbStageSwingHeight, prefix + "climbStageSwingHeight", verbose);
   loadData::loadPtreeValue(pt, config.swingTimeScale, prefix + "swingTimeScale", verbose);
 
   if (verbose) {

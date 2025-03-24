@@ -19,7 +19,8 @@
 
     "torsoP": 3.0,
     "StepH": 0.06,
-    "com_z": 0.84,
+    "com_z": 0.86,
+    "squat_z": 0.673,
     "com_z_jump": 0.62,
     "StepWith": 0.20,
     "StepDuration":0.35,
@@ -35,11 +36,12 @@
     "imu_invert":false,
     "imu_in_torso": [0, 0, 0],
     "isParallelArm":false,
+    "only_half_up_body":false,
     "MOTORS_TYPE":[
         "PA100_18", "PA100", "PA100", "PA100_18", "CK", "CK",
         "PA100_18", "PA100", "PA100", "PA100_18", "CK", "CK",
-        "PA100", "ruiwo", "ruiwo", "ruiwo", "ruiwo", "ruiwo", "ruiwo",
-        "PA100", "ruiwo", "ruiwo", "ruiwo", "ruiwo", "ruiwo", "ruiwo", "ruiwo", "ruiwo"],
+        "PA100", "ruiwoPA72", "ruiwoPA60", "ruiwoPA60", "ruiwoPA43", "ruiwoPA43", "ruiwoPA43",
+        "PA100", "ruiwoPA72", "ruiwoPA60", "ruiwoPA60", "ruiwoPA43", "ruiwoPA43", "ruiwoPA43", "ruiwo", "ruiwo"],
     "EndEffectorType": ["qiangnao", "qiangnao"],
     "min_joint_position_limits":[
         -40, -60, -140, -8, -100, -100,
@@ -89,13 +91,13 @@
     "stand_kinematics_noise": [1e-2,1e-2,5e-2,5e-2,1e-2,1e-2],
 
     "left_foot_ankle_link_joint_frames": [
-        "l_foot_roll", "l_l_tendon_y", "l_r_tendon_y", "l_l_arm_barxxx", "l_r_arm_barxxx",
+        "leg_l6_link", "l_l_tendon_y", "l_r_tendon_y", "l_l_arm_barxxx", "l_r_arm_barxxx",
         "l_foot_roll_joint", "l_foot_pitch_joint", "l_l_tendon_y", "l_r_tendon_y", "l_l_bar_y", "l_r_bar_y",
         "l_l_bar_y_motor", "l_r_bar_y_motor",
         "l_l_foot_socket", "l_r_foot_socket", "l_l_tendon_socket", "l_r_tendon_socket", "l_l_foot_bar_frame", "l_r_foot_bar_frame"
     ],
     "right_foot_ankle_link_joint_frames": [
-        "r_foot_roll", "r_l_tendon_y", "r_r_tendon_y", "r_l_arm_barxxx", "r_r_arm_barxxx",
+        "leg_r6_link", "r_l_tendon_y", "r_r_tendon_y", "r_l_arm_barxxx", "r_r_arm_barxxx",
         "r_foot_roll_joint", "r_foot_pitch_joint", "r_l_tendon_y", "r_r_tendon_y", "r_l_bar_y", "r_r_bar_y",
         "r_l_bar_y_motor", "r_r_bar_y_motor",
         "r_l_foot_socket", "r_r_foot_socket", "r_l_tendon_socket", "r_r_tendon_socket", "r_l_foot_bar_frame", "r_r_foot_bar_frame"
@@ -112,8 +114,8 @@
         "r_r_arm_bar_motor", "r_l_arm_bar_motor",
         "r_r_hand_socket", "r_l_hand_socket", "r_r_arm_tendon_socket", "r_l_arm_tendon_socket", "r_r_arm_bar_frame", "r_l_arm_bar_frame"],
       
-    "end_frames_name_ik":  ["torso", "l_hand_roll", "r_hand_roll", "l_forearm_pitch", "r_forearm_pitch"], 
-    "shoulder_frame_names" : ["l_arm_pitch", "r_arm_pitch"],
+    "end_frames_name_ik":  ["torso", "zarm_l7_link", "zarm_r7_link", "zarm_l4_link", "zarm_r4_link"], 
+    "shoulder_frame_names" : ["zarm_l1_link", "zarm_r1_link"],
     "eef_visual_stl_files" : ["l_hand_roll.STL", "r_hand_roll.STL"],
     "upper_arm_length": 22.0,
     "lower_arm_length": 19.0,

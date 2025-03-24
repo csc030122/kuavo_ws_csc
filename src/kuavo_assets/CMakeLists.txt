@@ -31,6 +31,12 @@ add_custom_target(update_mass_config ALL
     COMMENT "Updating mass configuration"
 )
 
+# Install deps
+add_custom_target(install_deps ALL
+    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/install_deps_packages.sh
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMENT "Install deps"
+)
 
 ###########
 ## Build ##

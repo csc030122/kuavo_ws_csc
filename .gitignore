@@ -13,3 +13,4 @@ ecmaster*.csv
 
 node_modules/
 .docusaurus/
+new-docs

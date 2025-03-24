@@ -119,7 +119,7 @@ struct TargetTrajectories {
     timeTrajectory.erase(timeTrajectory.begin(), index);
     stateTrajectory.erase(stateTrajectory.begin(), stateTrajectory.begin() + eraseCount);
     inputTrajectory.erase(inputTrajectory.begin(), inputTrajectory.begin() + eraseCount);
-    if (timeTrajectory.empty())
+    if (timeTrajectory.size() < 2)
     {
       timeTrajectory.insert(timeTrajectory.begin(), startTime);
       stateTrajectory.insert(stateTrajectory.begin(), initState);

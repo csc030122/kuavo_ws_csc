@@ -723,6 +723,25 @@ void extWrenchCallback(const geometry_msgs::Wrench::ConstPtr &msg)
   external_wrench_ = *msg;
   external_wrench_updated_ = true;
 }
+void apply_wrench_to_link(mjModel* m, mjData* d, const char* link_name, const mjtNum* force, const mjtNum* torque) {
+  // 获取 link 的索引
+  int link_index = mj_name2id(m, mjOBJ_BODY, link_name);
+  
+  // 检查链接索引是否有效
+  if (link_index == -1) {
+      printf("Error: Link named '%s' not found.\n", link_name);
+      return;
+  }
+
+  // 根据 link_index 设置 wrench
+  d->xfrc_applied[6 * link_index + 0] = force[0]; // 力 x
+  d->xfrc_applied[6 * link_index + 1] = force[1]; // 力 y
+  d->xfrc_applied[6 * link_index + 2] = force[2]; // 力 z
+  d->xfrc_applied[6 * link_index + 3] = torque[0]; // 劳动 x
+  d->xfrc_applied[6 * link_index + 4] = torque[1]; // 劳动 y
+  d->xfrc_applied[6 * link_index + 5] = torque[2]; // 劳动 z
+}
+
 //-----------------------m--------------- physics_thread --------------------------------------------
 
 void PhysicsThread(mj::Simulate *sim, const char *filename)
@@ -773,14 +792,14 @@ void PhysicsThread(mj::Simulate *sim, const char *filename)
   std::cout << "[mujoco_node]: waiting for init qpos" << std::endl;
   while (ros::ok())
   {
-    if (g_nh_ptr->hasParam("mujoco_init_state"))
+    if (g_nh_ptr->hasParam("robot_init_state_param"))
     {
               std::cout << "qpos_init size: " << m->nq<< std::endl;
 
       qpos_init.resize(m->nq);
       std::vector<double> qpos_init_temp;
       qpos_init_temp.resize(50);
-      if (g_nh_ptr->getParam("mujoco_init_state", qpos_init_temp))
+      if (g_nh_ptr->getParam("robot_init_state_param", qpos_init_temp))
       {
         ROS_INFO("Get init qpos ");
         
@@ -810,6 +829,18 @@ void PhysicsThread(mj::Simulate *sim, const char *filename)
   InitRobotState(d);
   sim->Load(m, d, filename);
   mj_forward(m, d);
+
+  ros::Subscriber lHandExtWrenchSub = g_nh_ptr->subscribe<geometry_msgs::Wrench>("/external_wrench/left_hand", 10, [&](const geometry_msgs::Wrench::ConstPtr &msg)
+      {
+        apply_wrench_to_link(m, d, "zarm_l7_link", &msg->force.x, &msg->torque.x);
+      }
+    );  
+  ros::Subscriber rHandExtWrenchSub = g_nh_ptr->subscribe<geometry_msgs::Wrench>("/external_wrench/right_hand", 10, [&](const geometry_msgs::Wrench::ConstPtr &msg)
+      {
+        apply_wrench_to_link(m, d, "zarm_r7_link", &msg->force.x, &msg->torque.x);
+      }
+    );
+
 
   if (is_spin_thread)
   {

@@ -45,7 +45,8 @@ class QuadraticInputCost final : public QuadraticStateInputCost {
   QuadraticInputCost* clone() const override { return new QuadraticInputCost(*this); }
 
   std::pair<vector_t, vector_t> getStateInputDeviation(scalar_t time, const vector_t& state, const vector_t& input,
-                                                       const TargetTrajectories& targetTrajectories) const override {
+                                                       const TargetTrajectories& targetTrajectories,
+                                                       const PreComputation& preComp) const override {
     const vector_t inputDeviation = input - targetTrajectories.getDesiredInput(time);
     return {vector_t::Zero(stateDim_), inputDeviation};
   }

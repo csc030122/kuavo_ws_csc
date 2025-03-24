@@ -161,6 +161,12 @@
         "before": "calibrate_callback"
       },
       {
+        "trigger": "cali_to_ready_stance",
+        "source": "calibrate",
+        "dest": "ready_stance",
+        "before": "cali_to_ready_stance_callback"
+      },
+      {
         "trigger": "ready_stance",
         "source": "ready_stance",
         "dest": "stance",
@@ -207,6 +213,54 @@
         "source": "stance",
         "dest": "stance",
         "before": "arm_pose_callback"
+      },
+      {
+        "trigger": "customize_action_RR_A",
+        "source": "stance",
+        "dest": "stance",
+        "before": "customize_action_callback"
+      },
+      {
+        "trigger": "customize_action_RR_B",
+        "source": "stance",
+        "dest": "stance",
+        "before": "customize_action_callback"
+      },
+      {
+        "trigger": "customize_action_RR_C",
+        "source": "stance",
+        "dest": "stance",
+        "before": "customize_action_callback"
+      },
+      {
+        "trigger": "customize_action_RR_D",
+        "source": "stance",
+        "dest": "stance",
+        "before": "customize_action_callback"
+      },
+      {
+        "trigger": "customize_action_LL_A",
+        "source": "stance",
+        "dest": "stance",
+        "before": "customize_action_callback"
+      },
+      {
+        "trigger": "customize_action_LL_B",
+        "source": "stance",
+        "dest": "stance",
+        "before": "customize_action_callback"
+      },
+      {
+        "trigger": "customize_action_LL_C",
+        "source": "stance",
+        "dest": "stance",
+        "before": "customize_action_callback"
+      },
+      {
+        "trigger": "customize_action_LL_D",
+        "source": "stance",
+        "dest": "stance",
+        "before": "customize_action_callback"
       },
       {
         "trigger": "stop",

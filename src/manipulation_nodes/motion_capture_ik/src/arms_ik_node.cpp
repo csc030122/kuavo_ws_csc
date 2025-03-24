@@ -130,6 +130,10 @@ class ArmsIKNode
             // q0 for ik
             ik_cmd_left_.joint_angles = Eigen::VectorXd::Zero(single_arm_num_);
             ik_cmd_right_.joint_angles = Eigen::VectorXd::Zero(single_arm_num_);
+            // ros param
+            if(nh_.hasParam("print_ik_info"))
+                nh_.getParam("print_ik_info", print_ik_info_);
+            std::cout << "print_ik_info: " << print_ik_info_ << std::endl;
         }
 
         void run()
@@ -200,6 +204,8 @@ class ArmsIKNode
                     }
                     publish_ik_result_info(q);
                 }
+                if(print_ik_info_)
+                    printIkResultInfo(ik_cmd_left_, ik_cmd_right_, q, result);
                 // else
                 //     std::cout << "IK failed" << std::endl;
                 rate.sleep();
@@ -329,6 +335,40 @@ class ArmsIKNode
             return msg;
         }
 
+        void printIkResultInfo(const IkCmd& cmd_l, const IkCmd& cmd_r, const Eigen::VectorXd& result_q, bool result)
+        {
+            if(!result)
+            {
+                std::cerr << "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++";
+                std::cerr << "\n++++++++++++++++++++ IK FAILED!!! ++++++++++++++++++++";
+                std::cerr << "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
+                return;
+            }
+            std::cerr << "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++";
+            std::cerr << "\n+++++++++++++++++++ IK RESULT INFO +++++++++++++++++++";
+            std::cerr << "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
+            auto [left_pos, left_quat] = ik_.FK(result_q, HighlyDynamic::HandSide::LEFT);
+            auto [right_pos, right_quat] = ik_.FK(result_q, HighlyDynamic::HandSide::RIGHT);
+            std::cerr << "Eef cmd: \n" << std::fixed << std::setprecision(3) << 
+                "  Left pos: " << cmd_l.pos_xyz.transpose() << std::endl << 
+                "  Left quat: " << cmd_l.quat.coeffs().transpose() << std::endl << 
+                "  Right pos: " << cmd_r.pos_xyz.transpose() << std::endl << 
+                "  Right quat: " << cmd_r.quat.coeffs().transpose() << std::endl;
+
+            std::cerr << "Result:\n" << 
+                "  q: " << std::fixed << std::setprecision(3) << result_q.transpose() << std::endl;
+            std::cerr << "  Left eef pos: "  << std::fixed << std::setprecision(3) << left_pos.transpose() 
+                << ", Left eef quat: " << std::fixed << std::setprecision(3) << left_quat.coeffs().transpose() << std::endl;
+            std::cerr << "  Left pos error: " << (left_pos - cmd_l.pos_xyz).transpose() 
+                << ", error norm: " << 1000.0*(left_pos - cmd_l.pos_xyz).norm() << " mm." << std::endl;
+
+            std::cerr << "  Right eef pos: " << std::fixed << std::setprecision(3) << right_pos.transpose() 
+                << ", Right eef quat: " << std::fixed << std::setprecision(3) << right_quat.coeffs().transpose() << std::endl;
+            std::cerr << "  Right pos error: " << (right_pos - cmd_r.pos_xyz).transpose() 
+                << ", error norm: " << 1000.0*(right_pos - cmd_r.pos_xyz).norm() << " mm." << std::endl;
+            std::cerr << "++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
+        }
+
         // 处理服务请求的回调函数
         bool handleServiceRequest(motion_capture_ik::twoArmHandPoseCmdSrv::Request &req,
                                 motion_capture_ik::twoArmHandPoseCmdSrv::Response &res) 
@@ -410,6 +450,8 @@ class ArmsIKNode
                 motion_capture_ik::twoArmHandPose msg = publish_ik_result_info(q);
                 res.hand_poses = msg;
             }
+            if(print_ik_info_)
+                printIkResultInfo(ik_cmd_left_, ik_cmd_right_, q, result);
             // 返回响应
             return true;
         }
@@ -507,6 +549,7 @@ class ArmsIKNode
         long long int ik_count_{0};
         long long int ik_success_count_{0};
         std::vector<std::string> shoulder_frame_names_;
+        bool print_ik_info_{false};
 };
 }
 

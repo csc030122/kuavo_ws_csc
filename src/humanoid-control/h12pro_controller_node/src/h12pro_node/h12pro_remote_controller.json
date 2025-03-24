@@ -118,6 +118,7 @@
       "calibrate":["E_LEFT","F_RIGHT","D_PRESS"]
     },
     "calibrate":{
+      "cali_to_ready_stance":["E_LEFT","F_RIGHT","C_PRESS"],
       "stop": ["C_LONG_PRESS", "D_LONG_PRESS"]
     },
     "ready_stance":{
@@ -132,6 +133,14 @@
       "arm_pose2":["E_RIGHT", "F_LEFT", "B_PRESS"],
       "arm_pose3":["E_RIGHT", "F_LEFT", "C_PRESS"],
       "arm_pose4":["E_RIGHT", "F_LEFT", "D_PRESS"],
+      "customize_action_RR_A":["E_RIGHT", "F_RIGHT", "A_PRESS"],
+      "customize_action_RR_B":["E_RIGHT", "F_RIGHT", "B_PRESS"],
+      "customize_action_RR_C":["E_RIGHT", "F_RIGHT", "C_PRESS"],
+      "customize_action_RR_D":["E_RIGHT", "F_RIGHT", "D_PRESS"],
+      "customize_action_LL_A":["E_LEFT", "F_LEFT", "A_PRESS"],
+      "customize_action_LL_B":["E_LEFT", "F_LEFT", "B_PRESS"],
+      "customize_action_LL_C":["E_LEFT", "F_LEFT", "C_PRESS"],
+      "customize_action_LL_D":["E_LEFT", "F_LEFT", "D_PRESS"],
       "start_vr_remote_control":["A_LONG_PRESS"],
       "stop":["C_LONG_PRESS","D_LONG_PRESS"]
     },

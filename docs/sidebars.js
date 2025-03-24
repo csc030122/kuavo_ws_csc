@@ -48,6 +48,16 @@ const sidebars = {
         'basic_usage/kuavo-ros-control/docs/4开发接口/仿真环境使用',
         'basic_usage/kuavo-ros-control/docs/4开发接口/SDK介绍',
         'basic_usage/kuavo-ros-control/docs/4开发接口/接口使用文档',
+        {
+          type: 'category',
+          label: 'KUAVO Humanoid SDK接口',
+          items: [
+            'basic_usage/kuavo-ros-control/docs/4开发接口/kuavo-humanoid-sdk接口/kuavo-humanoid-sdk介绍',
+            'basic_usage/kuavo-ros-control/docs/4开发接口/kuavo-humanoid-sdk接口/头部以及手部控制接口',
+            'basic_usage/kuavo-ros-control/docs/4开发接口/kuavo-humanoid-sdk接口/机器人信息获取接口',
+            'basic_usage/kuavo-ros-control/docs/4开发接口/kuavo-humanoid-sdk接口/机器人移动以及步态接口',
+          ],
+        },
       ],
     },
     {
@@ -67,13 +77,17 @@ const sidebars = {
             'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/数据采集案例',
             'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/yolov8目标检测案例',
             'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/手臂正逆运动学案例',
+            'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/手臂轨迹规划案例',
+            'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/键盘控制案例',
+            'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/强化学习案例',
+            'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/接入deepseek大模型语音交互案例',
           ],
         },
         {
           type: 'category',
           label: '扩展案例',
           items: [
-            'basic_usage/kuavo-ros-control/docs/5功能案例/拓展案例/大模型使用案例',
+            'basic_usage/kuavo-ros-control/docs/5功能案例/拓展案例/展厅版大模型使用案例',
             'basic_usage/kuavo-ros-control/docs/5功能案例/拓展案例/机器人导航案例',
           ],
         },
@@ -94,6 +108,7 @@ const sidebars = {
         'basic_usage/kuavo-ros-control/docs/6常用工具/日志工具',
         'basic_usage/kuavo-ros-control/docs/6常用工具/硬件测试工具',
         'basic_usage/kuavo-ros-control/docs/6常用工具/热点工具',
+        'basic_usage/kuavo-ros-control/docs/6常用工具/手臂动作编辑工具使用手册',
       ],
     },
     {
@@ -107,7 +122,7 @@ const sidebars = {
       type: 'category',
       label: 'Changelog',
       items: [
-        'basic_usage/kuavo-ros-control/docs/kuavo更新日志'
+        'basic_usage/kuavo-ros-control/docs/kuavo更新日志',
       ],
     },
   ],

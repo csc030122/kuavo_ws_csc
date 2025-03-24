@@ -16,7 +16,7 @@ from kuavo_ros_interfaces.msg import planArmState, jointBezierTrajectory, bezier
 from std_srvs.srv import Trigger
 from sensor_msgs.msg import JointState
 from trajectory_msgs.msg import JointTrajectory
-from ocs2_msgs.msg import mpc_observation
+from kuavo_msgs.msg import sensorsData
 # Replace multiprocessing values with simple variables
 plan_arm_state_progress = 0
 plan_arm_state_status = False
@@ -76,9 +76,9 @@ def call_change_arm_ctrl_mode_service(arm_ctrl_mode):
     finally:
         return result
 
-def mpc_obs_callback(msg):
+def sensors_data_callback(msg):
     global current_arm_joint_state
-    current_arm_joint_state = msg.state.value[24:]
+    current_arm_joint_state = msg.joint_data.joint_q[12:26]
     current_arm_joint_state = [round(pos, 2) for pos in current_arm_joint_state]
     current_arm_joint_state.extend([0] * 14)
 
@@ -120,7 +120,8 @@ async def init_ros_node():
     robot_plan_arm_state_topic_name = robot_settings[g_robot_type]["arm_traj_state_topic_name"]
     rospy.Subscriber(robot_plan_arm_state_topic_name, planArmState, plan_arm_state_callback)
     rospy.Subscriber('/bezier/arm_traj', JointTrajectory, traj_callback, queue_size=1, tcp_nodelay=True)
-    rospy.Subscriber('/humanoid_mpc_observation', mpc_observation, mpc_obs_callback)
+    # rospy.Subscriber('/humanoid_mpc_observation', mpc_observation, mpc_obs_callback)
+    rospy.Subscriber('/sensors_data_raw', sensorsData, sensors_data_callback, queue_size=1, tcp_nodelay=True)
     
     init_publishers()
     

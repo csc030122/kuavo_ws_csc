@@ -49,20 +49,13 @@ git checkout dev
 - docker镜像可以自行根据后续章节使用`./docker/Dockerfile`构建，或者下载已经编译好的镜像：
 
 ```bash  
-容器下载链接：https://kuavo.lejurobot.com/docker_images/kuavo_opensource_ocs2_mpc_wbc_img_0_3.tar
+wget https://kuavo.lejurobot.com/docker_images/kuavo_opensource_ocs2_mpc_wbc_img_0_3.tar
 ```
 
 - 执行以下命令导入容器镜像：
 ```bash
 docker load -i kuavo_opensource_ocs2_mpc_wbc_img_0_3.tar
 ```
-
-- 修改`docker/run.sh`文件中的容器名称和镜像版本：
-```bash
-CONTAINER_NAME="kuavo_container"   # 修改为你的容器名
-IMAGE_NAME="kuavo_opensource_mpc_wbc_img:0.3" # 修改为你的镜像版本
-```
-
 - 执行`./docker/run.sh`进入容器后，默认在仓库的映射目录`/root/kuavo_ws`，执行以下命令开始编译：
 
 ```bash
@@ -70,11 +63,6 @@ catkin config -DCMAKE_ASM_COMPILER=/usr/bin/as -DCMAKE_BUILD_TYPE=Release # Impo
 # -DCMAKE_ASM_COMPILER=/usr/bin/as 为配置了ccache必要操作，否则可能出现找不到编译器的情况
 source installed/setup.bash # 加载一些已经安装的ROS包依赖环境，包括硬件包等
 catkin build humanoid_controllers #会编译所有依赖项
-```
-
-> Note:如果没有安装pinocchio，则需要先安装：
-```bash
-sudo apt install ros-noetic-pinocchio -y
 ```
 
 ##### 实机环境
@@ -103,6 +91,12 @@ roslaunch humanoid_controllers load_kuavo_mujoco_sim.launch # 启动控制器、
 ```
 
 ##### 实物运行
+
+##### 末端执行器配置
+在运行实物之前, 您需要先修改`src/kuavo_assets/config/kuavo_v$ROBOT_VERSION/kuavo.json`中EndEffectorType为您实物机器人的执行器类型:
+- `qiangnao` : 灵巧手, 默认值
+- `lejuclaw` : 二指夹爪
+
 - 实物运行时，开机第一次需要先在cali模式下运行一次，确认机器人姿态和位置正确(机器人所有关节回到零位)
 
 ```bash
@@ -130,7 +124,7 @@ roslaunch humanoid_controllers load_kuavo_real.launch cali:=true # 以校准模�
             - 手臂校准在**root**下执行`rosrun hardware_node setZero.sh`将会以当前手臂位置作为零点并保存到配置文件中;
             - 多圈的情况下手臂后续无需校准, 没有多圈记忆功能的机器**重启之后**需要按下述手臂校准流程校准手臂零点所在圈数
    - **电机的运动方向**：
-     - 电机的旋转方向和机器人的坐标系正方向一致，符合右手定则。
+     - 电机的旋转方向和机器人的坐标系正方向一致，符合右手定则。用右手握住电机旋转轴，让拇指指向旋转轴的正方向（旋转轴正方向和机器人的坐标系正方向一致）其余四指的弯曲方向表示旋转的正方向。
      - 机器人正方向：往前->x轴正方向，往左->y轴正方向，往上->z轴正方向。
      - 比如1号髋关节roll轴心与机器人x轴平行，则该电机根据右手定则，绕着机器人x轴旋转的方向即为正方向。
      - 再如：踝关节是由并联杆控制，两个电机轴心与机器人y轴平行(4代)，则该电机根据右手定则，绕着机器人y轴旋转的方向即为正方向。
@@ -167,6 +161,64 @@ source devel/setup.bash
 roslaunch humanoid_controllers load_kuavo_real.launch 
 ```
 - 运行程序之后，机器人会进入待站立阶段，确认无误之后，准备扶住机器人，然后按`o`启动机器人，机器人回开始运动到站立状态，并开启反馈控制。
+
+##### 实物运行-只使能上半身
+> 即不控制机器人的下肢关节, 只控制机器人的上半身(手臂和头部关节), 方便在只使用手臂和头部关节的场景快速开发和调试.
+
+1. 修改配置文件
+修改`src/kuavo_assets/config/kuavo_v$ROBOT_VERSION/kuavo.json`配置文件中的`only_half_up_body`配置项, 将其设置为`true`.
+```json
+// 大约在 38 行
+"only_half_up_body":true, 
+```
+2. 确认一下胸部 NUC 的 CPU 型号, 可以执行以下命令查看:
+```bash
+lscpu |grep  Intel
+```
+如果输出如下所示, 说明 NUC 的 CPU 型号为`i9`:
+```bash
+Vendor ID:                            GenuineIntel
+Model name:                           13th Gen Intel(R) Core(TM) i9-13900H
+```
+如果输出如下所示, 说明 NUC 的 CPU 型号为`i7`:
+```bash
+厂商 ID：                             GenuineIntel
+型号名称：                            12th Gen Intel(R) Core(TM) i7-12700
+```
+3. 运行
+> 注意: 不同类型的 CPU 型号, launch 启动命令不同(性能有差异).
+
+对于`i9`型号的 CPU, 执行以下命令启动机器人:
+```bash
+source devel/setup.bash
+roslaunch humanoid_controllers load_kuavo_real.launch 
+```
+对于`i7`型号的 CPU, 执行以下命令启动机器人:
+```bash
+source devel/setup.bash
+roslaunch humanoid_controllers load_kuavo_real_half_up_body.launch
+```
+其他操作步骤和 **实物运行**章节一样, 您可阅读该章节进行操作.
+
+运行程序之后， 根据终端中的提示(会提示按`o`启动机器人)，然后按`o`启动机器人。
+
+##### 实物运行-轮臂机器人
+1. 修改配置文件
+修改`src/kuavo_assets/config/kuavo_v$ROBOT_VERSION/kuavo.json`配置文件中的`only_half_up_body`配置项, 将其设置为`true`.
+```json
+// 大约在 38 行
+"only_half_up_body":true, 
+```
+修改配置文件中的 `MOTOR_TYPE` , 为前 12 个电机追加 _none 来屏蔽下肢关节(轮臂机器人无腿部关节), 如下图.
+```json
+ "MOTORS_TYPE":[
+        "PA100_18_none", "PA100_none", "PA100_none", "PA100_18_none", "CK_none", "CK_none",
+        "PA100_18_none", "PA100_none", "PA100_none", "PA100_18_none", "CK_none", "CK_none",
+        "PA100", "ruiwo", "ruiwo", "ruiwo", "ruiwo", "ruiwo", "ruiwo",
+        "PA100", "ruiwo", "ruiwo", "ruiwo", "ruiwo", "ruiwo", "ruiwo", "ruiwo", "ruiwo"],
+```
+2. 运行
+本步骤和 **实物运行-只使能上半身**章节一样, 您可阅读该章节进行操作.
 
 
 ## 手柄控制

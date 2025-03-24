@@ -33,6 +33,9 @@ namespace HighlyDynamic
 #define PA100_18_C2T (2.0)
 #define PA100_20_C2T (2.4)
 #define CK_C2T (2.1) // 1.4
+#define PA72_C2T (2.0)
+#define PA60_C2T (2.0)
+#define PA43_C2T (1.45)
 
 #define LEG_DOF 6
 #define LEGS_TOTEL_JOINT 12
@@ -101,6 +104,7 @@ namespace HighlyDynamic
         double walk_stablizer_threshold;
         double v_takeoff;
         bool swing_arm;
+        bool only_half_up_body = false;
     };
 
     struct HardwareSettings
@@ -120,6 +124,9 @@ namespace HighlyDynamic
         std::vector<double> max_joint_position_limits;
         std::vector<double> joint_velocity_limits;
         std::vector<EndEffectorType> end_effector_type;
+
+        std::vector<bool> motors_exist;
+        std::vector<bool> motors_disable;
         void resizeMotor(uint8_t num_joints)
         {
             joint_ids.resize(num_joints);
@@ -131,6 +138,8 @@ namespace HighlyDynamic
             min_joint_position_limits.resize(num_joints);
             max_joint_position_limits.resize(num_joints);
             joint_velocity_limits.resize(num_joints);
+            motors_exist.resize(num_joints);
+            motors_disable.resize(num_joints);
         }
         std::string getEcmasterType(int robot_version_int=40);
 

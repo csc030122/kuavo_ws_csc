@@ -139,7 +139,7 @@ namespace ocs2
         return numDecisionVars_;
       }
       void preComputation();
-      Task formulateFloatingBaseEomTask();
+      Task formulateFloatingBaseEomTask(const vector_t &inputDesired);
       Task formulateTorqueLimitsTask();
       Task formulateNoContactMotionTask();
       Task formulateFrictionConeTask();
@@ -151,6 +151,7 @@ namespace ocs2
       Task formulateCenterOfMassTask(const vector_t &stateDesired,const vector_t &inputDesired,scalar_t period);
       Task formulateContactForceTask(const vector_t &inputDesired) const;
       Task formulateArmJointAccelTask(const vector_t &stateDesied, const vector_t &inputDesired, scalar_t period);
+      Task formulateStandUpJointAccelTask(const vector_t &stateDesied, const vector_t &inputDesired, scalar_t period);
 
       void compensateFriction(vector_t &x);
 
@@ -164,6 +165,7 @@ namespace ocs2
 
       vector_t qMeasured_, vMeasured_, inputLast_;
       matrix_t j_, dj_;
+      matrix_t j_hand_, dj_hand_;
       Matrix6x base_j_, base_dj_;
       contact_flag_t contactFlag_{};
       size_t numContacts_{};
@@ -174,11 +176,12 @@ namespace ocs2
       matrix_t Wbc_rdd_K_walk_;
       Wbc_weight_t wbc_weight_stance_;
       Wbc_weight_t wbc_weight_walk_;
-      scalar_t frictionCoeff_{}, swingKp_{}, swingKd_{};
+      scalar_t frictionCoeff_{}, swingKp_{}, swingKd_{}, stanceKp_{}, stanceKd_{0};
       vector3_t swingKp3d_ = vector3_t::Zero(), swingKd3d_ = vector3_t::Zero();
       scalar_t baseHeightKp_{}, baseHeightKd_{};
       scalar_t baseAngularKp_{}, baseAngularKd_{};
       vector_t armJointKp_, armJointKd_;
+      scalar_t standUp_legKp_{}, standUp_legKd_{}, standUp_armKp_{}, standUp_armKd_{};
       vector3_t baseAngular3dKp_, baseAngular3dKd_;
 
       vector_t cmd_body_pos_;

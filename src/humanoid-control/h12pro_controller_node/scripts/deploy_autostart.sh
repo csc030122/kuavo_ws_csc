@@ -42,6 +42,21 @@ fi
 
 echo "Current robot version: $ROBOT_VERSION"
 
+if [ -z "$ROS_MASTER_URI" ]; then
+    ROS_MASTER_URI="http://localhost:11311"
+    echo "ROS_MASTER_URI is empty, using default: $ROS_MASTER_URI"
+fi
+
+if [ -z "$ROS_IP" ]; then
+    ROS_IP="127.0.0.1"
+    echo "ROS_IP is empty, using default: $ROS_IP"
+fi
+
+echo "Current ROS_MASTER_URI: $ROS_MASTER_URI"
+echo "Current ROS_IP: $ROS_IP"
+
+sed -i "s|^Environment=ROS_MASTER_URI=.*|Environment=ROS_MASTER_URI=$ROS_MASTER_URI|" $OCS2_H12PRO_MONITOR_SERVICE
+sed -i "s|^Environment=ROS_IP=.*|Environment=ROS_IP=$ROS_IP|" $OCS2_H12PRO_MONITOR_SERVICE
 sed -i "s|^Environment=KUAVO_ROS_CONTROL_WS_PATH=.*|Environment=KUAVO_ROS_CONTROL_WS_PATH=$KUAVO_ROS_CONTROL_WS_PATH|" $OCS2_H12PRO_MONITOR_SERVICE
 sed -i "s|^Environment=ROBOT_VERSION=.*|Environment=ROBOT_VERSION=$ROBOT_VERSION|" $OCS2_H12PRO_MONITOR_SERVICE
 sed -i "s|^Environment=NODE_SCRIPT=.*|Environment=NODE_SCRIPT=$START_OCS2_H12PRO_NODE|" $OCS2_H12PRO_MONITOR_SERVICE
@@ -50,43 +65,19 @@ sed -i "s|^ExecStart=.*|ExecStart=$MONITOR_OCS2_H12PRO|" $OCS2_H12PRO_MONITOR_SE
 sudo cp $OCS2_H12PRO_MONITOR_SERVICE /etc/systemd/system/
 sudo systemctl daemon-reload
 
+sudo apt-get install tmux
+
+if [ ! -f ~/.tmux.conf ]; then
+    touch ~/.tmux.conf
+fi
 
 if ! grep -q "set-option -g default-shell /bin/bash" ~/.tmux.conf; then
     echo "set-option -g default-shell /bin/bash" >> ~/.tmux.conf
+    echo "set-option -g mouse on" >> ~/.tmux.conf
 fi
 
-read -p "Do you want to enable h12pro monitor service to start on boot? (y/n): " enable_response
-case $enable_response in
-    [Yy]* )
-        sudo systemctl enable ocs2_h12pro_monitor.service
-        echo "Service enabled successfully"
-        ;;
-    * )
-        echo "Skipping service enable"
-        ;;
-esac
 
-read -p "Do you want to start h12pro monitor service now? (y/n): " start_response
-case $start_response in
-    [Yy]* )
-        sudo systemctl start ocs2_h12pro_monitor.service
-        echo "Service started successfully"
-        ;;
-    * )
-        echo "Skipping service start"
-        ;;
-esac
+sudo systemctl start ocs2_h12pro_monitor.service
+sudo systemctl enable ocs2_h12pro_monitor.service
 
-echo
-echo "Note: Some changes (udev rules and service autostart) will take effect after system reboot."
-read -p "Do you want to reboot the system now? (y/n): " reboot_response
-case $reboot_response in
-    [Yy]* )
-        echo "System will reboot in 5 seconds..."
-        sleep 5
-        sudo reboot
-        ;;
-    * )
-        echo "Skipping reboot. Please remember to reboot later for the changes to take full effect."
-        ;;
-esac
+echo "h12pro monitor service deploy successfully"

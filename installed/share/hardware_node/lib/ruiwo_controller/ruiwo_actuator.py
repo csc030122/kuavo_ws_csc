@@ -17,7 +17,7 @@ from SimpleSDK import RUIWOTools
 current_path =os.path.dirname(os.path.abspath(__file__))
 sys.path.append('/usr/lib/python3/dist-packages')
 # 控制周期
-dt=0.002
+dt=0.004
 # 插值规划的速度
 max_speed = 4
 velocity_factor = 0.01
@@ -246,7 +246,8 @@ class RuiWoActuator():
         try:
             
             while self.running:
-
+                self.update_status_asynchronous()
+                self.update_status()
                 index = range(len(self.joint_address_list))
                 time.sleep(dt)
                     
@@ -257,8 +258,8 @@ class RuiWoActuator():
                     target_torque = self.target_torque
                     target_velocity = self.target_velocity
                     self.target_update = False
-                self.send_positions(index, list(target_positions), list(target_torque), list(target_velocity))
-                self.update_status()
+                self.send_positions_No_response(index, list(target_positions), list(target_torque), list(target_velocity))
+                
                 
         except Exception as e:
             print(e)
@@ -411,6 +412,35 @@ class RuiWoActuator():
                 if self.joint_address_list[i] == self.Head_joint_address[1]:
                     self.head_high_torque = self.measure_head_torque(state[1])
         # print(pos)
+
+    def send_positions_No_response(self, index, pos, torque, velocity):
+        target_torque = torque
+        for i in (index):
+            if self.joint_online_list[i] is False:
+                continue
+
+            address = self.joint_address_list[i]
+            if (address) in self.negtive_joint_address_list:
+                pos[i] = -(pos[i] + self.zero_position[i]) #减去零点偏移
+                torque[i] = max(-10.0, -torque[i])
+                velocity[i] = velocity_factor * -velocity[i]
+            else:
+                pos[i] = pos[i] + self.zero_position[i] #减去零点偏移
+                torque[i] = min(10.0, torque[i])
+                velocity[i] = velocity_factor * velocity[i]
+            if self.joint_address_list[i] == self.Head_joint_address[1]:
+                target_torque[i] = self.head_high_torque
+            if self.control_mode == "ptm":
+                self.RUIWOTools.run_ptm_mode_No_response(self.joint_address_list[i], pos[i], velocity[i], self.target_pos_kp[i], self.target_pos_kd[i], target_torque[i])
+            elif self.control_mode == "servo":
+                self.RUIWOTools.run_servo_mode(self.joint_address_list[i], pos[i], velocity[i], self.target_pos_kp[i], self.target_pos_kd[i], self.target_vel_kp[i], self.target_vel_kd[i], self.target_vel_ki[i])
+            self.update_status_asynchronous()
+            self.update_status()
+            # time.sleep(dt)
+            # if isinstance(state, list):
+            #     self.set_joint_state(i,state)
+            #     if self.joint_address_list[i] == self.Head_joint_address[1]:
+            #         self.head_high_torque = self.measure_head_torque(state[1])
         
     def update_status(self):
         current_possitions = [0]*len(self.joint_address_list)
@@ -431,6 +461,23 @@ class RuiWoActuator():
             self.current_torque = current_torque
         with self.recvvellock:
             self.current_velocity = current_velocity
+
+    def update_status_asynchronous(self):
+        try:
+            rx_msg = self.RUIWOTools.dev.recv(self.RUIWOTools.dev_info["notimeout"])
+            if rx_msg is not None:
+                    # print("rec:",rx_msg)
+                    # 如果接收的 arbitration_id 和 data[0] 都在 sender_ids 中
+                if rx_msg.arbitration_id in self.joint_address_list:
+                    if len(rx_msg.data) > 0:
+                        rx_id = rx_msg.data[0]
+                            # 双重判断: arbitration_id == rx_id
+                            # 确保是我们发送出去并返回的那个 ID
+                        if rx_id == rx_msg.arbitration_id and rx_id in self.joint_address_list:
+                            self.set_joint_state(rx_id-1,self.RUIWOTools.return_motor_state(rx_msg.data))
+
+        except Exception as e:
+            print(f"接收线程异常: {e}")
             
     def set_positions(self,index, positions, torque, velocity):
         if not self.running:
