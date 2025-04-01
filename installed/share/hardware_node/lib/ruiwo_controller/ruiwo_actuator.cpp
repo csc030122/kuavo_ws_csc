@@ -531,6 +531,7 @@ std::vector<double> RuiWoActuator::get_positions()
         }
         else
         {
+            std::cerr << "Error: RuiWoActuator get_positions result is null or PyList_Check fail!" << std::endl;
             PyErr_Print();
         }
 
@@ -569,6 +570,7 @@ std::vector<double> RuiWoActuator::get_torque()
         }
         else
         {
+            std::cerr << "Error: RuiWoActuator get_torque result is null or PyList_Check fail!" << std::endl;
             PyErr_Print();
         }
 
@@ -607,6 +609,7 @@ std::vector<double> RuiWoActuator::get_velocity()
         }
         else
         {
+            std::cerr << "Error: RuiWoActuator get_velocity result is null or PyList_Check fail!" << std::endl;
             PyErr_Print();
         }
 

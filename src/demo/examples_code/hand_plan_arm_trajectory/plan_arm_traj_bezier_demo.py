@@ -187,9 +187,9 @@ def add_init_frame(frames):
                 left_CP, right_CP = CP
                 # 添加贝塞尔曲线控制点
                 action_data[key].append([
-                    [round(keyframe/50, 1), math.radians(value)],
-                    [round((keyframe+left_CP[0])/50, 1), math.radians(value+left_CP[1])],
-                    [round((keyframe+right_CP[0])/50, 1), math.radians(value+right_CP[1])],
+                    [round(keyframe/100, 1), math.radians(value)],
+                    [round((keyframe+left_CP[0])/100, 1), math.radians(value+left_CP[1])],
+                    [round((keyframe+right_CP[0])/100, 1), math.radians(value+right_CP[1])],
                 ])
     return action_data
 
@@ -232,14 +232,14 @@ def frames_to_custom_action_data(frames):
                 left_CP, right_CP = CP
                 # 添加贝塞尔曲线控制点，包括位置点和左右控制点
                 action_data[key].append([
-                    [round(keyframe/50, 1) - x_shift, math.radians(value)],  # 位置点
-                    [round((keyframe+left_CP[0])/50, 1) - x_shift, math.radians(value+left_CP[1])],  # 左控制点
-                    [round((keyframe+right_CP[0])/50, 1) - x_shift, math.radians(value+right_CP[1])],  # 右控制点
+                    [round(keyframe/100, 1) - x_shift, math.radians(value)],  # 位置点
+                    [round((keyframe+left_CP[0])/100, 1) - x_shift, math.radians(value+left_CP[1])],  # 左控制点
+                    [round((keyframe+right_CP[0])/100, 1) - x_shift, math.radians(value+right_CP[1])],  # 右控制点
                 ])
     return action_data
 
 
-def filter_data(action_data):
++ def filter_data(action_data):
     """
     轨迹数据过滤和平滑处理
     

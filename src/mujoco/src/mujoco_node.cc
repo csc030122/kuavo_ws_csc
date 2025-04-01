@@ -705,6 +705,33 @@ bool handleSimStart(std_srvs::SetBool::Request &req,
 }
 void jointCmdCallback(const kuavo_msgs::jointCmd::ConstPtr &msg)
 {
+   auto is_match_size = [&](size_t size)
+  {
+      if (msg->joint_q.size() != size || msg->joint_v.size() != size ||
+          msg->tau.size() != size || msg->tau_ratio.size() != size ||
+          msg->control_modes.size() != size || msg->tau_max.size() != size ||
+          msg->joint_kd.size() != size || msg->joint_kp.size() != size)
+      {
+          return false;
+      }
+      return true;
+  };
+
+  if (!is_match_size(numJoints))
+  {
+      std::cerr << "jointCmdCallback Error: joint_q, joint_v, tau, tau_ratio, control_modes, joint_kp, joint_kd size not match!" << std::endl;
+      std::cerr << "desire size:" << numJoints << std::endl;
+      std::cerr << "joint_q size:" << msg->joint_q.size() << std::endl;
+      std::cerr << "joint_v size:" << msg->joint_v.size() << std::endl;
+      std::cerr << "tau size:" << msg->tau.size() << std::endl;
+      std::cerr << "tau_ratio size:" << msg->tau_ratio.size() << std::endl;
+      std::cerr << "control_modes size:" << msg->control_modes.size() << std::endl;
+      std::cerr << "tau_max size:" << msg->tau_max.size() << std::endl;
+      std::cerr << "joint_kp size:" << msg->joint_kp.size() << std::endl;
+      std::cerr << "joint_kd size:" << msg->joint_kd.size() << std::endl;
+      return;
+  }
+  
   // std::cout << "Received jointCmd: " << msg->tau[0] << std::endl;
   std::vector<double> tau(numJoints);
   for (size_t i = 0; i < numJoints; i++)

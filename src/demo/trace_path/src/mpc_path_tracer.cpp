@@ -126,7 +126,9 @@ void MpcPathTracer::Follow(const PathGeneratorUniquePtr &path_generator)
         // FIXME: 优化终点到达判断条件
         if(0.1 > utils::CalculateDistance(goal_pose, current_pose_.position) 
             && index >= point_counts - 2) {
-            break;
+                std::cout << "stop moving...\n";
+                PublishCmdVel(0, 0); // 发布零速度
+                break;
         }
 
         std::cout << "index:" << index << "\n";
@@ -225,6 +227,8 @@ void MpcPathTracer::Follow(const PathGeneratorUniquePtr &path_generator)
 
     ros::Duration(1.5).sleep();
     ROS_INFO("Path Follower Finished!");
+    PublishCmdVel(0, 0); // 再次发布零速度，确保机器人停止运动
+    std::cout << "stop moving...\n";
     std::cout << "current pose:\n" << current_pose_ << std::endl;
 }
 

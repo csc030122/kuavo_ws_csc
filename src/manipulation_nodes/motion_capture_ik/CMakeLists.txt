@@ -91,6 +91,7 @@ include_directories(
 add_subdirectory(test)
 
 add_executable(arms_ik_node src/arms_ik_node.cpp)
+add_dependencies(arms_ik_node ${PROJECT_NAME}_generate_messages_cpp)
 if(EXISTS "${PLANT_IK_FILE}")
   target_link_libraries(arms_ik_node plantIK ${catkin_LIBRARIES} drake::drake)
 else()

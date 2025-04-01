@@ -822,6 +822,8 @@ namespace humanoid_controller
       jointCmdMsg.tau_ratio.push_back(1);
       jointCmdMsg.tau_max.push_back(kuavo_settings_.hardware_settings.max_current[jointNumReal_+i2]);
       jointCmdMsg.control_modes.push_back(joint_control_modes_[jointNumReal_+i2]);
+      jointCmdMsg.joint_kp.push_back(0);
+      jointCmdMsg.joint_kd.push_back(0);
     }
     for (int i3 = 0; i3 < headNum_; ++i3)
     {
@@ -831,6 +833,8 @@ namespace humanoid_controller
       jointCmdMsg.tau_ratio.push_back(1);
       jointCmdMsg.tau_max.push_back(10);
       jointCmdMsg.control_modes.push_back(2);
+      jointCmdMsg.joint_kp.push_back(0);
+      jointCmdMsg.joint_kd.push_back(0);
     }
     jointCmdPub_.publish(jointCmdMsg);
     /*******************超过设置时间，退出******************/
@@ -1270,7 +1274,8 @@ namespace humanoid_controller
       jointCmdMsg.tau_ratio.push_back(1);
       jointCmdMsg.tau_max.push_back(kuavo_settings_.hardware_settings.max_current[jointNum_+i2]);
       jointCmdMsg.control_modes.push_back(joint_control_modes_[jointNum_+i2]);
-
+      jointCmdMsg.joint_kp.push_back(0);
+      jointCmdMsg.joint_kd.push_back(0);
       // jointCurrentWBC_(jointNum_+i2) = output_tau_(jointNum_+i2);
     }
 
@@ -1300,7 +1305,8 @@ namespace humanoid_controller
         jointCmdMsg.tau_ratio.push_back(1);
         jointCmdMsg.tau_max.push_back(10);
         jointCmdMsg.control_modes.push_back(2);
-
+        jointCmdMsg.joint_kp.push_back(0);
+        jointCmdMsg.joint_kd.push_back(0);
         // jointCurrentWBC_(jointNum_ + armNumReal_ + i3) = get_head_pos(i3);
       }
       robotVisualizer_->updateHeadJointPositions(sensor_data_head_.jointPos_);
