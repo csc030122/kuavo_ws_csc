@@ -1,5 +1,10 @@
 # beta 分支
 
+## 其他改进
+
+1. 升级了 Quest3 的 APK 程序 //kuavo.lejurobot.com/Quest_apks/leju_kuavo_hand-0.0.1-147-g85b5c38.apk ，显示出识别的骨骼效果，能方便的查看到 Quest3 识别出错的情况。以及更新 Meta SDK 到 0.74 改进识别的稳定性。
+
+# 1.1.2
 ## Breaking Changes
 - 无
 
