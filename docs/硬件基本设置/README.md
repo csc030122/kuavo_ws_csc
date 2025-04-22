@@ -62,7 +62,7 @@ pip config set install.trusted-host pypi.tuna.tsinghua.edu.cn
 新建终端
 ```bash
 cd ~
-git clone https://gitee.com/leju-robot/kuavo-ros-opensource.git --branch dev
+git clone --depth=1 https://gitee.com/leju-robot/kuavo-ros-opensource.git --branch dev
 cd kuavo-ros-opensource
 git reset --hard 5698976c89af62e884eac8ad76ad6d38473a2060 #切到指定提交 2024-11-29
 ```
@@ -70,7 +70,7 @@ git reset --hard 5698976c89af62e884eac8ad76ad6d38473a2060 #切到指定提交 20
 新建终端
 ```bash
 cd ~ 
-sudo rm -rf kuavo_opensource && git clone https://gitee.com/leju-robot/kuavo_opensource.git --branch master --depth 1
+sudo rm -rf kuavo_opensource && git clone https://gitee.com/leju-robot/kuavo_opensource.git --branch master --depth=1
 ```
 
 2. 确认机器人版本号

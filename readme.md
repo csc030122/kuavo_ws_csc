@@ -3,10 +3,10 @@
 ## 开源仓库
 ```shell
 # https
-git clone https://www.lejuhub.com/highlydynamic/craic_code_repo.git
+git clone --depth=1 https://www.lejuhub.com/highlydynamic/craic_code_repo.git
 
 # ssh
-git clone ssh://git@www.lejuhub.com:10026/highlydynamic/craic_code_repo.git
+git clone --depth=1 ssh://git@www.lejuhub.com:10026/highlydynamic/craic_code_repo.git
 ```
 
 根据需要选择某个分支(一般稳定一些为beta)
