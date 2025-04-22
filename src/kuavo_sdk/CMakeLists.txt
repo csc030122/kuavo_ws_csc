@@ -50,50 +50,10 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-add_message_files(
-  FILES
-  bezierCurveCubicPoint.msg
-  jointBezierTrajectory.msg
-  JointTrajectory.msg
-  JointTrajectoryPoint.msg
-  planArmState.msg
-  mpc_input.msg
-  mpc_state.msg
-  mpc_observation.msg
-  armTargetPoses.msg
-  robotHeadMotionData.msg
-  footPose.msg
-  footPoseTargetTrajectories.msg
-  AprilTagDetection.msg
-  AprilTagDetectionArray.msg
-  sensorsData.msg
-  jointData.msg
-  imuData.msg
-  endEffectorData.msg
-  gestureTask.msg
-  jointCmd.msg
-  armHandPose.msg
-  twoArmHandPose.msg
-  twoArmHandPoseCmd.msg
-  ikSolveParam.msg
-  lejuClawState.msg
-  robotHandPosition.msg
-)
+
 
 ## Generate services in the 'srv' folder
-add_service_files(
-  FILES 
-  planArmTrajectoryBezierCurve.srv
-  planArmTrajectoryCubicSpline.srv
-  changeArmCtrlMode.srv
-  playmusic.srv
-  recordmusic.srv
-  gestureExecute.srv
-  gestureExecuteState.srv
-  twoArmHandPoseCmdSrv.srv
-  fkSrv.srv
-  controlLejuClaw.srv
-)
+
 
 ## Generate actions in the 'action' folder
 # add_action_files(

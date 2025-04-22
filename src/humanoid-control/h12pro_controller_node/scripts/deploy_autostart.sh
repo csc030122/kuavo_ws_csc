@@ -52,11 +52,19 @@ if [ -z "$ROS_IP" ]; then
     echo "ROS_IP is empty, using default: $ROS_IP"
 fi
 
+if [ -z "$ROS_HOSTNAME" ]; then
+    if [ "$ROS_MASTER_URI" == "http://kuavo_master:11311" ]; then
+        ROS_HOSTNAME=kuavo_master  
+        echo "ROS_MASTER_URI is http://kuavo_master:11311, using ROS_HOSTNAME: $ROS_HOSTNAME"
+    fi
+fi
+
 echo "Current ROS_MASTER_URI: $ROS_MASTER_URI"
 echo "Current ROS_IP: $ROS_IP"
-
+echo "Current ROS_HOSTNAME:$ROS_HOSTNAME"
 sed -i "s|^Environment=ROS_MASTER_URI=.*|Environment=ROS_MASTER_URI=$ROS_MASTER_URI|" $OCS2_H12PRO_MONITOR_SERVICE
 sed -i "s|^Environment=ROS_IP=.*|Environment=ROS_IP=$ROS_IP|" $OCS2_H12PRO_MONITOR_SERVICE
+sed -i "s|^Environment=ROS_HOSTNAME=.*|Environment=ROS_HOSTNAME=$ROS_HOSTNAME|" $OCS2_H12PRO_MONITOR_SERVICE
 sed -i "s|^Environment=KUAVO_ROS_CONTROL_WS_PATH=.*|Environment=KUAVO_ROS_CONTROL_WS_PATH=$KUAVO_ROS_CONTROL_WS_PATH|" $OCS2_H12PRO_MONITOR_SERVICE
 sed -i "s|^Environment=ROBOT_VERSION=.*|Environment=ROBOT_VERSION=$ROBOT_VERSION|" $OCS2_H12PRO_MONITOR_SERVICE
 sed -i "s|^Environment=NODE_SCRIPT=.*|Environment=NODE_SCRIPT=$START_OCS2_H12PRO_NODE|" $OCS2_H12PRO_MONITOR_SERVICE

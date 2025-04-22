@@ -16,11 +16,11 @@
 
 3. **话题说明**：
    - **话题名称**: `/leju_claw_state`
-   - **消息类型**: `kuavo_sdk.msg/lejuClawState` 字段具体含义详见接口文档
+   - **消息类型**: `kuavo_msgs.msg/lejuClawState` 字段具体含义详见接口文档
 
 4. **服务说明**：
    - **话题名称**: `/control_robot_leju_claw`
-   - **消息类型**: `kuavo_sdk.srv/controlLejuClaw` 字段具体含义详见接口文档
+   - **消息类型**: `kuavo_msgs.srv/controlLejuClaw` 字段具体含义详见接口文档
 
 #### 逻辑
 

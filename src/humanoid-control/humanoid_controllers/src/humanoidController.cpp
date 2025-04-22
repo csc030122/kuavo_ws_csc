@@ -480,6 +480,9 @@ namespace humanoid_controller
                                            *eeKinematicsWBCPtr_);
       wbc_->setArmNums(armNumReal_);
       wbc_->loadTasksSetting(taskFile, verbose, is_real_);
+      if (only_half_up_body_) {
+        wbc_->setHalfBodyMode(true);
+      }
 
       standUpWbc_ = std::make_shared<StandUpWbc>(*pinocchioInterfaceWBCPtr_, centroidalModelInfoWBC_,
                                                  *eeKinematicsWBCPtr_);
@@ -858,6 +861,9 @@ namespace humanoid_controller
           mrtRosInterface_->setCurrentObservation(initial_observation);
           ros::Rate(HumanoidInterface_->mpcSettings().mrtDesiredFrequency_).sleep();
         }
+        mrtRosInterface_->updatePolicy();
+        vector_t optimizedState_mrt, optimizedInput_mrt;
+        mrtRosInterface_->evaluatePolicy(currentObservation_.time, currentObservation_.state, optimizedState_mrt, optimizedInput_mrt, plannedMode_);
       }
       else
       {
@@ -908,9 +914,9 @@ namespace humanoid_controller
     {
       // Only use halfup_body doesn't work well.
       if (!only_half_up_body_) {
-        // Update the current state of the system
-        mrtRosInterface_->setCurrentObservation(currentObservation_);
-      }
+      // Update the current state of the system
+      mrtRosInterface_->setCurrentObservation(currentObservation_);
+      
       // Trigger MRT callbacks
       mrtRosInterface_->spinMRT();
       // Update the policy if a new on was received
@@ -926,6 +932,7 @@ namespace humanoid_controller
       }
 
       mrtRosInterface_->evaluatePolicy(currentObservation_.time, currentObservation_.state, optimizedState_mrt, optimizedInput_mrt, plannedMode_);
+      }
     }
     else
     {
@@ -956,7 +963,7 @@ namespace humanoid_controller
     // std::cout << "optimizedState_mrt:" << optimizedState_mrt.transpose() << " \noptimizedInput_mrt:" << optimizedInput_mrt.transpose() << " plannedMode_:" << plannedMode_ << std::endl;
     ros_logger_->publishVector("/humanoid_controller/optimizedState_mrt_origin", optimizedState_mrt);
     ros_logger_->publishVector("/humanoid_controller/optimizedInput_mrt_origin", optimizedInput_mrt);
-    if (wbc_only_)
+    if (wbc_only_ || only_half_up_body_)
     {
       optimizedState_mrt = initial_status_;
       optimizedInput_mrt = intail_input_;

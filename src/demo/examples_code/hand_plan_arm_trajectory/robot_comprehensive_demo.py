@@ -4,13 +4,13 @@ import rospy
 import json
 import math
 import numpy as np
-from kuavo_sdk.srv import planArmTrajectoryBezierCurve, planArmTrajectoryBezierCurveRequest
-from kuavo_sdk.msg import bezierCurveCubicPoint, jointBezierTrajectory
+from kuavo_msgs.srv import planArmTrajectoryBezierCurve, planArmTrajectoryBezierCurveRequest
+from kuavo_msgs.msg import bezierCurveCubicPoint, jointBezierTrajectory
 from sensor_msgs.msg import JointState
-from kuavo_sdk.msg import JointTrajectory
-from kuavo_sdk.srv import changeArmCtrlMode, changeArmCtrlModeRequest
-from kuavo_sdk.msg import sensorsData
-from kuavo_sdk.msg import robotHandPosition, robotHeadMotionData
+from kuavo_msgs.msg import JointTrajectory
+from kuavo_msgs.srv import changeArmCtrlMode, changeArmCtrlModeRequest
+from kuavo_msgs.msg import sensorsData
+from kuavo_msgs.msg import robotHandPosition, robotHeadMotionData
 
 class ComprehensiveRobotControl:
     def __init__(self):

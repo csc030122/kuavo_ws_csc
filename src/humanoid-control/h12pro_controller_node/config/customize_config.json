@@ -1,17 +1,17 @@
 {
   "customize_action_RR_A": {
-    "arm_pose_name": ["打招呼"],
-    "music_name": ["welcome.wav"]
+    "arm_pose_name": ["抱拳_45"],
+    "music_name": ["2_抱拳.mp3"]
   },
   
   "customize_action_RR_B": {
-    "arm_pose_name": ["飞起来了"],
-    "music_name": ["Goodbye.wav"]
+    "arm_pose_name": ["打招呼_45"],
+    "music_name": ["1_挥手.mp3"]
   },
 
   "customize_action_RR_C": {
-    "arm_pose_name": ["双手摊开斜45度"],
-    "music_name": ["Sorry.wav"]
+    "arm_pose_name": ["点赞_45"],
+    "music_name": ["3_点赞.mp3"]
   },
 
   "customize_action_RR_D": {

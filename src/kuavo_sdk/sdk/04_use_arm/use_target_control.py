@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import rospy
-from kuavo_sdk.msg import armTargetPoses
+from kuavo_msgs.msg import armTargetPoses
 
 
 def publish_arm_target_poses(times, values):

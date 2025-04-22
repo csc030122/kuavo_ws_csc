@@ -4,11 +4,11 @@ import rospy
 import json
 import math
 import numpy as np
-from kuavo_sdk.srv import planArmTrajectoryCubicSpline, planArmTrajectoryCubicSplineRequest
+from kuavo_msgs.srv import planArmTrajectoryCubicSpline, planArmTrajectoryCubicSplineRequest
 from sensor_msgs.msg import JointState
-from kuavo_sdk.msg import JointTrajectory, JointTrajectoryPoint
-from kuavo_sdk.srv import changeArmCtrlMode, changeArmCtrlModeRequest
-from kuavo_sdk.msg import sensorsData
+from kuavo_msgs.msg import JointTrajectory, JointTrajectoryPoint
+from kuavo_msgs.srv import changeArmCtrlMode, changeArmCtrlModeRequest
+from kuavo_msgs.msg import sensorsData
 # from ocs2_msgs.msg import mpc_observation
 
 # 存储当前机器人手臂关节状态

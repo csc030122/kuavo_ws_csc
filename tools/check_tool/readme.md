@@ -175,14 +175,18 @@ $ sudo python3 tools/check_tool/Hardware_tool.py o
 
   更新当前目录中的程序。建议在继续之前备份文件。
 
-
-
 - l.license导入
 
   导入EtherCAT许可证并运行相关命令。联系技术员进行操作。
 
   导入许可证后需要重新进行 robot上线提醒配置才会在提示中显示 license 导入状态为 True。
 
+- m.执行手臂磨线脚本
+
+  执行手臂测试脚本，在执行前请确保手臂在零点位置，执行时将进行手臂电机零点设置，避免跳圈现象。
+
+  执行后会检查 Canbus 连接，成功后，输入想要运行的时间（秒），运行结束后自动关闭 Canbus 连接。
+  
 - u.配置robot上线提醒
 
   配置机器人上线提醒。请联系技术员进行操作。 MAC地址获取方法：在运行机器人程序后会有打印输出 0000002154: EtherCAT network adapter MAC: 48-21-0B-59-A8-AF 即为 MAC 地址。

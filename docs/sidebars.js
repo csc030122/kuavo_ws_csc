@@ -69,6 +69,7 @@ const sidebars = {
           label: '通用案例',
           items: [
             'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/H12遥控器使用开发案例',
+            'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/动作语音快速上手案例',
             'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/VR使用开发案例',
             'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/落足点规划案例',
             'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/二维码检测使用案例',
@@ -124,6 +125,7 @@ const sidebars = {
       label: 'Changelog',
       items: [
         'basic_usage/kuavo-ros-control/docs/kuavo更新日志',
+        'basic_usage/kuavo-ros-control/docs/更新说明',
       ],
     },
   ],

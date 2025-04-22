@@ -118,6 +118,10 @@ namespace ocs2
         std::cout << "vd_mes.size: " << vd_measured_.size() << std::endl;
         std::cout << "over: " << std::endl;
       }
+      inline void setHalfBodyMode(bool half_body_mode)
+      {
+        half_body_mode_ = half_body_mode;
+      }
     protected:
       TopicLogger* topic_logger_;
       scalar_t period_;
@@ -209,6 +213,7 @@ namespace ocs2
 
       size_t arm_nums_{};
       matrix3_t rotationYawBaseMeasuredToWorld_;
+      bool half_body_mode_ = false;
     };
 
   } // namespace humanoid

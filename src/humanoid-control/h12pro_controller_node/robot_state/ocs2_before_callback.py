@@ -38,6 +38,7 @@ LAUNCH_HUMANOID_ROBOT_REAL_CMD = "roslaunch humanoid_controllers load_kuavo_real
 LAUNCH_VR_REMOTE_CONTROL_CMD = "roslaunch noitom_hi5_hand_udp_python launch_quest3_ik.launch"
 ROS_MASTER_URI = os.getenv("ROS_MASTER_URI")
 ROS_IP = os.getenv("ROS_IP")
+ROS_HOSTNAME = os.getenv("ROS_HOSTNAME")
 kuavo_ros_control_ws_path = os.getenv("KUAVO_ROS_CONTROL_WS_PATH")
 # 录制话题的格式
 record_topics_path = os.path.join(config_dir, "record_topics.json")
@@ -308,6 +309,7 @@ def launch_humanoid_robot(real_robot=True,calibrate=False):
             source {kuavo_ros_control_ws_path}/devel/setup.bash && \
             export ROS_MASTER_URI={ROS_MASTER_URI} && \
             export ROS_IP={ROS_IP} && \
+            export ROS_HOSTNAME={ROS_HOSTNAME} &&\
             export ROBOT_VERSION={robot_version} && \
             {launch_cmd}; exec bash"
     ]
@@ -342,6 +344,7 @@ def start_vr_remote_control_callback(event):
           source {kuavo_ros_control_ws_path}/devel/setup.bash && \
           export ROS_MASTER_URI={ROS_MASTER_URI} && \
           export ROS_IP={ROS_IP} && \
+          export ROS_HOSTNAME={ROS_HOSTNAME} &&\
           {LAUNCH_VR_REMOTE_CONTROL_CMD}; exec bash'"
     ]
     subprocess.run(["tmux", "kill-session", "-t", VR_REMOTE_CONTROL_SESSION_NAME], 

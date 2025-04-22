@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # coding=utf-8
 '''
 Author: dongdongmingming
@@ -433,8 +433,39 @@ def update_kuavo():
     # 使用 subprocess.run() 运行命令
     subprocess.run(command, shell=True)
 
-def license_sign():
+def arm_setzero():
 
+    kuavo_ros_file_path = folder_path +"/arm_setzero.sh" 
+    kuavo_open_file_path = folder_path +"../../installed/share/hardware_node/lib/ruiwo_controller/arm_setzero.sh" 
+    
+    if os.path.exists(kuavo_ros_file_path):
+        command = "bash "+ kuavo_ros_file_path
+    elif os.path.exists(kuavo_open_file_path):
+        command = "bash "+ kuavo_open_file_path
+    else:
+        print(f"The file {file_path} does not exist.")
+        return
+        
+    # 使用 subprocess.run() 运行命令
+    subprocess.run(command, shell=True)
+
+def arm_breakin():
+
+    kuavo_ros_file_path = folder_path + "/arm_breakin.sh" 
+    kuavo_open_file_path = folder_path + "../../installed/share/hardware_node/lib/ruiwo_controller/arm_breakin.sh" 
+    
+    if os.path.exists(kuavo_ros_file_path):
+        command = "bash "+ kuavo_ros_file_path
+    elif os.path.exists(kuavo_open_file_path):
+        command = "bash "+ kuavo_open_file_path
+    else:
+        print(f"The file {file_path} does not exist.")
+        return
+        
+    # 使用 subprocess.run() 运行命令
+    subprocess.run(command, shell=True)
+    
+def license_sign():
     FILE = "/home/lab/.config/lejuconfig/ec_master.key"
     # 检查文件是否存在
     if os.path.exists(FILE):
@@ -506,6 +537,7 @@ def reset_folder():
         "wifi",
         "rosbag",
         "craic_code_repo",
+        "kuavo-ros-opensource",
         "Documents",
         "Downloads",
         "xfolder"
@@ -625,28 +657,34 @@ def robot_login():
     
     # sudo systemctl start report_robot_network_info.service
 
-def get_git_info():
+def get_git_info():# 获取最新 commit 的 hash、日期和提交信息（title）
     try:
-        # 获取当前的 commit hash
-        commit_hash = subprocess.run(['git', 'rev-parse', 'HEAD'], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        commit_hash = commit_hash.stdout.decode('utf-8').strip()
+        result = subprocess.run(
+            ['git', 'log', '-1', '--format=%H%n%ci%n%s'],
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=5
+        )
+        output = result.stdout.decode('utf-8').strip().split('\n')
 
-        # 获取当前 commit 的提交日期
-        commit_date = subprocess.run(['git', 'show', '-s', '--format=%ci', commit_hash], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        commit_date = commit_date.stdout.decode('utf-8').strip()
-
-        # 获取当前 commit 的提交信息
-        commit_message = subprocess.run(['git', 'show', '-s', '--format=%s', commit_hash], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        commit_message = commit_message.stdout.decode('utf-8').strip()
+        if len(output) < 3:
+            raise ValueError("Unexpected git output: " + repr(output))
 
         return {
-            'commit_hash': commit_hash,
-            'commit_date': commit_date,
-            'commit_message': commit_message
+            'commit_hash': output[0],
+            'commit_date': output[1],
+            'commit_message': output[2]
         }
+
+    except subprocess.TimeoutExpired:
+        print("⚠️ Git command timed out.")
     except subprocess.CalledProcessError as e:
-        print(f"Error getting Git information: {e.stderr.decode('utf-8')}")
-        return None
+        print("❌ Git command failed:", e.stderr.decode('utf-8').strip())
+    except FileNotFoundError:
+        print("❌ Git is not installed or not in PATH.")
+    except Exception as e:
+        print("❌ Unexpected error:", str(e))
 
 def secondary_menu():
     while True:
@@ -668,6 +706,7 @@ def secondary_menu():
         print("k. 更新当前目录程序(注意：会重置文件内容，建议备份文件)")
         # print("m. MAC 地址")
         print("l. license导入")
+        print("m. 执行手臂磨线")
         print("u. 配置robot上线提醒")
         print("t. 恢复出厂文件夹")
 
@@ -756,6 +795,27 @@ def secondary_menu():
             license_sign()
             print(bcolors.HEADER + "###结束，license已导入，请确认验证###" + bcolors.ENDC)   
             break  
+        elif option == "m":
+            print(bcolors.HEADER + "###在执行手臂磨线之前，请先确保完成手臂电机零点设置###" + bcolors.ENDC)
+            print("请摆正手臂，按 d 执行电机零点校准，并执行手臂磨线。")
+            print("按 q 退出程序")
+            while True:
+                option = input("请输入你的选择：")
+                if option == 'q':
+                    print("\n*-------------退出程序-------------*")
+                    exit()
+                elif option == 'd':
+                    print(bcolors.HEADER + "###开始，执行手臂零点校准###" + bcolors.ENDC)
+                    arm_setzero()
+                    ruiwo_zero()
+                    print(bcolors.HEADER + "###结束，执行手臂零点校准###" + bcolors.ENDC)
+                    print(bcolors.HEADER + "###开始，执行手臂磨线###" + bcolors.ENDC)
+                    arm_breakin()
+                    print(bcolors.HEADER + "###结束，执行手臂磨线###" + bcolors.ENDC)
+                    break
+                else:
+                    print(bcolors.FAIL + "无效的选项编号，请重新输入！\n" + bcolors.ENDC)
+            break
         elif option == "u":
             print(bcolors.HEADER + "###开始，robot上线提醒配置###" + bcolors.ENDC)
             robot_login()

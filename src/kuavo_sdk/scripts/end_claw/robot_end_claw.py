@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 import time
 import rospy
-from kuavo_sdk.srv import controlLejuClaw, controlLejuClawRequest, controlLejuClawResponse
-from kuavo_sdk.msg import lejuClawState
+from kuavo_msgs.srv import controlLejuClaw, controlLejuClawRequest, controlLejuClawResponse
+from kuavo_msgs.msg import lejuClawState
 
 claw_state = [lejuClawState.kUnknown, lejuClawState.kUnknown]
 

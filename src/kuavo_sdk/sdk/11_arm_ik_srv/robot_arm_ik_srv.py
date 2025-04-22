@@ -4,8 +4,8 @@
 import rospy
 import numpy as np
 import time
-from kuavo_sdk.srv import twoArmHandPoseCmdSrv
-from kuavo_sdk.msg import twoArmHandPoseCmd, ikSolveParam
+from motion_capture_ik.srv import twoArmHandPoseCmdSrv
+from motion_capture_ik.msg import twoArmHandPoseCmd, ikSolveParam
 
 
 # 自定义ik参数

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
-from kuavo_sdk.srv import changeArmCtrlMode, changeArmCtrlModeRequest, changeArmCtrlModeResponse
+from kuavo_msgs.srv import changeArmCtrlMode, changeArmCtrlModeRequest, changeArmCtrlModeResponse
 
 
 def set_arm_control_mode(mode):

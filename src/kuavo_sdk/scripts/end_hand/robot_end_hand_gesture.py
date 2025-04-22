@@ -4,8 +4,8 @@
 import rospy
 import time
 import argparse
-from kuavo_sdk.msg import gestureTask
-from kuavo_sdk.srv import gestureExecute, gestureExecuteRequest, gestureExecuteState, gestureExecuteStateRequest
+from kuavo_msgs.msg import gestureTask
+from kuavo_msgs.srv import gestureExecute, gestureExecuteRequest, gestureExecuteState, gestureExecuteStateRequest
 
 def gesture_client(gesture_name, hand_side):
     """请求执行特定手势的服务"""

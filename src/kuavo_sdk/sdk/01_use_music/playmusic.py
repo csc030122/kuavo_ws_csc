@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
-from kuavo_sdk.srv import playmusic, playmusicRequest, playmusicResponse
+from kuavo_msgs.srv import playmusic, playmusicRequest, playmusicResponse
 
 
 def srv_playmusic_call(music_file: str, music_volume: int) -> bool:

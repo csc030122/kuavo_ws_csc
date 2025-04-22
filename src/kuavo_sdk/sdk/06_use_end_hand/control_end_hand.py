@@ -1,5 +1,5 @@
 import rospy
-from kuavo_sdk.msg import robotHandPosition
+from kuavo_msgs.msg import robotHandPosition
 
 
 def publish_controlEndHand(hand_traj):

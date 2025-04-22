@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
-from kuavo_sdk.msg import robotHeadMotionData
+from kuavo_msgs.msg import robotHeadMotionData
 
 
 def set_head_target(yaw, pitch):

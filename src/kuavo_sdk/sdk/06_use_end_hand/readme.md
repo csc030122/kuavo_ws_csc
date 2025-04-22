@@ -6,11 +6,11 @@
 
 #### 代码参数
 
-- `hand_traj (list)`:  包含左手和右手位置的列表。列表长度为 12，前 6 个元素表示左手位置，后 6 个元素表示右手位置。每个位置参数的具体含义由 `kuavo_sdk.msg` 中的 `robotHandPosition` 消息类型定义。
+- `hand_traj (list)`:  包含左手和右手位置的列表。列表长度为 12，前 6 个元素表示左手位置，后 6 个元素表示右手位置。每个位置参数的具体含义由 `kuavo_msgs.msg` 中的 `robotHandPosition` 消息类型定义。
 
 #### 逻辑
 
-1. **导入库**: 导入 `rospy` 用于 ROS 功能，以及 `kuavo_sdk.msg` 中的 `robotHandPosition` 消息类型。
+1. **导入库**: 导入 `rospy` 用于 ROS 功能，以及 `kuavo_msgs.msg` 中的 `robotHandPosition` 消息类型。
 
 2. **`publish_controlEndHand` 函数**:
     - 创建一个 ROS 发布器 `pub`，用于发布消息到 `control_robot_hand_position` 话题。消息类型为 `robotHandPosition`，队列大小为 10。

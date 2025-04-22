@@ -1,5 +1,5 @@
 import rospy
-from kuavo_sdk.srv import recordmusic, recordmusicRequest, recordmusicResponse
+from kuavo_msgs.srv import recordmusic, recordmusicRequest, recordmusicResponse
 
 
 def srv_recordmusic_call(music_file: str, time_out: int) -> bool:

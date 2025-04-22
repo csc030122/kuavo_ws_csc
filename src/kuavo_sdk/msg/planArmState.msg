@@ -1,2 +1,0 @@
-int32 progress
-bool is_finished

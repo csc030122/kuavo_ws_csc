@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
-from kuavo_sdk.msg import AprilTagDetectionArray
+from kuavo_msgs.msg import AprilTagDetectionArray
 import math
 import numpy as np  # 引入numpy库用于数值计算
 
