@@ -62,3 +62,8 @@ APK 下载地址 [Quest3 APK 地址](/basic_usage/kuavo_ros1_workspace/#11-在-m
 示例视频
 
 <iframe src="//player.bilibili.com/player.html?isOutside=true&aid=113683724243013&bvid=BV1kAk2Y1Edm&cid=27433897643&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+
+# 如何查看 Quest3 和 Kuavo 的网络延迟
+
+<iframe src="//player.bilibili.com/player.html?isOutside=true&aid=114380415047614&bvid=BV1wz5XzBEKf&cid=29549135877&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+
