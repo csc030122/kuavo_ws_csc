@@ -44,30 +44,31 @@ motor_addresses = read_motor_address_config()
 
 # 遍历每个电机地址
 for joint_name, dev_id in motor_addresses.items():
-    print(f"正在处理关节: {joint_name}, 电机ID: {hex(dev_id)}")
+    if 'arm' in joint_name.lower():
+        print(f"正在处理关节: {joint_name}, 电机ID: {hex(dev_id)}")
 
-    # 设置电机零点
-    state = ruiwo.set_zero_positon(dev_id)
-    if isinstance(state, list):
-        print(f"[RUIWO motor]:ID: {dev_id} Set zero position:  [Succeed], Motor info: {state}")
-        zero_position = state[1]
-        print("已设置好当前位置为零点：", zero_position)
-    else:
-        print(f"[RUIWO motor]:ID: {dev_id} Set zero position:  [{state}]")
+        # 设置电机零点
+        state = ruiwo.set_zero_positon(dev_id)
+        if isinstance(state, list):
+            print(f"[RUIWO motor]:ID: {dev_id} Set zero position:  [Succeed], Motor info: {state}")
+            zero_position = state[1]
+            print("已设置好当前位置为零点：", zero_position)
+        else:
+            print(f"[RUIWO motor]:ID: {dev_id} Set zero position:  [{state}]")
 
-    # 使能电机
-    state = ruiwo.enter_motor_state(dev_id)
-    if isinstance(state, list):
-        print(f"[RUIWO motor]:ID: {dev_id} Enable:  [Succeed]")
-    else:
-        print(f"[RUIWO motor]:ID: {dev_id} Enable:  [{state}]")
+        # 使能电机
+        state = ruiwo.enter_motor_state(dev_id)
+        if isinstance(state, list):
+            print(f"[RUIWO motor]:ID: {dev_id} Enable:  [Succeed]")
+        else:
+            print(f"[RUIWO motor]:ID: {dev_id} Enable:  [{state}]")
 
-    # 失能电机
-    state = ruiwo.enter_reset_state(dev_id)
-    if isinstance(state, list):
-        print(f"[RUIWO motor]:ID: {dev_id} Disable:  [Succeed]")
-    else:
-        print(f"[RUIWO motor]:ID: {dev_id} Disable:  [{state}]")
+        # 失能电机
+        state = ruiwo.enter_reset_state(dev_id)
+        if isinstance(state, list):
+            print(f"[RUIWO motor]:ID: {dev_id} Disable:  [Succeed]")
+        else:
+            print(f"[RUIWO motor]:ID: {dev_id} Disable:  [{state}]")
 
 # 关闭CAN总线
 close_canbus = ruiwo.close_canbus()

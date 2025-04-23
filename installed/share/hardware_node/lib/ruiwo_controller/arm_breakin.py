@@ -4,7 +4,7 @@ import time
 from SimpleSDK import RUIWOTools
 
 # 速度相关参数，方便调整
-MOTION_DURATION = 1 # 每个动作的执行时间（秒）
+MOTION_DURATION = 2 # 每个动作的执行时间（秒）
 POS_KP = 30
 POS_KD = 5
 
@@ -34,11 +34,11 @@ def get_test_duration():
     cycle_time = len(base_actions) * MOTION_DURATION
     while True:
         try:
-            duration = int(input(f"\n请输入测试时长（大于 {cycle_time} 秒）："))
+            duration = int(input(f"\n请输入测试时长（大于 {cycle_time:.1f} 秒）："))
             if duration >= cycle_time:
                 return duration
             else:
-                print(f"输入的时长小于一个完整动作周期的时间（大于 {cycle_time} 秒），请重新输入。")
+                print(f"输入的时长小于一个完整动作周期的时间（大于 {cycle_time:.1f} 秒），请重新输入。")
         except ValueError:
             print("输入无效，请输入一个整数。")
 
@@ -96,14 +96,31 @@ def get_robot_version():
             print("输入的版本号无效，请输入 41 42 或 45。")
     return version  # 这行永远不会执行，但因完整性保留
 
+def check_motor_status(joint_ids):
+    disabled_motors = []  # 用于记录失能的电机ID
+    for dev_id in joint_ids:
+        state = ruiwo.enter_motor_state(dev_id)
+        if isinstance(state, list):
+            # 检查故障码是否为15
+            if state[-2] == 15:  # 倒数第二个元素是故障码
+                disabled_motors.append(dev_id)  # 记录失能的电机ID
+        else:
+            print(f"\033[91m电机 {dev_id} 状态获取失败！\033[0m")
+            return False  # 状态获取失败，直接返回False
+    # 如果有失能的电机，输出失能的电机列表
+    if disabled_motors:
+        print(f"\033[91m以下电机失能：{disabled_motors}\033[0m")
+        return False  # 返回False表示有电机失能
+    return True  # 所有电机状态正常
+
 # 定义长手和短手的动作
 long_arm_actions = [
     [0.23, 0.00, 0.00, 0.00, 0.00, -0.24],
-    [1.30, 1.00, -1.40, -1.33, 0.40, -0.77],
-    [1.94, -0.50, -0.37, 1.51, 0.80, 0.76],
-    [1.09, -2.00, -0.93, -1.51, 0.00, -0.24],
-    [0.23, -0.40, -2.30, 1.07, -0.80, 0.73],
-    [2.20, 0.00, -1.75, 0.71, 0.00, -0.52],
+    [1.30, 1.00, -1.40, 1.30, 0.40, -0.60],
+    [2.00, -0.50, -0.30, 1.50, 0.80, 0.70],
+    [1.10, -2.00, -2.30, -1.50, 0.00, -0.24],
+    [0.23, -0.40, -1.30, 1.00, -0.80, 0.70],
+    [1.25, 0.00, -1.90, 0.70, 0.00, -0.60],
     [0.23, 0.00, 0.00, 0.00, 0.00, -0.24]
 ]
 
@@ -210,6 +227,23 @@ while True:
         if remaining_time < cycle_time:
             print(f"{get_timestamp()} 剩余时间不足完成一个动作周期，提前结束。")
             break
+
+        # 检查所有电机状态，是否出现失能情况
+        if not check_motor_status(joint_ids):
+            print(f"\033[91m检测到电机失能，程序停止！\033[0m")
+            # 失能所有关节电机
+            for dev_id in joint_ids:
+                state = ruiwo.enter_reset_state(dev_id)
+                if isinstance(state, list):
+                    print(f"{get_timestamp()} [RUIWO motor]:ID: {dev_id} Disable:  [Succeed]")
+                else:
+                    print(f"{get_timestamp()} [RUIWO motor]:ID: {dev_id} Disable:  [{state}]")
+            # 关闭CAN总线
+            close_canbus = ruiwo.close_canbus()
+            if close_canbus:
+                print(f"{get_timestamp()} [RUIWO motor]:Canbus status: [Close]")
+            exit(1)  # 退出程序
+        print(f"{get_timestamp()} 开始下一轮动作...")
 
     if elapsed_time >= test_duration:
         break
