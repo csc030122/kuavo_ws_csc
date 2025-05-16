@@ -80,13 +80,14 @@ class ButtonState(enum.Enum):
     LONG_PRESS = "LONG_PRESS"
 
 class ChannelMapping:
-    def __init__(self, channel, axis_index=None, button_index=None, is_button=False, reverse=False, trigger_value=None):
+    def __init__(self, channel, axis_index=None, button_index=None, is_button=False, reverse=False, trigger_value=None, scale=1.0):
         self.channel = channel
         self.axis_index = axis_index
         self.button_index = button_index
         self.is_button = is_button
         self.reverse = reverse
         self.trigger_value = trigger_value
+        self.scale = scale
         self.previous_value = None
 
     def update(self, channel_value):
@@ -113,6 +114,7 @@ class ChannelMapping:
         value = (channel_value - Config.H12_AXIS_MID_VALUE) / (Config.H12_AXIS_RANGE//2)
         if self.reverse:
             value = -value
+        value *= self.scale
         return value
 
     def get_current_state(self, channel_value):
@@ -134,9 +136,9 @@ class H12ToJoyControllerNode:
         """Create channel mapping configuration."""
         return {
             1: ChannelMapping(1, axis_index=Config.AXIS_MAPPING['RIGHT_STICK_YAW'], reverse=True),
-            2: ChannelMapping(2, axis_index=Config.AXIS_MAPPING['RIGHT_STICK_Z'], reverse=True),
+            2: ChannelMapping(2, axis_index=Config.AXIS_MAPPING['RIGHT_STICK_Z'], reverse=True, scale=0.2),  # 右摇杆上下（上站下蹲）限制，限制为满值运动时的0.2倍
             3: ChannelMapping(3, axis_index=Config.AXIS_MAPPING['LEFT_STICK_X']),
-            4: ChannelMapping(4, axis_index=Config.AXIS_MAPPING['LEFT_STICK_Y'], reverse=True),
+            4: ChannelMapping(4, axis_index=Config.AXIS_MAPPING['LEFT_STICK_Y'], reverse=True, scale=0.25),  # 左摇杆左右（左右平移）限制，限制为满值运动时的0.25倍
             6: ChannelMapping(6, button_index=Config.BUTTON_MAPPING['START'], 
                             is_button=True, trigger_value=Config.H12_AXIS_RANGE_MAX),
             7: ChannelMapping(7, button_index=Config.BUTTON_MAPPING['Y'], 
