@@ -264,3 +264,5 @@ KUAVO机器人4.1包含头、躯干、手臂、腿部，全身总共28个自由�
 ![灵巧手参数说明](images/灵巧手参数说明.png)
 
 灵巧手产品说明手册：[app.brainco.cn/universal/stark-serialport-prebuild/docs/BC4-0100114095_20240521.pdf](https://app.brainco.cn/universal/stark-serialport-prebuild/docs/BC4-0100114095_20240521.pdf)
+
+灵巧手官方文档网站：[灵巧手官方文档网站](https://www.brainco-hz.com/docs/revolimb-hand/guide/quick_start.html)

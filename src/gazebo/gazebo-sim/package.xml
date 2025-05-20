@@ -22,6 +22,9 @@
   <depend>gazebo_ros_control</depend>
   <depend>gazebo_ros</depend>
   <depend>controller_manager</depend>
+  <depend>realsense_ros_gazebo</depend>
+  <depend>humanoid_controllers</depend>
+  
 
   <export>
     <!-- Other tools can request additional information be placed here -->

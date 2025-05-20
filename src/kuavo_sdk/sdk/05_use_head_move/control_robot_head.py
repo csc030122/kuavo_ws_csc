@@ -22,6 +22,12 @@ def set_head_target(yaw, pitch):
     # 确保yaw在[-30, 30]范围内，pitch在[-25, 25]范围内
     head_target_msg.joint_data = [yaw, pitch]
     
+    # 等待订阅者连接
+    rate = rospy.Rate(10)  # 10Hz
+    while pub_head_pose.get_num_connections() == 0 and not rospy.is_shutdown():
+        rospy.loginfo("等待订阅者连接...")
+        rate.sleep()
+
     # 发布消息到指定话题
     pub_head_pose.publish(head_target_msg)
     

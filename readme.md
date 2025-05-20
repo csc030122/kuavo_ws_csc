@@ -84,10 +84,22 @@ catkin build  humanoid_controllers
 ## 运行
 
 ##### 仿真运行
-
+* 使用mujoco仿真器
 ```bash
 source devel/setup.bash # 如果使用zsh，则使用source devel/setup.zsh
 roslaunch humanoid_controllers load_kuavo_mujoco_sim.launch # 启动控制器、mpc、wbc、mujoco仿真器
+```
+* 使用gazebo仿真器
+```bash
+catkin build humanoid_controllers gazebo_sim # 需要编译gazebo_sim包
+source devel/setup.bash # 如果使用zsh，则使用source devel/setup.zsh
+roslaunch humanoid_controllers load_kuavo_gazebo_sim.launch # 启动控制器、mpc、wbc、gazebo仿真器
+```
+* 使用isaac-sim仿真器
+```bash
+catkin build humanoid_controllers isaac_sim # 需要编译isaac_sim包
+source devel/setup.bash # 如果使用zsh，则使用source devel/setup.zsh
+roslaunch humanoid_controllers load_kuavo_isaac_sim.launch  # 启动控制器、mpc、wbc、isaac_sim仿真器
 ```
 
 ##### 实物运行
@@ -96,6 +108,7 @@ roslaunch humanoid_controllers load_kuavo_mujoco_sim.launch # 启动控制器、
 在运行实物之前, 您需要先修改`src/kuavo_assets/config/kuavo_v$ROBOT_VERSION/kuavo.json`中EndEffectorType为您实物机器人的执行器类型:
 - `qiangnao` : 灵巧手, 默认值
 - `lejuclaw` : 二指夹爪
+- `qiangnao_touch` : 触觉灵巧手
 
 - 实物运行时，开机第一次需要先在cali模式下运行一次，确认机器人姿态和位置正确(机器人所有关节回到零位)
 

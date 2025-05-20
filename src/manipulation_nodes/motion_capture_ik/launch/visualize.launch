@@ -1,4 +1,5 @@
 <launch>
+    <arg name="log_type" default="screen" />
     <arg name="send_srv" default="1"/>
     <arg name="use_joystick" default="false"/>
     <arg name="visualize" default="false"/>
@@ -37,8 +38,8 @@
         </group>
     </group>
     <group unless="$(arg use_cxx)">
-        <node name="ik_ros_uni" pkg="motion_capture_ik" type="ik_ros_uni.py" output="screen" 
-        args="--version=$(arg robot_version) --ctrl_arm_idx=$(arg control_hand_side) --ik_type_idx=$(arg ik_type_idx) --send_srv=$(arg send_srv) --control_finger_type=$(arg control_finger_type) --control_torso=$(arg control_torso) --ee_type=$(arg ee_type)"/>
+        <node name="ik_ros_uni" pkg="motion_capture_ik" type="ik_ros_uni.py" output="$(arg log_type)" 
+        args="--version=$(arg robot_version) --ctrl_arm_idx=$(arg control_hand_side) --ik_type_idx=$(arg ik_type_idx) --send_srv=$(arg send_srv) --control_finger_type=$(arg control_finger_type) --control_torso=$(arg control_torso) --ee_type=$(arg ee_type) --eef_z_bias=$(arg eef_z_bias)" />
     </group>
     <group if="$(arg record_bag)">   
         <node name="topic_logger" pkg="motion_capture_ik" type="topic_logger" output="screen" args="--all --output-prefix motion_capture_ik --size 1000"/>

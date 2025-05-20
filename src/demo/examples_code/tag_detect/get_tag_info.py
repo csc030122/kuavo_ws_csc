@@ -4,7 +4,7 @@ import rospy
 from kuavo_msgs.msg import AprilTagDetectionArray
 import math
 import numpy as np  # 引入numpy库用于数值计算
-
+import time
 
 class AprilTagProcessor:
     def __init__(self, is_init=False):
@@ -95,9 +95,14 @@ class AprilTagProcessor:
         data_list = []
 
         while len(data_list) < num_samples:
+            if rospy.is_shutdown():
+                return None
             tag_data = self.get_apriltag_by_id(tag_id)
             if tag_data:
                 data_list.append(tag_data)
+            else :
+                rospy.loginfo(f"未检测到AprilTag ID {tag_id}，等待中...")
+                time.sleep(0.1) 
 
         # 使用numpy计算平均值
         avg_off_horizontal = np.mean([tag["off_horizontal"] for tag in data_list])

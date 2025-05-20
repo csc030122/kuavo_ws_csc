@@ -5,10 +5,11 @@ import signal
 import rospy
 import argparse
 import argparse
-from std_msgs.msg import Float32, Float32MultiArray
+from std_msgs.msg import Float32, Float32MultiArray, Int32
 from sensor_msgs.msg import JointState
 from handcontrollerdemorosnode.msg import armPoseWithTimeStamp, robotHandPosition
 from kuavo_msgs.srv import controlLejuClaw, controlLejuClawRequest
+from kuavo_msgs.msg import lejuClawCommand
 import time
 import math
 import sys
@@ -99,6 +100,7 @@ def set_thread_priority(thread, policy, priority):
 QIANGNAO = "qiangnao"
 JODELL = "jodell"
 LEJUCLAW = "lejuclaw"
+QIANGNAO_TOUCH = "qiangnao_touch"
 control_finger_type = 0
 control_torso = 0
 
@@ -131,6 +133,7 @@ class IkRos:
         self.__send_srv = send_srv
         self.__freeze_finger = False
         self.__button_y_last = False
+        self.trigger_reset_mode = False
 
         # self.hand_pub_timer = rospy.Timer(rospy.Duration(0.001), self.hand_finger_data_process)
 
@@ -147,6 +150,7 @@ class IkRos:
         self.kf_left = KalmanFilter3D(initial_state, initial_covariance, process_noise, measurement_noise)
         initial_state[0:3] = self.arm_ik.right_hand_pose(self.arm_ik.q0())[0]
         self.kf_right = KalmanFilter3D(initial_state, initial_covariance, process_noise, measurement_noise)
+        self.external_q0 = None
         # TO-DO(matthew): subscribe to joint states
         # update joint states
         self.joint_sub = rospy.Subscriber(
@@ -185,31 +189,39 @@ class IkRos:
         self.pub_ik_input_pos = rospy.Publisher(
             "/drake_ik/input_pos", Float32MultiArray, queue_size=10
         )
-        
+        self.leju_claw_command_pub = rospy.Publisher(
+            "leju_claw_command", lejuClawCommand, queue_size=10
+        )
         try:
-            if end_effector_type:
-                self.end_effector_type = end_effector_type
+            end_effector_mapping = {
+                QIANGNAO: QIANGNAO,
+                JODELL: JODELL,
+                LEJUCLAW: LEJUCLAW,
+                QIANGNAO_TOUCH:QIANGNAO_TOUCH
+            }
+            if end_effector_type in end_effector_mapping:
+                self.end_effector_type = end_effector_mapping[end_effector_type]
             else:
-                ros_end_effector_type_param = rospy.get_param("/end_effector_type")
-                # TODO should compatible more ee types
-                end_effector_mapping = {
-                    QIANGNAO: QIANGNAO,
-                    JODELL: JODELL,
-                    LEJUCLAW: LEJUCLAW
-                }
-                if ros_end_effector_type_param in end_effector_mapping:
-                    self.end_effector_type = end_effector_mapping[ros_end_effector_type_param]
-                else:
-                    self.end_effector_type = QIANGNAO
-        except KeyError:
+                self.end_effector_type = QIANGNAO
+        except Exception as e:
+            print(f"get end effector type error: {e}, use default qiangnao")
             self.end_effector_type = QIANGNAO
-        print(f"\033[93mEnd effector type: {self.end_effector_type}\033[0m")        
+        print(f"\033[93m--------------------------------------------------\033[0m")        
+        print(f"\033[93m- End effector type: {self.end_effector_type} \033[0m")
+        print(f"\033[93m--------------------------------------------------\033[0m")        
+
         signal.signal(signal.SIGINT, self.shutdown)
         signal.signal(signal.SIGTERM, self.shutdown)
         self.stop_event = threading.Event()
         self.ik_thread = threading.Thread(target=self.ik_controller_thread)
         self.ik_thread.start()
         set_thread_priority(self.ik_thread, int(SCHED_FIFO), 50)
+
+        # 保存初始关节角度
+        self.initial_q_first = None
+        
+        # 订阅手臂模式topic
+        self.arm_mode_sub = rospy.Subscriber('/quest3/triger_arm_mode', Int32, self.arm_mode_callback)
 
         self.run()
         self.ik_thread.join()
@@ -288,8 +300,8 @@ class IkRos:
             rospy.logerr(f"Service {service_name} not available")
 
     @staticmethod
-    def control_lujuclaw(pos:list):
-        # print(f">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> control_lujuclaw: {pos}")
+    def control_lejuclaw(pos:list):
+        # print(f">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> control_lejuclaw: {pos}")
         service_name = "/control_robot_leju_claw"
         try:
             rospy.wait_for_service("/control_robot_leju_claw", timeout=1)
@@ -306,6 +318,14 @@ class IkRos:
             rospy.logerr(f"Service {service_name} not available")
         except Exception as e:
             rospy.logerr(f"Error: {e}")   
+
+    def pub_leju_claw_command(self, pos:list):
+        msg = lejuClawCommand()
+        msg.header.stamp = rospy.Time.now()
+        msg.data.name = ['left_claw', 'right_claw']
+        msg.data.position = pos
+        msg.data.velocity = [90, 90]
+        self.leju_claw_command_pub.publish(msg)
 
     def pub_solved_arm_eef_pose(self, q_robot, current_pose, current_pose_right):
         msg = twoArmHandPose()
@@ -352,7 +372,8 @@ class IkRos:
             print("\033[92m[ik]: Recied start signal response, Start teleoperation.\033[0m")
         if self.__as_mc_ik:
             print("[ik]: If you want to stop teleoperation, please make a Shot-guesture(hold on for 1-2 seconds).")
-        q_last = self.arm_ik.q0()
+        q_last = self.arm_ik.q0() if self.external_q0 is None else self.external_q0
+        pre_q_first = q_last.copy()
         # q_last[-14:] = self.__joint_states  # two arm joint states
         # q_last[7:14] = [0.1084,  0.0478 , 0.1954 ,-0.0801 , 0.1966 ,-0.5861 , 0.0755]
         q_now = q_last
@@ -367,6 +388,14 @@ class IkRos:
             is_runing = self.quest3_arm_info_transformer.is_runing if self.__as_mc_ik else True
             self.__current_pose, self.__current_pose_right = self.get_two_arm_pose(q_last)
             self.pub_solved_arm_eef_pose(q_last, self.__current_pose, self.__current_pose_right)
+            if self.trigger_reset_mode:
+                self.__target_pose = (None, None)
+                self.__current_pose = (None, None)
+                self.__target_pose_right = (None, None)
+                self.__current_pose_right = (None, None)
+                q_last = pre_q_first.copy()
+                self.trigger_reset_mode = False
+
             if(self.__as_mc_ik and self.quest3_arm_info_transformer.check_if_vr_error()):
                 rate.sleep()
                 print("\033[91mDetected VR ERROR!!! Please restart VR app in quest3 or check the battery level of the joystick!!!\.\033[0m")
@@ -374,6 +403,11 @@ class IkRos:
             elif(self.__as_mc_ik and self.judge_target_is_far(0.35) or not is_runing):
                 rate.sleep()
                 sys.stdout.write("\rStatus: {}, is target far?: {}".format("RUNING" if is_runing else "STOPED", self.judge_target_is_far()))
+                continue
+            
+            if self.__target_pose[0] is None or self.__target_pose_right[0] is None or \
+                self.__current_pose[0] is None or self.__current_pose_right[0] is None:
+                rate.sleep()
                 continue
             if self.arm_ik.type().name() == IkTypeIdx.TorsoIK.name():
                 l_hand_pose, l_hand_RPY = None, None
@@ -506,6 +540,8 @@ class IkRos:
 
     def two_arm_hand_pose_target_callback(self, msg_ori):
         msg = msg_ori.hand_poses
+        if msg_ori.use_custom_ik_param:
+            self.external_q0 = list(msg.left_pose.joint_angles) + list(msg.right_pose.joint_angles)
         self.__target_pose = (msg.left_pose.pos_xyz, msg.left_pose.quat_xyzw)
         self.__target_pose_right = (msg.right_pose.pos_xyz, msg.right_pose.quat_xyzw)
         if(abs(msg.left_pose.elbow_pos_xyz[0]) <= 1e-5 
@@ -640,9 +676,9 @@ class IkRos:
         """
         If target is far, return True, else return False.
         """
-        if self.__target_pose is None or self.__target_pose_right is None:
+        if self.__target_pose[0] is None or self.__target_pose_right[0] is None:
             return False
-        if self.__current_pose is None or self.__current_pose_right is None:
+        if self.__current_pose[0] is None or self.__current_pose_right[0] is None:
             return False
         pos_left, _ = self.__current_pose
         pos_right, _ = self.__current_pose_right
@@ -685,7 +721,7 @@ class IkRos:
         right_hand_position = [0 for i in range(6)]
         robot_hand_position = robotHandPosition()
         robot_hand_position.header.stamp = rospy.Time.now()
-        if self.end_effector_type == QIANGNAO:
+        if self.end_effector_type == QIANGNAO or self.end_effector_type == QIANGNAO_TOUCH:
             if joyStick_data is not None:
                 if joyStick_data.left_second_button_pressed and self.__button_y_last is False:
                     print(f"\033[91mButton Y is pressed.\033[0m")
@@ -744,16 +780,26 @@ class IkRos:
                 pos[1] = int(100.0 * joyStick_data.right_trigger)
                 pos[0] = limit_value(pos[0], 0, 100)
                 pos[1] = limit_value(pos[1], 0, 100)
-                self.control_lujuclaw(pos)
+                self.pub_leju_claw_command(pos)
             elif hand_finger_data is not None:
                 left_qpos = hand_finger_data[0]
                 right_qpos = hand_finger_data[1]
                 left_claw_pos = limit_value(int(100.0 * left_qpos[2] / 1.70), 0, 100)
                 right_claw_pos = limit_value(int(100.0 * right_qpos[2] / 1.70), 0, 100)
-                self.control_lujuclaw([left_claw_pos, right_claw_pos])
+                self.pub_leju_claw_command([left_claw_pos, right_claw_pos])
                 # print(f"left_claw_pos: {left_claw_pos}, right_claw_pos: {right_claw_pos}")
             else:
                 return
+
+    # 添加手臂模式回调函数
+    def arm_mode_callback(self, msg):
+        new_mode = msg.data
+        if new_mode != 2:  # 当模式不是2时
+            # 重置所有姿态
+            print(f"\033[91m[IK]Reset arm mode.\033[0m")
+            self.trigger_reset_mode = True
+            
+
 
 if __name__ == "__main__":
     rospy.init_node("diff_ik_node", anonymous=True)
@@ -776,11 +822,22 @@ if __name__ == "__main__":
     parser.add_argument("--control_finger_type", type=int, default=0, help="0: control all fingers by upper-gripper. 1: control thumb and index fingers by upper-gripper, control other fingers by lower-gripper.")
     parser.add_argument("--control_torso", type=int, default=0, help="0: do NOT control, 1: control torso.")
     parser.add_argument("--predict_gesture", type=str2bool, default=False, help="Use Neural Network to predict hand gesture, True or False.")
-
+    parser.add_argument("--eef_z_bias", type=float, default=-0.0, help="End effector z-axis bias distance.")
     args, unknown = parser.parse_known_args()
-    end_effector_type = args.end_effector_type
+    # ee_type
+    end_effector_type=""
+    try:
+        if rospy.has_param("/end_effector_type"):
+            end_effector_type = rospy.get_param("/end_effector_type")
+            print(f"\033[92mend_effector_type from rosparm: {end_effector_type}\033[0m")
+        else:
+            print(f"\033[92mend_effector_type from args: {end_effector_type}\033[0m")
+            end_effector_type = args.end_effector_type
+    except Exception as e:
+        print(e)
     ctrl_arm_idx = ArmIdx(args.ctrl_arm_idx)
     ik_type_idx = IkTypeIdx(args.ik_type_idx)
+    eef_z_bias = args.eef_z_bias
     print(type(args.send_srv))
     send_srv = args.send_srv
     control_finger_type = args.control_finger_type

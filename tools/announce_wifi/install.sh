@@ -36,9 +36,9 @@ function check_root() {
 }
 
 function usage() {
-  echo "Usage: $0 -robot_name \"your_robot_name\""
+  echo "Usage: $0 --robot-name \"your_robot_name\""
   echo "Options:"
-  echo "  -robot-name <name>  Set the name of the robot (required)."
+  echo "  --robot-name <name>  Set the name of the robot (required)."
   echo "  -h                  Show this help message and exit."
 }
 
@@ -54,7 +54,7 @@ while [[ $# -gt 0 ]]; do
             shift
             shift
         else
-            echo "Error: -robot_name requires a non-empty value."
+            echo "Error: --robot-name requires a non-empty value."
             usage
             exit 1
         fi
@@ -72,7 +72,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ "$robot_name" == "" ]]; then
-  echo_error "Error: -robot_name is required. Please specify the robot name."
+  echo_error "Error: --robot-name is required. Please specify the robot name."
   usage
   exit 1
 fi

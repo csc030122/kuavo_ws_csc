@@ -3,6 +3,8 @@
 
 import os
 import signal
+
+import rospkg
 import rospy
 import numpy as np
 from sensor_msgs.msg import JointState
@@ -17,7 +19,10 @@ from handcontrollerdemorosnode.msg import robotHandPosition
 
 class Quest3Node:
     def __init__(self):
-        self.model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
+        rospack = rospkg.RosPack()
+        kuavo_assests_path = rospack.get_path("kuavo_assets")
+        robot_version = os.environ.get('ROBOT_VERSION', '40')
+        self.model_path = kuavo_assests_path + f"/models/biped_s{robot_version}"
         self.quest3_arm_info_transformer = Quest3ArmInfoTransformer(self.model_path)
         self.use_custom_ik_param = True
         self.ik_solve_param = ikSolveParam()

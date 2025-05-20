@@ -28,7 +28,17 @@
     <arg name="start_way"         default="manual"/>
     <arg name="use_estimator_contact"   default="false"/>
     <arg name="only_half_up_body" default="false"/>
+    <arg name="stand_up_protect" default="true"/>
+    <arg name="redundant_imu" default="false"/>
     <!-- The file defining gait definition -->
+
+    <!-- Set with_coredump parameter based on coredump value -->
+    <arg name="coredump" default="true"/>
+    <arg name="with_coredump" value="--with-coredump" if="$(arg coredump)"/>
+    <arg name="with_coredump" value="" unless="$(arg coredump)"/>
+    <!-- -->
+    <arg name="teach_pendant" default="0"/>
+    
 
     <!-- multiplot -->
     <group if="$(arg multiplot)">
@@ -49,10 +59,18 @@
     <param name="build_cppad_state"   value="0"/>  <!-- build_cppad_state is set to 0(waiting), 1(building), 2(done) -->
     <param name="start_way"  value="$(arg start_way)"/>
     <param name="use_estimator_contact"  value="$(arg use_estimator_contact)"/>
+    <param name="stand_up_protect" value="$(arg stand_up_protect)"/>
+    <param name="redundant_imu" value="$(arg redundant_imu)"/>
+
+    <!-- Launch script to collect kuavo-launch information -->
+    <node pkg="humanoid_controllers" type="collect_launch_info.sh" name="collect_launch_info" />
+    
+   <!-- mpc node -->
+    <param name="teach_pendant"  value="$(arg teach_pendant)"/>
 
     <!-- mpc node -->
     <group if="$(arg use_external_mpc)">
-      <node pkg="humanoid_interface_ros" type="humanoid_sqp_mpc" name="humanoid_sqp_mpc" output="screen" required="true" launch-prefix="$(find humanoid_controllers)/scripts/start_node.sh"/>
+      <node pkg="humanoid_interface_ros" type="humanoid_sqp_mpc" name="humanoid_sqp_mpc" output="screen" required="true" launch-prefix="$(find humanoid_controllers)/scripts/start_node.sh $(arg with_coredump)"/>
     </group>
 
     <group unless="$(arg use_joystick)">
@@ -60,9 +78,12 @@
       <node pkg="humanoid_interface_ros" type="humanoid_gait_command" name="humanoid_gait_command"
             output="screen" launch-prefix="gnome-terminal --disable-factory --"/>
     </group>
-    <node pkg="humanoid_interface_ros" type="humanoid_VR_hand_control" name="humanoid_VR_hand_control" output="screen"/>
-    <node pkg="humanoid_interface_ros" type="humanoid_quest_control_with_arm" name="humanoid_quest_control_with_arm" output="screen"/>
-    <node pkg="humanoid_interface_ros" type="humanoid_Arm_time_target_control" name="humanoid_Arm_time_target_control" output="screen"/>
+    <node pkg="humanoid_interface_ros" type="humanoid_hand_control" name="humanoid_hand_control" output="screen" launch-prefix="$(find humanoid_controllers)/scripts/start_node.sh $(arg with_coredump)"/>
+    <node pkg="humanoid_interface_ros" type="humanoid_VR_hand_control" name="humanoid_VR_hand_control" output="screen" launch-prefix="$(find humanoid_controllers)/scripts/start_node.sh $(arg with_coredump)"/>
+    <node pkg="humanoid_interface_ros" type="humanoid_quest_control_with_arm" name="humanoid_quest_control_with_arm" output="screen" launch-prefix="$(find humanoid_controllers)/scripts/start_node.sh $(arg with_coredump)"/>
+
+    <node pkg="humanoid_interface_ros" type="humanoid_Arm_time_target_control" name="humanoid_Arm_time_target_control" output="screen" launch-prefix="$(find humanoid_controllers)/scripts/start_node.sh $(arg with_coredump)"/>
+    <node pkg="humanoid_interface_ros" type="humanoid_gait_switch_by_name" name="humanoid_gait_switch_by_name" output="screen" launch-prefix="$(find humanoid_controllers)/scripts/start_node.sh $(arg with_coredump)"/>
 
     <!-- nodelet manager -->
     <arg name="real" default="true" />
@@ -70,15 +91,17 @@
     <arg name="cali" default="false" />
     <arg name="cali_arm" default="false" />
     <arg name="cali_leg" default="false" />
+    <arg name="joint_protect_enable" default="true" />
 
     <param name="real" value="$(arg real)" />
     <param name="log_lcm" value="$(arg log)" />
     <param name="cali" value="$(arg cali)" />
     <param name="cali_arm" value="$(arg cali_arm)" />
     <param name="cali_leg" value="$(arg cali_leg)" />
-   <node pkg="nodelet" type="nodelet" name="nodelet_manager" args="manager" respawn="false" 
+    <param name="joint_protect_enable" value="$(arg joint_protect_enable)" />
+    <node pkg="nodelet" type="nodelet" name="nodelet_manager" args="manager" respawn="false" 
        output="screen" required="true" clear_params="true"
-       launch-prefix="$(find humanoid_controllers)/scripts/start_node.sh">
+       launch-prefix="$(find humanoid_controllers)/scripts/start_node.sh $(arg with_coredump)">
         <param name="num_worker_threads" type="int" value="10" />
     </node>
 
@@ -88,9 +111,36 @@
     <include file="$(find humanoid_interface)/launch/rosbag_nodelet.launch"/>
     <group if="$(arg use_joystick)">
       <group if="$(eval arg('joystick_type') == 'h12')">
-        <include file="$(find humanoid_controllers)/launch/joy/joy_control_h12.launch">
-          <arg name="start_way" value="$(arg start_way)"/>
-        </include>
+
+        <group if="$(eval arg('start_way') == 'manual')">
+          <!-- 此if分支为命令行启动机器人: joystick_type=h12，h12遥控器使用和服务启动(start_way=auto)相同的逻辑。-->
+          
+          <param name="start_way" value="auto"/>
+
+          <!-- 确定状态机初始状态 -->
+          <param name="manual_h12_init_state" value="ready_stance"/>
+          <group if="$(eval arg('cali') or arg('cali_arm'))">
+              <param name="manual_h12_init_state" value="calibrate"/>
+          </group>
+
+          <!-- 补充环境变量，和服务启动的变量一致 -->
+          <env name="KUAVO_ROS_CONTROL_WS_PATH" value="$(find humanoid_controllers)/../../../" />
+          <!-- 启动 h12pro 控制节点 -->
+          <include file="$(find h12pro_controller_node)/launch/h12pro_autostart.launch">
+          </include>
+
+          <param name="joystick_sensitivity" value="20"/>
+          <node pkg="humanoid_interface_ros" type="humanoid_joy_control_auto_gait_with_vel" name="humanoid_joy_control_auto_gait_with_vel" output="screen"/>
+          
+        </group>
+
+        <group if="$(eval arg('start_way') == 'auto')">
+
+          <include file="$(find humanoid_controllers)/launch/joy/joy_control_h12.launch">
+            <arg name="start_way" value="$(arg start_way)"/>
+          </include>
+        </group>
+
       </group>
       <group if="$(eval arg('joystick_type') == 'sim')">
         <include file="$(find humanoid_controllers)/launch/joy/joy_control_sim.launch">
@@ -107,9 +157,22 @@
     <!--publish system state  -->
     <node pkg="humanoid_controllers" type="system_info_publisher.py" name="system_info_publisher" />
     <!-- monitor node -->
-    <node pkg="kuavo_monitor" type="kuavo_monitor_node" name="kuavo_monitor_node" />
+    <node pkg="kuavo_monitor" type="kuavo_monitor_node" name="kuavo_monitor_node" launch-prefix="$(find humanoid_controllers)/scripts/start_node.sh $(arg with_coredump)"/>
 
     <group if="$(arg vr_remote_control)">
       <include file="$(find noitom_hi5_hand_udp_python)/launch/launch_quest3_ik.launch"/>
     </group>
+
+    <!-- 添加播放音乐参数 -->
+    <arg name="music" default="enable" />
+
+    <!-- 当 music 不为 disable 时启动音频服务 -->
+    <group unless="$(eval arg('music') == 'disable')">
+        <!-- 设置音频文件路径参数 -->
+        <param name="audio_path" value="/home/lab/.config/lejuconfig/music" type="string"/>
+
+        <!-- 启动 播放音乐服务 -->
+        <node pkg="kuavo_audio_player" type="loundspeaker.py" name="play_music_node" output="screen" respawn="true" respawn_delay="5"/>
+    </group>
+
 </launch>

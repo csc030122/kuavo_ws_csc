@@ -1,14 +1,46 @@
 # beta 分支
 
-## 其他改进
+## 文档相关
+- VR 遥操作增加如何查看 Quest3 和 Kuavo 的网络延迟的视频， [文档链接](./docs/Quest3_VR_basic.md)
+- [kuavo humanoid sdk] 更新安装文档和 API 文档，详情见 [文档链接](./src/kuavo_humanoid_sdk/README.md)
 
-1. 升级了 Quest3 的 APK 程序 //kuavo.lejurobot.com/Quest_apks/leju_kuavo_hand-0.0.1-147-g85b5c38.apk ，显示出识别的骨骼效果，能方便的查看到 Quest3 识别出错的情况。以及更新 Meta SDK 到 0.74 改进识别的稳定性。
+## 新增功能
+- 新增版本号为 49 的机器人模型， 特点相机模型为 orbbec 
+- 下位机胸部 NUC 增加音频播放 ROS 服务
+- 新增一键自检功能：IMU硬件连接，手臂电机通讯响应，灵巧手抓握测试，遥控器硬件信号，上下位机通信检查，相机/雷达/音响检查, [文档链接](tools/check_tool/selfCheckScripts/README.md)
+- [kuavo humanoid sdk] 不依赖下位机的环境和kuavo_msgs消息包, 支持安装在上位机运行，[最新版本](https://pypi.org/project/kuavo-humanoid-sdk/1.1.2a924/) 
+- [kuavo humanoid sdk] 启动时只检测依赖的节点是否存在，如果不存在则提示用户启动
+- [kuavo humanoid sdk] 支持控制触觉灵巧手以及获取对应的触觉状态
+- 路径跟踪案例添加`/cmd_pose`控制机器人跟踪路径，见[参考链接](/src/demo/trace_path/scripts/trace_path/mpc_client_example.py)
+- 新增站立时上拉保护，拉起之后，切换到挂起模式保持不动
+- 新增下蹲离地保护功能，下蹲到一定程度自动切换到挂起模式，即使没有按back退出也始终保持姿态
+- 新增挂起模式，通过监测总接触力挂起模式，使用进入挂起模式的初始位置作为关节参考
+- 站立保护功能支持站立失败缩腿后重新使用键盘或北通遥控器重复尝试站立
+
+## 修复问题
+- 修复机器人半身状态下/轮臂机器人初始手臂不弯曲
+- 修复仿真和实物的键盘控制，请求原地旋转(j or l)10%无法执行的问题
+- 修复当前机器人不支持步态设置连续的单腿浮空状态的问题
+- 修复isaac-sim仿真环境未使用最新的`sensordata_msg`导致的程序启动失败问题
+- 修复正常退出机器人程序手臂电机不解锁和 rosbag 包出现 active 的问题
+- 修复关节保护模式下，现行腿部控制方式可能导致的电机堵转问题
+- 修复 48 版本 kuavo.json 配置文件缺少`joint_current_limits`导致无法启动程序问题
+
+## 其他改进
+- 仿真环境时跳过机器人自动蹲起站立过程
+- 新增 KuavoCrashReport 工具，用于收集机器人故障信息，并上传反馈给乐聚人员，[使用文档链接](./tools/crash-report/README.md)
+- 升级了 Quest3 的 APK 程序 //kuavo.lejurobot.com/Quest_apks/leju_kuavo_hand-0.0.1-147-g85b5c38.apk ，显示出识别的骨骼效果，能方便的查看到 Quest3 识别出错的情况。以及更新 Meta SDK 到 0.74 改进识别的稳定性。
 
 # 1.1.2
 ## Breaking Changes
 - 无
 
 ## 文档相关
+- 新增 NVIDIA Jetson AGX Orin 镜像备份和还原指南文档， [文档链接](./docs_internal/NVIDIA_Jetson_AGX_Orin_backup_restore_tutor/NVIDIA%20Jetson%20AGX%20Orin%20backup%20restore%20tutor.md)
+- 新增上下位机 NUC DHCP 分配 IP配置说明文档，[文档链接](./docs/others/SET_HEAD_DHCP/头部%20NUC%20DHCP配置说明.md)
+- 新增 ROS_MASTER_URI 主从配置工具文档，[文档链接](./docs/others/CHANGE_ROS_MASTER_URI/修改ROS_MASTER_URI说明.md)
+- 更新运动控制接口文档，新增触觉灵巧手控制和状态话题，[文档链接](./docs/运动控制API.md)
+- 新增 kuavo-humanoid-sdk 文档， [文档链接](src/kuavo_humanoid_sdk/docs/markdown/index.md)
 - Kuavo 文档中心新增轮臂机器人介绍, 导航案例, 正逆解案例使用说明
 - 更新 README 中全身控制器参数与 kuavo 配置参数的说明, [文档链接](./docs/info文件说明.md), [文档链接](./docs/kuavo_json文档说明.md)
 - 运动控制接口新增乐聚自研夹爪控制接口`/control_robot_leju_claw`, 使用方法见 [文档链接](./docs/运动控制API.md)
@@ -19,6 +51,29 @@
 - 补充运动控制接口文档中`/sensor_data_raw`话题的详细说明和数据示例 [文档链接](./docs/运动控制API.md)
 
 ## 新增功能
+- 新增 isaac-sim 仿真环境, 使用说明请参考[文档链接](./src/kuavo-isaac-sim/README.md)
+- 新增触觉灵巧手控制话题`/dexhand/command`和左右单独控制话题`/dexhand/left_command`和`/dexhand/right_command`，以及 `/dexhand/touch_state`话题, 并兼容原先非触觉手的ROS接口
+- 新增触觉灵巧手硬件识别与测试工具，工具路径:`tools/check_tool/touch_dexhand_test.sh`
+- 新增触觉灵巧手功能，末端类型为`qiangnao_touch`，在kuavo.json中修改 EndEffectorType 字段即可使用
+- 新增灵巧手状态话题接口`/dexhand/state`
+- 新增机器人初始化站立时的检测保护功能，在一定情况下防止机器人在未站立或站立异常时的抽搐
+- 新增 kuavo-humanoid-sdk 应用层 SDK 用于控制机器人，pypi 项目：https://pypi.org/project/kuavo-humanoid-sdk
+- 新增接收 Pico 发布脚部位置的节点，待算法部接入遥操作
+- 新增 ROS话题`leju_claw_command`用于控制自研二指夹爪
+- 新增夹爪手臂机器人模型，版本为47
+- 新增一键安装脚本,可在刷完镜像的机器人上通过 wget 下载并执行完成自动安装环境等操作
+- 新增实现通过按键控制手臂末端逆解和躯干逆解的案例，[文档链接](./docs/5功能案例/通用案例/按键控制躯干逆解.md)
+- 完善URDF模型中的camera_base说明并添加全局静态TF转换以连接odom与像素坐标系，并新增元数据虚拟相机帧数据发布
+- 新增机器人启动时无需人工搀扶辅助，可从双脚悬空或贴地状态切到站立状态的功能
+- 新增kuavo_assets 各个版本机器人可视化的 launch 文件和 rviz 配置
+- Gazebo 仿真器支持 Realsense 实感摄像头
+- 新增支持 Gazebo 仿真器和基于共享内存的中间件读写 ROS 控制接口以减低通信延迟
+- 新增机器人搬箱子应用案例
+- 新增足部末端高度可调节功能
+- 新增单步大转向+正常走，不平地面和斜坡行走功能
+- 话题`/cmd_pose`和`/cmd_pose_world` 支持控制躯干 pitch
+- 新增话题`/humanoid/single_step_mode` 用于发布机器人当前是否为单步控制状态
+- VR 功能支持在结束录制和启动的时候可以指定手臂的关节位置
 - 更新 kuavo_assets 包中机器人模型文件, 统一命名关节名称并添加关节限位, 扭矩限制, 速度限制等约束
 - kuavo_sdk 新增正逆解使用说明, 单步控制使用说明, 位姿控制使用说明
 - VR: Quest3 末端执行器支持乐聚自研夹爪, 可通过手柄上扳机或食指捏合控制夹爪
@@ -31,6 +86,37 @@
 - IK 服务增加工作空间检查和可选打印求解信息提示
 
 ## 修复问题
+- 修复潜在的内存非法访问导致的段错误程序崩溃问题
+- 修复只使用上半身和轮臂机器人手抖问题
+- 修复 VNC 无法切换 WIFI 问题，解决方法见[文档](./docs/6常用工具/修复VNC无法切换wifi的问题.md)
+- 修复播报 WIFI IP 地址工具安装脚本的提示消息错误
+- 修复使用 VR 时需要额外添加末端执行器类型的冗余操作
+- 修复 system info 节点未初始化就发布话题数据的问题
+- 修复手臂电机CAN通信频率为250Hz
+- 修复手臂控制硬件层存在问题，降低控制频率防止手臂指令阻塞
+- 修复路径跟踪示例到达终点后会超出一些距离问题，已通过到达终点前缓慢降低速度解决
+- 修复`leju_claw_state` 夹爪状态话题消息无消息头时间戳问题
+- 修复非 v42 版本机器人站立时存在抖动问题
+- 新增长手臂电机配置文件 long_arm_config.yaml
+- 修复地面高度估计对单步控制的影响导致摔倒问题
+- 修复`/cmd_pose`控制指令的自动启停触发问题，现在可以正确触发启停并支持被`/cmd_vel`指令覆盖
+- 修复多次单步控制后容易摔倒的问题, 已通过使用规划值作为 init_target_state 的起点来解决
+- 修复在一些电机出问题的机器上启动时存在电机异响的问题, 通过增大站立控制器的关节跟踪权重来避免异响
+- 修复 42 版本行走时躯干 pitch limit 晃动幅度变大问题
+- 修复单步控制模式下未对高度进行补偿导致的高度变化问题
+- 修复 Gazebo 仿真器中相机数据格式不完整问题, 补充使用仿真时间戳, 相机内参矩阵, 畸变参数和旋转矩阵等信息
+- 修复 45 版本机器人由于 mesh 文件路径错误导致 VR 启动报错, 无法遥操作控制手臂问题
+- 修复 autogait 阈值和键盘控制 10%的行程重合导致行走和站立频繁切换的问题
+- 修复后退时对斜面的处理导致踩脚,增加斜坡规划生效的阈值
+- 修复在半身模式下使用 VR 推摇杆会导致程序挂掉问题
+- 依据实体测量数据更新 KUAVO 4Pro 总质量配置，实现仿真系统与物理实体参数一致性
+- 修复机械臂关节扭矩反馈系统的电流-扭矩转换(C2T)系数校准错误
+- 修复 h12pro 遥控器没有正确加载`~/.bashrc`中定义的 ROS 环境变量的问题
+- 修复机器人站立瞬间容易受外力影响导致的瞬间异响电流问题
+- 修复 43 版本的 URDF mesh 文件路径错误
+- 修复在 40，41等版本只使用上半身功能是手臂抽搐问题
+- 修复由于 kuavo_assets 包中 drake 相关的 URDF 文件的 mesh 文件名称不对，导致无法正常使用 VR 和 IK 功能
+- 修复机器人原地踏步抽搐无法行走，VR无法启动跟随手势的问题
 - 修复 URDF 更改未重新编译 cppad 导致异常不生效的问题, 已通过严格检查 URDF 文件的 MD5 校验来实现
 - 修复由于缺少 `lusb` 而导致的编译错误, 已通过在编译时先检查或安装`libusb-1.0-0-dev`来解决
 - 修复 h12pro 遥控器无法控制机器人站立, 行走等问题
@@ -41,6 +127,20 @@
 - 修复 biped_s42 机器人头部 yaw 电机方向问题, 已根据右手定更正
 
 ## 其他改进
+- ROS_MASTER_URI 主从配置工具给所有用户都配置ROS环境
+- 新增 ROS_MASTER_URI 主从配置工具，[工具链接](./docs/others/CHANGE_ROS_MASTER_URI/修改ROS_MASTER_URI说明.md)
+- 修改遥控器头部控制快捷键为RT+右侧摇杆，可以同时走路
+- 优化graspBox案例，增加Move的运动类型，使用bt_config.yaml文件box_holdon_pose配置，用于规划抓取后手臂的运动，坐标系是机器人坐标系。
+- 限制 pitch limit 速度上下限，避免机器人弯腰时姿态调整过于剧烈
+- 优化 cppad 缓存机制，将缓存目录改为基于 URDF 哈希值的文件夹，支持保留多个版本的 cppad 缓存，实现不同 URDF 版本间的快速切换而无需重新编译
+- 统一 42、45 等各个版本机器人的 URDF 中的质量
+- 去除头部关机限位硬编码，更正为从 URDF 中获取
+- 优化手臂电机模块，提升手臂电机的刷新速率至 300 Hz
+- IK 模块去除求解时的关节限制， 更正为在 URDF 中定义上下限位
+- 优化 VR 控制乐聚夹爪的速度为 90 以提高夹爪控制反馈速度
+- 添加 ROS snapshot 源用于指定安装`ros-noetic-pinocchio=2.6.21-1focal.20240830.092123`避免升级 pinocchio 版本导致的编译错误
+- 提高遥控器指令截止频率以提高灵敏度
+- 优化下肢电机控制模块，提高走路，站立等动作的稳定性
 - 添加 hardware tools 用于硬件测试故障排查
 - 遥控器控制改进: 使用五阶低通滤波对 cmdVel 进行滤波，截止频率1hz
 - 头部 yaw 关节软限位修正, 放宽至 +- 80°
@@ -118,6 +218,7 @@
 - 修复头部动作执行时不断读取 json 降低效率问题
 
 ## 其他改进
+- 程序启动时自动清除日志文件, 避免磁盘被占满
 - kuavo_assets 更新各个版本机器人的模型快照
 - 增加遥控器topic维度不对时进行提示, 防止自动触发开始发生危险
 - trot步态去除SS相

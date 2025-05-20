@@ -712,7 +712,7 @@ standUpJointAccelTask
 {
   leg
   {
-    kp    200
+    kp    600
     kd    10.2
     kp_sim    500
     kd_sim    10.2
@@ -726,7 +726,7 @@ standUpJointAccelTask
 
 standUpWeight
 {
-    Linear          1
+    Linear          3
     Angular         10
     JointAcc        20
     contactForce    0.1 

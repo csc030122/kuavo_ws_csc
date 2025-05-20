@@ -4,13 +4,15 @@
     <arg name="visualize" default="false"/>
     <arg name="noitom_server_ip" default=""/>
     <arg name="ee_type" default="qiangnao"/>
-    <arg name="robot_version" default="4"/> <!-- the version of the robot -->
     <arg name="control_hand_side" default="0"/> <!-- 0: left, 1: right, 2: both -->
     <arg name="ik_type_idx" default="0"/> <!-- 0 corresponds to nonlinear optimization ik 1 corresponds to differential ik -->
-    <arg name="predict_gesture" default="false"/>
     <arg name="eef_z_bias" default="0.0"/> <!-- bias added to the z-coordinate of the end-effector -->
-    <arg name="model_path" default="models/biped_gen4.0/urdf/biped_v3_arm.urdf"/>
-    <!-- <arg name="model_path" default="models/biped_s43/urdf/biped_s43_arm.urdf"/> -->
+    <arg name="robot_version"      default="$(optenv ROBOT_VERSION 40)"/>
+    <param name="robot_version"    value="$(arg robot_version)"/>
+  
+    <arg name="model_path"     default="$(find kuavo_assets)/models/biped_s$(arg robot_version)/urdf/drake/biped_v3_arm.urdf"/>
+    <arg name="vis_model_path" default="$(find kuavo_assets)/models/biped_s$(arg robot_version)/urdf/biped_s$(arg robot_version).urdf"/>
+    
     <arg name="record_bag" default="true"/>
     <arg name="run_quest3_monitor" default="1" />
     <arg name="use_cxx" default="0" />
@@ -36,7 +38,7 @@
     <group if="$(arg visualize)">    
         <node name="visulize_traj_node" pkg="motion_capture_ik" type="visulize_traj.py" output="screen"  args="--ee_type $(arg ee_type)"/>
         <arg name="model" />
-        <param name="robot_description" textfile="$(find biped_s40_hand)/urdf/biped_s40_hand.urdf" />
+        <param name="robot_description" textfile="$(arg vis_model_path)" />
         <!-- <node name="joint_state_publisher_gui" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" /> -->
         <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
         <node name="rviz" pkg="rviz" type="rviz" args="-d $(find motion_capture_ik)/rviz/mc_robot_state.rviz" />    

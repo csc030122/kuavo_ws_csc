@@ -2,13 +2,11 @@ cmake_minimum_required(VERSION 3.10)
 project(humanoid_controllers)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED
         COMPONENTS
-        gazebo_sim
-        realsense_ros_gazebo
-        realsense_sim_metadata
         roscpp
         controller_interface
         humanoid_common
@@ -39,25 +37,25 @@ endif()
 
 catkin_package(
         INCLUDE_DIRS
-        include
+                include
         LIBRARIES
-        ${PROJECT_NAME}
+                ${PROJECT_NAME}
+                humanoid_interface_shm
+
         CATKIN_DEPENDS
-        roscpp
-        controller_interface
-        humanoid_common
-        humanoid_interface
-        humanoid_interface_ros
-        biped_s40
-        biped_s42
-        # mujoco_sim
-        humanoid_wbc
-        humanoid_estimation
-        kuavo_estimation
-        ocs2_self_collision_visualization
-        
-        # ocs2_biped_robot_ros
-        angles
+                roscpp
+                controller_interface
+                humanoid_common
+                humanoid_interface
+                humanoid_interface_ros
+                # mujoco_sim
+                humanoid_wbc
+                humanoid_estimation
+                kuavo_estimation
+                ocs2_self_collision_visualization
+                
+                # ocs2_biped_robot_ros
+                angles
 )
 
 ###########
@@ -78,6 +76,37 @@ link_directories(
         ${pinocchio_LIBRARY_DIRS}
 )
 
+# 添加共享内存管理库
+add_library(humanoid_interface_shm SHARED
+  src/shm_manager.cpp
+)
+
+target_link_libraries(humanoid_interface_shm PUBLIC
+  rt  # 添加rt库用于POSIX共享内存
+)
+
+add_dependencies(humanoid_interface_shm ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+# 确保其他包能找到这个库
+target_include_directories(humanoid_interface_shm PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR}/include
+  ${catkin_INCLUDE_DIRS}
+)
+
+
+# 设置输出目录
+set_target_properties(humanoid_interface_shm
+    PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ${CATKIN_DEVEL_PREFIX}/lib
+)
+
+# 安装规则
+install(TARGETS humanoid_interface_shm
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
 ## Declare a cpp library
 add_library(${PROJECT_NAME}
         src/humanoidController.cpp
@@ -86,6 +115,7 @@ add_library(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
         ${catkin_LIBRARIES}
         ${pinocchio_LIBRARIES}
+        humanoid_interface_shm
         drake::drake 
         )
 if (kuavo_estimation_FOUND)

@@ -38,6 +38,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "humanoid_interface/gait/GaitSchedule.h"
 #include "humanoid_interface/gait/MotionPhaseDefinition.h"
 
+#include <ocs2_pinocchio_interface/PinocchioEndEffectorKinematics.h>
 #include "ocs2_pinocchio_interface/PinocchioInterface.h"
 #include <ocs2_centroidal_model/CentroidalModelPinocchioMapping.h>
 #include <kuavo_msgs/changeArmCtrlMode.h>
@@ -128,6 +129,12 @@ class SwitchedModelReferenceManager : public ReferenceManager {
 
   vector_t getLocalPlannerVel(double initTime, const TargetTrajectories& targetTraj);
   vector_t getLocalPlannerVel(double initTime);
+
+  void setPinocchioEndEffectorKinematics(const PinocchioEndEffectorKinematics &endEffectorKinematics)
+  {
+    endEffectorKinematicsPtr_.reset(endEffectorKinematics.clone());
+    endEffectorKinematicsPtr_->setPinocchioInterface(pinocchioInterface_);
+  }
 
  private:
   double calTerrainHeight(const contact_flag_t& contact_flags, const feet_array_t<vector3_t>& feet_pos);
@@ -220,12 +227,18 @@ class SwitchedModelReferenceManager : public ReferenceManager {
     return yaw;
   };
 
+  std::vector<vector_t> getFeetPoses(const vector_t& initState);
+  std::vector<vector_t> getFeetPoses(const std::vector<vector3_t> &feetPositions);
+
+  vector3_t getComPos(const vector_t& state);
+
   baseTrackingQ baseTrackingQ_;
   std::string dynamic_qr_file_;
   bool dynamic_qr_flag_ = false;
 
-  const PinocchioInterface& pinocchioInterface_;
+  PinocchioInterface pinocchioInterface_;
   const CentroidalModelInfo& info_;
+  std::unique_ptr<PinocchioEndEffectorKinematics> endEffectorKinematicsPtr_;
 
   ros::Subscriber targetVelocitySubscriber_;
   ros::Subscriber targetPoseSubscriber_;
@@ -233,6 +246,7 @@ class SwitchedModelReferenceManager : public ReferenceManager {
   ros::Subscriber armTargetTrajectoriesSubscriber_;
   ros::Subscriber poseTargetTrajectoriesSubscriber_;
   ros::Subscriber footPoseTargetTrajectoriesSubscriber_;
+  ros::Subscriber eef_wrench_sub_;
   ros::Subscriber estContactStateSubscriber_;
   ros::Publisher footContactPointPublisher_;
   ros::Publisher footDesiredPointPublisher_;
@@ -240,6 +254,8 @@ class SwitchedModelReferenceManager : public ReferenceManager {
   ros::Publisher armTargetCommandedPublisher_;
   ros::Publisher isCustomGaitPublisher_;
   ros::Publisher singleStepModePublisher_;
+  ros::Publisher currentFootPosesPublisher_;
+  ros::Publisher currentFootCenterPosePublisher_;
   ros::ServiceServer change_arm_control_service_;
   ros::ServiceServer get_arm_control_mode_service_;
   ros::ServiceServer singleStepControlService_;

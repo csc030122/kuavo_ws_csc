@@ -69,6 +69,15 @@ add_message_files(
   gestureTask.msg
   lejuClawState.msg
   Metadata.msg
+  switchGaitByName.msg
+  lejuClawCommand.msg
+  dexhandCommand.msg
+  touchSensorStatus.msg
+  dexhandTouchState.msg
+  yoloOutputData.msg
+  yoloDetection.msg
+  AprilTagDetection.msg
+  AprilTagDetectionArray.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -86,6 +95,10 @@ add_service_files(
   controlLejuClaw.srv
   setTagId.srv
   footPoseTargetTrajectoriesSrv.srv
+  getCurrentGaitName.srv
+  handForceLevel.srv
+  enableHandTouchSensor.srv
+  playmusic.srv
 )
 
 ## Generate actions in the 'action' folder

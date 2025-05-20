@@ -5,6 +5,7 @@ project(mujoco_cpp)
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 
 ## Set default cmake build type to release
 if(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
@@ -30,6 +31,7 @@ find_package(catkin REQUIRED
         geometry_msgs
         nav_msgs
         kuavo_msgs
+        kuavo_assets
         )
 
 # find_package(PkgConfig REQUIRED)
@@ -182,7 +184,13 @@ link_directories(../lib)
 aux_source_directory(./src/simulate SIMULATE_SRCS)
 aux_source_directory(./src/lcm_interface LCM_SRCS)
 
-add_library(${PROJECT_NAME} SHARED src/mujoco_node.cc ${SIMULATE_SRCS} ${LCM_SRCS})
+file(GLOB DEXHAND_SOURCES "src/dexhand/*.cpp" "src/dexhand/*.hpp")
+add_library(${PROJECT_NAME} SHARED 
+        src/mujoco_node.cc 
+        ${DEXHAND_SOURCES}
+        src/joint_address.hpp
+        src/dexhand_mujoco_node.cpp
+${SIMULATE_SRCS} ${LCM_SRCS})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${MUJOCO_LIB} ${catkin_LIBRARIES} Threads::Threads glfw ${glfw3_LIBRARIES} ${LCM_LIBRARIES})
 
 add_executable(${PROJECT_NAME}_simulate src/main.cc)

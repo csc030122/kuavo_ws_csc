@@ -70,11 +70,8 @@ RUN apt-get update -y && apt-get install libeigen3-dev libboost-all-dev -y \
     && apt-get install libmodbus-dev -y \
     && apt-get install libprotobuf-c-dev  -y \ 
     && apt-get install liblcm-dev libgflags-dev libgoogle-glog-dev liblmdb-dev -y \
-    && apt-get install libgflags-dev libgoogle-glog-dev liblmdb-dev -y \
-    # set robot version
-    && echo 'export ROBOT_VERSION=40' >> /root/.bashrc \
-    && echo 'export ROBOT_VERSION=40' >> /root/.zshrc
-
+    && apt-get install libgflags-dev libgoogle-glog-dev liblmdb-dev -y 
+    
 # lcm lib
 RUN apt-get update -y && apt-get install build-essential libglib2.0-dev git cmake -y \
     && git clone https://github.com/lcm-proj/lcm.git \
@@ -166,8 +163,8 @@ RUN apt-get update -y && apt-get install python3-pip git -y \
     && git clone https://github.com/openai/mujoco-py.git \
     && cd mujoco-py \
     && pip3 install -U 'mujoco-py<2.2,>=2.1' \
-    && pip3 install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple \
-    && pip3 install -r requirements.dev.txt -i https://pypi.tuna.tsinghua.edu.cn/simple \
+    && pip3 install -r requirements.txt \
+    && pip3 install -r requirements.dev.txt\
     && python3 setup.py install \
     && pip3 install mujoco \
     && pip3 install psutil \
@@ -185,10 +182,16 @@ RUN pip3 install scipy==1.10.1 numpy-quaternion==2023.0.4 protobuf==5.27.2
 COPY config_ccache.sh /root/config_ccache.sh
 RUN chmod +x /root/config_ccache.sh && zsh -c /root/config_ccache.sh && rm /root/config_ccache.sh
 RUN git config --global --add safe.directory /root/kuavo_ws
+
+RUN apt install -y ros-noetic-desktop-full ros-noetic-behaviortree-cpp-v3
+RUN apt install -y bc ros-noetic-apriltag*
+RUN apt clean && apt autoclean
+RUN echo 'export LD_LIBRARY_PATH=/opt/drake/lib/:$LD_LIBRARY_PATH' >> /root/.bashrc \
+    && echo 'export LD_LIBRARY_PATH=/opt/drake/lib/:$LD_LIBRARY_PATH' >> /root/.zshrc \
+    && echo 'export ROBOT_VERSION=42' >> /root/.bashrc \
+    && echo 'export ROBOT_VERSION=42' >> /root/.zshrc
+
 # set default shell to zsh
 RUN chsh -s $(which zsh) 
-
 WORKDIR /root/kuavo_ws
-# >>> crocoddyl <<<
-# RUN pip3 install --user crocoddyl \
-#     && pip3 install meshcat
+

@@ -3,6 +3,8 @@
 
 import os
 import signal
+
+import rospkg
 import rospy
 import numpy as np
 from sensor_msgs.msg import JointState
@@ -49,7 +51,10 @@ if __name__ == '__main__':
     end_effector_type = args.end_effector_type
     print(f"end effector type: {end_effector_type}")
 
-    model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
+    rospack = rospkg.RosPack()
+    kuavo_assests_path = rospack.get_path("kuavo_assets")
+    robot_version = os.environ.get('ROBOT_VERSION', '40')
+    model_path = kuavo_assests_path + f"/models/biped_s{robot_version}"
     quest3_arm_info_transformer = Quest3ArmInfoTransformer(model_path)
     # rospy.spin()
     rate = rospy.Rate(100)

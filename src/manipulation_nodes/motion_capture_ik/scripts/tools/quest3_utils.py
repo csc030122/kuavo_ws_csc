@@ -364,8 +364,13 @@ class Quest3ArmInfoTransformer:
         is_runing &= self.ok_gesture_check(self.left_finger_joints)
         is_runing &= self.ok_gesture_check(self.right_finger_joints)
 
-        return is_runing
- 
+        # 兼容手柄的情况
+        is_joyRun = True
+        is_joyRun &= self.joy_ok_gesture_check(self.left_joystick)
+        is_joyRun &= self.joy_ok_gesture_check(self.right_joystick)
+
+        return is_runing or is_joyRun
+
     def is_stop_gesture(self):
         """
         shot-shot:->Stop
@@ -411,7 +416,16 @@ class Quest3ArmInfoTransformer:
         is_shot = True
         is_shot &= (stick_pos[0] < min_agl)
         is_shot &= (stick_pos[1] > max_agl)
-        return is_shot
+        return is_shot    
+
+    @staticmethod
+    def joy_ok_gesture_check(stick_pos):
+        """
+        stick_pos : [trigger, grip]
+        """
+        is_ok = True
+        is_ok &= (stick_pos[0] > 0.5)
+        return is_ok
 
 
     @staticmethod

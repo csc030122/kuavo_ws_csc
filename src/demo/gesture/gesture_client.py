@@ -80,4 +80,4 @@ if __name__ == "__main__":
         time.sleep(0.1)  # 等待 100ms
 
     # reset hand gesture.    
-    gesture_client("empty", hand_side=2)
+    # gesture_client("empty", hand_side=2)

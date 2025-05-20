@@ -163,7 +163,7 @@ class ArmsIKNode
                 {
                     q0_ << ik_cmd_left_.joint_angles, ik_cmd_right_.joint_angles;
                     std::cout << std::fixed << std::setprecision(3) << "Left: " << q0_.head(single_arm_num_).transpose()
-                                            << ", Left: " << q0_.tail(single_arm_num_).transpose() << std::endl;
+                                            << ", Right: " << q0_.tail(single_arm_num_).transpose() << std::endl;
                 }
                 auto start = std::chrono::high_resolution_clock::now();
                 checkInWorkspace(pose_vec[1].second, pose_vec[2].second);
@@ -408,7 +408,7 @@ class ArmsIKNode
             {
                 q0_ << ik_cmd_left_.joint_angles, ik_cmd_right_.joint_angles;
                 std::cout << std::fixed << std::setprecision(3) << "Left: " << q0_.head(single_arm_num_).transpose()
-                                        << ", Left: " << q0_.tail(single_arm_num_).transpose() << std::endl;
+                                        << ", Right: " << q0_.tail(single_arm_num_).transpose() << std::endl;
             }
             auto start = std::chrono::high_resolution_clock::now();
             std::vector<std::pair<Eigen::Quaterniond, Eigen::Vector3d>> pose_vec{

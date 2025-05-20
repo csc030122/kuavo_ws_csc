@@ -40,7 +40,9 @@
 #include "humanoid_controllers/LowPassFilter.h"
 #include "humanoid_interface/gait/GaitSchedule.h"
 #include "kuavo_msgs/robotHeadMotionData.h"
-#include "gazebo-sim/shm_manager.h"
+#include "kuavo_msgs/getCurrentGaitName.h"
+#include "humanoid_controllers/shm_manager.h"
+#include <std_msgs/Int8.h> 
 
 namespace humanoid_controller
 {
@@ -57,7 +59,7 @@ namespace humanoid_controller
     vector_t jointPos_;
     vector_t jointVel_;
     vector_t jointAcc_;
-    vector_t jointCurrent_;
+    vector_t jointTorque_;
     vector3_t angularVel_;
     vector3_t linearAccel_;
     Eigen::Quaternion<scalar_t> quat_;
@@ -69,7 +71,7 @@ namespace humanoid_controller
       jointPos_.resize(num);
       jointVel_.resize(num);
       jointAcc_.resize(num);
-      jointCurrent_.resize(num);
+      jointTorque_.resize(num);
     }
   };
   class TrajectoryPublisher
@@ -166,7 +168,7 @@ namespace humanoid_controller
     ~humanoidController();
     void keyboard_thread_func();
     bool init(HybridJointInterface *robot_hw, ros::NodeHandle &controller_nh, bool is_nodelet_node = false);
-    void preUpdate(const ros::Time &time);
+    bool preUpdate(const ros::Time &time);
     bool preUpdateComplete() {return isPreUpdateComplete;}
     void update(const ros::Time &time, const ros::Duration &period);
     void starting(const ros::Time &time);
@@ -190,7 +192,11 @@ namespace humanoid_controller
     void swingArmPlanner(double st, double current_time, double stepDuration, Eigen::VectorXd &desire_arm_q, Eigen::VectorXd &desire_arm_v);
     void headCmdCallback(const kuavo_msgs::robotHeadMotionData::ConstPtr &msg);
     void visualizeWrench(const Eigen::VectorXd &wrench, bool is_left);
-    
+    bool getCurrentGaitNameCallback(kuavo_msgs::getCurrentGaitName::Request &req, kuavo_msgs::getCurrentGaitName::Response &res);
+    void getEnableMpcFlagCallback(const std_msgs::Bool::ConstPtr &msg);
+    void getEnableWbcFlagCallback(const std_msgs::Bool::ConstPtr &msg);
+    void checkMpcPullUp(double current_time, vector_t & current_state, const TargetTrajectories& planner_target_trajectories);
+
     /**
      * Creates MPC Policy message.
      *
@@ -202,12 +208,15 @@ namespace humanoid_controller
     static ocs2_msgs::mpc_flattened_controller createMpcPolicyMsg(const PrimalSolution &primalSolution, const CommandData &commandData,
                                                                   const PerformanceIndex &performanceIndices);
 
+    void dexhandStateCallback(const sensor_msgs::JointState::ConstPtr &msg);
+
     ros::Time last_time_;
     ros::Time current_time_;
     std::queue<SensorData> sensorDataQueue;
     std::mutex sensor_data_mutex_;
 
     std::thread keyboardThread_;
+    int imuType_;
 
     // Interface
     std::shared_ptr<HumanoidInterface> HumanoidInterface_;
@@ -226,9 +235,15 @@ namespace humanoid_controller
     std::shared_ptr<StateEstimateBase> stateEstimate_;
     std::shared_ptr<CentroidalModelRbdConversions> rbdConversions_;
     bool is_initialized_ = false;
+    bool is_abnor_StandUp_{false};
     bool wbc_only_{false};
     bool reset_mpc_{false};
+    bool disable_mpc_{false};
+    bool disable_wbc_{false};
     int hardware_status_ = 0;
+
+    std::mutex disable_mpc_srv_mtx_;
+    std::mutex disable_wbc_srv_mtx_;
 
     // Whole Body Control
     std::shared_ptr<WbcBase> wbc_;
@@ -239,9 +254,21 @@ namespace humanoid_controller
     std::shared_ptr<MPC_MRT_Interface> mpcMrtInterface_;
     std::shared_ptr<MRT_ROS_Interface> mrtRosInterface_;
 
+    //waitStandUpInit
+    bool isRobotStandUpSuccess_;
+
     // preUpdate, 介于蹲姿启动和进MPC之间的状态处理
+    double robotStartSquatTime_{0.0};
+    double robotStartStandTime_{0.0};
+    double robotStandUpCompleteTime_{0.0};
+    bool is_robot_standup_complete_{false};
     bool isPreUpdateComplete{false};
+    bool isInitStandUpStartTime_{false};
+    bool isPullUp_{false};
+    bool setPullUpState_{false};
+    double standupTime_{0.0};
     std::shared_ptr<WbcBase> standUpWbc_;
+    vector_t curRobotLegState_;
 
     // Visualization
     std::shared_ptr<HumanoidVisualizer> robotVisualizer_;
@@ -261,6 +288,7 @@ namespace humanoid_controller
     ros::Publisher stop_pub_;
     ros::Publisher lHandWrenchPub_;
     ros::Publisher rHandWrenchPub_;
+    ros::Publisher standUpCompletePub_;
     ros::Subscriber jointPosVelSub_;
     ros::Subscriber sensorsDataSub_;
     ros::Subscriber jointAccSub_;
@@ -273,15 +301,22 @@ namespace humanoid_controller
     ros::Subscriber arm_target_traj_sub_;//最终的手臂目标位置
     ros::Subscriber foot_pos_des_sub_;
     ros::Subscriber hand_wrench_sub_;
+    ros::Subscriber contact_force_sub_;
     ros::Publisher mpcPolicyPublisher_;
 
+    ros::Subscriber dexhand_state_sub_;
+    ros::Subscriber enable_mpc_sub_;
+    ros::Subscriber enable_wbc_sub_;
+
     ros::ServiceServer enableArmCtrlSrv_;
+    ros::ServiceServer currentGaitNameSrv_;
     GaitManager *gaitManagerPtr_=nullptr;
 
     PinocchioInterface *pinocchioInterface_ptr_;
     CentroidalModelInfo centroidalModelInfo_;
     CentroidalModelInfo centroidalModelInfoWBC_;
     Eigen::VectorXd hand_wrench_cmd_ = Eigen::VectorXd::Zero(12);
+    Eigen::VectorXd contactForce_ = Eigen::VectorXd::Zero(16);
     CentroidalModelInfo centroidalModelInfoEstimate_;
 
     // Node Handle
@@ -291,7 +326,6 @@ namespace humanoid_controller
     HighlyDynamic::JointFilter *joint_filter_ptr_{nullptr};
 #endif
     HighlyDynamic::KuavoSettings kuavo_settings_;
-    KuavoHardwareInterface *hardware_interface_ptr_{nullptr};
     bool is_nodelet_node_{false};
 
     void publishFeetTrajectory(const TargetTrajectories &targetTrajectories);
@@ -325,7 +359,8 @@ namespace humanoid_controller
     vector_t desire_arm_q_prev_;
     vector_t jointPos_, jointVel_;
     vector_t jointAcc_;
-    vector_t jointCurrent_;
+    vector_t jointTorque_;
+    vector_t dexhand_joint_pos_ = vector_t::Zero(12);
 
     vector_t jointPosWBC_, jointVelWBC_;
     vector_t jointAccWBC_;
@@ -343,6 +378,10 @@ namespace humanoid_controller
     vector_t defalutJointPos_;
     vector_t initial_status_;
     vector_t intail_input_;
+    vector_t pull_up_status_;
+    vector_t pull_up_input_;
+    vector_t cur_status_;
+    vector_t cur_input_;
     vector_t joint_kp_, joint_kd_, joint_kp_walking_, joint_kd_walking_, head_kp_, head_kd_;
     vector_t output_tau_, output_pos_, output_vel_;
     Eigen::MatrixXd joint_state_limit_; // 26x2, lower and upper limit
@@ -356,6 +395,8 @@ namespace humanoid_controller
     bool use_estimator_contact_{false};
     bool is_stance_mode_{false};
     bool only_half_up_body_{false};
+    bool wheel_arm_robot_{false};
+    bool stand_up_protect_{false};
     
     TopicLogger *ros_logger_{nullptr};
     vector_t optimizedState2WBC_mrt_, optimizedInput2WBC_mrt_;

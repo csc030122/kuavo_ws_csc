@@ -15,6 +15,9 @@
     <param name="referenceFile"    value="$(find humanoid_controllers)/config/kuavo_v$(arg robot_version)/command/reference.info"/>
     <param name="dynamicQrFile"    value="$(find humanoid_controllers)/config/kuavo_v$(arg robot_version)/mpc/dynamic_qr.info"/>
     <param name="gaitCommandFile"  value="$(find humanoid_controllers)/config/kuavo_v$(arg robot_version)/command/gait.info"/>
+    
+    <arg name="kuavoConfigFile"           default="$(find kuavo_assets)/config/kuavo_v$(arg robot_version)/kuavo.json"/>
+    <param name="kuavo_configuration" textfile="$(arg kuavoConfigFile)"/>
 
     <param name="modelPath"        value="$(find kuavo_assets)/models" />
     <!-- rviz -->
@@ -25,5 +28,3 @@
     <!-- </group> -->
 
 </launch>
-
-

@@ -24,10 +24,19 @@ if [ -z "$IP" ]; then
     fi
 else
     # 如果有传入参数，检查 /etc/hosts 中是否有 'kuavo_master'
-     if [[ "$IP" == "192.168.26.12" ]]; then
+    # 判断当前设备是否为DHCP主机
+    if ip a | grep -q "192.168.26.1"; then
+        # 当前设备是DHCP主机，目标IP应为192.168.26.12
+        TARGET_IP="192.168.26.12"
+    else
+        # 当前设备不是DHCP主机，目标IP应为192.168.26.1
+        TARGET_IP="192.168.26.1"
+    fi
+    
+    if [[ "$IP" == "$TARGET_IP" ]]; then
         echo "IP 匹配成功: $IP"
     else
-        echo "IP 匹配失败！请联系技术支持检查上位机 DHCP 配置！"
+        echo "IP 匹配失败！期望的IP是 $TARGET_IP，但提供的是 $IP。请联系技术支持检查上下位机 DHCP 配置！"
         return 1
     fi
     if grep -q "kuavo_master" /etc/hosts; then

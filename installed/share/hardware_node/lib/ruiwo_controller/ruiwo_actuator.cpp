@@ -4,7 +4,8 @@ RuiWoActuator::RuiWoActuator(std::string pymodule_path, bool is_cali) : is_cali_
                                                                 pEnableMethod(nullptr), pDisableMethod(nullptr),
                                                                 pSetPositionMethod(nullptr), pSetTorqueMethod(nullptr), pSetVelocityMethod(nullptr), 
                                                                 pGetPositionMethod(nullptr), pGetTorqueMethod(nullptr), pGetVelocityMethod(nullptr),
-                                                                pymodule_path(pymodule_path), pGetJointStateMethod(nullptr),pCheckStateMethod(nullptr)
+                                                                pymodule_path(pymodule_path), pGetJointStateMethod(nullptr),pCheckStateMethod(nullptr),
+                                                                pSetTeachPendantModeMethod(nullptr), pJoint_online_list(nullptr)
 {
 }
 
@@ -29,6 +30,8 @@ RuiWoActuator::~RuiWoActuator()
     Py_XDECREF(pSetZeroMethod);
     Py_XDECREF(pChangEncoderMethod);
     Py_XDECREF(pSaveZerosMethod);
+    Py_XDECREF(pSetTeachPendantModeMethod);
+    Py_XDECREF(pJoint_online_list);
 
     // 关闭 Python 解释器
     Py_Finalize();
@@ -144,11 +147,13 @@ int RuiWoActuator::initialize()
     pSetZeroMethod = PyObject_GetAttrString(ActuatorInstance, "set_as_zero");
     pChangEncoderMethod = PyObject_GetAttrString(ActuatorInstance, "change_encoder_zero_round");
     pSaveZerosMethod = PyObject_GetAttrString(ActuatorInstance, "save_zero_position");
+    pSetTeachPendantModeMethod = PyObject_GetAttrString(ActuatorInstance, "set_teach_pendant_mode");
+    pJoint_online_list = PyObject_GetAttrString(ActuatorInstance, "joint_online_list");
 
     // 检查获取方法是否成功
     if (!pEnableMethod || !pCloseMethod || !pDisableMethod || !pSetPositionMethod || !pSetTorqueMethod || !pSetVelocityMethod ||
         !pGetPositionMethod || !pGetTorqueMethod|| !pGetVelocityMethod || !pGetJointStateMethod || !RuiWo_pJoinMethod ||
-        !pCheckStateMethod || !pSetZeroMethod || !pChangEncoderMethod || !pSaveZerosMethod)
+        !pCheckStateMethod || !pSetZeroMethod || !pChangEncoderMethod || !pSaveZerosMethod || !pSetTeachPendantModeMethod || !pJoint_online_list)
     {
         PyErr_Print();
         Py_DECREF(ActuatorInstance); // 释放已获取的对象
@@ -286,6 +291,8 @@ void RuiWoActuator::close()
         Py_XDECREF(pSetZeroMethod);
         Py_XDECREF(pChangEncoderMethod);
         Py_XDECREF(pSaveZerosMethod);
+        Py_XDECREF(pSetTeachPendantModeMethod);
+        Py_XDECREF(pJoint_online_list);
     }
     else
     {
@@ -293,6 +300,62 @@ void RuiWoActuator::close()
     }
     PyGILState_Release(gstate);
 }
+
+void RuiWoActuator::set_teach_pendant_mode(int mode_){
+
+    if (pSetTeachPendantModeMethod)
+    {
+        gstate = PyGILState_Ensure();
+        PyObject *args = PyTuple_Pack(1, Py_BuildValue("i", mode_));
+        PyObject_CallObject(pSetTeachPendantModeMethod, args);
+        Py_DECREF(args);
+        PyGILState_Release(gstate);
+    }
+    else
+    {
+        PyErr_Print();
+    }
+
+}
+
+bool RuiWoActuator::check_motor_list_state()
+{
+    std::cout << "check motor state." << std::endl;
+    std::vector<int> stateFalseIndex;
+    Py_ssize_t size = PyList_Size(pJoint_online_list);
+    std::cout << "ruiwo motor state[";
+    for (Py_ssize_t i = 0; i < size; i++)
+    {
+        PyObject *pItem = PyList_GetItem(pJoint_online_list, i);
+        if (pItem == NULL)
+        {
+            std::cout << "... ]." << std::endl;
+            std::cerr << "get list element [" << i << "] failed." << std::endl;
+            return false; // 获取列表元素失败
+        }
+        if (Py_False == pItem)
+        {
+            std::cout << "False ";
+            stateFalseIndex.push_back(i);
+            continue;
+        }
+        std::cout << "True ";
+    }
+    std::cout << "]." << std::endl;
+
+    for (int j = 0; j < stateFalseIndex.size(); j++)
+    {
+        std::cerr << "ruiwo motor " << stateFalseIndex[j] << " state is false." << std::endl;
+    }
+    if (!stateFalseIndex.empty())
+    {
+        std::cerr << "ruiwo motor abnormal size: " << stateFalseIndex.size() << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
 // void RuiWoActuator::join()
 // {
 

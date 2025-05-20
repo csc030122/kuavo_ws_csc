@@ -188,6 +188,10 @@ extern void motorSetTorqueWithFeedback(const uint16_t *ids, const EcMasterType* 
 extern void motorToPosition(T_EC_DEMO_APP_CONTEXT *pAppContext, const uint16_t *ids, uint32_t num_id, const double *q_d, double speed, double dt);
 extern void motorToPosition(const uint16_t *ids, uint32_t num_id, const double *q_d, double speed, double dt);
 
+
+extern void motorSetkp(const std::vector<int32_t>& joint_kp);
+extern void motorSetkd(const std::vector<int32_t>& joint_kd);
+
 extern bool isMotorEnable(void);
 extern uint32_t getNumSlave(void);
 void setEcEncoderRange(uint32_t *encoder_range_set, uint16_t num);

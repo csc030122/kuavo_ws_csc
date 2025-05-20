@@ -43,6 +43,10 @@
 #include <atomic>
 #include <queue>
 
+#include "joint_address.hpp"
+#include "dexhand_mujoco_node.h"
+#include "dexhand/json.hpp"
+
 //  ************************* lcm ****************************
 
 #include "lcm_interface/LcmInterface.h"
@@ -86,7 +90,7 @@ namespace
 
   std::mutex queueMutex;
   ros::NodeHandle *g_nh_ptr;
-  size_t numJoints = 12;
+  size_t numJoints = 12;      /* LLeg+RLeg+LArm+RArm+Head (without the dexhand joints) */
   double is_spin_thread = true;
   ros::Time sim_time;
   // model and data
@@ -103,6 +107,20 @@ namespace
 
   using Seconds = std::chrono::duration<double>;
 
+  /************************************* Joint Address******************************************/
+  // This section defines the joint addresses for various body parts of the robot.
+  using namespace mujoco_node;
+  JointGroupAddress LLegJointsAddr("l_leg_joints");
+  JointGroupAddress RLegJointsAddr("r_leg_joints");
+  JointGroupAddress LArmJointsAddr("r_arm_joints");
+  JointGroupAddress RArmJointsAddr("r_arm_joints");
+  JointGroupAddress HeadJointsAddr("head_joints");
+  JointGroupAddress LHandJointsAddr("l_hand_joints");
+  JointGroupAddress RHandJointsAddr("r_hand_joints");
+  /*********************************************************************************************/
+  // Mujoco Dexhand
+  std::shared_ptr<mujoco_node::DexHandMujocoRosNode> g_dexhand_node = nullptr;
+  /*********************************************************************************************/
   //---------------------------------------- plugin handling -----------------------------------------
 
   // return the path to the directory containing the current executable
@@ -202,12 +220,47 @@ namespace
         } });
   }
 
+  void init_joint_address(mjModel* model, JointGroupAddress &jga, const std::string& joint0, const std::string& joint1)
+  {     
+    // 获取关节 ID
+    auto id0 = mj_name2id(model, mjOBJ_JOINT, joint0.c_str());
+    auto id1 = mj_name2id(model, mjOBJ_JOINT, joint1.c_str());
+    assert((id0 >= 0 && id1 >= 0) && (id1 < model->njnt) && "Invalid joint index");
+
+    // 获取 qpos 地址
+    auto qpos0 = model->jnt_qposadr[id0];
+    auto qpos1 = model->jnt_qposadr[id1];
+    assert(qpos0 != -1 && qpos1 != -1 && "Invalid qpos address");
+
+    // 获取自由度（dof）地址
+    auto dof0 = model->jnt_dofadr[id0];
+    auto dof1 = model->jnt_dofadr[id1];
+    assert(dof0 != -1 && dof1 != -1 && "Invalid dof address");
+
+    std::string actuator0 = joint0 + "_motor";
+    std::string actuator1 = joint1 + "_motor";
+    auto ctrl0 = mj_name2id(model, mjOBJ_ACTUATOR, actuator0.c_str());
+    auto ctrl1 = mj_name2id(model, mjOBJ_ACTUATOR, actuator1.c_str());
+    assert((ctrl0 >= 0 && ctrl1 >= 0) && (ctrl1 < model->nu) && "Invalid actuator index");
+
+    // Set joint addresses
+    jga.set_ctrladr(ctrl0, ctrl1)
+        .set_qposadr(qpos0, qpos1)
+        .set_qdofadr(dof0, dof1);
+
+    std::cout << jga <<std::endl;
+  }
+
   //------------------------------------------- simulation -------------------------------------------
   void signalHandler(int signum)
   {
     if (signum == SIGINT) // 捕获Ctrl+C信号
     {
       sim->exitrequest.store(1);
+      if(g_dexhand_node) {
+        g_dexhand_node->stop();
+      }
+      
       std::cout << "Ctrl+C pressed, exit request sent." << std::endl;
     }
   }
@@ -239,10 +292,26 @@ namespace
     else
     {
       mnew = mj_loadXML(filename, nullptr, loadError, kErrorLength);
+      if (!mnew){
+        std::cerr << "[Mujoco]: load mode error:" << loadError <<std::endl;
+        return nullptr;
+      }
+      
+      /* Init Joint Address 初始化关节组的数据地址 */
+      init_joint_address(mnew, LLegJointsAddr, "leg_l1_joint", "leg_l6_joint");
+      init_joint_address(mnew, RLegJointsAddr, "leg_r1_joint", "leg_r6_joint");
+      init_joint_address(mnew, LArmJointsAddr, "zarm_l1_joint", "zarm_l7_joint");
+      init_joint_address(mnew, RArmJointsAddr, "zarm_r1_joint", "zarm_r7_joint");
+      init_joint_address(mnew, HeadJointsAddr, "zhead_1_joint", "zhead_2_joint");
 
-      double totalMass = 0.0;
+      /* dexhand joint address */
+      if(mj_name2id(mnew, mjOBJ_JOINT, "l_thumbCMC") != -1) {
+        init_joint_address(mnew, LHandJointsAddr, "l_thumbCMC", "l_littlePIP");
+        init_joint_address(mnew, RHandJointsAddr, "r_thumbCMC", "r_littlePIP");
+      }
 
       // 遍历所有的物体
+      double totalMass = 0.0;
       for (int i = 0; i < mnew->nbody; i++)
       {
         totalMass += mnew->body_mass[i];
@@ -339,19 +408,32 @@ namespace
     sensors_data.sensor_time = sim_time;
     sensors_data.header.frame_id = "world";
     kuavo_msgs::jointData joint_data;
-    // std::cout << "numJoints: " << numJoints << std::endl;
-    // std::cout << "d->qpos: " << m->nq << std::endl;
 
-    // std::cout << "d->qvel: " << m->nv << std::endl;
-    // std::cout << "d->qacc: " << m->na << std::endl;
-    for (size_t i = 0; i < numJoints; i++)
-    {
-      joint_data.joint_q.push_back(d->qpos[7 + i]);
-      joint_data.joint_v.push_back(d->qvel[6 + i]);
-      joint_data.joint_vd.push_back(d->qacc[6 + i]);
-      joint_data.joint_current.push_back(d->qfrc_actuator[6 + i]);
+    auto updateJointData = [&](const JointGroupAddress& jointAddr) {
+        for (auto iter = jointAddr.qposadr().begin(); iter != jointAddr.qposadr().end(); iter++) {
+            // add joint position
+            joint_data.joint_q.push_back(d->qpos[*iter]);
+        }
+        for (auto iter = jointAddr.qdofadr().begin(); iter != jointAddr.qdofadr().end(); iter++) {
+            // add joint velocity, acceleration, force
+            joint_data.joint_v.push_back(d->qvel[*iter]);
+            joint_data.joint_vd.push_back(d->qacc[*iter]);
+            joint_data.joint_torque.push_back(d->qfrc_actuator[*iter]);
+        }
+    };
+
+    // Joint Data: LLeg, RLeg, LArm, RArm, Head
+    updateJointData(LLegJointsAddr);
+    updateJointData(RLegJointsAddr);
+    updateJointData(LArmJointsAddr);
+    updateJointData(RArmJointsAddr);
+    updateJointData(HeadJointsAddr);
+    
+    // Dexhand: read state
+    if(g_dexhand_node) {
+      g_dexhand_node->readCallback(d);
     }
-
+    
     kuavo_msgs::imuData imu_data;
     nav_msgs::Odometry bodyOdom;
     int pos_addr = m->sensor_adr[mj_name2id(m, mjOBJ_SENSOR, "BodyPos")];
@@ -577,13 +659,24 @@ namespace
             queueMutex.unlock();
             if (updated)
             {
-              for (size_t i = 0; i < numJoints; i++)
-              {
-                d->ctrl[i] = tau_cmd[i];
-                // std::cout << "tau_cmd[" << i << "]: " << tau_cmd[i] << std::endl;
+              // update actuators/controls
+              auto updateControl = [&](const JointGroupAddress& jointAddr, int &i) {
+                  for (auto iter = jointAddr.ctrladr().begin(); iter != jointAddr.ctrladr().end(); iter++) {
+                      d->ctrl[*iter] = tau_cmd[i++];
+                  }
+              };
+              int i = 0;
+              updateControl(LLegJointsAddr, i);
+              updateControl(RLegJointsAddr, i);
+              updateControl(LArmJointsAddr, i);
+              updateControl(RArmJointsAddr, i);
+              updateControl(HeadJointsAddr, i);
+
+              // Dexhand: ctrl/command
+              if(g_dexhand_node) {
+                g_dexhand_node->writeCallback(d);
               }
 
-              // std::cout << "tau_cmd: " << tau_cmd[0] << std::endl;
               mj_step(m, d);
               step_count++;
               sim_time += ros::Duration(1 / frequency);
@@ -781,8 +874,17 @@ void PhysicsThread(mj::Simulate *sim, const char *filename)
     if (m)
       d = mj_makeData(m);
     m->opt.timestep = 1 / frequency;
-    numJoints = m->nq - 7;
-    std::cout << "numJoints: " << numJoints << std::endl;
+    
+    // Init numJoints
+    numJoints = 0;
+    numJoints += LLegJointsAddr.qdofadr().size();
+    numJoints += RLegJointsAddr.qdofadr().size();
+    numJoints += LArmJointsAddr.qdofadr().size();
+    numJoints += RArmJointsAddr.qdofadr().size();
+    numJoints += HeadJointsAddr.qdofadr().size();
+    std::cout << "\033[32mnumJoints: " << (m->nq - 7) << "\033[0m" << std::endl;
+    std::cout << "\033[32mnumJoints(without dexhand): " << numJoints << "\033[0m" << std::endl;
+
     if (d)
     {
       // ********************************
@@ -816,20 +918,25 @@ void PhysicsThread(mj::Simulate *sim, const char *filename)
   ros::Subscriber jointCmdSub = g_nh_ptr->subscribe("/joint_cmd", 10, jointCmdCallback);
   ros::Subscriber extWrenchSub = g_nh_ptr->subscribe("/external_wrench", 10, extWrenchCallback);
 
+  // 初始化灵巧手ROS
+  if(!RHandJointsAddr.ctrladr().invalid()) {
+      std::cout << "[mujoco_node]: init dexhand node" << std::endl;
+      g_dexhand_node = std::make_shared<DexHandMujocoRosNode>();
+      g_dexhand_node->init(*g_nh_ptr, m, RHandJointsAddr, LHandJointsAddr);
+  }
+
   std::cout << "[mujoco_node]: waiting for init qpos" << std::endl;
   while (ros::ok())
   {
     if (g_nh_ptr->hasParam("robot_init_state_param"))
     {
-              std::cout << "qpos_init size: " << m->nq<< std::endl;
-
       qpos_init.resize(m->nq);
       std::vector<double> qpos_init_temp;
       qpos_init_temp.resize(50);
       if (g_nh_ptr->getParam("robot_init_state_param", qpos_init_temp))
       {
         ROS_INFO("Get init qpos ");
-        
+
         for (int i = 0; i < qpos_init_temp.size(); i++)
         {
           qpos_init[i] = qpos_init_temp[i];
@@ -912,6 +1019,29 @@ int simulate_loop(ros::NodeHandle &nh, bool spin_thread = false)
     nh.getParam("/wbc_frequency", frequency);
   }
   ROS_INFO("Mujoco Frequency: %f Hz", frequency);
+  
+  // 获取配置文件
+  if(nh.hasParam("/kuavo_configuration")) {
+    std::string kuavo_configuration;
+    nh.getParam("/kuavo_configuration", kuavo_configuration);
+    if (!kuavo_configuration.empty()) {
+      try {
+          nlohmann::json config_json;
+          // 解析kuavo_configuration字符串为JSON对象
+          std::istringstream config_stream(kuavo_configuration);
+          config_stream >> config_json;
+          if (config_json.contains("EndEffectorType") && config_json["EndEffectorType"].is_array()) {
+            if (!config_json["EndEffectorType"].empty()) {
+              std::string end_effector_type = config_json["EndEffectorType"][0];
+              nh.setParam("end_effector_type", end_effector_type);
+              ROS_INFO("\033[32mEnd effector type: %s\033[0m", end_effector_type.c_str());
+            }
+          }
+      } catch (const std::exception& e) {
+        ROS_ERROR("Error parsing configuration file: %s", e.what());
+      }
+    }
+  }
 
   // scan for libraries in the plugin directory to load additional plugins
   scanPluginLibraries();

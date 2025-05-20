@@ -1,4 +1,4 @@
-#include "gazebo-sim/shm_manager.h"
+#include "humanoid_controllers/shm_manager.h"
 #include <chrono>
 #include <thread>
 #include <iostream>

@@ -64,16 +64,22 @@
 
 ## 说明
 
-   - 该案例所使用的语音，文字转换模型为： https://www.xfyun.cn/
+   ⚠️ **注意: 该案例使用了科大讯飞的RTASR，TTS模型以及深度求索（deepseek）的deepseek-chat模型。这三个模型均为收费模型，需要自行创建账号充值获取API Key并将获取到的API Key复制到程序对应地方，使用时机器人上位机要连接外网（能访问互联网）**
+
+   - 该案例所使用的语音，文字转换模型为讯飞的模型： https://www.xfyun.cn/
+      - 讯飞实时语音转写（RTASR）模型 
+        - https://console.xfyun.cn/app/myapp创建RTASR应用，获取app_id和api_key
+        - 将程序`<kuavo_ros_application>/src/kuavo_large_model/rtasr_python3_demo.py`第220，221行的app_id和api_key替换成获取到的即可
+      
+      - 讯飞语音合成（TTS）模型
+        - https://console.xfyun.cn/app/myapp创建TTS应用，获取APPID，APISecret，APIKey
+        - 将程序`<kuavo_ros_application>/src/kuavo_large_model/tts_ws_python3_demo.py`第139，140，141行的APPID，APISecret，APIKey替换成获取到的即可
 
    - 该案例所使用的对话大模型为深度求索(deepseek)推出的deepseek-chat： https://www.deepseek.com/
-
-   - 获取DeepSeek API Key：
-     - https://platform.deepseek.com/usage
-     - 充值，获取API Key    
-     - 将程序第101行的api-key替换成获取到的即可
-
-   ⚠️ **注意: 使用该案例时，需要机器人上位机连接外网**
+     - 获取DeepSeek API Key：
+       - https://platform.deepseek.com/usage
+       - 充值，获取API Key    
+       - 将程序`<kuavo_ros_application>/src/kuavo_large_model/rtasr_python3_demo.py`第101行的api-key替换成获取到的即可
 
 ## 执行
 

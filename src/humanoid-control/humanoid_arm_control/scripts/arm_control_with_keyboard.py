@@ -14,6 +14,7 @@ from torso_ik import *
 from kuavo_msgs.msg import sensorsData, armTargetPoses
 from kuavo_msgs.srv import changeArmCtrlMode, changeArmCtrlModeRequest
 from pydrake.all import StartMeshcat, AddMultibodyPlantSceneGraph, MeshcatVisualizer
+import rospkg
 
 class ArmType(Enum):
     Right = 0,
@@ -45,8 +46,10 @@ class KeyBoardArmController:
         self.eef_z_bias = -0.15
         
         # 给定modelfile
-        self.model_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 
-                                       "motion_capture_ik_packaged/models/biped_gen4.0/urdf/biped_v3_arm.urdf")
+        rospack = rospkg.RosPack()
+        kuavo_assests_path = rospack.get_path("kuavo_assets")
+        robot_version = os.environ.get('ROBOT_VERSION', '40')
+        self.model_file = kuavo_assests_path + f"/models/biped_s{robot_version}/urdf/drake/biped_v3_arm.urdf"
         self.end_frames_name = ["torso", "l_hand_roll", "r_hand_roll", "l_forearm_pitch", "r_forearm_pitch"]
         
         # 实例化ArmIK类

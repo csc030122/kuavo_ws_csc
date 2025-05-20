@@ -1,5 +1,7 @@
 import rospy
+import rospkg
 import os
+import sys
 import asyncio
 import json
 from queue import Queue
@@ -9,6 +11,7 @@ import websockets
 import threading
 import time
 import math
+import subprocess
 from utils import calculate_file_md5, frames_to_custom_action_data, get_start_end_frame_time, frames_to_custom_action_data_ocs2
 
 from kuavo_ros_interfaces.srv import planArmTrajectoryBezierCurve, stopPlanArmTrajectory, planArmTrajectoryBezierCurveRequest, ocs2ChangeArmCtrlMode
@@ -20,9 +23,16 @@ from kuavo_msgs.msg import sensorsData
 # Replace multiprocessing values with simple variables
 plan_arm_state_progress = 0
 plan_arm_state_status = False
+should_stop = False
+process = None
 response_queue = Queue()
 active_threads: Dict[websockets.WebSocketServerProtocol, threading.Event] = {}
-ACTION_FILE_FOLDER = "~/.config/lejuconfig/action_files"
+package_name = 'planarmwebsocketservice'
+package_path = rospkg.RosPack().get_path(package_name)
+
+ACTION_FILE_FOLDER = package_path + "/action_files"
+UPLOAD_FILES_FOLDER = package_path + "/upload_files" 
+
 g_robot_type = ""
 ocs2_current_joint_state = []
 joint_names = [
@@ -174,7 +184,6 @@ class Payload:
     cmd: str
     data: dict
 
-
 @dataclass
 class Response:
     payload: Any
@@ -184,7 +193,6 @@ def plan_arm_state_callback(msg: planArmState):
     global plan_arm_state_progress, plan_arm_state_status
     plan_arm_state_progress = msg.progress
     plan_arm_state_status = msg.is_finished
-
 
 
 def update_preview_progress(response: Response, stop_event: threading.Event):
@@ -210,8 +218,6 @@ def update_preview_progress(response: Response, stop_event: threading.Event):
                 return
         
         time.sleep(update_interval)
-
-
 
 async def websocket_message_handler(
     websocket: websockets.WebSocketServerProtocol, data: dict
@@ -257,7 +263,8 @@ async def preview_action_handler(
     )
 
     data = data["data"]
-    print(data)
+    print(f"received message data: {data}")
+
     action_filename = data["action_filename"]
     action_file_path = os.path.expanduser(f"{ACTION_FILE_FOLDER}/{action_filename}")
     if not os.path.exists(action_file_path):
@@ -274,8 +281,8 @@ async def preview_action_handler(
         response_queue.put(response)
         return
 
-
     start_frame_time, end_frame_time = get_start_end_frame_time(action_file_path)
+
     if g_robot_type == "ocs2":
         action_frames = frames_to_custom_action_data_ocs2(action_file_path, start_frame_time, current_arm_joint_state)
         end_frame_time += 1
@@ -300,10 +307,13 @@ async def preview_action_handler(
     thread = threading.Thread(
         target=update_preview_progress, args=(response, stop_event)
     )
+    print("Starting thread to update progress")
     thread.start()
 
 
-async def stop_preview_action_handler(websocket: websockets.WebSocketServerProtocol, data: dict):
+async def stop_preview_action_handler(
+    websocket: websockets.WebSocketServerProtocol, data: dict
+):
     if websocket in active_threads:
         active_threads[websocket].set()
         del active_threads[websocket]
@@ -316,6 +326,158 @@ async def stop_preview_action_handler(websocket: websockets.WebSocketServerProto
         target=websocket,
     )
     stop_plan_arm_trajectory_client()
+    response_queue.put(response)
+
+
+async def get_robot_info_handler(
+    websocket: websockets.WebSocketServerProtocol, data: dict
+):
+
+    robot_version = rospy.get_param('robot_version')
+    payload = Payload(
+        cmd="get_robot_info", 
+        data={"code": 0, 
+              "robot_type": robot_version,
+            }
+    )
+
+    response = Response(
+        payload=payload,
+        target=websocket,
+    )
+    response_queue.put(response)
+
+
+async def get_robot_status_handler(
+    websocket: websockets.WebSocketServerProtocol, data: dict
+):
+    payload = Payload(
+        cmd="get_robot_status", data={"code": 0, "isrun": True}
+    )
+
+    if not active_threads:
+        payload.data["isrun"] = False
+        print("No activate threads")
+    else:
+        for key, value in active_threads.items():
+            print(f"Key: {key}, Value: {value}")
+
+    response = Response(
+        payload=payload,
+        target=websocket,
+    )
+    response_queue.put(response)
+
+
+async def run_node_handler(
+    websocket: websockets.WebSocketServerProtocol, data: dict
+):
+    if websocket in active_threads:
+        active_threads[websocket].set()
+        del active_threads[websocket]
+
+    payload = Payload(
+        cmd="run_node", data={"code": 0, "msg": "msg"}
+    )
+
+    data = data["data"]
+    print(f"received message data: {data}")
+    execute_path = data["path"]
+
+    response = Response(
+        payload=payload,
+        target=websocket,
+    )
+
+    # Create a new stop event for this thread
+    stop_event = threading.Event()
+
+    # Start a thread to update the progress
+    thread = threading.Thread(
+        target=execute_command_progress, args=(websocket, response, stop_event, execute_path)
+    )
+    print("Starting thread to update progress")
+    thread.start()
+
+
+def execute_command_progress(websocket: websockets.WebSocketServerProtocol, response: Response, stop_event: threading.Event, execute_path):
+    payload = response.payload
+    update_interval = 0.001 
+
+    if not os.path.exists(execute_path):
+        payload.data["code"] = 1
+        payload.data["msg"] = "File not found."
+        response_queue.put(response)
+        return
+
+    py_exe = sys.executable
+    command_list = [py_exe, execute_path]
+    print(f"Executing command: {command_list}")
+    global process
+    try: 
+        process = subprocess.Popen(command_list)
+    except Exception as e:
+        print("An error occurred while trying to execute the command:")
+        print(e)
+        payload.data["code"] = 1
+        payload.data["msg"] = "Command execution failed."
+        response_queue.put(response)
+        print("Command execution failed.")   
+    else:
+        active_threads[websocket] = stop_event
+        payload.data["code"] = 0
+        payload.data["msg"] = "Command executed successfully."
+        response_queue.put(response)
+        
+    while not stop_event.is_set():
+        time.sleep(update_interval)
+
+def monitor_and_stop(process):
+    global should_stop
+    process_terminated = False
+    while True:
+        time.sleep(1)
+        if should_stop:
+            print("Kill the target process")
+            process.terminate()
+            try:
+                process.wait(timeout=3)
+                process_terminated = True
+            except subprocess.TimeoutExpired:
+                print("Forced kill the target process")
+                process.kill()
+                try:
+                    process.wait(timeout=2)
+                    process_terminated = True
+                except subprocess.TimeoutExpired:
+                    process_terminated = False
+            break
+    return process_terminated
+
+async def stop_run_node_handler(
+    websocket: websockets.WebSocketServerProtocol, data: dict
+):
+    if websocket in active_threads:
+        active_threads[websocket].set()
+        del active_threads[websocket]
+    
+    payload = Payload(
+        cmd="stop_run_node", data={"code":0}
+    )
+
+    global process, should_stop
+    monitor_thread = threading.Thread(target=monitor_and_stop, args=(process,))
+    monitor_thread.start()
+    should_stop = True
+    process_terminated = monitor_thread.join()
+    
+    if not process_terminated:
+        payload.data["code"] = 1
+
+    response = Response(
+        payload=payload,
+        target=websocket,
+    )
     response_queue.put(response)
 
 # Add a function to clean up when a websocket connection is closed

@@ -5,7 +5,7 @@ import time
 import rospy
 from sensor_msgs.msg import Joy
 from h12pro_controller_node.msg import h12proRemoteControllerChannel
-from robot_state.robot_state_machine import robot_state_machine
+from robot_state.robot_state_machine import robot_state_machine, RobotStateMachine, states
 from transitions.core import MachineError
 from utils.utils import read_json_file
 import rospkg
@@ -180,7 +180,29 @@ class H12PROControllerNode:
     
     def __init__(self):
         """Initialize H12PRO controller node."""
+
         self.robot_state_machine = robot_state_machine
+
+        # 此if分支为命令行启动机器人: joystick_type=h12，遥控器使用和服务启动相同的逻辑。
+        # manual_h12_init_state为初始状态，其值为none表示当前是用服务启动的机器人。
+        # manual_h12_init_state不是none表示是命令行启动的机器人，此时机器人已经启动，需要调整状态机的初始状态为manual_h12_init_state
+        self.manual_h12_init_state = rospy.get_param("manual_h12_init_state", "none")
+        if self.manual_h12_init_state == "calibrate":
+            self.robot_state_machine = RobotStateMachine(
+                    states=states,
+                    initial="calibrate",
+                    send_event=True,
+                    auto_transitions=False,
+                )
+        elif self.manual_h12_init_state == "ready_stance":
+            self.robot_state_machine = RobotStateMachine(
+                    states=states,
+                    initial="ready_stance",
+                    send_event=True,
+                    auto_transitions=False,
+                )
+            
+        print(f"[H12PROControllerNode]: robot_state_machine init state is {self.robot_state_machine.state}")
         self.h12_to_joy_node = H12ToJoyControllerNode()
         self.key_timestamp: Dict[str, float] = {}
         self._config = self._load_configuration()

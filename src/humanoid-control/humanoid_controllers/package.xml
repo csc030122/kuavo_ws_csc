@@ -19,8 +19,6 @@
     <depend>humanoid_interface_drake</depend>
     <depend>kuavo_estimation</depend>
     <depend>kuavo_monitor</depend>
-    <depend>biped_s40</depend>
-    <depend>biped_s42</depend>
     <depend>kuavo_msgs</depend>
     <!-- <depend>mujoco_sim</depend> -->
     <depend>mujoco_cpp</depend>
@@ -31,8 +29,9 @@
     <depend>hardware_node</depend>
     <depend>kuavo_assets</depend>
     <depend>ocs2_self_collision_visualization</depend>
-    <depend>gazebo_sim</depend>
-    <depend>realsense_ros_gazebo</depend>
+    <depend>kuavo_audio_player</depend>
+    <!-- <depend>gazebo_sim</depend> -->
+    <!-- <depend>realsense_ros_gazebo</depend> -->
     <depend>realsense_sim_metadata</depend>
     <!-- <depend>ocs2_biped_robot_ros</depend> -->
 

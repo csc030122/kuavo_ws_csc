@@ -88,13 +88,11 @@ def read_rosbag(input_bag, topics):
             timestamps[topic].append(timestamp)
             message_counts[topic] += 1
             
-            if topic == "/robot_arm_q_v_tau":
-                q_degrees = radians_to_degrees(msg.q)
+            if topic == "/sensors_data_raw":
+                q_degrees = radians_to_degrees(msg.joint_data.joint_q)
                 message_data[topic].append(round_to_one_decimal(q_degrees))
-            elif topic == "/robot_head_motor_position":
-                message_data[topic].append(round_to_one_decimal(list(msg.joint_data)))
-            elif topic == "/robot_hand_position":
-                hand_data = list(msg.left_hand_position) + list(msg.right_hand_position)
+            elif topic == "/dexhand/state":
+                hand_data = list(msg.position)
                 message_data[topic].append(round_to_one_decimal(hand_data))
     
     return timestamps, message_counts, message_data, {topic: np.mean(np.diff(timestamps[topic])) for topic in topics}
@@ -144,9 +142,9 @@ def reorganize_timestamps(timestamps, topics, message_data, interval_ms):
 
     organized_data = {}
     for i, timestamp in enumerate(new_timestamps):
-        arm_data = new_data_dict["/robot_arm_q_v_tau"][i][:14]
-        hand_data = new_data_dict["/robot_hand_position"][i][:12]
-        head_data = new_data_dict["/robot_head_motor_position"][i][:2]
+        arm_data = new_data_dict["/sensors_data_raw"][i][12:26]
+        hand_data = new_data_dict["/dexhand/state"][i][:12]
+        head_data = new_data_dict["/sensors_data_raw"][i][-2:]
         organized_data[round(timestamp, 3)] = arm_data + hand_data + head_data
 
     return organized_data, check_timestamp_alignment({topic: new_timestamps for topic in topics}, topics)
@@ -162,18 +160,18 @@ def create_json_from_organized_data(organized_data, interval_ms, threshold=1.0):
         prev_point = None
         for index, (timestamp, data) in enumerate(data_list):
             current_value = data[i]
-            current_point = Point(int(index * interval_ms/100), current_value)
+            current_point = Point(int(index * interval_ms), current_value)
             
             if index >= len(frames):
                 frames.append({
                     "servos": [None] * len(data),
-                    "keyframe": int(index * interval_ms/100),
+                    "keyframe": int(index * interval_ms),
                     "attribute": {}
                 })
             
             if (index == 0 or index == len(data_list) - 1 or 
                 prev_value is None or abs(current_value - prev_value) >= threshold):
-                next_point = Point(int((index+1) * interval_ms/100), data_list[index+1][1][i]) if index < len(data_list) - 1 else None
+                next_point = Point(int((index+1) * interval_ms), data_list[index+1][1][i]) if index < len(data_list) - 1 else None
                 cp = calculator.get_control_point(prev_point, current_point, next_point)
                 
                 frames[index]["servos"][i] = int(round(current_value))
@@ -192,12 +190,12 @@ def create_json_from_organized_data(organized_data, interval_ms, threshold=1.0):
 
     # Update keyframes
     for index, frame in enumerate(frames):
-        frame["keyframe"] = int(index * interval_ms/100)
+        frame["keyframe"] = int(index * interval_ms)
 
     return {
         "frames": frames,
         "musics": [],
-        "finish": int((len(frames) - 1) * interval_ms/100),
+        "finish": int((len(frames) - 1) * interval_ms),
         "first": 0,
         "version": "9a3101e_beta"
     }
@@ -262,7 +260,8 @@ class RecordRosbagMenu(Menu):
 
     def handle_option(self, option):
         if option:
-            topics = ["/robot_arm_q_v_tau", "/robot_head_motor_position", "/robot_hand_position"]
+            topics = ['/sensors_data_raw', '/dexhand/state']
+            #topics = ["/robot_arm_q_v_tau", "/robot_head_motor_position", "/robot_hand_position"]
             topics_str = " ".join(topics)
             command = f"rosbag record -O {option}.bag {topics_str}"
             
@@ -322,7 +321,8 @@ def main(args=None):
     if args is None:
         args = parse_args()
     
-    topics = ["/robot_arm_q_v_tau", "/robot_head_motor_position", "/robot_hand_position"]
+    topics = ['/sensors_data_raw', '/dexhand/state']
+    # topics = ["/robot_arm_q_v_tau", "/robot_head_motor_position", "/robot_hand_position"]
 
     timestamps, message_counts, message_data, topic_hz = read_rosbag(args.input_bag, topics)
     
@@ -330,7 +330,7 @@ def main(args=None):
     for topic, count in message_counts.items():
         console.print(f"  {topic}: {count} 条消息, {1/topic_hz[topic]:.2f} Hz")
 
-    alignment_percentage = check_timestamp_alignment(timestamps, topics)
+    alignment_percentage = check_timestamp_alignment(timestamps, topics, 0.05)
     console.print(f"\n原始对齐百分比: {alignment_percentage:.2f}%")
 
     if alignment_percentage == 100.00:

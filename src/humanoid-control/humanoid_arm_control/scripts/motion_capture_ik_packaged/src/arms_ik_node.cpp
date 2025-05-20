@@ -297,13 +297,16 @@ int main(int argc, char* argv[])
     ros::init(argc, argv, "ik_publisher");
     ros::NodeHandle nh;
     double eef_z_bias = 0.0;
-    std::string relative_model_path = "models/biped_gen4.0/urdf/biped_v3_arm.urdf";
     int control_hand_side = 2; // 0: left, 1: right, 2: both
-    if(ros::param::has("model_path"))
-    {
-        ros::param::get("model_path", relative_model_path);
-        std::cout << "model_path: " << relative_model_path << std::endl;
-    }
+
+    // json
+    int robot_version_int=40;
+    if (nh.hasParam("/robot_version"))
+        nh.getParam("/robot_version", robot_version_int);
+    auto kuavo_assests_path = HighlyDynamic::getPackagePath("kuavo_assets");
+    std::string model_path = kuavo_assests_path + "/models/biped_s"+std::to_string(robot_version_int)+"/urdf/drake/biped_v3_arm.urdf";
+    std::cout << "model_path: " << model_path << std::endl;
+
     if(ros::param::has("eef_z_bias"))
     {
         ros::param::get("eef_z_bias", eef_z_bias);
@@ -315,8 +318,6 @@ int main(int argc, char* argv[])
         std::cout << "control_hand_side: " << control_hand_side << std::endl;
     }
     
-    std::string model_path = HighlyDynamic::getPath() + "/" + relative_model_path;
-    std::cout << "model_path: " << model_path << std::endl;
     std::vector<std::string> end_frames_name = {"torso", "l_hand_roll", "r_hand_roll", "l_forearm_pitch", "r_forearm_pitch"};
     Eigen::Vector3d custom_eef_frame_pos = Eigen::Vector3d(0, 0, eef_z_bias);
     HighlyDynamic::ArmsIKNode arm_ik_node(nh, model_path, end_frames_name, custom_eef_frame_pos, HighlyDynamic::intToHandSide(control_hand_side));

@@ -121,8 +121,9 @@ class IkRos:
 
         self.hand_pub_timer = rospy.Timer(rospy.Duration(0.001), self.hand_finger_data_process)
 
-
-        model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
+        kuavo_assests_path = get_package_path("kuavo_assets")
+        robot_version = os.environ.get('ROBOT_VERSION', '40')
+        model_path = kuavo_assests_path + f"/models/biped_s{robot_version}"
         self.quest3_arm_info_transformer = Quest3ArmInfoTransformer(model_path, predict_gesture)
         initial_state = np.array([0, 0, 0, 0, 0, 0])  # 初始状态 [x, y, z, vx, vy, vz]
         initial_covariance = np.eye(6)  # 初始协方差矩阵
@@ -698,12 +699,12 @@ if __name__ == "__main__":
     print(f"\033[92mControl {ctrl_arm_idx.name()} arms.\033[0m")
     print(f"\033[92mIk type: {ik_type_idx.name()}\033[0m")
 
-    current_pkg_path = get_package_path("motion_capture_ik")
-
-    model_file = current_pkg_path + "/models/biped_gen4.0/urdf/biped_v3_arm.urdf"
+    kuavo_assests_path = get_package_path("kuavo_assets")
+    robot_version = os.environ.get('ROBOT_VERSION', '40')
+    model_file = kuavo_assests_path + f"/models/biped_s{robot_version}/urdf/drake/biped_v3_arm.urdf"
+    
     end_frames_name = ["torso", "l_hand_roll", "r_hand_roll", "l_forearm_pitch", "r_forearm_pitch"]
     if version == 3:
-        model_file = current_pkg_path + "/models/biped_gen3.4/urdf/biped_v3_arm.urdf"
         eef_z_bias = -0.098
         end_frames_name = ["torso", "l_hand_pitch", "r_hand_pitch"]
     print(f"\033[92mRobot Version: {version}, make sure it is correct!!!\033[0m")

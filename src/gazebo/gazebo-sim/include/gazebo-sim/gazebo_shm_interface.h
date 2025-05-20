@@ -3,7 +3,7 @@
 #include <gazebo/gazebo.hh>
 #include <gazebo/physics/physics.hh>
 #include <gazebo/common/common.hh>
-#include "shm_manager.h"
+#include "humanoid_controllers/shm_manager.h"
 #include <ros/ros.h>
 #include <memory>
 #include <thread>

@@ -135,7 +135,10 @@ public:
     {
         stop_logging_ = true;
     }
-
+    bool isStop()
+    {
+        return stop_logging_;
+    }
 private:
     void printUsage();
 

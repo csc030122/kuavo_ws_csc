@@ -88,7 +88,7 @@ def csv_to_rosbag(csv_file, bag_file):
                             imu_msg.quat = Quaternion(*sorted_values)
                         elif base_name == 'wbc/tau/':
                             tau_msg.data = sorted_values
-                            joint_msg.joint_current = sorted_values
+                            joint_msg.joint_torque = sorted_values
                         elif base_name == 'desire/walk_contact/':
                             contact_name = 'SF' if float(sorted_values[0]) > 0.1 else 'FS' if float(sorted_values[0]) < -0.1 else 'SS' 
                             walk_contact_msg.data = mode_map[contact_name]

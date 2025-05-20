@@ -22,6 +22,11 @@ def publish_controlEndHand(hand_traj):
         msg.left_hand_position = hand_traj[0:6]
         msg.right_hand_position = hand_traj[6:]
 
+        rate = rospy.Rate(10)  # 10Hz
+        while pub.get_num_connections() == 0 and not rospy.is_shutdown():
+            rospy.loginfo("等待订阅者连接...")
+            rate.sleep()
+
         # 发布消息
         pub.publish(msg)
 

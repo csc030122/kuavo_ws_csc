@@ -11,7 +11,5 @@
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>cmake_clang_tools</build_depend>
-  <depend>biped_s42</depend>
-  <depend>biped_s40</depend>
 
 </package>

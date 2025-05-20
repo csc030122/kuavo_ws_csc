@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(kuavo_ros_interfaces)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)

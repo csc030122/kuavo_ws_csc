@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 
 import rospy
-from kuavo_sdk.msg import AprilTagDetectionArray
+from kuavo_msgs.msg import AprilTagDetectionArray
 import math
 import numpy as np  # 引入numpy库用于数值计算
 
 import time
 import argparse
-from kuavo_sdk.srv import fkSrv
-from kuavo_sdk.msg import armTargetPoses
-from kuavo_sdk.srv import changeArmCtrlMode, changeArmCtrlModeRequest, changeArmCtrlModeResponse
-from kuavo_sdk.srv import twoArmHandPoseCmdSrv
-from kuavo_sdk.msg import twoArmHandPoseCmd, ikSolveParam
+from kuavo_msgs.msg import armTargetPoses
+from kuavo_msgs.srv import changeArmCtrlMode, changeArmCtrlModeRequest, changeArmCtrlModeResponse
+from motion_capture_ik.srv import twoArmHandPoseCmdSrv
+from motion_capture_ik.msg import twoArmHandPoseCmd, ikSolveParam
 
-from kuavo_sdk.msg import robotHandPosition
-from kuavo_sdk.msg import robotHeadMotionData
+from kuavo_msgs.msg import robotHandPosition
+from kuavo_msgs.msg import robotHeadMotionData
+
 
 ####################################################################
 
@@ -256,9 +256,14 @@ class AprilTagProcessor:
         data_list = []
 
         while len(data_list) < num_samples:
+            if rospy.is_shutdown():
+                return None
             tag_data = self.get_apriltag_by_id(tag_id)
             if tag_data:
                 data_list.append(tag_data)
+            else :
+                rospy.loginfo(f"未检测到AprilTag ID {tag_id}，等待中...")
+                time.sleep(0.1) 
 
         # 使用numpy计算平均值
         avg_off_horizontal = np.mean([tag["off_horizontal"] for tag in data_list])
@@ -315,6 +320,10 @@ def main():
     # 获取指定ID的AprilTag的平均数据
     tag_data = processor.get_averaged_apriltag_data(tag_id=0)
 
+    # 检测二维码期间 按ctrl+c可以退出程序
+    if rospy.is_shutdown():
+        return None
+
     # 判断左手还是右手 后续都会根据这个参数进行判断
     # position_flag > 0 为左手，否则为右手
     if False:
@@ -350,55 +359,8 @@ def main():
     hand_control_msg.left_hand_position =open_hand  # 左手位置   
     hand_control_msg.right_hand_position = open_hand  # 右手位置
     hand_control_pub.publish(hand_control_msg)  # 发布消息
-    
-########################################## 运动控制 准备姿态 #########################################
-    # 初始位置
-    print("move to position 0")
-    publish_arm_target_poses([1.5], [20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0,
-    20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0])
-    print("回到初始位置")
 
-    time.sleep(0.5)
-    
-    # 到达等待位置
-    if  position_flag > 0 :
-        # 打开臂展
-        print("move to position 1")
-        publish_arm_target_poses([1.5], [20.0, 60.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-        20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0])
-        time.sleep(1.5)
-        # 弯曲肘部
-        print("move to position 2")
-        publish_arm_target_poses([1.5], [0.0, 60.0, 0.0, -90.0, 0.0, 0.0, 0.0,
-        20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0])
-        time.sleep(1.5) 
-        # 回收臂展 
-        #print("move to position 3")
-        #publish_arm_target_poses([1.5], [-2.0, 5.0, 0.0, -82.0, -35.0, -7.0, 0.0,
-        #20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0])
-        #time.sleep(2) 
-        print("move over")
-    else :
-        # 打开臂展
-        print("move to position 1")
-        publish_arm_target_poses([1.5], [20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0,
-        20.0, -60.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-        time.sleep(1.5)
-        # 弯曲肘部
-        print("move to position 2")
-        publish_arm_target_poses([1.5], [20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0,
-        -10.0, -60.0, 0.0, -90.0, 35.0, 20.0, 0.0])
-        #0.0, -60.0, 0.0, -90.0, 0.0, 0.0, 0.0])
-        time.sleep(1.5) 
-        #time.sleep(3) 
-        # 回收臂展 
-        #print("move to position 3")
-        #publish_arm_target_poses([1.5], [20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0,
-        #8.0, -10.0, 0.0, -90.0, 35.0, 0.0, 0.0])
-        #time.sleep(2) 
-        print("move over")
-
-########################################## 运动控制 ik求解+抓取 #########################################
+########################################## 运动控制 ik求解 #########################################
     # 创建请求对象
     eef_pose_msg = twoArmHandPoseCmd()
     # 设置请求参数
@@ -464,8 +426,57 @@ def main():
     res = call_ik_srv(eef_pose_msg)
 
     # 逆解成功
-    #if False:
     if(res.success):
+########################################## 运动控制 准备姿态 #########################################
+        
+        # 初始位置
+        print("move to position 0")
+        publish_arm_target_poses([1.5], [20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0,
+        20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0])
+        print("回到初始位置")
+
+        time.sleep(0.5)
+        
+        # 到达等待位置
+        if  position_flag > 0 :
+            # 打开臂展
+            print("move to position 1")
+            publish_arm_target_poses([1.5], [20.0, 60.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0])
+            time.sleep(1.5)
+            # 弯曲肘部
+            print("move to position 2")
+            publish_arm_target_poses([1.5], [0.0, 60.0, 0.0, -90.0, 0.0, 0.0, 0.0,
+            20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0])
+            time.sleep(1.5) 
+            # 回收臂展 
+            #print("move to position 3")
+            #publish_arm_target_poses([1.5], [-2.0, 5.0, 0.0, -82.0, -35.0, -7.0, 0.0,
+            #20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0])
+            #time.sleep(2) 
+            print("move over")
+        else :
+            # 打开臂展
+            print("move to position 1")
+            publish_arm_target_poses([1.5], [20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0,
+            20.0, -60.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+            time.sleep(1.5)
+            # 弯曲肘部
+            print("move to position 2")
+            publish_arm_target_poses([1.5], [20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0,
+            -10.0, -60.0, 0.0, -90.0, 35.0, 20.0, 0.0])
+            #0.0, -60.0, 0.0, -90.0, 0.0, 0.0, 0.0])
+            time.sleep(1.5) 
+            #time.sleep(3) 
+            # 回收臂展 
+            #print("move to position 3")
+            #publish_arm_target_poses([1.5], [20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0,
+            #8.0, -10.0, 0.0, -90.0, 35.0, 0.0, 0.0])
+            #time.sleep(2) 
+            print("move over")
+
+########################################## 运动控制 执行ik结果 #########################################
+
         l_pos = res.hand_poses.left_pose.pos_xyz
         l_pos_error = np.linalg.norm(l_pos - eef_pose_msg.hand_poses.left_pose.pos_xyz)
         r_pos = res.hand_poses.right_pose.pos_xyz
@@ -490,10 +501,9 @@ def main():
         print("完成逆解并根据逆解结果到达定位置")
         time.sleep(3.5)
 
-    print("ik结束")
-########################################## 运动控制 递水流程 #########################################
-    # 递水    
-    if(res.success):   
+        print("ik结束")
+
+########################################## 运动控制 递水流程 #########################################        
         if  position_flag > 0 :
             # 手部握紧
             hand_control_msg.left_hand_position =close_hand  # 左手位置   
@@ -529,30 +539,33 @@ def main():
             #time.sleep(1)
         print("递水完成")
 
-    # 松手后多等一秒
-    time.sleep(1) 
-########################################## 运动控制 后续处理 #########################################
-    # 手臂复位 与前面的角度相对应
-    if  position_flag > 0 :
-        #publish_arm_target_poses([1.5], [0.0, 0.0, 0.0, -90.0, 0.0, 0.0, 0.0,
-        #20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0])
-        #time.sleep(1.5) 
-        publish_arm_target_poses([1.5], [0.0, 60.0, 0.0, -90.0, 0.0, 0.0, 0.0,
-        20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0])
-        time.sleep(1.5) 
-        publish_arm_target_poses([1.5], [20.0, 60.0, 0.0, -30.0, 0.0, 0.0, 0.0,
-        20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0])
-        time.sleep(1.5) 
+        # 松手后多等一秒
+        time.sleep(1) 
+    ########################################## 运动控制 后续处理 #########################################
+        # 手臂复位 与前面的角度相对应
+        if  position_flag > 0 :
+            #publish_arm_target_poses([1.5], [0.0, 0.0, 0.0, -90.0, 0.0, 0.0, 0.0,
+            #20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0])
+            #time.sleep(1.5) 
+            publish_arm_target_poses([1.5], [0.0, 60.0, 0.0, -90.0, 0.0, 0.0, 0.0,
+            20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0])
+            time.sleep(1.5) 
+            publish_arm_target_poses([1.5], [20.0, 60.0, 0.0, -30.0, 0.0, 0.0, 0.0,
+            20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0])
+            time.sleep(1.5) 
+        else :
+            #publish_arm_target_poses([1.5], [20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0,
+            #0.0, 0.0, 0.0, -90.0, 0.0, 0.0, 0.0])
+            #time.sleep(1.5) 
+            publish_arm_target_poses([1.5], [20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0,
+            0.0, -60.0, 0.0, -90.0, 0.0, 0.0, 0.0])
+            time.sleep(1.5) 
+            publish_arm_target_poses([1.5], [20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0,
+            20.0, -60.0, 0.0, -30.0, 0.0, 0.0, 0.0])
+            time.sleep(1.5) 
+    # ik失败
     else :
-        #publish_arm_target_poses([1.5], [20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0,
-        #0.0, 0.0, 0.0, -90.0, 0.0, 0.0, 0.0])
-        #time.sleep(1.5) 
-        publish_arm_target_poses([1.5], [20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0,
-        0.0, -60.0, 0.0, -90.0, 0.0, 0.0, 0.0])
-        time.sleep(1.5) 
-        publish_arm_target_poses([1.5], [20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0,
-        20.0, -60.0, 0.0, -30.0, 0.0, 0.0, 0.0])
-        time.sleep(1.5) 
+        print("ik失败,程序退出")
 
     # 回到初始位置
     publish_arm_target_poses([1.5], [20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0, 

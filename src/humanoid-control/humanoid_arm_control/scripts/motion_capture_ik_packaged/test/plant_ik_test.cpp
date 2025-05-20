@@ -21,6 +21,7 @@
 #include "drake/systems/controllers/linear_quadratic_regulator.h"
 #include "drake/systems/primitives/vector_log_sink.h"
 #include "drake/common/eigen_types.h"
+#include <ros/package.h>
 
 const double TO_RADIAN = M_PI / 180.0;
 
@@ -31,8 +32,11 @@ int main(int argc, char* argv[])
     ros::NodeHandle nh;
     ros::Publisher joint_pub = nh.advertise<sensor_msgs::JointState>("/kuavo_arm_traj", 10);
 
-    std::string model_path = "/root/mc_ws/src/motion_capture_ik/models/biped_gen4.0/urdf/biped_v3_arm.urdf";
-    // std::string model_path = "/root/mc_ws/src/motion_capture_ik/models/biped_gen4.0/urdf/biped_v3_arm_left.urdf";
+    int robot_version_int=40;
+    if (nh.hasParam("/robot_version"))
+        nh.getParam("/robot_version", robot_version_int);
+    auto kuavo_assests_path = ros::package::getPath("kuavo_assets");
+    std::string model_path = kuavo_assests_path + "/models/biped_s"+std::to_string(robot_version_int)+"/urdf/drake/biped_v3_arm.urdf";
     std::cout << "model_path: " << model_path << std::endl;
     std::vector<std::string> end_frames_name = {"torso", "l_hand_roll", "r_hand_roll"};
     // std::vector<std::string> end_frames_name = {"torso", "l_hand_roll"};

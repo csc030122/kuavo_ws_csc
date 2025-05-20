@@ -504,20 +504,20 @@ class Quest3ArmInfoTransformer:
         if side == "Left":
             marker.mesh_resource = (
                 "file://"
-                + self.model_path
-                + "/models/biped_gen4.0/meshes/l_hand_roll.obj"
+                + self.model_path +
+                "/meshes/" + self.eef_visual_stl_files[0]
             )
         elif side == "Right":
             marker.mesh_resource = (
                 "file://"
                 + self.model_path
-                + "/models/biped_gen4.0/meshes/r_hand_roll.obj"
+                + "/meshes/" + self.eef_visual_stl_files[1]
             )
         elif side == "Torso":
             marker.mesh_resource = (
                 "file://"
                 + self.model_path
-                + "/models/biped_gen4.0/meshes/base_link.obj"
+                + "/meshes/base_link.STL"
             )
         marker.scale.x = 1
         marker.scale.y = 1

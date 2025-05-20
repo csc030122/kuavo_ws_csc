@@ -168,7 +168,6 @@ namespace humanoid_controller
       {
         std::cout << "real robot controller" << std::endl;
         ros::NodeHandlePtr nh_ptr = boost::make_shared<ros::NodeHandle>(controllerNh_);
-        hardware_interface_ptr_ = new KuavoHardwareInterface(nh_ptr, jointNum_);
       }
     }
     if (controllerNh_.hasParam("wbc_only"))
@@ -352,7 +351,7 @@ namespace humanoid_controller
       sensor_data.jointPos_(i) = joint_data.joint_q[i];
       sensor_data.jointVel_(i) = joint_data.joint_v[i];
       sensor_data.jointAcc_(i) = joint_data.joint_vd[i];
-      sensor_data.jointCurrent_(i) = joint_data.joint_current[i];
+      sensor_data.jointTorque_(i) = joint_data.joint_torque[i];
     }
     // std::cout << "received joint data: " << jointPos_.transpose() << std::endl;
     ros::Time ros_time = msg->header.stamp;
@@ -406,7 +405,6 @@ namespace humanoid_controller
     if (is_real_)
     {
       SensorData_t intial_sensor_data;
-      hardware_interface_ptr_->init(intial_sensor_data);
       std::cout << "real robot controller starting\n";
       real_init_wait();
       std::cout << "real_init_wait done\n";
@@ -462,8 +460,6 @@ namespace humanoid_controller
       mujocoSimStart(controllerNh_);
     // if (is_real_)
     // {
-    //   SensorData_t intial_sensor_data;
-    //   hardware_interface_ptr_->init(intial_sensor_data);
     //   std::cout << "real robot controller starting\n";
     //   real_init_wait();
     //   std::cout << "real_init_wait done\n";
@@ -478,91 +474,18 @@ namespace humanoid_controller
   void humanoidController::real_init_wait()
   {
 
-    vector_t intial_state = HumanoidInterface_->getInitialState();
-    vector_t ready_joint_pos_ = intial_state.tail(jointNum_) * 180 / M_PI;
-    std::vector<double> moving_pos(jointNum_, 0);
-    std::vector<double> ready_inital_pos(jointNum_, 0); // 进入反馈的初始位置
-    for (int i = 0; i < jointNum_; i++)
+    while (ros::ok())
     {
-      ready_inital_pos[i] = ready_joint_pos_[i];
-    }
-
-    std::vector<double> ready_pos(jointNum_, 0); // 挂起的动作
-    ready_pos[0] = 0;
-    ready_pos[2] = -1.3 * TO_DEGREE;
-    ready_pos[3] = 1.6 * TO_DEGREE;
-    ready_pos[4] = -0.3 * TO_DEGREE;
-    ready_pos[6] = -0;
-    ready_pos[8] = -1.3 * TO_DEGREE;
-    ready_pos[9] = 1.6 * TO_DEGREE;
-    ready_pos[10] = -0.3 * TO_DEGREE;
-
-    bool ready_to_feedback = false;
-
-    if (!is_cali_)
-    {
-      ready_to_feedback = true;
-      moving_pos = ready_pos;
-      std::cout << "moving to ready posture ..." << std::endl;
-    }
-    else
-    {
-      std::fill(moving_pos.begin(), moving_pos.end(), 0.0);
-      std::cout << "moving to calibration posture ..." << std::endl;
-    }
-
-    hardware_interface_ptr_->jointMoveTo(moving_pos, 60.0, dt_);
-
-    if (!is_cali_)
-      std::cout << "\033[32mCheck the status of your robot:"
-                << "Type 'o' when you're ready(the robot will stand up!):\033[0m" << std::endl;
-    else
-      std::cout << "\033[32mCheck the status of your robot and calibrate it\nType 'c' to calibrate ankle motors\n"
-                << "Type 'o' to move to ready posture, or just 'ctrl+c' to exit..\033[0m" << std::endl;
-
-    while (1)
-    {
-      if (kbhit())
+      if (ros::param::get("/hardware/is_ready", hardware_status_))
       {
-        intial_input_cmd_ = '\0';
-        intial_input_cmd_ = getchar();
-      }
-      if (intial_input_cmd_ == 'o')
-      {
-        intial_input_cmd_ = '\0';
-        if (!ready_to_feedback)
+        if (hardware_status_ == 1)
         {
-          moving_pos = ready_pos;
-          std::cout << "moving to ready posture..." << std::endl;
-          hardware_interface_ptr_->jointMoveTo(moving_pos, 60.0, dt_);
-          std::cout << "\033[32mType 'q' to goback to calibration status, or type 'o' again when you're ready(the robot will stand up!):\033[0m" << std::endl;
-          ready_to_feedback = true;
-          continue;
+          std::cerr << "real robot is ready\n";
+          break;
         }
-        printf("feedback start!!! \r\n");
-        break;
-      }
-      if (intial_input_cmd_ == 'q')
-      {
-        intial_input_cmd_ = '\0';
-        if (ready_to_feedback)
-        {
-          std::fill(moving_pos.begin(), moving_pos.end(), 0.0);
-          std::cout << "moving to calibration posture..." << std::endl;
-          hardware_interface_ptr_->jointMoveTo(moving_pos, 60.0, dt_);
-          std::cout << "\033[32mType 'o' to enter ready status\033[0m" << std::endl;
-          ready_to_feedback = false;
-          continue;
-        }
-        exit(0);
       }
       usleep(1000);
     }
-
-    moving_pos = ready_inital_pos;
-    std::cout << "moving to ready posture ..." << std::endl;
-
-    hardware_interface_ptr_->jointMoveTo(moving_pos, 30.0, dt_, true);
   }
   void humanoidController::update(const ros::Time &time, const ros::Duration &dfd)
   {
@@ -678,7 +601,7 @@ namespace humanoid_controller
     jointPos_ = data.jointPos_;
     jointVel_ = data.jointVel_;
     jointAcc_ = data.jointAcc_;
-    jointCurrent_ = data.jointCurrent_;
+    jointTorque_ = data.jointTorque_;
     quat_ = data.quat_;
     angularVel_ = data.angularVel_;
     linearAccel_ = data.linearAccel_;
@@ -725,7 +648,7 @@ namespace humanoid_controller
     }
     // last_time_ = current_time_ - ros::Duration(0.002);
     double diff_time = (current_time_ - last_time_).toSec();
-    // auto est_mode = stateEstimate_->ContactDetection(plannedMode_, jointVel_, jointCurrent_, diff_time);
+    // auto est_mode = stateEstimate_->ContactDetection(plannedMode_, jointVel_, jointTorque_, diff_time);
     // ros_logger_->publishValue("/state_estimate/mode", static_cast<double>(est_mode));
     // est_mode = plannedMode_;
     // contactFlag = modeNumber2StanceLeg(est_mode);
@@ -745,7 +668,6 @@ namespace humanoid_controller
     {
       Eigen::VectorXd updated_joint_pos = jointPos_;
       Eigen::VectorXd updated_joint_vel = jointVel_;
-      Eigen::VectorXd updated_joint_current = jointCurrent_;
 
       // ros_logger_->publishVector("/humanoid_controller/updated_joint_pos", updated_joint_pos);
       // ros_logger_->publishVector("/humanoid_controller/updated_joint_vel", updated_joint_vel);

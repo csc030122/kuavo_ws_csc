@@ -119,7 +119,7 @@ void SensorDataPublisher::publishSensorData(const ros::TimerEvent &event)
         sensor_data_msg.joint_data.joint_q = joint_state_msg_.position;
         sensor_data_msg.joint_data.joint_v = joint_state_msg_.velocity;
         sensor_data_msg.joint_data.joint_vd = joint_state_msg_.velocity; // TODO: 填充适当的加速度
-        sensor_data_msg.joint_data.joint_current = joint_state_msg_.effort;
+        sensor_data_msg.joint_data.joint_torque = joint_state_msg_.effort;
 
         // 发布数据
         sensor_data_publisher_.publish(sensor_data_msg);

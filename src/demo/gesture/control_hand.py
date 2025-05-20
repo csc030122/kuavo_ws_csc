@@ -23,6 +23,9 @@ if __name__ == "__main__":
     control_hand_pose(ok_pos, ok_pos)
 
     time.sleep(1.5)
+    while control_hand_pub.get_num_connections() == 0 and not rospy.is_shutdown():
+        rospy.loginfo("Waiting for control_hand_pub subscriber...")
+        rospy.sleep(0.1)
 
     # reset
     empty_pos = [0, 0, 0, 0, 0, 0]

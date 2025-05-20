@@ -53,6 +53,9 @@ class RuiWoActuator():
         self.get_prarameter_name()
         self.running = True
         self.RUIWOTools = RUIWOTools()
+
+        # 在 0-torque 模式下, 手动拖摆动机器人手臂
+        self.teach_pendant_mode = 0
        
         print("---------------INTIALIZED START---------------")
         open_canbus = self.RUIWOTools.open_canbus()
@@ -250,7 +253,10 @@ class RuiWoActuator():
                 self.update_status()
                 index = range(len(self.joint_address_list))
                 time.sleep(dt)
-                    
+
+                if 1 == self.teach_pendant_mode:
+                    self.send_positions_No_response(index, list(target_positions), list(target_torque), list(target_velocity))
+                    continue
                 if self.target_update == False:
                     continue
                 with self.sendposlock:
@@ -403,15 +409,27 @@ class RuiWoActuator():
                 velocity[i] = velocity_factor * velocity[i]
             if self.joint_address_list[i] == self.Head_joint_address[1]:
                 target_torque[i] = self.head_high_torque
+                
             if self.control_mode == "ptm":
-                state = self.RUIWOTools.run_ptm_mode(self.joint_address_list[i], pos[i], velocity[i], self.target_pos_kp[i], self.target_pos_kd[i], target_torque[i])
+                if self.teach_pendant_mode == 1:
+                    state = self.RUIWOTools.run_ptm_mode(self.joint_address_list[i], 0, 0, 0, 0, 0)
+                else:
+                    state = self.RUIWOTools.run_ptm_mode(self.joint_address_list[i], pos[i], velocity[i], self.target_pos_kp[i], self.target_pos_kd[i], target_torque[i])
+            
             elif self.control_mode == "servo":
                 state = self.RUIWOTools.run_servo_mode(self.joint_address_list[i], pos[i], velocity[i], self.target_pos_kp[i], self.target_pos_kd[i], self.target_vel_kp[i], self.target_vel_kd[i], self.target_vel_ki[i])
+            
             if isinstance(state, list):
                 self.set_joint_state(i,state)
                 if self.joint_address_list[i] == self.Head_joint_address[1]:
                     self.head_high_torque = self.measure_head_torque(state[1])
         # print(pos)
+
+    def set_teach_pendant_mode(self, mode):
+
+        if self.teach_pendant_mode == 1:
+            print("[RUIWO motor]进入teach_pendant模式")
+        self.teach_pendant_mode = mode
 
     def send_positions_No_response(self, index, pos, torque, velocity):
         target_torque = torque
@@ -431,7 +449,11 @@ class RuiWoActuator():
             if self.joint_address_list[i] == self.Head_joint_address[1]:
                 target_torque[i] = self.head_high_torque
             if self.control_mode == "ptm":
-                self.RUIWOTools.run_ptm_mode_No_response(self.joint_address_list[i], pos[i], velocity[i], self.target_pos_kp[i], self.target_pos_kd[i], target_torque[i])
+                if self.teach_pendant_mode == 1:
+                    self.RUIWOTools.run_ptm_mode_No_response(self.joint_address_list[i], 0, 0, 0, 0, 0)
+                else:
+                    self.RUIWOTools.run_ptm_mode_No_response(self.joint_address_list[i], pos[i], velocity[i], self.target_pos_kp[i], self.target_pos_kd[i], target_torque[i])
+            
             elif self.control_mode == "servo":
                 self.RUIWOTools.run_servo_mode(self.joint_address_list[i], pos[i], velocity[i], self.target_pos_kp[i], self.target_pos_kd[i], self.target_vel_kp[i], self.target_vel_kd[i], self.target_vel_ki[i])
             self.update_status_asynchronous()

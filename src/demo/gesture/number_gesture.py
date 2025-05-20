@@ -19,12 +19,14 @@ def execute_number_gesture():
         # 创建请求对象
         request = gestureExecuteRequest()
 
+        # 注意：同一组要么全为左手手势，要么全为右手手势，要么全为双手
+        #      !!! 不能左手和右手混合在一起 !!!
         for i in range(1, 9):
             gesture = gestureTask(gesture_name='number_' + str(i), hand_side=0)
             request.gestures.append(gesture)
 
         # reset hand gesture.
-        request.gestures.append(gestureTask(gesture_name='empty', hand_side=2))
+        request.gestures.append(gestureTask(gesture_name='empty', hand_side=0))
 
         print(request)    
            

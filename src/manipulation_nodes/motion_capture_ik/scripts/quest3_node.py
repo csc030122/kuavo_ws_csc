@@ -16,7 +16,7 @@ from motion_capture_ik.srv import changeArmCtrlMode
 from noitom_hi5_hand_udp_python.msg import PoseInfo, PoseInfoList, JoySticks
 from handcontrollerdemorosnode.msg import robotHandPosition
 from kuavo_msgs.srv import controlLejuClaw, controlLejuClawRequest
-
+from kuavo_msgs.msg import lejuClawCommand
 def get_package_path(package_name):
     try:
         rospack = rospkg.RosPack()
@@ -26,6 +26,8 @@ def get_package_path(package_name):
         return None
 class Quest3Node:
     def __init__(self):
+        rospy.init_node('quest3_node')
+        
         self.model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
         self.quest3_arm_info_transformer = Quest3ArmInfoTransformer(self.model_path)
         self.use_custom_ik_param = True
@@ -41,7 +43,6 @@ class Quest3Node:
         self.button_y_last = False
         self.freeze_finger = False
 
-        rospy.init_node('quest3_node')
         kuavo_assests_path = get_package_path("kuavo_assets")
         robot_version = os.environ.get('ROBOT_VERSION', '40')
         model_config_file = kuavo_assests_path + f"/config/kuavo_v{robot_version}/kuavo.json"
@@ -56,6 +57,7 @@ class Quest3Node:
         
         self.control_robot_hand_position_pub = rospy.Publisher("control_robot_hand_position", robotHandPosition, queue_size=10)
         self.pub = rospy.Publisher('/ik/two_arm_hand_pose_cmd', twoArmHandPoseCmd, queue_size=10)
+        self.leju_claw_command_pub = rospy.Publisher("leju_claw_command", lejuClawCommand, queue_size=10)
 
         rospy.Subscriber("/leju_quest_bone_poses", PoseInfoList, self.quest_bone_poses_callback)
         rospy.Subscriber("/quest_joystick_data", JoySticks, self.joySticks_data_callback)
@@ -85,8 +87,16 @@ class Quest3Node:
         elif self.end_effector_type == "lejuclaw":
             self.handle_lejuclaw(hand_finger_data)
 
+    def pub_leju_claw_command(self, pos:list, vel:list, effort:list) -> None:
+        msg = lejuClawCommand()
+        msg.data.name = ['left_claw', 'right_claw']
+        msg.data.position = pos
+        msg.data.velocity = vel
+        msg.data.effort = effort
+        self.leju_claw_command_pub.publish(pos)
+
     @staticmethod
-    def control_lujuclaw(pos:list, vel:list, effort:list):
+    def control_lejuclaw(pos:list, vel:list, effort:list):
         service_name = "/control_robot_leju_claw"
         try:
             rospy.wait_for_service("/control_robot_leju_claw", timeout=1)
@@ -161,7 +171,7 @@ class Quest3Node:
             right_qpos = hand_finger_data[1]
             pos[0] = max(0, min(int(100.0 * left_qpos[2] / 1.70), 100))
             pos[1] = max(0, min(int(100.0 * right_qpos[2] / 1.70), 100))
-            self.control_lujuclaw(pos, vel, tor)
+            self.pub_leju_claw_command(pos, vel, tor)
         else:
             return
 

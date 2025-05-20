@@ -131,6 +131,18 @@ void MpcPathTracer::Follow(const PathGeneratorUniquePtr &path_generator)
                 break;
         }
 
+        // 添加终点减速逻辑
+        double distance_to_goal = utils::CalculateDistance(goal_pose, current_pose_.position);
+        double deceleration_distance = 1.0; // 开始减速的距离阈值，可根据实际情况调整
+        double velocity_scale = 1.0;
+
+        if (distance_to_goal < deceleration_distance) {
+            // 根据距离终点的远近线性减速
+            velocity_scale = std::max(0.3, distance_to_goal / deceleration_distance);
+            std::cout << "Approaching goal, distance: " << distance_to_goal 
+                      << ", velocity scale: " << velocity_scale << std::endl;
+        }
+
         std::cout << "index:" << index << "\n";
         std::cout << "next point unchanged count:" << unchanged_count << "\n";
 
@@ -204,12 +216,12 @@ void MpcPathTracer::Follow(const PathGeneratorUniquePtr &path_generator)
             auto optimal_v = result.GetSolution(v);
             auto optimal_yaw_dot = result.GetSolution(yaw_dot);
 
-            // std::cout << "optimal_v:\n" << optimal_v(0) << std::endl;
-            // std::cout << "optimal_yaw_dot:\n" << optimal_yaw_dot(0) << std::endl;
-
+            // 应用速度缩放因子
+            double scaled_v = optimal_v(0) * velocity_scale;
+            double scaled_yaw_dot = optimal_yaw_dot(0) * velocity_scale;
+            
             // 发布控制命令
-            // PublishCmdVel(std::max(0.01, optimal_v(0)), optimal_yaw_dot(0)); # 不要给负速度 后退
-            PublishCmdVel(optimal_v(0), optimal_yaw_dot(0));
+            PublishCmdVel(scaled_v, scaled_yaw_dot);
 
             // 发布MPC局部路径
             PublishMpcPath(optimal_x, optimal_y, optimal_yaw);

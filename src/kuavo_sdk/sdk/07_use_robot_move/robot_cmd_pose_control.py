@@ -26,7 +26,10 @@ def publish_cmd_pose():
     cmd_pose_msg.angular.y = 0.0
 
     # 确保发布者连接成功
-    rospy.sleep(1)
+    rate = rospy.Rate(10)  # 10Hz
+    while cmd_pose_pub.get_num_connections() == 0 and not rospy.is_shutdown():
+        rospy.loginfo("等待订阅者连接...")
+        rate.sleep()
 
     # 发布消息
     cmd_pose_pub.publish(cmd_pose_msg)

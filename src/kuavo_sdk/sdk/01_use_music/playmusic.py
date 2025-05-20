@@ -37,7 +37,7 @@ if __name__ == "__main__":
     # 初始化 ROS 节点
     rospy.init_node('music_player_client')
 
-    # 示例调用,传入路径为上位机音频文件所在路径，无需加.mp3
+    # 示例调用,传入路径为上位机音频文件所在路径，需要加音频文件的后缀，例如.mp3
     music_file = "/home/kuavo/你好"
     music_volume = 80
 

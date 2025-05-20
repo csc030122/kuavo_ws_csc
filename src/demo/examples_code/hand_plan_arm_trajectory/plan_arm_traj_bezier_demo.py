@@ -4,10 +4,10 @@ import rospy
 import json
 import math
 import numpy as np
-from kuavo_msgs.srv import planArmTrajectoryBezierCurve, planArmTrajectoryBezierCurveRequest
-from kuavo_msgs.msg import bezierCurveCubicPoint, jointBezierTrajectory
+from humanoid_plan_arm_trajectory.srv import planArmTrajectoryBezierCurve, planArmTrajectoryBezierCurveRequest
+from humanoid_plan_arm_trajectory.msg import bezierCurveCubicPoint, jointBezierTrajectory
 from sensor_msgs.msg import JointState
-from kuavo_msgs.msg import JointTrajectory
+from trajectory_msgs.msg import JointTrajectory
 from kuavo_msgs.srv import changeArmCtrlMode, changeArmCtrlModeRequest
 from kuavo_msgs.msg import sensorsData
 
@@ -239,7 +239,7 @@ def frames_to_custom_action_data(frames):
     return action_data
 
 
-+ def filter_data(action_data):
+def filter_data(action_data):
     """
     轨迹数据过滤和平滑处理
     
@@ -437,6 +437,9 @@ def main():
     else:
         rospy.logerr("Failed to plan arm trajectory")
 
+    while kuavo_arm_traj_pub.get_num_connections() == 0 and not rospy.is_shutdown():
+        rospy.loginfo("Waiting for kuavo_arm_traj_pub subscriber...")
+        rospy.sleep(0.1)
     # 以100Hz的频率发布轨迹数据
     rate = 100
     while not rospy.is_shutdown():

@@ -91,6 +91,41 @@ namespace ocs2
       {
         return latestStanceposition_;
       }
+      bool checkPullUp(double mass_threshold = 0.70, double alpha = 0.01)
+      {
+        if (estContactforce_.size() < 12)
+          return false;
+          
+        double new_total_est_contact_force_ = estContactforce_[2] + estContactforce_[8];
+        // ros_logger_->publishValue("/state_estimate/checkPullUp/new_total_est_contact_force_", new_total_est_contact_force_);
+        total_est_contact_force_ = total_est_contact_force_ * (1 - alpha) + new_total_est_contact_force_ * alpha;
+        ros_logger_->publishValue("/state_estimate/checkPullUp/total_est_contact_force_", total_est_contact_force_);
+
+        // 计算当前时刻的判断结果
+        bool current_result = (total_est_contact_force_ < mass_threshold * robotMass_ * 9.81);
+        
+        // 更新滑动窗口
+        pullup_window_.push_back(current_result);
+        if (pullup_window_.size() > pullup_window_size_) {
+            pullup_window_.pop_front();
+        }
+        
+        if (pullup_window_.size() < pullup_window_size_) {
+            return last_pullup_state_;
+        }
+        
+        // 检查是否所有值都相同
+        bool first_value = pullup_window_.front();
+        for (const bool value : pullup_window_) {
+            if (value != first_value) {
+                return last_pullup_state_;
+            }
+        }
+        
+        // 如果所有值都相同，更新状态并返回
+        last_pullup_state_ = first_value;
+        return first_value;
+      }
 
       vector_t getBodyVelWorld()
       {
@@ -248,6 +283,11 @@ namespace ocs2
       int sumCount_ = 0;
       int leftCount_ = 0;
       int rightCount_ = 0;
+      double robotMass_= 56.0; // kg
+      double total_est_contact_force_ = 500;
+      std::deque<bool> pullup_window_;  // 滑动窗口用于存储历史判断结果
+      const size_t pullup_window_size_ = 20;  // 滑动窗口大小
+      bool last_pullup_state_ = false;  // 保存上一次的pullup状态
       
     };
 

@@ -4,6 +4,8 @@
 import numpy as np
 import sys 
 import os
+
+import rospkg
 import rospy
 import drake
 import math
@@ -51,7 +53,10 @@ class BezierWrap():
         # IK 参数及实例化
         self.meshcat = StartMeshcat()
         self.eef_z_bias = -0.15
-        self.model_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), self.config["model_file_path"])
+        rospack = rospkg.RosPack()
+        kuavo_assests_path = rospack.get_path("kuavo_assets")
+        robot_version = os.environ.get('ROBOT_VERSION', '40')
+        self.model_file = kuavo_assests_path + f"/models/biped_s{robot_version}/urdf/drake" + self.config["model_file_name"]
         self.end_frames_name = ["torso", "l_hand_roll", "r_hand_roll", "l_forearm_pitch", "r_forearm_pitch"]
         self.arm_ik = ArmIk(self.model_file, self.end_frames_name, self.meshcat, 1e-3, 1e-3, 1000, eef_z_bias=self.eef_z_bias, as_mc_ik=True)
         torso_yaw_deg = 0.0

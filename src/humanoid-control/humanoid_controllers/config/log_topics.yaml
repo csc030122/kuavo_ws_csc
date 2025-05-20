@@ -40,3 +40,4 @@ topics:
   - /ik.*
   - /hand_wrench.*
   - /tag_world_pose
+  - /leju_quest_bone_poses
