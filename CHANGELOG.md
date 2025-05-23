@@ -1,4 +1,4 @@
-# beta 分支
+# 1.1.5
 
 ## 文档相关
 - VR 遥操作增加如何查看 Quest3 和 Kuavo 的网络延迟的视频， [文档链接](./docs/Quest3_VR_basic.md)
