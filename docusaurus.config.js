@@ -7,15 +7,13 @@ const config = {
   tagline: 'Kuavo\'s development manual',
   url: 'https://kuavo.lejurobot.com',
   baseUrl: process.env.BASE_URL || 'manual/',
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
   i18n: {
     defaultLocale: 'zh-Hans',
     locales: ['zh-Hans'],
   },
-
-  onBrokenLinks: 'warn', // or 'ignore', 'log', 'throw'
 
   presets: [
     [
@@ -25,6 +23,7 @@ const config = {
         docs: {
           path: 'new-docs',
           routeBasePath: '/',
+          sidebarPath: require.resolve('./docs/sidebars.js'),
         },
       }),
     ],

@@ -19,7 +19,7 @@ const sidebars = {
       label: '产品介绍',
       items: [
         'basic_usage/kuavo-ros-control/docs/1产品介绍/产品介绍',
-        'basic_usage/kuavo-ros-control/docs/1产品介绍/KUAVO_4.1产品介绍',
+        'basic_usage/kuavo-ros-control/docs/1产品介绍/KUAVO_4_1产品介绍',
         'basic_usage/kuavo-ros-control/docs/1产品介绍/轮臂产品介绍',
       ],
     },
