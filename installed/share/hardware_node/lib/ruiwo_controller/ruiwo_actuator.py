@@ -65,6 +65,10 @@ class RuiWoActuator():
         print("[RUIWO motor]:Canbus status:","[",open_canbus,"]")
         self.get_config(config)
 
+        all_joint_addresses = self.Left_joint_address + self.Right_joint_address
+        active_dev_ids = [addr for addr in all_joint_addresses if addr not in disable_joint_ids]
+        self.RUIWOTools.multi_turn_zeroing(active_dev_ids)
+
         self.sendposlock = threading.Lock()
         self.recvposlock = threading.Lock()
         self.sendvellock = threading.Lock()

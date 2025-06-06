@@ -229,6 +229,26 @@ class RUIWOTools:
             exc_msg = str(exc)
         return exc_msg
 
+    def multi_turn_zeroing(self, dev_ids = list(range(0x01, 0x0D))):        
+        results = {}
+        for dev_id in dev_ids:
+            try:
+                arbitration_id = 0x600 + dev_id
+                print(f"Sending zeroing command to device {dev_id:02X} (Arbitration ID: {arbitration_id:03X})")
+                
+                tx_msg = can.Message(
+                    arbitration_id=arbitration_id,
+                    is_extended_id=False,
+                    dlc=0x08,
+                    data=[0x67, 0x06, 0xFE, 0x00, 0x00, 0x00, 0x00, 0x76],
+                )
+                self.dev.send(tx_msg, self.dev_info["timeout"])
+            except Exception as exc:
+                results[dev_id] = str(exc)
+                print(f"Error processing device {dev_id:02X}: {str(exc)}")
+        
+        return results
+
     def run_servo_mode(self, dev_id, pos, vel, pos_kp, pos_kd, vel_kp, vel_kd, vel_ki):
         try:
             pos = self.__float_to_int(
