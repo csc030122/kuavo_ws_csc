@@ -1004,7 +1004,7 @@ namespace humanoid_controller
   }
   void humanoidController::checkMpcPullUp(double current_time, vector_t & current_state, const TargetTrajectories& planner_target_trajectories)
   {
-    if (!is_stance_mode_)
+    if (!is_stance_mode_ || only_half_up_body_)
       return;
 
     // 检查高度轨迹是否为水平直线的lambda函数
@@ -1714,7 +1714,7 @@ namespace humanoid_controller
       currentObservation_.time += period.toSec();
     }
     bool new_pull_up_state = false;
-    if (isPreUpdateComplete && is_stance_mode_ && currentObservation_.time - standupTime_ > 4) // 只有站立状态&&站起来稳定之后进行保护
+    if (isPreUpdateComplete && is_stance_mode_ && !only_half_up_body_ && currentObservation_.time - standupTime_ > 4 ) // 只有非半身轮臂模式站立状态&&站起来稳定之后进行保护
       new_pull_up_state = stateEstimate_->checkPullUp();
     ros_logger_->publishValue("/state_estimate/pull_up_state", new_pull_up_state);
     if (new_pull_up_state && !isPullUp_)
