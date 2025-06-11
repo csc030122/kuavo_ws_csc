@@ -3,31 +3,28 @@
 ## 开源仓库
 ```shell
 # https
-git clone --depth=1 https://www.lejuhub.com/highlydynamic/craic_code_repo.git
+git clone https://gitee.com/leju-robot/kuavo-ros-opensource.git
 
 # ssh
-git clone --depth=1 ssh://git@www.lejuhub.com:10026/highlydynamic/craic_code_repo.git
+git clone git@gitee.com:leju-robot/kuavo-ros-opensource.git
 ```
 
-根据需要选择某个分支(一般稳定一些为beta)
-```shell
-git checkout dev
-```
+  - 拉取开源仓库时默认为master分支
 
 
 ## 确认机器人版本和总质量
 #### 机器人版本
 - 机器人版本通过环境变量`$ROBOT_VERSION`设置，版本号涉及不同机器人模型、硬件设置等, 需要和自己的机器人匹配。
-- 在终端执行`echo $ROBOT_VERSION`查看当前设置的版本号，如果没有设置，通过以下设置版本号(其中的40代表4.0版本，根据实际情况修改)：
+- 在终端执行`echo $ROBOT_VERSION`查看当前设置的版本号，如果没有设置，通过以下设置版本号(其中的45代表4.5版本，根据实际情况修改)：
 
    1. 在当前终端执行(临时设置): 
 
-     `export ROBOT_VERSION=40`
+     `export ROBOT_VERSION=45`
 
    2. 将其添加到你的 `~/.bashrc` 或者 `~/.zshrc` 终端配置文件中:
     如执行: 
 
-        `echo 'export ROBOT_VERSION=40' >> ~/.bashrc `
+        `echo 'export ROBOT_VERSION=45' >> ~/.bashrc `
 
     添加到 `~/.bashrc` 文件(bash终端)末尾，重启终端后生效
 
@@ -49,12 +46,12 @@ git checkout dev
 - docker镜像可以自行根据后续章节使用`./docker/Dockerfile`构建，或者下载已经编译好的镜像：
 
 ```bash  
-wget https://kuavo.lejurobot.com/docker_images/kuavo_opensource_ocs2_mpc_wbc_img_0_3.tar
+wget https://kuavo.lejurobot.com/docker_images/kuavo_opensource_mpc_wbc_img_v0.6.1.tar.gz
 ```
 
 - 执行以下命令导入容器镜像：
 ```bash
-docker load -i kuavo_opensource_ocs2_mpc_wbc_img_0_3.tar
+docker load -i kuavo_opensource_mpc_wbc_img_v0.6.1.tar.gz
 ```
 - 执行`./docker/run.sh`进入容器后，默认在仓库的映射目录`/root/kuavo_ws`，执行以下命令开始编译：
 
@@ -330,7 +327,7 @@ rosrun humanoid_interface_ros joystickSimulator.py
 
 # 各个node和topic的介绍
 
-[readme.topics.md](./docs/readme.topics.md)
+[readme.topics.md](./docs/readme_topics.md)
 
 # Build docker image&container for Kuavo-MPC-WBC
 ## 1. Install Docker
