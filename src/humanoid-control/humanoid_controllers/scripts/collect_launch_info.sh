@@ -1,10 +1,12 @@
 #!/bin/bash
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
+PROJECT_DIR=$(realpath "$SCRIPT_DIR/../../../../") # project: kuavo-ros-control
 LAUNCH_INDO_DIR="$HOME/.ros/kuavo_launch/$PPID"
 TIMESTAMP=$(date +%Y-%m-%d_%H-%M-%S)
 
 # 检查git命令是否存在
 if command -v git >/dev/null 2>&1; then
+    git config --global --add safe.directory "$PROJECT_DIR"
     cd "$SCRIPT_DIR"
     GIT_COMMIT=$(git rev-parse HEAD 2>/dev/null || echo "unknown")
     GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")
