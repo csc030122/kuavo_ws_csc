@@ -225,23 +225,39 @@ namespace
     // 获取关节 ID
     auto id0 = mj_name2id(model, mjOBJ_JOINT, joint0.c_str());
     auto id1 = mj_name2id(model, mjOBJ_JOINT, joint1.c_str());
-    assert((id0 >= 0 && id1 >= 0) && (id1 < model->njnt) && "Invalid joint index");
+    if (!(id0 >= 0 && id1 >= 0) || !(id1 < model->njnt)) {
+        std::cout << "\033[31mWarning: Invalid joint index for joints " << joint0 << " (id=" << id0 
+                  << ") and " << joint1 << " (id=" << id1 << ")\033[0m" << std::endl;
+        return;
+    }
 
     // 获取 qpos 地址
     auto qpos0 = model->jnt_qposadr[id0];
     auto qpos1 = model->jnt_qposadr[id1];
-    assert(qpos0 != -1 && qpos1 != -1 && "Invalid qpos address");
+    if (qpos0 == -1 || qpos1 == -1) {
+        std::cout << "\033[31mWarning: Invalid qpos address for joints " << joint0 << " (addr=" << qpos0 
+                  << ") and " << joint1 << " (addr=" << qpos1 << ")\033[0m" << std::endl;
+        return;
+    }
 
     // 获取自由度（dof）地址
     auto dof0 = model->jnt_dofadr[id0];
     auto dof1 = model->jnt_dofadr[id1];
-    assert(dof0 != -1 && dof1 != -1 && "Invalid dof address");
+    if (dof0 == -1 || dof1 == -1) {
+        std::cout << "\033[31mWarning: Invalid dof address for joints " << joint0 << " (addr=" << dof0 
+                  << ") and " << joint1 << " (addr=" << dof1 << ")\033[0m" << std::endl;
+        return;
+    }
 
     std::string actuator0 = joint0 + "_motor";
     std::string actuator1 = joint1 + "_motor";
     auto ctrl0 = mj_name2id(model, mjOBJ_ACTUATOR, actuator0.c_str());
     auto ctrl1 = mj_name2id(model, mjOBJ_ACTUATOR, actuator1.c_str());
-    assert((ctrl0 >= 0 && ctrl1 >= 0) && (ctrl1 < model->nu) && "Invalid actuator index");
+    if (!(ctrl0 >= 0 && ctrl1 >= 0) || !(ctrl1 < model->nu)) {
+        std::cout << "\033[31mWarning: Invalid actuator index for actuators " << actuator0 << " (id=" << ctrl0 
+                  << ") and " << actuator1 << " (id=" << ctrl1 << ")\033[0m" << std::endl;
+        return;
+    }
 
     // Set joint addresses
     jga.set_ctrladr(ctrl0, ctrl1)
@@ -877,6 +893,11 @@ void PhysicsThread(mj::Simulate *sim, const char *filename)
     
     // Init numJoints
     numJoints = 0;
+    std::cout << "LLeg joints size: " << LLegJointsAddr.qdofadr().size() << std::endl;
+    std::cout << "RLeg joints size: " << RLegJointsAddr.qdofadr().size() << std::endl;
+    std::cout << "LArm joints size: " << LArmJointsAddr.qdofadr().size() << std::endl;
+    std::cout << "RArm joints size: " << RArmJointsAddr.qdofadr().size() << std::endl;
+    std::cout << "Head joints size: " << HeadJointsAddr.qdofadr().size() << std::endl;
     numJoints += LLegJointsAddr.qdofadr().size();
     numJoints += RLegJointsAddr.qdofadr().size();
     numJoints += LArmJointsAddr.qdofadr().size();
@@ -923,6 +944,9 @@ void PhysicsThread(mj::Simulate *sim, const char *filename)
       std::cout << "[mujoco_node]: init dexhand node" << std::endl;
       g_dexhand_node = std::make_shared<DexHandMujocoRosNode>();
       g_dexhand_node->init(*g_nh_ptr, m, RHandJointsAddr, LHandJointsAddr);
+
+      int hand_joints_num = g_dexhand_node->get_hand_joints_num();
+      g_nh_ptr->setParam("end_effector_joints_num", hand_joints_num);
   }
 
   std::cout << "[mujoco_node]: waiting for init qpos" << std::endl;

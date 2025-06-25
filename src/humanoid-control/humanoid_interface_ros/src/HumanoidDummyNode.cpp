@@ -37,6 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ocs2_ros_interfaces/mrt/MRT_ROS_Interface.h>
 
 #include "humanoid_interface_ros/visualization/HumanoidVisualizer.h"
+#include "humanoid_interface_ros/visualization/HumanoidRbdPublisher.h"
 
 using namespace ocs2;
 using namespace humanoid;
@@ -77,10 +78,16 @@ int main(int argc, char **argv)
   auto humanoidVisualizer = std::make_shared<HumanoidVisualizer>(
       interface.getPinocchioInterface(), interface.getCentroidalModelInfo(), endEffectorKinematics, endEffectorSpatialKinematics, nodeHandle, taskFile);
 
+  // RBD state publisher
+  CentroidalModelRbdConversions rbdConversions(interface.getPinocchioInterface(), interface.getCentroidalModelInfo());
+  size_t log_interval = 0.01/(1/interface.mpcSettings().mrtDesiredFrequency_);
+  std::cout << "log_interval: " << log_interval << std::endl;
+  auto rbdPublisher = std::make_shared<HumanoidRbdPublisher>(rbdConversions, interface.getCentroidalModelInfo(), "rbd_states.csv", log_interval);
+
   // Dummy huamnoid robot
   MRT_ROS_Dummy_Loop humanoidDummySimulator(mrt, interface.mpcSettings().mrtDesiredFrequency_,
                                             interface.mpcSettings().mpcDesiredFrequency_);
-  humanoidDummySimulator.subscribeObservers({humanoidVisualizer});
+  humanoidDummySimulator.subscribeObservers({humanoidVisualizer, rbdPublisher});
 
   // Initial state
   SystemObservation initObservation;

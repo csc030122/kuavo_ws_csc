@@ -1,127 +1,142 @@
 # Kuavo Humanoid SDK
 
-A comprehensive Python SDK for controlling Kuavo humanoid robots. This SDK provides interfaces for robot state management, arm and head control, and end-effector operations. It is designed to work with ROS (Robot Operating System) environments.
+一个用于控制 Kuavo 人形机器人的 Python SDK，提供了机器人状态管理、机械臂和头部控制以及末端执行器操作的接口, 它设计用于在 ROS 环境中工作。
 
-**Warning**: This SDK currently only supports **ROS1**. ROS2 support is not available.
-
-**Warning**: **This SDK can only be used on the onboard NUC computer located in the robot's torso.** 
+**警告**: 该SDK目前仅支持**ROS1**。暂不支持ROS2。
 
 ![Kuavo 4Pro Robot](https://kuavo.lejurobot.com/manual/assets/images/kuavo_4pro-cf84d43f1c370666c6e810d2807ae3e4.png)
 
-## Features
+## 特性
 
-- Robot State Management
-  - IMU data (acceleration, angular velocity, euler angles)
-  - Joint/motor states (position, velocity, torque)
-  - Torso state (position, orientation, velocity)
-  - Odometry information
-  - End-effector states:
-    - Gripper(lejuclaw): position, velocity, torque, grasp status
-    - Dexterous hand(qiangnao): position, velocity, torque
-    - Touch Dexterous hand(qiangnao_touch): position, velocity, torque, touch state
-    - End-effector position and orientation
-  - Motion states: stand, walk, step_control, trot
+- 机器人状态管理
+  - IMU数据(加速度、角速度、欧拉角)
+  - 关节/电机状态(位置、速度、力矩)
+  - 躯干状态(位置、姿态、速度)
+  - 里程计信息
+  - 末端执行器状态:
+    - 夹持器(lejuclaw): 位置、速度、力矩、抓取状态
+    - 灵巧手(qiangnao): 位置、速度、力矩
+    - 触觉灵巧手(qiangnao_touch): 位置、速度、力矩、触觉状态
+    - 末端执行器位置和姿态
+  - 运动状态: 站立、行走、自定义单步控制
 
-- Motion Control
-  - Arm Control
-    - Joint position control
-    - End-effector 6D control via inverse kinematics
-    - Forward kinematics (FK) for computing end-effector pose
-    - Keyframe sequence control for complex motions
-  - End-effector Control
-    - Gripper control (position control with configurable velocity and torque)
-    - Dexterous hand control
-      - Position control
-      - Pre-defined hand gestures (OK, 666, fist, etc.)
-  - Head Control
-    - Position control
-  - Torso Control
-    - Height control (squatting)
-    - Forward/backward tilt control
-  - Dynamic Motion Control
-    - Stance
-    - Trot
-    - Walking (xy and yaw velocity control)
-    - Stepping (gait switching)
+- 运动控制
+  - 手臂控制
+    - 关节位置控制
+    - 通过逆运动学(IK)的末端执行器6D控制
+    - 用于计算末端执行器位姿的正运动学(FK)
+    - 复杂动作的关键帧序列控制
+  - 末端执行器控制
+    - 夹持器控制(可配置速度和力矩的位置控制)
+    - 灵巧手控制
+      - 位置控制
+      - 预定义手势(OK、666、握拳等)控制
+  - 头部控制
+    - 位置控制
+  - 躯干控制
+    - 高度控制(下蹲)
+    - 前/后倾控制
+  - 动态运动控制
+    - 站立
+    - 踏步
+    - 行走(xy 和 yaw 偏航速度控制)
+    - 自定义单步控制
+- 机器人基本信息
+  - 机器人类型(kuavo)
+  - 机器人版本
+  - 末端执行器类型
+  - 关节名称
+  - 总自由度(28)
+  - 手臂自由度(每臂7个)
+  - 头部自由度(2个)
+  - 腿部自由度(12个)
+- 音频接口
+  - 播放指定的音频文件
+  - 停止播放音频
+  - TTS 文本合成音频
+- 视觉接口
+  - 获取指定坐标系下的 AprilTag 检测数据
+- 观测接口
+   - 获取机器人控制指令
+- 搬箱子策略模块
+   - 查找 Apriltag 
+   - 到达世界坐标系下的目标点位姿
+   - 搬箱子
+   - 放置箱子   
+## 安装
 
-- Robot Basic Information
-  - Robot type (kuavo)
-  - Robot version
-  - End-effector type
-  - Joint names
-  - Total degrees of freedom (28)
-  - Arm degrees of freedom (7 per arm)
-  - Head degrees of freedom (2)
-  - Leg degrees of freedom (12)
+**注意：目前SDK有两个版本，稳定版和测试版。它们的区别如下：**
 
-## Installation
+- 稳定版：对应 [kuavo-ros-opensource](https://gitee.com/leju-robot/kuavo-ros-opensource/) 仓库 `master` 分支提供的功能。
+- 测试版：比官方版本更激进，也提供更丰富的功能，对应 [kuavo-ros-opensource](https://gitee.com/leju-robot/kuavo-ros-opensource/) 仓库 `beta` 分支提供的功能。
 
-**Note: There are currently two versions of this SDK, the stable version and the beta version. Their differences are:**
+**友情提醒：请明确您需要安装的版本。如果您的SDK版本与 `kuavo-ros-opensource` 不匹配，某些功能可能无法使用。**
 
-- stable version: corresponding to the functionality provided by the `master` branch of [kuavo-ros-opensource](https://gitee.com/leju-robot/kuavo-ros-opensource/).
-- Beta version: This version is more aggressive than the official version and also provides richer functionality, corresponding to the functionality provided by the `beta` branch of [kuavo-ros-opensource](https://gitee.com/leju-robot/kuavo-ros-opensource/).
-
-**Friendly reminder: Please be clear about which version you need to install. If your SDK version does not match `kuavo-ros-opensource`, some features may not be available.**
-
-Install the latest **​stable version** of Kuavo Humanoid SDK using pip:
+使用 pip 安装最新的 **稳定版** Kuavo Humanoid SDK：
 ```bash
 pip install kuavo-humanoid-sdk  
 ```
 
-Install the latest **​beta version** of Kuavo Humanoid SDK using pip:
+使用  pip 安装最新的 **测试版** Kuavo Humanoid SDK：
 ```bash
 pip install --pre kuavo-humanoid-sdk  
 ```
 
-For local development installation (editable mode), use:
+对于本地开发安装（可编辑模式），请使用：
 ```bash
 cd src/kuavo_humanoid_sdk  
 chmod +x install.sh  
 ./install.sh   
 ```
-## Upgrade Instructions
-Before upgrading, you can check the currently installed version with:
+
+## 版本升级
+在升级版本之前，您可以使用以下命令查看当前安装的版本：
 ```bash
 pip show kuavo-humanoid-sdk  
 # Output:  
 Name: kuavo-humanoid-sdk  
-Version: 0.1.2  
+Version: 1.1.6
 ...  
 ```
 
-**Note: If the version number contains the letter b, it indicates a beta version, e.g., Version: 0.1.2b113**
+**提示：如果版本号包含字母 b，则表示是测试版，例如，Version: 0.1.2b113**
 
-To upgrade from a stable version to the latest stable version:
+从稳定版本更新到最新的稳定版本：
 ```bash
 pip install --upgrade kuavo_humanoid_sdk  
 ```
 
-To upgrade from a beta version to the latest stable version:
+从测试版更新到最新的稳定版本：
 ```bash
 pip install --upgrade --force-reinstall kuavo_humanoid_sdk  
 # or  
 pip uninstall kuavo_humanoid_sdk && pip install kuavo_humanoid_sdk  
 ```
 
-To upgrade from a stable/beta version to the latest beta version:
+从测试版/稳定版更新到最新的测试版：
 ```bash
 pip install --upgrade --pre kuavo_humanoid_sdk  
 ```
 
-## Package Information
+## 安装包信息
 
-You can check the package information using pip:
+您可以使用 pip 来查看包信息：
 ```bash
 pip show kuavo-humanoid-sdk
 ```
 
-## Quick Start
+## 快速开始
 
-Here's a simple example to get started with Kuavo Humanoid SDK:
+以下是一个简单的示例，用于快速使用 Kuavo Humanoid SDK：
 
-> **Warning**: Before running any code, make sure to start the robot first by executing either:
-> - For simulation: `roslaunch humanoid_controllers load_kuavo_mujoco_sim.launch` (Example command)
-> - For real robot: `roslaunch humanoid_controllers load_kuavo_real.launch` (Example command)
+> **警告**: 
+>  在运行任何代码示例之前，请确保已经启动机器人， 否则 SDK 无法正常工作：
+>   
+>   - 如果是命令行启动，则请确保类似下面的命令已经执行:
+>       - 仿真模式: ``roslaunch humanoid_controllers load_kuavo_mujoco_sim.launch`` (示例命令)
+>       - 真实机器人: ``roslaunch humanoid_controllers load_kuavo_real.launch`` (示例命令)
+>   - 如果是 h12 遥控器等启动方式，也请确保已经让机器人启动(站立)
+
 ```python3
 # Copyright (c) 2025 Leju Robotics. Licensed under the MIT License.
 import time
@@ -158,91 +173,94 @@ if __name__ == "__main__":
     main()
 ```
 
-## Docs
-The documentation is available in two formats:
-- HTML format: [docs/html](docs/html), **needs to be generated by running the script**
-- Markdown format: [docs/markdown](docs/markdown)
+## 文档
+我们提供两种文档格式：
+- HTML 格式: [docs/html](docs/html), **但是需要您自己在SDK目录下执行`gen_docs.sh`脚本生成**
+- Markdown 格式: [docs/markdown](docs/markdown)
 
-We recommend that you generate the documentation locally by running the documentation script. The documentation will be output to the `docs/html` and `docs/markdown` folders:
+您可以在 SDK 的源码目录下执行以下命令生成文档， 文档会输出到 `docs/html` 和 `docs/markdown` 文件夹中：
 ```bash
 cd <kuavo-ros-opensource>/src/kuavo_humanoid_sdk
 chmod +x gen_docs.sh
 ./gen_docs.sh
 ```
 
-**We recommend that you view the documentation using `html` for a better experience.**
+**我们强烈推荐您阅读 `html` 文档， 因为它更适合阅读。**
 
-For Markdown documentation at:
+对于Markdown 文档， 请访问：
 
 https://gitee.com/leju-robot/kuavo-ros-opensource/tree/master/src/kuavo_humanoid_sdk/docs/markdown/index.md
 
-## Examples
+## 使用示例
 
-#### WARNING
-Before running any code examples, make sure to start the robot first by executing either:
+> **警告**: 
+>  在运行任何代码示例之前，请确保已经启动机器人， 否则 SDK 无法正常工作：
+>   
+>   - 如果是命令行启动，则请确保类似下面的命令已经执行:
+>       - 仿真模式: ``roslaunch humanoid_controllers load_kuavo_mujoco_sim.launch`` (示例命令)
+>       - 真实机器人: ``roslaunch humanoid_controllers load_kuavo_real.launch`` (示例命令)
+>   - 如果是 h12 遥控器等启动方式，也请确保已经让机器人启动(站立)
 
-- For simulation: `roslaunch humanoid_controllers load_kuavo_mujoco_sim.launch` (Example command)
-- For real robot: `roslaunch humanoid_controllers load_kuavo_real.launch` (Example command)
+### 基本信息示例
 
-### Robot Info
-
-Examples showing how to get basic robot information.
+一个获取机器人基本信息的示例。
 
 [https://gitee.com/leju-robot/kuavo-ros-opensource/tree/master/src/kuavo_humanoid_sdk/examples/robot_info_example.py](https://gitee.com/leju-robot/kuavo-ros-opensource/tree/master/src/kuavo_humanoid_sdk/examples/robot_info_example.py)
 
-### Basic Robot Control
+### 运动控制示例
 
-A basic example showing how to initialize the SDK and control the robot’s movement.
+一个基本示例，用于初始化 SDK 并控制机器人运动。
 
 [https://gitee.com/leju-robot/kuavo-ros-opensource/tree/master/src/kuavo_humanoid_sdk/examples/motion_example.py](https://gitee.com/leju-robot/kuavo-ros-opensource/tree/master/src/kuavo_humanoid_sdk/examples/motion_example.py)
 
-### End Effector Control
+### 末端执行器控制示例
 
-#### LejuClaw Gripper
+#### LejuClaw 夹爪
 
-Examples demonstrating how to control the LejuClaw gripper end effector, including position, velocity and torque control.
+展示如何控制 LejuClaw 夹爪末端执行器的示例，包括位置、速度和力矩控制。
 
 [https://gitee.com/leju-robot/kuavo-ros-opensource/tree/master/src/kuavo_humanoid_sdk/examples/lejuclaw_example.py](https://gitee.com/leju-robot/kuavo-ros-opensource/tree/master/src/kuavo_humanoid_sdk/examples/lejuclaw_example.py)
 
-#### QiangNao DexHand
+#### QiangNao 灵巧手
 
-Examples showing how to control the QiangNao DexHand, a dexterous robotic hand with multiple degrees of freedom for complex manipulation tasks.
+展示如何控制 QiangNao 灵巧手的示例，这是一个具有多个自由度的灵巧机器人手，可用于复杂的操作任务。
 
 [https://gitee.com/leju-robot/kuavo-ros-opensource/tree/master/src/kuavo_humanoid_sdk/examples/dexhand_example.py](https://gitee.com/leju-robot/kuavo-ros-opensource/tree/master/src/kuavo_humanoid_sdk/examples/dexhand_example.py)
 
-### Arm Control
+### 手臂控制示例
 
-Examples showing arm trajectory control and target pose control.
+展示手臂轨迹控制和目标姿态控制的示例。
 
 [https://gitee.com/leju-robot/kuavo-ros-opensource/tree/master/src/kuavo_humanoid_sdk/examples/ctrl_arm_example.py](https://gitee.com/leju-robot/kuavo-ros-opensource/tree/master/src/kuavo_humanoid_sdk/examples/ctrl_arm_example.py)
 
-### Forward and Inverse Kinematics
+### 手臂正向运动学和逆向运动学示例
 
-Examples demonstrating how to use forward kinematics (FK) to compute end-effector positions from joint angles, and inverse kinematics (IK) to calculate joint angles needed to achieve desired end-effector poses.
+展示如何使用正向运动学(FK)从关节角度计算末端执行器位置，以及如何使用逆向运动学(IK)计算实现期望末端执行器姿态所需的关节角度的示例。
 
 [https://gitee.com/leju-robot/kuavo-ros-opensource/tree/master/src/kuavo_humanoid_sdk/examples/arm_ik_example.py](https://gitee.com/leju-robot/kuavo-ros-opensource/tree/master/src/kuavo_humanoid_sdk/examples/arm_ik_example.py)
 
-### Head Control
+### 头部控制示例
 
-Examples showing how to control the robot’s head movements, including nodding (pitch) and shaking (yaw) motions.
+展示如何控制机器人头部运动的示例，包括点头(俯仰)和摇头(偏航)动作。
 
 [https://gitee.com/leju-robot/kuavo-ros-opensource/tree/master/src/kuavo_humanoid_sdk/examples/ctrl_head_example.py](https://gitee.com/leju-robot/kuavo-ros-opensource/tree/master/src/kuavo_humanoid_sdk/examples/ctrl_head_example.py)
 
-### Step-by-Step Control
+### 单步控制示例
 
-Examples showing how to control the robot’s movements step by step, including individual foot placement and trajectory control.
+展示如何控制机器人按照自定义落足点轨迹运动的示例。
 
 [https://gitee.com/leju-robot/kuavo-ros-opensource/tree/master/src/kuavo_humanoid_sdk/examples/step_control_example.py](https://gitee.com/leju-robot/kuavo-ros-opensource/tree/master/src/kuavo_humanoid_sdk/examples/step_control_example.py)
 
 
-## License
+## 许可证
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+本项目使用 MIT 许可证授权，详情信息请查看 LICENSE 文件。
 
-## Contact & Support
+## 联系与支持
 
-For any questions, support, or bug reports, please contact:
-- Email: edu@lejurobot.com
-- Website: https://gitee.com/leju-robot/kuavo-ros-opensource/
-- Source Code: https://gitee.com/leju-robot/kuavo-ros-opensource/
-- Issue Tracker: https://gitee.com/leju-robot/kuavo-ros-opensource/issues
+如有任何问题、支持需求或错误报告，请通过以下方式联系我们：
+
+- 邮箱: edu@lejurobot.com
+- 网站: https://gitee.com/leju-robot/kuavo-ros-opensource/
+- 源代码: https://gitee.com/leju-robot/kuavo-ros-opensource/
+- 问题追踪: https://gitee.com/leju-robot/kuavo-ros-opensource/issues

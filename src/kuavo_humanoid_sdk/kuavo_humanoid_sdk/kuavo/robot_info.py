@@ -11,6 +11,7 @@ class KuavoRobotInfo(RobotInfoBase):
         # Load robot parameters from ROS parameter server
         kuavo_ros_param = make_robot_param()
         self._ros_param = RosParameter()
+            
         self._robot_version = kuavo_ros_param['robot_version']
         self._end_effector_type = kuavo_ros_param['end_effector_type']
         self._arm_joint_dof = kuavo_ros_param['arm_dof']
@@ -22,90 +23,89 @@ class KuavoRobotInfo(RobotInfoBase):
         self._arm_joint_names = self._joint_names[12:self._arm_joint_dof + 12]
     @property
     def robot_version(self) -> str:
-        """Return the version of the robot.
+        """返回 Kuavo 机器人的版本。
 
         Returns:
-            str: The robot version, e.g. "42", "43"...
+            str: 机器人版本号，例如 "42"、"45" 等。
         """
         return self._robot_version
 
     @property
     def end_effector_type(self) -> str:
-        """Return the type of the end effector.
+        """返回 Kuavo 机器人末端执行器的类型。
 
         Returns:
-            str: The end effector type, where:
-                - "qiangnao" means "dexteroushand"
-                - "lejuclaw" means "lejuclaw"
-                - "qiangnao_touch" means "touchdexteroushand"
+            str: 末端执行器类型，其中：
+                - ``qiangnao`` 表示普通灵巧手
+                - ``lejuclaw`` 表示乐聚二指夹爪
+                - ``qiangnao_touch`` 表示触觉灵巧手
                 - ...
         """
         return self._end_effector_type
 
     @property
     def joint_names(self) -> list:
-        """Return the names of all joints in the robot.
+        """返回 Kuavo 机器人所有关节的名称。
 
         Returns:
-            list: A list containing the names of all robot joints.
+            list: 包含所有关节名称的列表。
         """
         return self._joint_names
 
     @property
     def joint_dof(self) -> int:
-        """Return the total number of joints in the robot.
+        """返回 Kuavo 机器人的总关节数。
 
         Returns:
-            int: Total number of joints, e.g. 28
+            int: 总关节数，例如 28。
         """
         return self._joint_dof
 
     @property
     def arm_joint_dof(self) -> int:
-        """Return the number of joints in the double-arm.
+        """返回 Kuavo 机器人双臂的关节数。
 
         Returns:
-            int: Number of joints in double-arm, e.g. 14
+            int: 双臂的关节数，例如 14。 
         """
         return self._arm_joint_dof
 
     @property
     def arm_joint_names(self) -> list:
-        """Return the names of joints in the double-arm.
+        """返回 Kuavo 机器人双臂关节的名称。
 
         Returns:
-            list: A list containing the names of joints in the double-arm.
+            list: 包含双臂关节名称的列表。
         """
         return self._arm_joint_names
 
     @property
     def head_joint_dof(self) -> int:
-        """Return the number of joints in the head.
+        """返回 Kuavo 机器人头部的关节数。
 
         Returns:
-            int: Number of joints in head, e.g. 2
+            int: 头部的关节数，例如 2。
         """
         return self._head_joint_dof
 
     @property
     def head_joint_names(self) -> list:
-        """Return the names of joints in the head.
+        """返回 Kuavo 机器人头部关节的名称。
 
         Returns:
-            list: A list containing the names of joints in the head.
+            list: 包含头部关节名称的列表。
         """
         return self._head_joint_names
 
     @property
     def eef_frame_names(self) -> Tuple[str, str]:
-        """Returns the names of the end effector frames.
+        """返回 Kuavo 机器人末端执行器坐标系的名称。
 
         Returns:
-            Tuple[str, str]:
-                A tuple containing the end effector frame names, where:
-                - First element is the left hand frame name
-                - Second element is the right hand frame name
-                e.g. ("zarm_l7_link", "zarm_r7_link")
+            Tuple[str, str]: 包含末端执行器坐标系名称的元组，其中：\n
+                - 第一个元素是左手坐标系名称\n
+                - 第二个元素是右手坐标系名称\n
+                例如 ("zarm_l7_link", "zarm_r7_link") \n
         """
         return self._end_frames_names[1], self._end_frames_names[2]
     

@@ -8,7 +8,8 @@
     <arg name="corner_refinement" default="LINES" /> <!-- NONE, HARRIS, LINES, SUBPIX -->
     <arg name="image_topic" default="/camera/color/image_raw" />         <!-- TODO: Your rgb image raw topic -->
     <arg name="info_topic" default="/camera/color/camera_info" />        <!-- TODO: Your rgb camera info topic -->
-    <arg name="camera_frame" default="camera_color_optical_frame" />            <!-- TODO: Your rgb camera optical frame -->
+    <arg name="camera_frame" default="head_camera_color_optical_frame" />            <!-- TODO: Your rgb camera optical frame -->
+    
     <node pkg="aruco_ros" type="single" name="$(anon aruco_single)">
         <remap from="/camera_info" to="$(arg info_topic)" />
         <remap from="/image" to="$(arg image_topic)" />

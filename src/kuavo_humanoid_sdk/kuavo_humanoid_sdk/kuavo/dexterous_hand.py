@@ -7,6 +7,7 @@ from kuavo_humanoid_sdk.kuavo.core.dex_hand_control import DexHandControl
 from kuavo_humanoid_sdk.kuavo.core.ros.state import KuavoRobotStateCore
 
 class DexterousHand(EndEffector):
+    """普通灵巧手控制类"""
     def __init__(self):
         joint_names = ['l_thumb', 'l_thumb_aux', 'l_index', 'l_middle', 'l_ring', 'l_pinky',
                        'r_thumb', 'r_thumb_aux', 'r_index', 'r_middle', 'r_ring', 'r_pinky',]
@@ -15,19 +16,18 @@ class DexterousHand(EndEffector):
         self._rb_state = KuavoRobotStateCore()
 
     def control(self, target_positions:list, target_velocities:list=None, target_torques:list=None)->bool:
-        """Set the position of the hand.
+        """控制灵巧手的位置。
 
         Args:
-            target_positions (list): List of target positions for all joints, length must be 12 (6 joints for each hand),
-                range => [0.0 ~ 100.0]
-            target_velocities (list, optional): Not supported. Defaults to None.
-            target_torques (list, optional): Not supported. Defaults to None.
+            target_positions (list): 所有手指关节的目标位置列表，长度必须为12（每只手6个手指关节），范围 => [0.0 ~ 100.0] 
+            target_velocities (list, optional): 不支持。默认为None。
+            target_torques (list, optional): 不支持。默认为None。
 
         Returns:
-            bool: True if control successful, False otherwise.
+            bool: 如果控制成功返回 True，否则返回 False。
 
         Note:
-            target_velocities and target_torques are not supported.
+            target_velocities 和 target_torques 参数暂不支持。
         """
         if len(target_positions) != self.joint_count():
             raise ValueError(f"Target positions must have the same length as joint names {len(target_positions)} != {self.joint_count()}")
@@ -38,21 +38,21 @@ class DexterousHand(EndEffector):
         return self.dex_hand_control.control(target_positions=q, side=EndEffectorSide.BOTH)
 
     def control_right(self, target_positions:list, target_velocities:list=None, target_torques:list=None)->bool:
-        """Control the right dexterous hand.
+        """控制右手灵巧手。
 
         Args:
-            target_positions (list): Target positions for right hand joints [0 ~ 100], length must be 6
-            target_velocities (list, optional): Not supported. Defaults to None.
-            target_torques (list, optional): Not supported. Defaults to None.
+            target_positions (list): 右手关节的目标位置 [0 ~ 100]，长度必须为6
+            target_velocities (list, optional): 不支持。默认为None。
+            target_torques (list, optional): 不支持。默认为None。
 
         Returns:
-            bool: True if control successful, False otherwise.
+            bool: 如果控制成功返回True，否则返回False。
 
         Raises:
-            ValueError: If target positions length doesn't match joint count or values outside [0,100] range
+            ValueError: 如果目标位置长度与关节数不匹配或值超出[0,100]范围
 
         Note:
-            target_velocities and target_torques are not supported.
+            target_velocities 和 target_torques 参数暂不支持。
         """
         if len(target_positions) != (self.joint_count()/2):
                 raise ValueError(f"Target positions must have the same length as joint names {len(target_positions)} != {self.joint_count()/2}.")
@@ -62,21 +62,21 @@ class DexterousHand(EndEffector):
         return self.dex_hand_control.control(target_positions=q, side=EndEffectorSide.RIGHT)
 
     def control_left(self, target_positions:list, target_velocities:list=None, target_torques:list=None)->bool:
-        """Control the left dexterous hand.
+        """控制左手灵巧手。
 
         Args:
-            target_positions (list): Target positions for left hand joints [0 ~ 100], length must be 6
-            target_velocities (list, optional): Not supported. Defaults to None.
-            target_torques (list, optional): Not supported. Defaults to None.
+            target_positions (list): 左手关节的目标位置 [0 ~ 100]，长度必须为6
+            target_velocities (list, optional): 不支持。默认为None。
+            target_torques (list, optional): 不支持。默认为None。
 
         Returns:
-            bool: True if control successful, False otherwise.
+            bool: 如果控制成功返回True，否则返回False。
 
         Raises:
-            ValueError: If target positions length doesn't match joint count or values outside [0,100] range
+            ValueError: 如果目标位置长度与关节数不匹配或值超出[0,100]范围
 
         Note:
-            target_velocities and target_torques are not supported.
+            target_velocities 和 target_torques 参数不支持。
         """
         if len(target_positions) != (self.joint_count()/2):
             raise ValueError(f"Target positions must have the same length as joint names {len(target_positions)} != {self.joint_count()/2}.")
@@ -86,14 +86,14 @@ class DexterousHand(EndEffector):
         return self.dex_hand_control.control(target_positions=q, side=EndEffectorSide.LEFT)
 
     def open(self, side: EndEffectorSide=EndEffectorSide.BOTH)->bool:
-        """Open the dexterous hand(s) by setting all joint positions to 0.
+        """通过将所有关节位置设置为 0 来张开灵巧手。
 
         Args:
-            side (EndEffectorSide, optional): Which hand(s) to open. Defaults to EndEffectorSide.BOTH.
-                Can be LEFT, RIGHT, or BOTH.
+            side (EndEffectorSide, optional): 要打开的手。默认为 :attr:`EndEffectorSide.BOTH`。 \n
+                可以是 :attr:`EndEffectorSide.LEFT`、:attr:`EndEffectorSide.RIGHT` 或 :attr:`EndEffectorSide.BOTH`。
 
         Returns:
-            bool: True if open command sent successfully, False otherwise.
+            bool: 如果打开命令发送成功返回True，否则返回False。
         """
         zero_pos = [0]*self.joint_count()
         if side == EndEffectorSide.LEFT:
@@ -104,17 +104,17 @@ class DexterousHand(EndEffector):
             return self.dex_hand_control.control(target_positions=zero_pos, side=EndEffectorSide.BOTH)     
 
     def make_gesture(self, l_gesture_name: str, r_gesture_name: str)->bool:
-        """Make predefined gestures for both hands.
+        """为双手做预定义的手势。
 
         Args:
-            l_gesture_name (str): Name of gesture for left hand. None to skip left hand.
-            r_gesture_name (str): Name of gesture for right hand. None to skip right hand.
+            l_gesture_name (str): 左手手势的名称。None表示跳过左手。
+            r_gesture_name (str): 右手手势的名称。None表示跳过右手。
 
         Returns:
-            bool: True if gesture command sent successfully, False otherwise.
+            bool: 如果手势命令发送成功返回True，否则返回False。
 
         Note:
-            gestures e.g.: 'fist', 'ok', 'thumbs_up', '666'...
+            手势示例：'fist'、'ok'、'thumbs_up'、'666'等...
         """
         gesture = []
         if l_gesture_name is not None:
@@ -125,72 +125,75 @@ class DexterousHand(EndEffector):
             self.dex_hand_control.make_gestures(gesture)
         return True
     def get_gesture_names(self)->list:
-        """Get the names of all gestures.
+        """获取所有手势的名称。
 
         Returns:
-            list: List of gesture names.
-                e.g.: ['fist', 'ok', 'thumbs_up', '666', 'number_1', 'number_2', 'number_3', ... ],
-                None if no gestures.
+            list: 手势名称列表。
+                例如：['fist', 'ok', 'thumbs_up', '666', 'number_1', 'number_2', 'number_3', ... ], 如果没有手势则返回 None。
         """
         return self.dex_hand_control.get_gesture_names()
     
     def get_state(self)->Tuple[EndEffectorState, EndEffectorState]:
-        """Get the state of the dexterous hand.
+        """获取灵巧手的状态。
 
         Returns:
-            Tuple[EndEffectorState, EndEffectorState]: The state of the dexterous hand.
+            Tuple[EndEffectorState, EndEffectorState]: 灵巧手的状态。
         """
         return self._rb_state.eef_state
 
     def get_position(self)->Tuple[list, list]:
-        """Get the position of the dexterous hand.
+        """获取灵巧手的位置。
 
         Returns:
-            Tuple[list, list]: The position of the dexterous hand.
+            Tuple[list, list]: 灵巧手的位置。
         """
         state = self._rb_state.eef_state
         return (state[0].position, state[1].position)
     
     def get_velocity(self)->Tuple[list, list]:
-        """Get the velocity of the dexterous hand.
+        """获取灵巧手的速度。
 
         Returns:
-            Tuple[list, list]: The velocity of the dexterous hand.
+            Tuple[list, list]: 灵巧手的速度。
         """
         state = self._rb_state.eef_state
         return (state[0].velocity, state[1].velocity)
 
     def get_effort(self)->Tuple[list, list]:
-        """Get the effort of the dexterous hand.
+        """获取灵巧手的力。
 
         Returns:
-            Tuple[list, list]: The effort of the dexterous hand.
+            Tuple[list, list]: 灵巧手的力。
 
         Note:
-            0 ~ 100 for each finger. Fraction of max motor current, absolute number.
-            The max motor current is 600mA, in a word, 100.
+            每个手指的范围为0 ~ 100。表示最大电机电流的分数，绝对数值。
+            最大电机电流为600mA，换句话说，100。
         """
         state = self._rb_state.eef_state
         return (state[0].effort, state[1].effort)
 
     def get_grasping_state(self)->Tuple[EndEffectorState.GraspingState, EndEffectorState.GraspingState]:
-        """Get the grasping state of the dexterous hand.
+        """获取灵巧手的抓取状态。
 
         Note:
-            The grasping state is not implemented yet.
+            该功能尚未实现。
 
         Returns:
-            Tuple[EndEffectorState.GraspingState, EndEffectorState.GraspingState]: The grasping state of the dexterous hand.
+            Tuple[EndEffectorState.GraspingState, EndEffectorState.GraspingState]: 灵巧手的抓取状态。
         """
         raise NotImplementedError("This function is not implemented yet")
 
 
 class TouchDexterousHand(DexterousHand):
+    """触觉灵巧手控制类，继承自普通灵巧手控制类，可调用普通灵巧手控制类中的所有方法"""
     def __init__(self):
         super().__init__()
 
     def get_touch_state(self)-> Tuple[KuavoDexHandTouchState, KuavoDexHandTouchState]:
-        """Get the touch state of the dexterous hand.
+        """获取灵巧手的触觉状态。
+
+        Warning:
+            该功能仅在触觉灵巧手上可用。
 
         Returns:
             Tuple[KuavoDexHandTouchState, KuavoDexHandTouchState]

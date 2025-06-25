@@ -31,14 +31,20 @@
 #include "drake/systems/primitives/vector_log_sink.h"
 #include "drake/common/eigen_types.h"
 
-// msgs
-#include "motion_capture_ik/twoArmHandPoseCmd.h"
-#include "motion_capture_ik/twoArmHandPose.h"
-#include "motion_capture_ik/headBodyPose.h"
-// srv
-#include "motion_capture_ik/twoArmHandPoseCmdSrv.h"
-#include "motion_capture_ik/fkSrv.h"
+// // msgs
+// #include "motion_capture_ik/twoArmHandPoseCmd.h"
+// #include "motion_capture_ik/twoArmHandPose.h"
+// #include "motion_capture_ik/headBodyPose.h"
+// // srv
+// #include "motion_capture_ik/twoArmHandPoseCmdSrv.h"
+// #include "motion_capture_ik/fkSrv.h"
 
+#include "kuavo_msgs/twoArmHandPoseCmd.h"
+#include "kuavo_msgs/twoArmHandPose.h"
+#include "kuavo_msgs/headBodyPose.h"
+
+#include "kuavo_msgs/twoArmHandPoseCmdSrv.h"
+#include "kuavo_msgs/fkSrv.h"
 
 namespace
 {
@@ -108,12 +114,12 @@ class ArmsIKNode
             ik_ = HighlyDynamic::CoMIK(plant_ptr_, end_frames_name);
 
             // ros
-            sub_ik_cmd_ = nh_.subscribe<motion_capture_ik::twoArmHandPoseCmd>("/ik/two_arm_hand_pose_cmd", 10, &ArmsIKNode::ik_cmd_callback, this);
+            sub_ik_cmd_ = nh_.subscribe<kuavo_msgs::twoArmHandPoseCmd>("/ik/two_arm_hand_pose_cmd", 10, &ArmsIKNode::ik_cmd_callback, this);
 
             joint_pub_ = nh_.advertise<sensor_msgs::JointState>("/kuavo_arm_traj", 10);
             time_cost_pub_ = nh_.advertise<std_msgs::Float32MultiArray>("/ik/debug/time_cost", 10);
-            ik_result_pub_ = nh_.advertise<motion_capture_ik::twoArmHandPose>("/ik/result", 10);
-            head_body_pose_pub_ = nh_.advertise<motion_capture_ik::headBodyPose>("/kuavo_head_body_orientation", 10);
+            ik_result_pub_ = nh_.advertise<kuavo_msgs::twoArmHandPose>("/ik/result", 10);
+            head_body_pose_pub_ = nh_.advertise<kuavo_msgs::headBodyPose>("/kuavo_head_body_orientation", 10);
             // srv
             // 初始化服务服务器
             ik_server_ = nh_.advertiseService("/ik/two_arm_hand_pose_cmd_srv", &ArmsIKNode::handleServiceRequest, this);
@@ -194,7 +200,7 @@ class ArmsIKNode
                     joint_pub_.publish(joint_state);
                     if(start_idx > 0)//包含躯干
                     {
-                        motion_capture_ik::headBodyPose head_body_pose_msg;
+                        kuavo_msgs::headBodyPose head_body_pose_msg;
                         head_body_pose_msg.body_height = q[0];
                         head_body_pose_msg.body_yaw = q[1];
                         head_body_pose_msg.body_pitch = q[2];
@@ -273,7 +279,7 @@ class ArmsIKNode
         }
 
     private:
-        void ik_cmd_callback(const motion_capture_ik::twoArmHandPoseCmd::ConstPtr& msg)
+        void ik_cmd_callback(const kuavo_msgs::twoArmHandPoseCmd::ConstPtr& msg)
         {
             auto &hand_poses = msg->hand_poses;
             ik_cmd_left_.pos_xyz << hand_poses.left_pose.pos_xyz[0], hand_poses.left_pose.pos_xyz[1], hand_poses.left_pose.pos_xyz[2];
@@ -309,9 +315,9 @@ class ArmsIKNode
             recived__new_cmd_ = true;
         }
 
-        motion_capture_ik::twoArmHandPose publish_ik_result_info(const Eigen::VectorXd& q)
+        kuavo_msgs::twoArmHandPose publish_ik_result_info(const Eigen::VectorXd& q)
         {
-            motion_capture_ik::twoArmHandPose msg;
+            kuavo_msgs::twoArmHandPose msg;
             const int start_idx = q.size() - 2*single_arm_num_;
             for (size_t i = 0; i < single_arm_num_; i++)
             {
@@ -370,8 +376,8 @@ class ArmsIKNode
         }
 
         // 处理服务请求的回调函数
-        bool handleServiceRequest(motion_capture_ik::twoArmHandPoseCmdSrv::Request &req,
-                                motion_capture_ik::twoArmHandPoseCmdSrv::Response &res) 
+        bool handleServiceRequest(kuavo_msgs::twoArmHandPoseCmdSrv::Request &req,
+                                kuavo_msgs::twoArmHandPoseCmdSrv::Response &res) 
         {
             const auto &cmd = req.twoArmHandPoseCmdRequest;
             auto &hand_poses = cmd.hand_poses;
@@ -447,7 +453,7 @@ class ArmsIKNode
                     res.with_torso = true;
                     res.q_torso = std::vector<double>(q.data(), q.data() + start_idx);
                 }
-                motion_capture_ik::twoArmHandPose msg = publish_ik_result_info(q);
+                kuavo_msgs::twoArmHandPose msg = publish_ik_result_info(q);
                 res.hand_poses = msg;
             }
             if(print_ik_info_)
@@ -456,7 +462,7 @@ class ArmsIKNode
             return true;
         }
 
-        bool handleFKServiceRequest(motion_capture_ik::fkSrv::Request &req, motion_capture_ik::fkSrv::Response &res) 
+        bool handleFKServiceRequest(kuavo_msgs::fkSrv::Request &req, kuavo_msgs::fkSrv::Response &res) 
         {
             const int num_dof = q0_.size(); 
             if(req.q.size() != num_dof)

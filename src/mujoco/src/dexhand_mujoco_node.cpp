@@ -25,6 +25,9 @@ bool DexHandMujocoRosNode::init(ros::NodeHandle& nh,
     nh_ = nh;
     frequency_ = frequency;
 
+    finger_count_ = std::tuple_size<UnsignedFingerArray>::value;
+    hand_count_ = std::tuple_size<UnsignedDualHandsArray>::value;
+
     /* ROS */
     auto right_hand_callback = [this](const kuavo_msgs::dexhandCommand::ConstPtr& msg) {
         this->controlSingleHand(HandSide::RIGHT, msg);
@@ -109,6 +112,10 @@ void DexHandMujocoRosNode::publish_loop()
         // Sleep to maintain publish frequency
         std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000.0/frequency_)));
     }
+}
+
+int DexHandMujocoRosNode::get_hand_joints_num() {
+    return finger_count_ * hand_count_;
 }
 
 void DexHandMujocoRosNode::dualHandCommandCallback(const kuavo_msgs::dexhandCommand::ConstPtr& msg) {

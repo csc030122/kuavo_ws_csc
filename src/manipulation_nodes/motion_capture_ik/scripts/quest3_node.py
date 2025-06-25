@@ -11,8 +11,8 @@ from tools.drake_trans import *
 from tools.quest3_utils import Quest3ArmInfoTransformer
 import argparse
 
-from motion_capture_ik.msg import twoArmHandPoseCmd, ikSolveParam
-from motion_capture_ik.srv import changeArmCtrlMode
+from kuavo_msgs.msg import twoArmHandPoseCmd, ikSolveParam
+from kuavo_msgs.srv import changeArmCtrlMode
 from noitom_hi5_hand_udp_python.msg import PoseInfo, PoseInfoList, JoySticks
 from handcontrollerdemorosnode.msg import robotHandPosition
 from kuavo_msgs.srv import controlLejuClaw, controlLejuClawRequest
@@ -29,7 +29,6 @@ class Quest3Node:
         rospy.init_node('quest3_node')
         
         self.model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
-        self.quest3_arm_info_transformer = Quest3ArmInfoTransformer(self.model_path)
         self.use_custom_ik_param = True
         self.ik_solve_param = ikSolveParam()
         
@@ -51,12 +50,15 @@ class Quest3Node:
             model_config = json.load(f)
         upper_arm_length = model_config["upper_arm_length"]
         lower_arm_length = model_config["lower_arm_length"]
-        print(f"upper_arm_length: {upper_arm_length}, lower_arm_length: {lower_arm_length}")
+        shoulder_width = model_config["shoulder_width"] 
+        print(f"upper_arm_length: {upper_arm_length}, lower_arm_length: {lower_arm_length}, shoulder_width: {shoulder_width}")
         rospy.set_param("/quest3/upper_arm_length", upper_arm_length)
         rospy.set_param("/quest3/lower_arm_length", lower_arm_length)
+        rospy.set_param("/quest3/shoulder_width", shoulder_width)
+        self.quest3_arm_info_transformer = Quest3ArmInfoTransformer(self.model_path)
         
         self.control_robot_hand_position_pub = rospy.Publisher("control_robot_hand_position", robotHandPosition, queue_size=10)
-        self.pub = rospy.Publisher('/ik/two_arm_hand_pose_cmd', twoArmHandPoseCmd, queue_size=10)
+        self.pub = rospy.Publisher('/mm/two_arm_hand_pose_cmd', twoArmHandPoseCmd, queue_size=10)
         self.leju_claw_command_pub = rospy.Publisher("leju_claw_command", lejuClawCommand, queue_size=10)
 
         rospy.Subscriber("/leju_quest_bone_poses", PoseInfoList, self.quest_bone_poses_callback)
@@ -184,6 +186,26 @@ class Quest3Node:
         except rospy.ROSException:
             rospy.logerr(f"Service {service_name} not available")
 
+    def change_mobile_ctrl_mode(self, mode: int):
+        # print(f"change_mobile_ctrl_mode: {mode}")
+        mobile_manipulator_service_name = "/mobile_manipulator_mpc_control"
+        try:
+            rospy.wait_for_service(mobile_manipulator_service_name)
+            changeHandTrackingMode_srv = rospy.ServiceProxy(mobile_manipulator_service_name, changeArmCtrlMode)
+            changeHandTrackingMode_srv(mode)
+        except rospy.ROSException:
+            rospy.logerr(f"Service {mobile_manipulator_service_name} not available")
+
+    def change_mm_wbc_arm_ctrl_mode(self, mode: int):
+        # print(f"change_wbc_arm_ctrl_mode: {mode}")
+        service_name = "/enable_mm_wbc_arm_trajectory_control"
+        try:
+            rospy.wait_for_service(service_name)
+            changeHandTrackingMode_srv = rospy.ServiceProxy(service_name, changeArmCtrlMode)
+            changeHandTrackingMode_srv(mode)
+        except rospy.ROSException:
+            rospy.logerr(f"Service {service_name} not available")
+
     def quest_bone_poses_callback(self, quest_bone_poses_msg):
         self.quest3_arm_info_transformer.read_msg(quest_bone_poses_msg)
         left_pose, left_elbow_pos = self.quest3_arm_info_transformer.get_hand_pose("Left")
@@ -212,7 +234,11 @@ class Quest3Node:
         if self.send_srv and (self.last_quest_running_state != self.quest3_arm_info_transformer.is_runing):
             print(f"Quest running state change to: {self.quest3_arm_info_transformer.is_runing}")
             mode = 2 if self.quest3_arm_info_transformer.is_runing else 0
+            mobile_mode = 1 if self.quest3_arm_info_transformer.is_runing else 0
+            wbc_mode = 1 if self.quest3_arm_info_transformer.is_runing else 0
             self.change_arm_ctrl_mode(mode)
+            self.change_mobile_ctrl_mode(mobile_mode)
+            self.change_mm_wbc_arm_ctrl_mode(wbc_mode)
             print("Received service response of changing arm control mode.")
             self.last_quest_running_state = self.quest3_arm_info_transformer.is_runing
 

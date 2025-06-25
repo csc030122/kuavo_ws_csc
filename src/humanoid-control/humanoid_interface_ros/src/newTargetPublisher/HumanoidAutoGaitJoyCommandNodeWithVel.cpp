@@ -35,6 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <std_msgs/Float32.h>
 #include <std_msgs/Float64MultiArray.h>
 #include <geometry_msgs/Twist.h>
+#include "kuavo_msgs/SetJoyTopic.h"
 
 #include <ocs2_core/Types.h>
 #include <ocs2_core/misc/LoadData.h>
@@ -53,7 +54,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <humanoid_interface/gait/MotionPhaseDefinition.h>
 #include "kuavo_msgs/gaitTimeName.h"
 #include <ocs2_msgs/mpc_flattened_controller.h>
-#include <humanoid_interface_drake/common/json.hpp>
+#include <kuavo_common/common/json.hpp>
 #include <map>
 #include <kuavo_msgs/changeArmCtrlMode.h>
 #include "kuavo_msgs/robotHeadMotionData.h"
@@ -163,7 +164,9 @@ namespace ocs2
       mode_sequence_template_publisher_ = nodeHandle.advertise<ocs2_msgs::mode_schedule>(robotName + "_mpc_mode_schedule", 10, true);
       mode_scale_publisher_ = nodeHandle.advertise<std_msgs::Float32>(robotName + "_mpc_mode_scale", 10, true);
       cmd_vel_publisher_ = nodeHandle.advertise<geometry_msgs::Twist>("/cmd_vel", 10, true);
-      joy_sub_ = nodeHandle_.subscribe("/joy", 10, &JoyControl::joyCallback, this);
+      current_joy_topic_ = "/joy";  // 默认话题
+      joy_topic_service_ = nodeHandle_.advertiseService("/set_joy_topic", &JoyControl::setJoyTopicCallback, this);
+      joy_sub_ = nodeHandle_.subscribe(current_joy_topic_, 10, &JoyControl::joyCallback, this);
       feet_sub_ = nodeHandle_.subscribe("/humanoid_controller/swing_leg/pos_measured", 2, &JoyControl::feetCallback, this);
       observation_sub_ = nodeHandle_.subscribe(robotName + "_mpc_observation", 10, &JoyControl::observationCallback, this);
       gait_scheduler_sub_ = nodeHandle_.subscribe<kuavo_msgs::gaitTimeName>(robotName + "_mpc_gait_time_name", 10, [this](const kuavo_msgs::gaitTimeName::ConstPtr &msg)
@@ -291,6 +294,29 @@ namespace ocs2
       }
       send_zero_twist = false;
       cmd_vel_publisher_.publish(cmdVel_);
+    }
+
+    bool setJoyTopicCallback(kuavo_msgs::SetJoyTopic::Request &req,
+                           kuavo_msgs::SetJoyTopic::Response &res)
+    {
+      try {
+        // 取消当前的订阅
+        joy_sub_.shutdown();
+        
+        // 更新话题名并重新订阅
+        current_joy_topic_ = req.topic_name;
+        joy_sub_ = nodeHandle_.subscribe(current_joy_topic_, 10, &JoyControl::joyCallback, this);
+        
+        ROS_INFO_STREAM("成功切换Joy话题到: " << current_joy_topic_);
+        res.success = true;
+        res.message = "成功切换Joy话题";
+        return true;
+      } catch (const std::exception& e) {
+        ROS_ERROR_STREAM("切换Joy话题失败: " << e.what());
+        res.success = false;
+        res.message = std::string("切换Joy话题失败: ") + e.what();
+        return false;
+      }
     }
 
   private:
@@ -614,6 +640,8 @@ namespace ocs2
     vector_t feet_pos_measured_ = vector_t::Zero(24);
 
     std::map<std::string, humanoid::ModeSequenceTemplate> gait_map_;
+    ros::ServiceServer joy_topic_service_;
+    std::string current_joy_topic_;
   };
 }
 

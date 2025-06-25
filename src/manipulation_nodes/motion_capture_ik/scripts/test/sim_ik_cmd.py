@@ -3,8 +3,8 @@
 
 import rospy
 from std_msgs.msg import Float32MultiArray
-from motion_capture_ik.msg import twoArmHandPoseCmd, ikSolveParam
-from motion_capture_ik.srv import twoArmHandPoseCmdSrv
+from kuavo_msgs.msg import twoArmHandPoseCmd, ikSolveParam
+from kuavo_msgs.srv import twoArmHandPoseCmdSrv
 from sensor_msgs.msg import JointState
 
 import numpy as np

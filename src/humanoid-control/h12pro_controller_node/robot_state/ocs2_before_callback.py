@@ -56,6 +56,17 @@ with open(customize_config_path, "r") as f:
 with open(comGaitSwitch_config_path, "r") as f:
     comGaitSwitch_config_data = json.load(f)
 
+# 更新遥控器按键配置文件
+def update_h12_customize_config():
+    global customize_config_data
+    try:
+        with open(customize_config_path, "r") as f:
+            customize_config_data = json.load(f)
+        rospy.loginfo(f" ---------- customize_config_data ---------- : {customize_config_data}")
+    except Exception as e:
+        rospy.logerr(f"Error: Could not find {customize_config_path}")
+        raise Exception(f"Error: Could not find {customize_config_path}")
+
 # 手臂状态定义
 ROBOT_ACTION_STATUS = 0 # 手臂完成状态 | 0 没开始 | 1 执行中 |  2 完成
 def robot_action_state_callback(msg):
@@ -498,51 +509,81 @@ def customize_action_callback(event):
         # 根据 trigger 查找对应的配置
         if trigger in customize_config_data:
             action_config = customize_config_data[trigger]
-            arm_pose_names = action_config.get("arm_pose_name", [])
-            music_names = action_config.get("music_name", [])
+            action_type = action_config.get("type", "action")  # 默认类型为action
             
-            # 打印匹配到的动作和音乐信息
             rospy.loginfo(f"Trigger: {trigger}")
-            rospy.loginfo(f"Received Arm Pose Names: {arm_pose_names}")
-            rospy.loginfo(f"Received Music Names: {music_names}") 
+            rospy.loginfo(f"Action Type: {action_type}")
+            
+            if action_type == "action":
+                # 处理常规动作类型
+                arm_pose_names = action_config.get("arm_pose_name", [])
+                music_names = action_config.get("music_name", [])
+                
+                # 打印匹配到的动作和音乐信息
+                rospy.loginfo(f"Received Arm Pose Names: {arm_pose_names}")
+                rospy.loginfo(f"Received Music Names: {music_names}") 
 
-            # 检查是否需要切换到质心规划模式或步态控制模式
-            gait_control_interfaces = set(comGaitSwitch_config_data.get("gait_control_interface", []))
-            com_control_interfaces = set(comGaitSwitch_config_data.get("com_control_interface", []))
+                # 检查是否需要切换到质心规划模式或步态控制模式
+                gait_control_interfaces = set(comGaitSwitch_config_data.get("gait_control_interface", []))
+                com_control_interfaces = set(comGaitSwitch_config_data.get("com_control_interface", []))
 
-            # 判断是否有匹配的接口
-            matched_gait_interfaces = gait_control_interfaces.intersection(arm_pose_names)
-            matched_com_interfaces = com_control_interfaces.intersection(arm_pose_names)
+                # 判断是否有匹配的接口
+                matched_gait_interfaces = gait_control_interfaces.intersection(arm_pose_names)
+                matched_com_interfaces = com_control_interfaces.intersection(arm_pose_names)
 
-            # arm_pose_names移除接口
-            arm_pose_names = [pose for pose in arm_pose_names if pose not in matched_gait_interfaces and pose not in matched_com_interfaces]
-            rospy.loginfo(f"real Execute Arm Pose Names: {arm_pose_names}")
+                # arm_pose_names移除接口
+                arm_pose_names = [pose for pose in arm_pose_names if pose not in matched_gait_interfaces and pose not in matched_com_interfaces]
+                rospy.loginfo(f"real Execute Arm Pose Names: {arm_pose_names}")
 
-            if matched_gait_interfaces:
-                rospy.loginfo(f"Matched Gait Control Interfaces: {matched_gait_interfaces}")
-                # 在这里切换到步态控制模式的逻辑
-                for action_name in matched_gait_interfaces:
-                    call_robot_control_mode_action(action_name)
-            if matched_com_interfaces:
-                rospy.loginfo(f"Matched COM Control Interfaces: {matched_com_interfaces}")
-                # 在这里切换到质心规划模式的逻辑
-                for action_name in matched_com_interfaces:
-                    call_robot_mpc_target_action(action_name)
+                if matched_gait_interfaces:
+                    rospy.loginfo(f"Matched Gait Control Interfaces: {matched_gait_interfaces}")
+                    # 在这里切换到步态控制模式的逻辑
+                    for action_name in matched_gait_interfaces:
+                        call_robot_control_mode_action(action_name)
+                if matched_com_interfaces:
+                    rospy.loginfo(f"Matched COM Control Interfaces: {matched_com_interfaces}")
+                    # 在这里切换到质心规划模式的逻辑
+                    for action_name in matched_com_interfaces:
+                        call_robot_mpc_target_action(action_name)
 
-            # 创建线程
-            if arm_pose_names:
-                arm_pose_thread = threading.Thread(target=execute_arm_poses, args=(arm_pose_names,))
-                arm_pose_thread.start()
-            if music_names:
-                music_thread = threading.Thread(target=play_music, args=(music_names,))
-                music_thread.start()
+                # 创建线程
+                if arm_pose_names:
+                    arm_pose_thread = threading.Thread(target=execute_arm_poses, args=(arm_pose_names,))
+                    arm_pose_thread.start()
+                if music_names:
+                    music_thread = threading.Thread(target=play_music, args=(music_names,))
+                    music_thread.start()
 
-            # 等待线程完成
-            if arm_pose_names:
-                arm_pose_thread.join()
-            if music_names:
-                music_thread.join()
-
+                # 等待线程完成
+                if arm_pose_names:
+                    arm_pose_thread.join()
+                if music_names:
+                    music_thread.join()
+                    
+            elif action_type == "shell":
+                # 处理shell命令类型
+                command = action_config.get("command", "")
+                if command:
+                    rospy.loginfo(f"Executing shell command: {command}")
+                    try:
+                        process = subprocess.Popen(
+                            command,
+                            shell=True,
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE,
+                            text=True
+                        )
+                        stdout, stderr = process.communicate()
+                        if process.returncode == 0:
+                            rospy.loginfo(f"Command executed successfully. Output: {stdout}")
+                        else:
+                            rospy.logerr(f"Command failed with error: {stderr}")
+                    except Exception as e:
+                        rospy.logerr(f"Failed to execute shell command: {e}")
+                else:
+                    rospy.logwarn("No command specified for shell action type")
+            else:
+                rospy.logwarn(f"Unsupported action type: {action_type}")
         else:
             rospy.logwarn(f"No configuration found for trigger: {trigger}")
     except Exception as e:

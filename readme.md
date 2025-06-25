@@ -107,7 +107,11 @@ roslaunch humanoid_controllers load_kuavo_isaac_sim.launch  # 启动控制器、
 - `lejuclaw` : 二指夹爪
 - `qiangnao_touch` : 触觉灵巧手
 
-- 实物运行时，开机第一次需要先在cali模式下运行一次，确认机器人姿态和位置正确(机器人所有关节回到零位)
+在运行实物时，您可以通过指定`ruiwo_cxx_sdk`参数来选择手臂电机使用 C++ SDK 还是 Python SDK：
+- 默认值为`true`表示使用 C++ SDK
+- `false`表示使用 Python SDK, 比如`roslaunch humanoid_controllers load_kuavo_real.launch ruiwo_cxx_sdk:=true`
+
+实物运行时，开机第一次需要先在cali模式下运行一次，确认机器人姿态和位置正确(机器人所有关节回到零位)
 
 ```bash
 source devel/setup.bash

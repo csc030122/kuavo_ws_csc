@@ -30,8 +30,9 @@
 
 #include <humanoid_wbc/WeightedWbc.h>
 #include <humanoid_wbc/HierarchicalWbc.h>
-#include "humanoid_interface_drake/common/utils.h"
-#include "humanoid_interface_drake/common/sensor_data.h"
+#include "humanoid_interface_drake/kuavo_data_buffer.h"
+#include "kuavo_common/common/sensor_data.h"
+#include "kuavo_common/common/utils.h"
 #include "humanoid_interface_drake/humanoid_interface_drake.h"
 
 namespace humanoid_controller

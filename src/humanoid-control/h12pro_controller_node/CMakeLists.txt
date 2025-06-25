@@ -33,6 +33,7 @@ add_message_files(
   robotPhase.msg
   h12proRemoteControllerChannel.msg
   RobotActionState.msg
+  UpdateH12CustomizeConfig.msg
 )
 
 add_service_files(

@@ -2,13 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import rospy
-# from ....manipulation_nodes.motion_capture_ik.srv import fkSrv
-from motion_capture_ik.srv import fkSrv
+# from ....manipulation_nodes.kuavo_msgs.srv import fkSrv
+from kuavo_msgs.srv import fkSrv
 # from kuavo_msgs.srv import fkSrv
 from kuavo_msgs.msg import armTargetPoses
 from kuavo_msgs.srv import changeArmCtrlMode, changeArmCtrlModeRequest, changeArmCtrlModeResponse
-from motion_capture_ik.srv import twoArmHandPoseCmdSrv
-from motion_capture_ik.msg import twoArmHandPoseCmd, ikSolveParam
+from kuavo_msgs.srv import twoArmHandPoseCmdSrv
+from kuavo_msgs.msg import twoArmHandPoseCmd, ikSolveParam
 import math
 import argparse
 import numpy as np
@@ -137,8 +137,8 @@ if __name__ == "__main__":
          -1.25, 0.3, 1.0, -0.15, 0.37, -1.0, -1.0],
         }
     
-    # 45
-    if robot_version == 45:    
+    # 45 or 49
+    if robot_version == 45 or robot_version == 49:
         joint_angles_optiops = {
         1: [-1.0, 1.0, -0.3, -1.2, 0.0, -0.5, -0.2,
             -1.9, -0.5, -0.0, -1.0, -0.0, 0.5, 0.65],

@@ -20,9 +20,9 @@ def check_and_print_status():
     global lidar_callback_count, lidar_valid_flag
     if lidar_callback_count >= 20:
         if lidar_valid_flag:
-            print_colored_text("lidar available", color="green", bold=True)
+            print_colored_text("lidar 信息有效", color="green", bold=True)
         else:
-            print_colored_text("lidar not available", color="yellow", bold=True)
+            print_colored_text("lidar 信息无效", color="yellow", bold=True)
 
         rospy.signal_shutdown("All callbacks have been executed 20 times.")
 
@@ -36,7 +36,7 @@ def lidar_callback(msg):
     num_points = msg.width * msg.height
     if  0 != num_points:
         lidar_valid_flag =True
-        print("cloud size: ", num_points)
+        # print("cloud size: ", num_points)
 
     check_and_print_status()
 

@@ -10,7 +10,7 @@
 #include "humanoid_interface_drake/humanoid_interface_drake.h"
 #include "humanoid_interface/gait/MotionPhaseDefinition.h"
 #include "humanoid_interface/common/TopicLogger.h"
-#include "humanoid_interface_drake/common/kuavo_settings.h"
+#include "kuavo_common/common/kuavo_settings.h"
 
 namespace HighlyDynamic
 {

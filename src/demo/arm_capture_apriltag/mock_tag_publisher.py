@@ -16,7 +16,7 @@ from visualization_msgs.msg import Marker
 # 定义标签ID、大小和位置
 tag_id = 0
 tag_size = 0.05
-tag_position = Point(0.6, -0.2, 0.15)
+tag_position = Point(0.45, -0.2, 0.15)
 tag_orientation = Quaternion(*quaternion_from_euler(0, 0, 0))
 ###########################
 

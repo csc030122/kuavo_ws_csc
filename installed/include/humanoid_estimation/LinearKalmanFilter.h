@@ -38,6 +38,7 @@ public:
   void set_intial_state(const vector_t& state) override;
   
   vector_t update(const ros::Time& time, const ros::Duration& period) override;
+  nav_msgs::Odometry updateKinematics(const ros::Time &time, const Eigen::Quaterniond &imu_quat, const ros::Duration &period) override;
   void setFixFeetHeights(bool isFix) 
   {
     isFixHeight_ = isFix;
@@ -78,7 +79,15 @@ private:
   Eigen::Matrix<scalar_t, num_r_est, num_r_est> r_; //预测协方差 point_pos, point_vel, contact_height
   Eigen::Matrix<scalar_t, num_q_est, 3> b_;
   Eigen::Matrix<scalar_t, num_r_est, num_q_est> c_;
-
+  Eigen::Vector3d base_pos_;
+  Eigen::Vector3d base_ang_;
+  Eigen::Quaterniond base_quat_;
+  Eigen::Vector3d last_base_pos_;
+  Eigen::Vector3d last_base_ang_;
+  Eigen::Vector3d last_foot_pos_;
+  Eigen::Vector3d last_foot_ang_;
+  Eigen::Quaterniond last_foot_quat_;
+  int last_contact_point_index_;
   // Topic
   ros::Subscriber sub_;
   realtime_tools::RealtimeBuffer<nav_msgs::Odometry> buffer_;

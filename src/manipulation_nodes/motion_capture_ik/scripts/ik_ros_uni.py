@@ -18,7 +18,7 @@ import threading
 import ctypes
 from tools.drake_trans import *
 
-from motion_capture_ik.srv import changeArmCtrlMode, changeArmCtrlModeKuavo
+from kuavo_msgs.srv import changeArmCtrlMode, changeArmCtrlModeKuavo
 
 import numpy as np
 from pydrake.all import (
@@ -51,7 +51,7 @@ import rospy
 from noitom_hi5_hand_udp_python.msg import handRotationEular
 from noitom_hi5_hand_udp_python.msg import PoseInfo, PoseInfoList, JoySticks
 from tools.quest3_utils import Quest3ArmInfoTransformer
-from motion_capture_ik.msg import ikSolveError, handPose, robotArmQVVD, armHandPose, twoArmHandPose, twoArmHandPoseCmd
+from kuavo_msgs.msg import ikSolveError, handPose, robotArmQVVD, armHandPose, twoArmHandPose, twoArmHandPoseCmd
 
 from tools.utils import get_package_path, ArmIdx, IkTypeIdx, rotation_matrix_diff_in_angle_axis, limit_value
 from tools.drake_trans import rpy_to_matrix
@@ -400,7 +400,7 @@ class IkRos:
                 rate.sleep()
                 print("\033[91mDetected VR ERROR!!! Please restart VR app in quest3 or check the battery level of the joystick!!!\.\033[0m")
                 continue
-            elif(self.__as_mc_ik and self.judge_target_is_far(0.35) or not is_runing):
+            elif(self.__as_mc_ik and (not is_runing)):
                 rate.sleep()
                 sys.stdout.write("\rStatus: {}, is target far?: {}".format("RUNING" if is_runing else "STOPED", self.judge_target_is_far()))
                 continue
@@ -463,14 +463,14 @@ class IkRos:
                     q_last[-14:] = arm_q_filtered
                 else:
                     fail_count += 1
-                    print(f"""\nq_last:{q_last}\n l_hand_pose:{l_hand_pose}\n 
-                          r_hand_pose:{r_hand_pose}\n 
-                          l_hand_RPY:{l_hand_RPY}\n 
-                          r_hand_RPY:{r_hand_RPY}\n 
-                          l_elbow_pos:{l_elbow_pos}\n 
-                          r_elbow_pos:{r_elbow_pos}\n 
-                          left_shoulder_rpy_in_robot:{left_shoulder_rpy_in_robot}\n 
-                          right_shoulder_rpy_in_robot:{right_shoulder_rpy_in_robot}\n""")
+                    # print(f"""\nq_last:{q_last}\n l_hand_pose:{l_hand_pose}\n 
+                    #       r_hand_pose:{r_hand_pose}\n 
+                    #       l_hand_RPY:{l_hand_RPY}\n 
+                    #       r_hand_RPY:{r_hand_RPY}\n 
+                    #       l_elbow_pos:{l_elbow_pos}\n 
+                    #       r_elbow_pos:{r_elbow_pos}\n 
+                    #       left_shoulder_rpy_in_robot:{left_shoulder_rpy_in_robot}\n 
+                    #       right_shoulder_rpy_in_robot:{right_shoulder_rpy_in_robot}\n""")
 
                 run_count += 1
                 success_rate = 100 * (1.0 - fail_count / float(run_count))
@@ -866,9 +866,9 @@ if __name__ == "__main__":
     shoulder_frame_names = model_config["shoulder_frame_names"]
     upper_arm_length = model_config["upper_arm_length"]
     lower_arm_length = model_config["lower_arm_length"]
-    print(f"upper_arm_length: {upper_arm_length}, lower_arm_length: {lower_arm_length}")
-    rospy.set_param("/quest3/upper_arm_length", upper_arm_length)
-    rospy.set_param("/quest3/lower_arm_length", lower_arm_length)
+    # print(f"upper_arm_length: {upper_arm_length}, lower_arm_length: {lower_arm_length}")
+    # rospy.set_param("/quest3/upper_arm_length", upper_arm_length)
+    # rospy.set_param("/quest3/lower_arm_length", lower_arm_length)
     
     print(f"Model file: {model_file}")
     print(f"Model config file: {model_config_file}")
@@ -910,5 +910,19 @@ if __name__ == "__main__":
         )
         arm_ik.init_state(0.0, 0.0)
     arm_length_left, arm_length_right = arm_ik.get_arm_length()
+    p_bS = arm_ik.get_two_frame_dis_vec(shoulder_frame_names[0], end_frames_name[0])
+    upper_arm_length = 100.0 * arm_ik.get_two_frame_dis(shoulder_frame_names[0], end_frames_name[3])
+    lower_arm_length = 100.0 * arm_ik.get_two_frame_dis(end_frames_name[3], end_frames_name[1])
+    shoulder_width_vec = 100.0 * arm_ik.get_two_frame_dis_vec(shoulder_frame_names[0], shoulder_frame_names[1])
+    shoulder_width = shoulder_width_vec[1]/2
+    print(f"shoulder_width_vec: {shoulder_width_vec} m")
+    print(f"p_bS: {p_bS} m")
+    print(f"upper_arm_length: {upper_arm_length:.3f} cm, lower_arm_length: {lower_arm_length:.3f} cm")
+    rospy.set_param("/quest3/base_shoulder_x_bias", float(p_bS[0]))
+    rospy.set_param("/quest3/base_shoulder_y_bias", float(p_bS[1]))
+    rospy.set_param("/quest3/base_shoulder_z_bias", float(p_bS[2]))
+    rospy.set_param("/quest3/upper_arm_length", float(upper_arm_length))
+    rospy.set_param("/quest3/lower_arm_length", float(lower_arm_length))
+    rospy.set_param("/quest3/shoulder_width", float(shoulder_width))
     print(f"\033[92mLeft Arm Length: {arm_length_left:.3f} m, Right Arm Length:{arm_length_right:.3f} m.\033[0m")
     ik_ros = IkRos(arm_ik, ctrl_arm_idx=ctrl_arm_idx, q_limit=q_limit, end_effector_type=end_effector_type, send_srv=send_srv, predict_gesture=predict_gesture)

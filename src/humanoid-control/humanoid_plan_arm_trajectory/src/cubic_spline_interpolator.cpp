@@ -19,6 +19,9 @@ void CubicSplineInterpolator::initialize(ros::NodeHandle& nh, ros::NodeHandle& p
   initializeSpecific();
 }
 
+void CubicSplineInterpolator::initializeLimitations() {
+}
+
 void CubicSplineInterpolator::interpolate() {
   std::vector<Eigen::MatrixXd> pos_samples;
   for (const auto& position : positions_) {
@@ -66,8 +69,8 @@ void CubicSplineInterpolator::reset() {
   joint_names_.clear();
 }
 
-bool CubicSplineInterpolator::planArmTrajectoryCubicSpline(humanoid_plan_arm_trajectory::planArmTrajectoryCubicSpline::Request& req, 
-                                                humanoid_plan_arm_trajectory::planArmTrajectoryCubicSpline::Response& res) {
+bool CubicSplineInterpolator::planArmTrajectoryCubicSpline(kuavo_msgs::planArmTrajectoryCubicSpline::Request& req, 
+                                                kuavo_msgs::planArmTrajectoryCubicSpline::Response& res) {
   current_interpolate_type_ = interpolate_type_;
   reset();
   

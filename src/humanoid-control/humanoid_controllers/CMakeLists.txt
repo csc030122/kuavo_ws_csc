@@ -19,8 +19,7 @@ find_package(catkin REQUIRED
         angles
         kuavo_msgs
         humanoid_interface_drake
-        
-        
+        kuavo_common
         )
 find_package(drake REQUIRED)
 find_package(PkgConfig REQUIRED)
@@ -56,6 +55,7 @@ catkin_package(
                 
                 # ocs2_biped_robot_ros
                 angles
+                kuavo_common
 )
 
 ###########

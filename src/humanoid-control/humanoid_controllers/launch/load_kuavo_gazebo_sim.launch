@@ -35,6 +35,7 @@
     <arg name="coredump" default="false"/>
     <arg name="with_coredump" value="--with-coredump" if="$(arg coredump)"/>
     <arg name="with_coredump" value="" unless="$(arg coredump)"/>
+    <arg name="with_ik" default="true"/>
 
     <!-- multiplot -->
     <group if="$(arg multiplot)">
@@ -86,7 +87,9 @@
     </node>
     <node pkg="nodelet" type="nodelet" name="nodelet_controller" args="load HumanoidControllerNodelet nodelet_manager" respawn="false" output="screen" required="true">
       </node>
-
+   <node pkg="nodelet" type="nodelet" name="ekf_se" args="load RobotLocalization/EkfNodelet nodelet_manager" respawn="false" output="screen" required="true" launch-prefix="taskset -c 18">
+      <rosparam command="load" file="$(find humanoid_estimation)/params/ekf_template.yaml" />
+    </node>
     <group unless="$(arg play_back)">
       <include file="$(find gazebo_sim)/launch/gazebo-sim.launch"/>
     </group>
@@ -118,5 +121,9 @@
 
     <group if="$(arg vr_remote_control)">
       <include file="$(find noitom_hi5_hand_udp_python)/launch/launch_quest3_ik.launch"/>
+    </group>
+
+    <group if="$(arg with_ik)">
+      <include file="$(find motion_capture_ik)/launch/ik_node.launch"/>
     </group>
 </launch>

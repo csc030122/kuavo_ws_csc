@@ -58,7 +58,7 @@ namespace ocs2
         gait_ = gait;
       }
       virtual void set_intial_state(const vector_t &ocs2_state) {};
-      virtual void updateIntialEulerAngles(const Eigen::Quaternion<scalar_t> &quat_init);
+      virtual Eigen::Quaternion<scalar_t> updateIntialEulerAngles(const Eigen::Quaternion<scalar_t> &quat_init);
       virtual void updateImu(const Eigen::Quaternion<scalar_t> &quat, const vector3_t &angularVelLocal,
                              const vector3_t &linearAccelLocal, const matrix3_t &orientationCovariance,
                              const matrix3_t &angularVelCovariance, const matrix3_t &linearAccelCovariance);
@@ -70,6 +70,10 @@ namespace ocs2
       } 
       
       virtual vector_t update(const ros::Time &time, const ros::Duration &period) = 0;
+      virtual nav_msgs::Odometry updateKinematics(const ros::Time &time, const Eigen::Quaterniond &imu_quat, const ros::Duration &period)
+      {
+
+      }
 
       inline void updateFootPosDesired(const feet_array_t<vector3_t> &foot_pos_desired)
       {
@@ -96,7 +100,7 @@ namespace ocs2
         if (estContactforce_.size() < 12)
           return false;
           
-        double new_total_est_contact_force_ = estContactforce_[2] + estContactforce_[8];
+        double new_total_est_contact_force_ = std::max(estContactforce_[2], 0.0) + std::max(estContactforce_[8], 0.0);
         // ros_logger_->publishValue("/state_estimate/checkPullUp/new_total_est_contact_force_", new_total_est_contact_force_);
         total_est_contact_force_ = total_est_contact_force_ * (1 - alpha) + new_total_est_contact_force_ * alpha;
         ros_logger_->publishValue("/state_estimate/checkPullUp/total_est_contact_force_", total_est_contact_force_);

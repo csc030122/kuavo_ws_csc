@@ -79,6 +79,7 @@ class PathTracerBase:
         # ROS publishers
         self.cmd_vel_pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
         self.cmd_pose_pub = rospy.Publisher('/cmd_pose', Twist, queue_size=10)
+        self.cmd_pose_world_pub = rospy.Publisher('/cmd_pose_world', Twist, queue_size=10)
         self.path_pub = rospy.Publisher('trace_path/path', Path, queue_size=10)
         self.realtime_path_pub = rospy.Publisher('trace_path/realtime_path', Path, queue_size=10)
         self.follow_state_pub = rospy.Publisher('trace_path/follow_state', Int8, queue_size=10)
@@ -186,6 +187,14 @@ class PathTracerBase:
         cmd_pose.linear.y = y
         cmd_pose.angular.z = yaw
         self.cmd_pose_pub.publish(cmd_pose)
+    
+    def publish_cmd_pose_world(self, x, y, yaw):
+        """Publish pose command in world frame"""
+        cmd_pose_world = Twist()
+        cmd_pose_world.linear.x = x
+        cmd_pose_world.linear.y = y
+        cmd_pose_world.angular.z = yaw
+        self.cmd_pose_world_pub.publish(cmd_pose_world)
     
 
 def transform_to_base_link(current_pose, global_point):
@@ -517,12 +526,84 @@ class MpcPathTracer(PathTracerBase):
             self.stop_requested = True
             rospy.loginfo("Stop requested. Stopping path following...")
     
-    def follow(self, global_path):
-        """Follow a given path using MPC control.
+    def no_mpc_follow(self, global_path):
+        """Follow path without MPC by directly publishing each point as cmd_pose_world.
         
         Args:
             global_path (nav_msgs.msg.Path): The path to follow
         """
+        rate = rospy.Rate(5)  # 5Hz = 0.2s interval
+        
+        # Wait for start point to be set
+        self.flag_reset_start_point = True
+        while not rospy.is_shutdown() and self.flag_reset_start_point:
+            rate.sleep()
+            rospy.loginfo("Waiting for start point...")
+
+        # Validate path
+        if len(global_path.poses) <= 0:
+            self.follow_state = FollowState.NOT_FOLLOWING
+            return
+
+        # First publish the path for visualization
+        self.publish_path(global_path)
+
+        # Log path info
+        rospy.loginfo("-------------------------------------------------------")
+        rospy.loginfo(f"Path Start Pose:\n{global_path.poses[0].pose}")
+        rospy.loginfo("-------------------------------------------------------")
+        rospy.loginfo(f"Path End Pose:\n{global_path.poses[-1].pose}")
+        rospy.loginfo("-------------------------------------------------------")
+        rospy.loginfo(f"Current yaw: {Utils.get_yaw_from_orientation(self.current_pose.orientation)}")
+        rospy.loginfo(f"Path Point Counts: {len(global_path.poses)}")
+
+        # Follow each point in the path
+        for i, pose_stamped in enumerate(global_path.poses):
+            if rospy.is_shutdown() or self.stop_requested:
+                break
+
+            # Get position and orientation
+            x = pose_stamped.pose.position.x
+            y = pose_stamped.pose.position.y
+            yaw = Utils.get_yaw_from_orientation(pose_stamped.pose.orientation)
+
+            # Publish pose command
+            self.publish_cmd_pose_world(x, y, yaw)
+            
+            # Publish current pose to realtime path
+            self.path.poses.append(pose_stamped)
+            self.realtime_path_pub.publish(self.path)
+            
+            rate.sleep()
+
+        # Handle stop request
+        if self.stop_requested:
+            self.follow_state = FollowState.NOT_FOLLOWING
+            self.stop_requested = False
+        else:
+            self.follow_state = FollowState.FINISHED
+            
+        rospy.sleep(1.5)
+        rospy.loginfo("Path Follower Finished!")
+        self.publish_cmd_vel(0, 0)  # Ensure robot stops
+        rospy.loginfo("Stop moving...")
+        rospy.loginfo(f"Current pose:\n{self.current_pose}")
+
+        # Analyze trajectory performance
+        if self.follow_state == FollowState.FINISHED or self.stop_requested:
+            self.trajectory_analyzer.analyze(self.path, global_path)
+
+    def follow(self, global_path):
+        """Follow a given path using MPC control or direct pose control.
+        
+        Args:
+            global_path (nav_msgs.msg.Path): The path to follow
+        """
+        if self.motion_interface == '/cmd_pose_world':
+            self.no_mpc_follow(global_path)
+            return
+
+        # Original MPC following code continues here...
         rate = rospy.Rate(1)  # Control frequency
 
         # Wait for start point to be set
@@ -651,7 +732,7 @@ class MpcPathTracer(PathTracerBase):
                 if self.motion_interface == '/cmd_vel':
                     prog.AddBoundingBoxConstraint(-self.v_max_linear, self.v_max_linear, v[i])
                     prog.AddBoundingBoxConstraint(-self.v_max_angular, self.v_max_angular, yaw_dot[i])
-                elif self.motion_interface == '/cmd_pose':
+                elif self.motion_interface == '/cmd_pose' or self.motion_interface == '/cmd_pose_world':
                     # told by wangzhengtao@lejurobot.com
                     prog.AddBoundingBoxConstraint(-0.4, 0.4, v[i])
                     prog.AddBoundingBoxConstraint(-0.4, 0.4, yaw_dot[i])
@@ -690,6 +771,11 @@ class MpcPathTracer(PathTracerBase):
                     self.publish_cmd_vel(scaled_v, scaled_yaw_dot)
                 elif self.motion_interface == '/cmd_pose':
                     self.publish_cmd_pose(optimal_x[3], optimal_y[3], optimal_yaw[3])
+                elif self.motion_interface == '/cmd_pose_world':
+                    self.publish_cmd_pose_world(
+                        self.current_pose.position.x + optimal_x[3], 
+                        self.current_pose.position.y + optimal_y[3],
+                        current_yaw + optimal_yaw[3])
 
                 # Publish MPC path for visualization
                 self.publish_mpc_path(optimal_x, optimal_y, optimal_yaw)

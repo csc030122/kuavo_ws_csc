@@ -378,10 +378,43 @@ enable_vnc_network_config() {
     sudo -E su -c "$folder_path_/enable_vnc_network_config.sh"
 }
 
+check_system_time(){
+    print_info "检查系统时间..."
+    print_info "当前系统时间: $(date)"
+    
+    read -p "当前时间是否正确? (y/n): " time_correct
+    
+    if [[ $time_correct =~ ^[Yy]$ ]]; then
+        print_success "系统时间正确，无需修改"
+        return 0
+    else
+        sudo apt update
+        sudo apt install ntpdate -y
+        sudo timedatectl set-ntp false
+        print_info "正在修改系统时间..."
+        sudo ntpdate -u pool.ntp.org
+        sudo timedatectl set-ntp true
+        sudo systemctl restart systemd-timesyncd
+        print_success "系统时间已更新"
+        
+        # 再次检查时间
+        print_info "修改后的系统时间: $(date)"
+        
+        read -p "修改后的时间是否正确? (y/n): " time_correct_after
+        
+        if [[ ! $time_correct_after =~ ^[Yy]$ ]]; then
+            print_error "系统时间设置失败，请联系技术支持"
+            exit 1
+        fi
+        
+        print_success "系统时间已正确设置"
+    fi
+}
 # Main execution
 main() {
     print_info "开始KUAVO-ROS-CONTROL安装配置脚本..."
     
+    check_system_time
     setup_pip
     clone_repos
     setup_robot_version

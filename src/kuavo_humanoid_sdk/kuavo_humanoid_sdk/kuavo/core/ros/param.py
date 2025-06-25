@@ -2,7 +2,6 @@ import rospy
 import json
 import xml.etree.ElementTree as ET
 from kuavo_humanoid_sdk.common.logger import SDKLogger
-
 # End effector types
 class EndEffectorType:
     QIANGNAO = "qiangnao"
@@ -64,7 +63,6 @@ class RosParameter:
             return None
         return rospy.get_param('/initial_state')
 
-kuavo_ros_param = RosParameter()
 
 def joint_names()->dict:
     leg_link_names = [
@@ -78,6 +76,9 @@ def joint_names()->dict:
     head_link_names = [
         'zhead_1_link', 'zhead_2_link'
     ]
+
+    kuavo_ros_param = RosParameter()
+
     robot_desc = kuavo_ros_param.humanoid_description()
     if robot_desc is None:
         return None
@@ -135,6 +136,9 @@ kuavo_ros_info = None
 
 def end_frames_names()->dict:
     default = ["torso", "zarm_l7_link", "zarm_r7_link", "zarm_l4_link", "zarm_r4_link"]
+
+    kuavo_ros_param = RosParameter()
+
     kuavo_json = kuavo_ros_param.kuavo_config()
     if kuavo_json is None:
         return default
@@ -154,6 +158,8 @@ def make_robot_param()->dict:
     if kuavo_ros_info is not None:
         return kuavo_ros_info
     
+    kuavo_ros_param = RosParameter()
+
     kuavo_ros_info = {
         'robot_version': kuavo_ros_param.robot_version(),
         'arm_dof': kuavo_ros_param.arm_dof(),

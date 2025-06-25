@@ -16,7 +16,7 @@ import threading
 import ctypes
 from tools.drake_trans import *
 
-from motion_capture_ik.srv import changeArmCtrlMode
+from kuavo_msgs.srv import changeArmCtrlMode
 
 import numpy as np
 from pydrake.all import (
@@ -49,7 +49,7 @@ import rospy
 from noitom_hi5_hand_udp_python.msg import handRotationEular
 from noitom_hi5_hand_udp_python.msg import PoseInfo, PoseInfoList, JoySticks
 from tools.quest3_utils import Quest3ArmInfoTransformer
-from motion_capture_ik.msg import ikSolveError, handPose, robotArmQVVD, armHandPose, twoArmHandPose
+from kuavo_msgs.msg import ikSolveError, handPose, robotArmQVVD, armHandPose, twoArmHandPose
 
 from tools.utils import get_package_path, ArmIdx, IkTypeIdx, rotation_matrix_diff_in_angle_axis, limit_value
 from tools.drake_trans import rpy_to_matrix

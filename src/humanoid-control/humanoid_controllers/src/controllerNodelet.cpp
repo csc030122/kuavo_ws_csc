@@ -129,6 +129,7 @@ private:
 
     void controlLoop()
     {
+        // Choose the controller type with estimator based on the parameter
         int estimator_type = 1;
         bool with_estimation = false;
         if (nh.hasParam("/estimator_type"))
@@ -160,23 +161,31 @@ private:
             std::cout << "Using cheater estimator" << std::endl;
             controller_ptr_ = new humanoid_controller::humanoidCheaterController();
         }
+        // Initialize the controller
         if (!controller_ptr_->init(robot_hw, nh, true))
         {
             ROS_ERROR("Failed to initialize the humanoid controller!");
             return;
         }
-
+        
+        // Time setup record start time in both system and ros time
+        // Calls controller's starting() method to initialize the control state
+        // Sets up control frequency (default 500Hz, configurable via parameter)
         auto startTime = std::chrono::high_resolution_clock::now();
         auto startTimeROS = ros::Time::now();
         controller_ptr_->starting(startTimeROS);
         lastTime = startTime;
-        double controlFrequency = 500.0; // 1000Hz
+        double controlFrequency = 500.0; // 500Hz
         nh.getParam("/wbc_frequency", controlFrequency);
         ROS_INFO_STREAM("Wbc control frequency: " << controlFrequency);
         struct timespec next_time;
         clock_gettime(CLOCK_MONOTONIC, &next_time);
         ros::Rate rate(controlFrequency);
         uint64_t cycle_count = 0;
+
+        // Pre-Update Initialization Phase
+        // Runs until preUpdateComplete() returns true
+        // This phase likely waits for sensors to provide initial data
         while (is_running && ros::ok() && controller_ptr_->preUpdateComplete() != true)
         {
             bool preUpdateExeFlag = controller_ptr_->preUpdate(ros::Time::now());
@@ -186,7 +195,14 @@ private:
                 controller_ptr_->starting(startTimeROS);
             }
         }
-
+        // main control loop
+        // Can be paused with pause_flag
+        /* For each cycle:
+           1. Calculates elapsed time since last cycle
+           2. Calls controller's update() method with current time and elapsed time
+           3. Uses precise sleep with clock_nanosleep for accurate timing
+           4. Monitors cycle time to detect performance issues
+        */
         while (is_running && ros::ok())
         {
             // std::cout << "\n\nControlLoop: "<<cycle_count++ << std::endl;

@@ -19,6 +19,8 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
   message_runtime
   trajectory_msgs
+  urdf
+  kuavo_msgs
 )
 
 find_package(drake REQUIRED)
@@ -88,6 +90,7 @@ generate_messages(
   geometry_msgs
   trajectory_msgs
   humanoid_plan_arm_trajectory
+  kuavo_msgs
 )
 
 ################################################

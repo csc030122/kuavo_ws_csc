@@ -1,4 +1,4 @@
-## 说明
+## 键盘控制机器人运动 参数说明
 
   - 关于启动`load_kuavo_mujoco_sim.launch`及`load_kuavo_real.launch`时，参数`joystick_type`的选择说明
 

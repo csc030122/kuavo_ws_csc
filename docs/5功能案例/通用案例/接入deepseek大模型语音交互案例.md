@@ -4,7 +4,7 @@
 
   - 接入deepseek大模型，实现了一个语音交互系统，包括录音、语音转写、对话生成和语音播放功能。
   
-  - 示例代码路径:`<kuavo_ros_application>/src/kuavo_large_model/rtasr_python3_demo.py`
+  - 示例代码路径:`<kuavo_ros_application>/src/kuavo_large_model/kuavo_deepseek_model/rtasr_python3_demo.py`
 
 ## 程序逻辑
 
@@ -69,17 +69,17 @@
    - 该案例所使用的语音，文字转换模型为讯飞的模型： https://www.xfyun.cn/
       - 讯飞实时语音转写（RTASR）模型 
         - https://console.xfyun.cn/app/myapp创建RTASR应用，获取app_id和api_key
-        - 将程序`<kuavo_ros_application>/src/kuavo_large_model/rtasr_python3_demo.py`第220，221行的app_id和api_key替换成获取到的即可
+        - 将程序`<kuavo_ros_application>/src/kuavo_large_model/kuavo_deepseek_model/rtasr_python3_demo.py`第220，221行的app_id和api_key替换成获取到的即可
       
       - 讯飞语音合成（TTS）模型
         - https://console.xfyun.cn/app/myapp创建TTS应用，获取APPID，APISecret，APIKey
-        - 将程序`<kuavo_ros_application>/src/kuavo_large_model/tts_ws_python3_demo.py`第139，140，141行的APPID，APISecret，APIKey替换成获取到的即可
+        - 将程序`<kuavo_ros_application>/src/kuavo_large_model/kuavo_deepseek_model/tts_ws_python3_demo.py`第139，140行的APPID，APISecret，APIKey替换成获取到的即可
 
    - 该案例所使用的对话大模型为深度求索(deepseek)推出的deepseek-chat： https://www.deepseek.com/
      - 获取DeepSeek API Key：
        - https://platform.deepseek.com/usage
        - 充值，获取API Key    
-       - 将程序`<kuavo_ros_application>/src/kuavo_large_model/rtasr_python3_demo.py`第101行的api-key替换成获取到的即可
+       - 将程序`<kuavo_ros_application>/src/kuavo_large_model/kuavo_deepseek_model/rtasr_python3_demo.py`第101行的api-key替换成获取到的即可
 
 ## 执行
 
@@ -88,7 +88,7 @@
     cd kuavo_ros_application  # 进入上位机工作空间(根据实际部署目录切换)
     source /opt/ros/noetic/setup.bash
     source devel/setup.bash
-    python3 src/kuavo_large_model/rtasr_python3_demo.py 
+    python3 src/kuavo_large_model/kuavo_deepseek_model/rtasr_python3_demo.py 
     ```
 
   - 效果

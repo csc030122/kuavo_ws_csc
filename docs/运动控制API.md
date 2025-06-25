@@ -148,6 +148,45 @@
 | gait_name | string | 返回数据，机器人当前的步态名称 |
 | success | bool | 返回数据, 是否调用成功 |
 
+**`/hardware/change_motor_param`**
+
+温馨提示:**此接口建议高级开发人员在了解底层参数的情况下使用**
+
+适用范围: 仅 EcMaster 驱动类型为 `youda`时可调用
+
+服务描述: 该服务用于修改机器人的电机参数（Kp,Kd）
+
+消息类型: `kuavo_msgs/changeMotorParam`
+
+| 字段 | 类型 | 描述 |
+| --- | --- | --- |
+| data | motorParam[] | 电机参数数组 |
+| data[].Kp | float32 | 电机位置环比例系数 |
+| data[].Kd | float32 | 电机速度环比例系数 |
+| data[].id | int16 | 电机ID |
+| success | bool | 返回数据, 是否调用成功 |
+| message | string | 返回数据, 调用结果描述信息 |
+
+- id: 从 1 开始到 28，顺序依次是左腿，右腿，左手臂，右手臂，头部
+
+**`/hardware/get_motor_param`**
+
+适用范围: 仅 EcMaster 驱动类型为 `youda`时可调用
+
+服务描述: 该服务用于获取机器人的电机参数（Kp,Kd），会返回所有电机的参数，目前仅支持腿部电机的参数获取。
+
+消息类型: `kuavo_msgs/getMotorParam`
+
+| 字段 | 类型 | 描述 |
+| --- | --- | --- |
+| success | bool | 返回数据, 是否调用成功 |
+| message | string | 返回数据, 调用结果描述信息 |
+| data | motorParam[] | 电机参数数组 |
+| data[].Kp | float32 | 电机位置环比例系数 |
+| data[].Kd | float32 | 电机速度环比例系数 |
+| data[].id | int16 | 电机ID |
+
+
 ### 订阅的 topics
 
 #### /cmd_vel

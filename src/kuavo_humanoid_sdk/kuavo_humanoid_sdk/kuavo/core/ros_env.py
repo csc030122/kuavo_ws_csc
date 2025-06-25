@@ -2,7 +2,10 @@
 # coding: utf-8
 
 import os
-import rospy
+try:
+    import rospy
+except ImportError:
+    pass
 import subprocess
 import atexit
 from kuavo_humanoid_sdk.common.logger import SDKLogger

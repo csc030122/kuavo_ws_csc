@@ -37,6 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ocs2_core/misc/Lookup.h>
 #include <ocs2_core/reference/ModeSchedule.h>
 #include "humanoid_interface/gait/ModeSequenceTemplate.h"
+#include <ocs2_core/reference/TargetTrajectories.h>
 
 namespace ocs2
 {
@@ -46,21 +47,50 @@ namespace ocs2
     enum class FootIdx { Left, Right, Stance };
     struct FootPoseSchedule
     {
+      scalar_t startTime{-1.0};  // 新增：起始时间，默认为-1.0
       std::vector<scalar_t> eventTimes;  // event times
       std::vector<FootIdx> footIndices;  // foot indices
       std::vector<Eigen::Vector4d> footPoseSequence;  // pose(xyz yaw) of each step at each event time
       std::vector<Eigen::Vector4d> torsoPoseSequence;  // torso pose(xyz yaw) of each step at each event time
+      std::vector<std::vector<Eigen::Vector4d>> additionalFootPoseSequence;  // additional foot pose(xyz yaw) of each step at each event time
+      std::vector<scalar_t> swingHeightSequence;  // swing height of each mode at swing phase
       void clear()
       {
+        startTime = -1.0;  // 新增：重置起始时间
         eventTimes.clear();
         footIndices.clear();
         footPoseSequence.clear();
         torsoPoseSequence.clear();
+        additionalFootPoseSequence.clear();
+        swingHeightSequence.clear();
       }
     };
 
     std::ostream& operator<<(std::ostream& os, const FootPoseSchedule& schedule);
 
+    struct FullBodySchedule
+    {
+      scalar_t startTime{-1.0};  // 新增：起始时间，默认为0
+      std::vector<scalar_t> eventTimes; // event times
+      std::vector<FootIdx> footIndices; // foot indices
+      std::vector<TargetTrajectories> targetTrajectories;
+      TargetTrajectories armTargetTrajectories;
+      TargetTrajectories headTargetTrajectories;
+
+      // std::vector<vector_t> fullBodyQTrajectory;
+      // std::vector<vector_t> fullBodyVTrajectory;
+      void clear()
+      {
+        startTime = -1.0;  // 新增：重置起始时间
+        eventTimes.clear();
+        footIndices.clear();
+        // fullBodyQTrajectory.clear();
+        // fullBodyVTrajectory.clear();
+        targetTrajectories.clear();
+        armTargetTrajectories.clear();
+        headTargetTrajectories.clear();
+      }
+    };
     class GaitManager
     {
     public:
@@ -135,7 +165,7 @@ namespace ocs2
        *
        * @param [in] modeSchedule: The mode schedule to be used.
        */
-      void setModeSchedule(const ModeSchedule &modeSchedule) { modeSchedule_ = modeSchedule; }
+      void setModeSchedule(const ModeSchedule &modeSchedule) { modeSchedule_ = modeSchedule;std::cout << "modeSchedule_ size: " << modeSchedule_.eventTimes.size() << std::endl; }
 
       /**
        * Gets the mode schedule.
@@ -150,7 +180,14 @@ namespace ocs2
        *
        * @return The mode schedule.
        */
-      ModeSchedule getModeSchedule() { return modeSchedule_; }
+      ModeSchedule getModeSchedule() { return currentModeSchedule_; }
+
+      /**
+       * Gets the full mode schedule.
+       *
+       * @return The full mode schedule.
+       */
+      ModeSchedule getFullModeSchedule() { return modeSchedule_; }
       /**
        * Used to insert a new user defined logic in the given time period.
        *
@@ -217,10 +254,12 @@ namespace ocs2
       inline void setStopStepIdx(long int stop_step_idx){ stop_step_idx_ = stop_step_idx; }
       std::map<std::string, ModeSequenceTemplate> getGaitMap() { return gaitMap_; }
 
+
+      ModeSchedule modifyModeFullBodySchedules(scalar_t currentTime, const Eigen::Vector4d &currentTorsoPose, const FullBodySchedule &fullBodySchedule, const feet_array_t<vector3_t> &foot_pos, scalar_t startInsertTime = -1);
       /**
        * 拓展足端位姿序列, 并更新模式位姿序列.
        */
-      ModeSchedule modifyModePoseSchedules(scalar_t currentTime, const Eigen::Vector4d &currentTorsoPose, const FootPoseSchedule& footPoseSchedule, const feet_array_t<vector3_t> &foot_pos);
+      ModeSchedule modifyModePoseSchedules(scalar_t currentTime, const Eigen::Vector4d &currentTorsoPose, const FootPoseSchedule& footPoseSchedule, const feet_array_t<vector3_t> &foot_pos, scalar_t startInsertTime = -1);
 
       inline scalar_t getCustomGaitEndTime() const
       {
@@ -234,6 +273,59 @@ namespace ocs2
            break;
           }
         }
+        return eventTimes[eventIdx];
+      }
+
+      inline scalar_t getCustomGaitStartTime() const
+      {
+        const auto &eventTimes = modeSchedule_.eventTimes;
+        const auto &enableFootSequence = modeSchedule_.enableFootSequence;
+        size_t eventIdx = 0;
+        for(size_t i=1; i<eventTimes.size(); i++)
+        {
+          if(enableFootSequence[i]){
+            eventIdx = i - 1;
+            break;
+          }
+        }
+        return eventTimes[eventIdx];
+      }
+
+      inline scalar_t getFullBodyGaitEndTime() const
+      {
+        const auto &eventTimes = modeSchedule_.eventTimes;
+        const auto &enableFullBodySequence = modeSchedule_.enableFullBodySequence;
+        size_t eventIdx = eventTimes.size()-1;
+        bool find = false;
+        for(size_t i=eventIdx; i>0; i--)
+        {
+          if(enableFullBodySequence[i]){
+           eventIdx = i;
+           find = true;
+           break;
+          }
+        }
+        if(!find)
+          return -1;
+        return eventTimes[eventIdx];
+      }
+
+      inline scalar_t getFullBodyGaitStartTime() const
+      {
+        const auto &eventTimes = modeSchedule_.eventTimes;
+        const auto &enableFullBodySequence = modeSchedule_.enableFullBodySequence;
+        size_t eventIdx = 0;
+        bool find = false;
+        for(size_t i=1; i<eventTimes.size(); i++)
+        {
+          if(enableFullBodySequence[i]){
+            eventIdx = i - 1;
+            find = true;
+            break;
+          }
+        }
+        if(!find)
+          return -1;
         return eventTimes[eventIdx];
       }
 
@@ -256,6 +348,7 @@ namespace ocs2
 
     private:
       ModeSchedule modeSchedule_;
+      ModeSchedule currentModeSchedule_;
       ModeSequenceTemplate modeSequenceTemplate_;
       const ModeSequenceTemplate defaultModeSequenceTemplate_;
       scalar_t phaseTransitionStanceTime_;

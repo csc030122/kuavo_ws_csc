@@ -12,8 +12,8 @@ from tools.drake_trans import *
 from tools.quest3_utils import Quest3ArmInfoTransformer
 import argparse
 
-from motion_capture_ik.msg import twoArmHandPoseCmd, ikSolveParam
-from motion_capture_ik.srv import changeArmCtrlMode
+from kuavo_msgs.msg import twoArmHandPoseCmd, ikSolveParam
+from kuavo_msgs.srv import changeArmCtrlMode
 from noitom_hi5_hand_udp_python.msg import PoseInfo, PoseInfoList, JoySticks
 from handcontrollerdemorosnode.msg import robotHandPosition
 

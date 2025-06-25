@@ -7,7 +7,7 @@
 #include <iostream>
 #include <drake/common/trajectories/piecewise_polynomial.h>
 #include "humanoid_plan_arm_trajectory.h"
-#include "humanoid_plan_arm_trajectory/planArmTrajectoryCubicSpline.h"
+#include <kuavo_msgs/planArmTrajectoryCubicSpline.h>
 
 namespace ocs2 {
 namespace humanoid {
@@ -17,13 +17,14 @@ class CubicSplineInterpolator : public HumanoidPlanArmTrajectory {
         ~CubicSplineInterpolator()=default;
         virtual void initialize(ros::NodeHandle& nh, ros::NodeHandle& private_nh);
       private:
+        void initializeLimitations() override;
         void initializeSpecific() override;
         void interpolate() override;
         void update() override;
         void reset() override;
 
-        bool planArmTrajectoryCubicSpline(humanoid_plan_arm_trajectory::planArmTrajectoryCubicSpline::Request& req, 
-                                                   humanoid_plan_arm_trajectory::planArmTrajectoryCubicSpline::Response& res);
+        bool planArmTrajectoryCubicSpline(kuavo_msgs::planArmTrajectoryCubicSpline::Request& req, 
+                                                   kuavo_msgs::planArmTrajectoryCubicSpline::Response& res);
         double total_time_ = 0.0;
 
         drake::trajectories::PiecewisePolynomial<double> pos_traj_;

@@ -144,7 +144,7 @@ void MobileManipulatorVisualization::publishObservation(const ros::Time& timeSta
   const std::string prefix_name = "mm";
   geometry_msgs::TransformStamped base_tf;
   base_tf.header.stamp = timeStamp;
-  base_tf.header.frame_id = "world";
+  base_tf.header.frame_id = "mm/world";
   base_tf.child_frame_id = prefix_name + "/" + modelInfo_.baseFrame;
   base_tf.transform.translation = ros_msg_helpers::getVectorMsg(r_world_base);
   base_tf.transform.rotation = ros_msg_helpers::getOrientationMsg(q_world_base);
@@ -173,7 +173,7 @@ void MobileManipulatorVisualization::publishTargetTrajectories(const ros::Time& 
   eeDesiredOrientation.coeffs() = targetTrajectories.stateTrajectory.back().tail(4);
   geometry_msgs::TransformStamped command_tf;
   command_tf.header.stamp = timeStamp;
-  command_tf.header.frame_id = "world";
+  command_tf.header.frame_id = "mm/world";
   command_tf.child_frame_id = "command";
   command_tf.transform.translation = ros_msg_helpers::getVectorMsg(eeDesiredPosition);
   command_tf.transform.rotation = ros_msg_helpers::getOrientationMsg(eeDesiredOrientation);
@@ -231,9 +231,9 @@ void MobileManipulatorVisualization::publishOptimizedTrajectory(const ros::Time&
   markerArray.markers.emplace_back(ros_msg_helpers::getLineMsg(std::move(baseTrajectory), red, TRAJECTORYLINEWIDTH));
   markerArray.markers.back().ns = "Base Trajectory";
 
-  assignHeader(markerArray.markers.begin(), markerArray.markers.end(), ros_msg_helpers::getHeaderMsg("world", timeStamp));
+  assignHeader(markerArray.markers.begin(), markerArray.markers.end(), ros_msg_helpers::getHeaderMsg("mm/world", timeStamp));
   assignIncreasingId(markerArray.markers.begin(), markerArray.markers.end());
-  poseArray.header = ros_msg_helpers::getHeaderMsg("world", timeStamp);
+  poseArray.header = ros_msg_helpers::getHeaderMsg("mm/world", timeStamp);
 
   stateOptimizedPublisher_.publish(markerArray);
   stateOptimizedPosePublisher_.publish(poseArray);

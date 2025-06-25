@@ -41,3 +41,7 @@ topics:
   - /hand_wrench.*
   - /tag_world_pose
   - /leju_quest_bone_poses
+  - /kinematic_data
+  - /odometry/filtered
+  - /sensor_data_new/.*
+  - /imu_data

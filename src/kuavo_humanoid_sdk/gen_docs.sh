@@ -1,7 +1,8 @@
 #!/bin/bash
 # Script to generate documentation for Kuavo Humanoid SDK
-SCRIPT_DIR=$(dirname "")
+SCRIPT_DIR=$(dirname "$(realpath "$0")")
 PROJECT_DIR=$(realpath "$SCRIPT_DIR/../..")
+SDK_PROJECT_DIR="$PROJECT_DIR/src/kuavo_humanoid_sdk"  # project: kuavo_humanoid_sdk
 DEVEL_DIR="$PROJECT_DIR/devel/.private"
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 VERSION=$(git -C "$PROJECT_DIR" describe --tags --always 2>/dev/null)
@@ -22,7 +23,7 @@ copy_ros_msg() {
             rm -rf "$dest_dir/$msg_pkg"
         fi
         mkdir "$dest_dir/$msg_pkg"
-        cp -r "$src_dir/$msg_pkg" "$dest_dir"
+        cp -r "$src_dir/$msg_pkg" "$dest_dir" && chmod -R a+w "$dest_dir/$msg_pkg"
 
         # Create __init__.py file with import statements
         echo "import os
@@ -41,7 +42,9 @@ if package_path not in sys.path:
 
 install_dependencies() {
     echo "Installing dependencies..."
-    pip list | grep -E "sphinx|sphinx-rtd-theme|sphinx-markdown-builder" > /dev/null || pip install sphinx sphinx-rtd-theme sphinx-markdown-builder
+    for pkg in sphinx sphinx-rtd-theme sphinx-markdown-builder; do
+        pip list | grep "$pkg" > /dev/null || (echo "Installing $pkg..." && pip install "$pkg")
+    done
 }
 
 check_ros_env() {
@@ -136,7 +139,7 @@ check_ros_env
 copy_ros_msgs
 
 echo "Generating HTML documentation..."
-sphinx-build -b html docs/ "docs/html"
+sphinx-build -b html -D language=zh_CN docs/ "docs/html"
 echo "HTML documentation generated successfully in docs/html"
 
 echo -e "\nGenerating Markdown documentation..."

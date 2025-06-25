@@ -4,7 +4,8 @@
 #include <ros/service.h>
 #include <kuavo_msgs/jointMoveTo.h>
 #include <kuavo_msgs/setHwIntialState.h>
-#include "humanoid_interface_drake/common/sensor_data.h"
+#include "kuavo_common/common/sensor_data.h"
+#include "humanoid_interface_drake/kuavo_data_buffer.h"
 #include "kuavo_msgs/setMotorEncoderRoundService.h"
 
 namespace ocs2

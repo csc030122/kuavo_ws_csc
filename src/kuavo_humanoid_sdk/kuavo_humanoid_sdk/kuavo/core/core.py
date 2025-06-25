@@ -19,32 +19,34 @@ Each state has an entry callback that handles initialization when entering that 
 
 import time
 import math
-import rospy
 import threading
 import numpy as np
 from typing import Tuple
 from transitions import Machine, State
 
-from kuavo_humanoid_sdk.interfaces.data_types import KuavoArmCtrlMode, KuavoIKParams, KuavoPose
+from kuavo_humanoid_sdk.interfaces.data_types import KuavoArmCtrlMode, KuavoIKParams, KuavoPose, KuavoManipulationMpcFrame, KuavoManipulationMpcCtrlMode, KuavoManipulationMpcControlFlow
 from kuavo_humanoid_sdk.kuavo.core.ros.control import KuavoRobotControl
 from kuavo_humanoid_sdk.kuavo.core.ros.state import KuavoRobotStateCore
 from kuavo_humanoid_sdk.kuavo.core.ros.param import make_robot_param
 from kuavo_humanoid_sdk.common.logger import SDKLogger
-
 # Define robot states
 ROBOT_STATES = [
     State(name='stance', on_enter=['_on_enter_stance']),
     State(name='walk', on_enter=['_on_enter_walk']), 
     State(name='trot', on_enter=['_on_enter_trot']),
-    State(name='custom_gait', on_enter=['_on_enter_custom_gait'])
+    State(name='custom_gait', on_enter=['_on_enter_custom_gait']),
+    State(name='command_pose_world', on_enter=['_on_enter_command_pose_world']),
+    State(name='command_pose', on_enter=['_on_enter_command_pose']),
 ]
 
 # Define state transitions
 ROBOT_TRANSITIONS = [
-    {'trigger': 'to_stance', 'source': ['walk', 'trot', 'custom_gait'], 'dest': 'stance'},
+    {'trigger': 'to_stance', 'source': ['walk', 'trot', 'custom_gait', 'command_pose_world', 'command_pose'], 'dest': 'stance'},
     {'trigger': 'to_walk', 'source': ['stance', 'trot', 'custom_gait'], 'dest': 'walk'},
     {'trigger': 'to_trot', 'source': ['stance', 'walk', 'custom_gait'], 'dest': 'trot'},
     {'trigger': 'to_custom_gait', 'source': ['stance', 'custom_gait'], 'dest': 'custom_gait'},
+    {'trigger': 'to_command_pose_world', 'source': ['stance', 'command_pose_world'], 'dest': 'command_pose_world'},
+    {'trigger': 'to_command_pose', 'source': ['stance', 'command_pose'], 'dest': 'command_pose'},
 ]
 
 class KuavoRobotCore:
@@ -64,10 +66,17 @@ class KuavoRobotCore:
                 initial='stance',
                 send_event=True
             )
-            # robot control
+
             self._control = KuavoRobotControl()
             self._rb_state = KuavoRobotStateCore()
+    
+            # manipulation mpc
+            self._manipulation_mpc_frame = KuavoManipulationMpcFrame.KeepCurrentFrame
+            self._manipulation_mpc_ctrl_mode = KuavoManipulationMpcCtrlMode.NoControl
+            self._manipulation_mpc_control_flow = KuavoManipulationMpcControlFlow.ThroughFullBodyMpc
+                
             self._arm_ctrl_mode = KuavoArmCtrlMode.AutoSwing
+            
             # register gait changed callback
             self._rb_state.register_gait_changed_callback(self._humanoid_gait_changed)
             # initialized
@@ -93,6 +102,21 @@ class KuavoRobotCore:
             if arm_ctrl_mode is not None:
                 self._arm_ctrl_mode = arm_ctrl_mode
                 SDKLogger.debug(f"[Core] initialize arm control mode: {arm_ctrl_mode}")
+            
+            # init manipulation mpc
+            manipulation_mpc_frame = self._rb_state.manipulation_mpc_frame
+            if manipulation_mpc_frame is not None:
+                self._manipulation_mpc_frame = manipulation_mpc_frame
+                SDKLogger.debug(f"[Core] initialize manipulation mpc frame: {manipulation_mpc_frame}")
+            manipulation_mpc_ctrl_mode = self._rb_state.manipulation_mpc_ctrl_mode
+            if manipulation_mpc_ctrl_mode is not None:
+                self._manipulation_mpc_ctrl_mode = manipulation_mpc_ctrl_mode
+                SDKLogger.debug(f"[Core] initialize manipulation mpc ctrl mode: {manipulation_mpc_ctrl_mode}")
+            manipulation_mpc_control_flow = self._rb_state.manipulation_mpc_control_flow
+            if manipulation_mpc_control_flow is not None:
+                self._manipulation_mpc_control_flow = manipulation_mpc_control_flow
+                SDKLogger.debug(f"[Core] initialize manipulation mpc control flow: {manipulation_mpc_control_flow}")
+                
         except Exception as e:
             raise RuntimeError(f"[Core] initialize failed: \n"
                              f"{e}, please check the robot is launched, "
@@ -154,6 +178,21 @@ class KuavoRobotCore:
             SDKLogger.debug(f"[Core] [StateMachine] State unchanged: already in custom_gait state")
             return
         SDKLogger.debug(f"[Core] [StateMachine] Entering custom_gait state, from {previous_state}")
+    
+    def _on_enter_command_pose_world(self, event):
+        previous_state = event.transition.source
+        if self.state  == previous_state:
+            SDKLogger.debug(f"[Core] [StateMachine] State unchanged: already in command_pose_world state")
+            return
+        SDKLogger.debug(f"[Core] [StateMachine] Entering command_pose_world state, from {previous_state}")
+
+    def _on_enter_command_pose(self, event):
+        previous_state = event.transition.source
+        if self.state  == previous_state:
+            SDKLogger.debug(f"[Core] [StateMachine] State unchanged: already in command_pose state")
+            return
+        SDKLogger.debug(f"[Core] [StateMachine] Entering command_pose state, from {previous_state}")
+        
     """ -------------------------------------------------------------"""
 
     """ --------------------------- Control -------------------------"""
@@ -279,16 +318,66 @@ class KuavoRobotCore:
         if not self._control.step_control(body_poses, dt, is_left_first_default, collision_check):
             return False
         
-        # Wait for gait to switch to custom_gait
-        start_time = time.time()
-        while not self._rb_state.is_gait('custom_gait'):
-            if time.time() - start_time > 1.0:  # 1.0s timeout
-                SDKLogger.warn("[Core] Timeout waiting for gait to switch to custom_gait")
-                return False
-            time.sleep(0.01)
+        # # Wait for gait to switch to custom_gait
+        # start_time = time.time()
+        # SDKLogger.warning("-------------------STEP CONTROL -----------------------------")
+        # while not self._rb_state.is_gait('custom_gait'):
+        #     if time.time() - start_time > 1.0:  # 1.0s timeout
+        #         SDKLogger.warn("[Core] Timeout waiting for gait to switch to custom_gait")
+        #         return False
+        #     time.sleep(0.01)
+        # SDKLogger.warning("-------------------STEP CONTROL -----------------------------")
 
         return True
 
+    def control_command_pose(self, target_pose_x:float, target_pose_y:float, target_pose_z:float, target_pose_yaw:float)->bool:
+        """
+        Control robot pose in base_link frame
+        
+        Arguments:
+            - target_pose_x: x position (meters)
+            - target_pose_y: y position (meters)
+            - target_pose_z: z position (meters)
+            - target_pose_yaw: yaw angle (radians)
+        
+        Returns:
+            bool: True if command was sent successfully, False otherwise
+            
+        Raises:
+            RuntimeError: If robot is not in stance state
+        """
+        if self.state != 'stance':
+            raise RuntimeError(f"[Core] control_command_pose failed: robot must be in stance state, current state: {self.state}")
+        
+        # Add any parameter validation if needed
+        # e.g., limit ranges for safety
+        self.to_command_pose()
+        return self._control.control_command_pose(target_pose_x, target_pose_y, target_pose_z, target_pose_yaw)
+
+    def control_command_pose_world(self, target_pose_x:float, target_pose_y:float, target_pose_z:float, target_pose_yaw:float)->bool:
+        """
+        Control robot pose in odom (world) frame
+        
+        Arguments:
+            - target_pose_x: x position (meters)
+            - target_pose_y: y position (meters)
+            - target_pose_z: z position (meters)
+            - target_pose_yaw: yaw angle (radians)
+        
+        Returns:
+            bool: True if command was sent successfully, False otherwise
+            
+        Raises:
+            RuntimeError: If robot is not in stance state
+        """
+        # if self.state != 'stance':
+        #     raise RuntimeError(f"[Core] control_command_pose_world failed: robot must be in stance state, current state: {self.state}")
+        
+        # Add any parameter validation if needed
+        # e.g., limit ranges for safety
+        self.to_command_pose_world()
+        return self._control.control_command_pose_world(target_pose_x, target_pose_y, target_pose_z, target_pose_yaw)
+    
     def execute_gesture(self, gestures:list)->bool:
         return self._control.execute_gesture(gestures)
     
@@ -311,30 +400,111 @@ class KuavoRobotCore:
         pitch_deg = pitch * 180 / math.pi
         return self._control.control_robot_head(yaw_deg, pitch_deg)
     
-    def control_robot_arm_traj(self, joint_data:list)->bool:
+    def enable_head_tracking(self, target_id: int)->bool:
+        return self._control.enable_head_tracking(target_id)
+    
+    def disable_head_tracking(self)->bool:
+        return self._control.disable_head_tracking()
+    
+    def control_robot_arm_joint_positions(self, joint_data:list)->bool:
         if self.state != 'stance':
-            raise RuntimeError(f"[Core] control_robot_arm_traj failed: robot must be in stance state, current state: {self.state}")
+            raise RuntimeError(f"[Core] control_robot_arm_joint_positions failed: robot must be in stance state, current state: {self.state}")
         
         # change to external control mode  
         if self._arm_ctrl_mode != KuavoArmCtrlMode.ExternalControl:
-            SDKLogger.debug("[Core] control_robot_arm_traj, current arm mode != ExternalControl, change it.")
+            SDKLogger.debug("[Core] control_robot_arm_joint_positions, current arm mode != ExternalControl, change it.")
             if not self.change_robot_arm_ctrl_mode(KuavoArmCtrlMode.ExternalControl):
-                SDKLogger.warn("[Core] control_robot_arm_traj failed, change robot arm ctrl mode failed!")
+                SDKLogger.warn("[Core] control_robot_arm_joint_positions failed, change robot arm ctrl mode failed!")
                 return False
-        return self._control.control_robot_arm_traj(joint_data)
+        return self._control.control_robot_arm_joint_positions(joint_data)
     
-    def control_robot_arm_target_poses(self, times:list, joint_q:list)->bool:
+    def control_robot_arm_joint_trajectory(self, times:list, joint_q:list)->bool:
         if self.state != 'stance':
-            raise RuntimeError("[Core] control_robot_arm_target_poses failed: robot must be in stance state")
+            raise RuntimeError("[Core] control_robot_arm_joint_trajectory failed: robot must be in stance state")
         
         if self._arm_ctrl_mode != KuavoArmCtrlMode.ExternalControl:
-            SDKLogger.debug("[Core] control_robot_arm_target_poses, current arm mode != ExternalControl, change it.")
+            SDKLogger.debug("[Core] control_robot_arm_joint_trajectory, current arm mode != ExternalControl, change it.")
             if not self.change_robot_arm_ctrl_mode(KuavoArmCtrlMode.ExternalControl):
-                SDKLogger.warn("[Core] control_robot_arm_target_poses failed, change robot arm ctrl mode failed!")
+                SDKLogger.warn("[Core] control_robot_arm_joint_trajectory failed, change robot arm ctrl mode failed!")
                 return False
             
-        return self._control.control_robot_arm_target_poses(times, joint_q)
+        return self._control.control_robot_arm_joint_trajectory(times, joint_q)
+    
+    def control_robot_end_effector_pose(self, left_pose: KuavoPose, right_pose: KuavoPose, frame: KuavoManipulationMpcFrame)->bool:        
+        if self._arm_ctrl_mode != KuavoArmCtrlMode.ExternalControl:
+            SDKLogger.debug("[Core] control_robot_end_effector_pose, current arm mode != ExternalControl, change it.")
+            if not self.change_robot_arm_ctrl_mode(KuavoArmCtrlMode.ExternalControl):
+                SDKLogger.warn("[Core] control_robot_end_effector_pose failed, change robot arm ctrl mode failed!")
+                return False
 
+        if self._manipulation_mpc_ctrl_mode == KuavoManipulationMpcCtrlMode.NoControl:
+            SDKLogger.debug("[Core] control_robot_end_effector_pose, manipulation mpc ctrl mode is NoControl, change it.")
+            if not self.change_manipulation_mpc_ctrl_mode(KuavoManipulationMpcCtrlMode.ArmOnly):
+                SDKLogger.warn("[Core] control_robot_end_effector_pose failed, change manipulation mpc ctrl mode failed!")
+                return False
+        
+        return self._control.control_robot_end_effector_pose(left_pose, right_pose, frame)
+
+    def change_manipulation_mpc_frame(self, frame: KuavoManipulationMpcFrame)->bool:
+        timeout = 1.0
+        count = 0
+        while self._rb_state.manipulation_mpc_frame != frame:
+            SDKLogger.debug(f"[Core] Change manipulation mpc frame from {self._rb_state.manipulation_mpc_frame} to {frame}, retry: {count}")
+            self._control.change_manipulation_mpc_frame(frame)
+            if self._rb_state.manipulation_mpc_frame == frame:
+                break
+            if timeout <= 0:
+                SDKLogger.warn("[Core] Change manipulation mpc frame timeout!")
+                return False
+            timeout -= 0.1
+            time.sleep(0.1)
+            count += 1
+        if not hasattr(self, '_manipulation_mpc_frame_lock'):
+            self._manipulation_mpc_frame_lock = threading.Lock()
+        with self._manipulation_mpc_frame_lock:
+            self._manipulation_mpc_frame = frame
+        return True
+    
+    def change_manipulation_mpc_ctrl_mode(self, control_mode: KuavoManipulationMpcCtrlMode)->bool:
+        timeout = 1.0
+        count = 0
+        while self._rb_state.manipulation_mpc_ctrl_mode != control_mode:
+            SDKLogger.debug(f"[Core] Change manipulation mpc ctrl mode from {self._rb_state.manipulation_mpc_ctrl_mode} to {control_mode}, retry: {count}")
+            self._control.change_manipulation_mpc_ctrl_mode(control_mode)
+            if self._rb_state.manipulation_mpc_ctrl_mode == control_mode:
+                break
+            if timeout <= 0:
+                SDKLogger.warn("[Core] Change manipulation mpc ctrl mode timeout!")
+                return False
+            timeout -= 0.1
+            time.sleep(0.1)
+            count += 1
+        if not hasattr(self, '_manipulation_mpc_ctrl_mode_lock'):
+            self._manipulation_mpc_ctrl_mode_lock = threading.Lock()
+        with self._manipulation_mpc_ctrl_mode_lock:
+            self._manipulation_mpc_ctrl_mode = control_mode
+        return True
+    
+    def change_manipulation_mpc_control_flow(self, control_flow: KuavoManipulationMpcControlFlow)->bool:
+        timeout = 1.0
+        count = 0
+        while self._rb_state.manipulation_mpc_control_flow != control_flow:
+            SDKLogger.debug(f"[Core] Change manipulation mpc control flow from {self._rb_state.manipulation_mpc_control_flow} to {control_flow}, retry: {count}")
+            self._control.change_manipulation_mpc_control_flow(control_flow)
+            if self._rb_state.manipulation_mpc_control_flow == control_flow:
+                break
+            if timeout <= 0:
+                SDKLogger.warn("[Core] Change manipulation mpc control flow timeout!")
+                return False
+            timeout -= 0.1
+            time.sleep(0.1)
+            count += 1
+        if not hasattr(self, '_manipulation_mpc_control_flow_lock'):
+            self._manipulation_mpc_control_flow_lock = threading.Lock()
+        with self._manipulation_mpc_control_flow_lock:
+            self._manipulation_mpc_control_flow = control_flow
+        return True
+    
     def change_robot_arm_ctrl_mode(self, mode:KuavoArmCtrlMode)->bool:
         timeout = 1.0
         count = 0
@@ -364,12 +534,33 @@ class KuavoRobotCore:
             return
         
         # init_pos = [0.0]*14
-        # if not self.control_robot_arm_target_poses([1.5], [init_pos]):
+        # if not self.control_robot_arm_joint_trajectory([1.5], [init_pos]):
         #     SDKLogger.warn("[Core] robot arm reset failed, control robot arm traj failed!")
         #     return False
         
         return self.change_robot_arm_ctrl_mode(KuavoArmCtrlMode.AutoSwing)
         
+    def robot_manipulation_mpc_reset(self)->bool:
+        if self._manipulation_mpc_ctrl_mode != KuavoManipulationMpcCtrlMode.NoControl:
+            SDKLogger.debug("[Core] robot manipulation mpc reset, current manipulation mpc ctrl mode != NoControl, change it.")
+            if not self.change_manipulation_mpc_ctrl_mode(KuavoManipulationMpcCtrlMode.NoControl):
+                SDKLogger.warn("[Core] robot manipulation mpc reset failed, change manipulation mpc ctrl mode failed!")
+                return False
+        if self._manipulation_mpc_control_flow != KuavoManipulationMpcControlFlow.ThroughFullBodyMpc:
+            SDKLogger.debug("[Core] robot manipulation mpc reset, current manipulation mpc control flow != ThroughFullBodyMpc, change it.")
+            if not self.change_manipulation_mpc_control_flow(KuavoManipulationMpcControlFlow.ThroughFullBodyMpc):
+                SDKLogger.warn("[Core] robot manipulation mpc reset failed, change manipulation mpc control flow failed!")
+                return False
+        return True
+    """ ------------------------------------------------------------------------"""
+    """ 电机参数设置 """
+    def change_motor_param(self, motor_param:list)-> Tuple[bool, str]:
+        return self._control.change_motor_param(motor_param)
+    
+    def get_motor_param(self)-> Tuple[bool, list]:
+        success, param, _ = self._control.get_motor_param()
+        return success, param
+
     """ ------------------------------------------------------------------------"""
     """ Arm Forward kinematics && Arm Inverse kinematics """
     def arm_ik(self, 
@@ -394,3 +585,28 @@ class KuavoRobotCore:
                 SDKLogger.debug(f"[Core] Received gait change notification: {gait_name} at time {current_time}")
                 # Call the transition method if it exists
                 getattr(self, to_method)()
+
+
+if __name__ == "__main__":
+    DEBUG_MODE = 0
+    core = KuavoRobotCore()
+    core.initialize()
+
+    if DEBUG_MODE == 0:
+        time.sleep(1.0)
+        core.change_robot_arm_ctrl_mode(KuavoArmCtrlMode.ExternalControl)
+        core.change_manipulation_mpc_frame(KuavoManipulationMpcFrame.VRFrame)
+        core.change_manipulation_mpc_ctrl_mode(KuavoManipulationMpcCtrlMode.ArmOnly)
+        core.change_manipulation_mpc_control_flow(KuavoManipulationMpcControlFlow.DirectToWbc)
+        core.robot_manipulation_mpc_reset()
+    elif DEBUG_MODE == 1:
+        core.to_stance()
+        print("state now is to_stance:", core.state)
+        core.control_command_pose_world(0.0, 1.0, 0.0, 1.57)
+        print("state now is control_command_pose_world:", core.state)
+    elif DEBUG_MODE == 2:
+        core.to_trot()
+        print("state now is to_trot:", core.state)
+        time.sleep(3.0)
+        core.to_stance()
+        print("state now is to_stance:", core.state)

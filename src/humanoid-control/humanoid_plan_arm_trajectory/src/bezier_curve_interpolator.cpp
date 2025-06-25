@@ -1,5 +1,6 @@
 #include "bezier_curve_interpolator.h"
 #include <algorithm>
+#include <urdf/model.h>
 
 namespace ocs2 {
 namespace humanoid {
@@ -21,6 +22,7 @@ void BezierCurveInterpolator::initialize(ros::NodeHandle& nh, ros::NodeHandle& p
 
     initializeCommon();
     initializeSpecific();
+    initializeLimitations();
 }
 
 void BezierCurveInterpolator::reset() {
@@ -33,6 +35,95 @@ void BezierCurveInterpolator::reset() {
     bezier_curves_.clear();
     traj_.points.clear();
     joint_names_.clear();
+}
+
+void BezierCurveInterpolator::initializeLimitations() {
+    std::string urdf_file_path;
+
+    // Wait for urdfFile parameter
+    ros::Rate wait_rate(1);
+    while (ros::ok()) {
+        if (nh_->hasParam("urdfFile")) {
+            break;
+        }
+        ROS_WARN("Waiting for 'urdfFile' parameter to be set...");
+        wait_rate.sleep();
+    }
+    
+    if (!nh_->getParam("urdfFile", urdf_file_path)) {
+        ROS_ERROR("Failed to get param 'urdfFile'");
+        return;
+    }
+
+    urdf::Model model;
+    if (!model.initFile(urdf_file_path)) {
+        ROS_ERROR("Failed to parse URDF file");
+        return;
+    }
+
+    int end_effector_joints_num;
+    ros::Rate rate(1);
+    while (ros::ok()) {
+        if (nh_->getParam("end_effector_joints_num", end_effector_joints_num)) {
+            printf("end_effector_joints_num: %d\n", end_effector_joints_num);
+            break;
+        } else {
+            ROS_WARN("Waiting for 'end_effector_joints_num' parameter to be set...");
+        }
+        rate.sleep();
+    }
+
+    int arm_joint_num = arm_joint_names_.size();
+    int head_joint_num = head_joint_names_.size();
+    // 关节总数 * 3, [0] 为下限, [1] 为上限, [2] 为是否存在(0: 不存在, 1: 存在)
+    Eigen::MatrixXd joint_limits(arm_joint_num + HAND_JOINT_TOTAL_NUM + head_joint_num, 3);
+    joint_limits.setZero(); 
+
+    for (size_t i = 0; i < arm_joint_num; ++i) {
+        const std::string& joint_name = arm_joint_names_[i];
+        std::shared_ptr<const urdf::Joint> joint = model.getJoint(joint_name);
+
+        if (joint && joint->limits) {
+            joint_limits(i, JOINT_LIMIT_LOWER) = joint->limits->lower;
+            joint_limits(i, JOINT_LIMIT_UPPER) = joint->limits->upper;
+            joint_limits(i, JOINT_LIMIT_STATUS) = JOINT_LIMIT_EXISTS;
+        } else {
+            ROS_WARN("[BezierCurveInterpolator] Joint %s not found or has no limits.", joint_name.c_str());
+        }
+    }
+
+    int one_hand_exist_joint_num = end_effector_joints_num / 2;
+    int one_hand_total_joint_num = HAND_JOINT_TOTAL_NUM / 2;
+    for (size_t i = 0; i < HAND_JOINT_TOTAL_NUM; ++i) {
+        if (i < one_hand_exist_joint_num) {
+            joint_limits(i + arm_joint_num, JOINT_LIMIT_LOWER) = hand_joint_lower_limit_;
+            joint_limits(i + arm_joint_num, JOINT_LIMIT_UPPER) = hand_joint_upper_limit_;
+            joint_limits(i + arm_joint_num, JOINT_LIMIT_STATUS) = JOINT_LIMIT_EXISTS;
+        }
+        if (i < (one_hand_exist_joint_num + one_hand_total_joint_num) && i >= one_hand_total_joint_num) {
+            joint_limits(i + arm_joint_num, JOINT_LIMIT_LOWER) = hand_joint_lower_limit_;
+            joint_limits(i + arm_joint_num, JOINT_LIMIT_UPPER) = hand_joint_upper_limit_;
+            joint_limits(i + arm_joint_num, JOINT_LIMIT_STATUS) = JOINT_LIMIT_EXISTS;
+        }
+        if (joint_limits(i + arm_joint_num, JOINT_LIMIT_STATUS) == JOINT_LIMIT_NOT_EXISTS) {
+            ROS_WARN("[BezierCurveInterpolator] Joint %ld not found or has no limits.", i + arm_joint_num);
+        }
+    }
+
+    for (size_t i = 0; i < head_joint_num; ++i) {
+        const std::string& joint_name = head_joint_names_[i];
+        std::shared_ptr<const urdf::Joint> joint = model.getJoint(joint_name);
+
+        if (joint && joint->limits) {
+            joint_limits(i + arm_joint_num + HAND_JOINT_TOTAL_NUM, JOINT_LIMIT_LOWER) = joint->limits->lower;
+            joint_limits(i + arm_joint_num + HAND_JOINT_TOTAL_NUM, JOINT_LIMIT_UPPER) = joint->limits->upper;
+            joint_limits(i + arm_joint_num + HAND_JOINT_TOTAL_NUM, JOINT_LIMIT_STATUS) = JOINT_LIMIT_EXISTS;
+        } else {
+            ROS_WARN("[BezierCurveInterpolator] Joint %s not found or has no limits.", joint_name.c_str());
+        }
+    }
+
+    joint_limits_ = joint_limits;
 }
 
 void BezierCurveInterpolator::initializeSpecific() {
@@ -59,7 +150,7 @@ void BezierCurveInterpolator::update() {
             evaluate(i, bezier_curves_[i], current_step, positions, velocities, accelerations);
         }
     }
-    
+
     is_finished_ = current_step >= total_time_;
     int progress = static_cast<int>(current_step * 1000);  // ms
     updateTrajectoryPoint(positions, velocities, accelerations);
@@ -83,7 +174,11 @@ void BezierCurveInterpolator::evaluate(const int index, const std::list<BezierCu
     Eigen::Vector2d vel = curve.vel_traj->value(t);
     Eigen::Vector2d acc = curve.acc_traj->value(t);
 
-    positions[index] = pos.y();
+    if (static_cast<int>(joint_limits_(index, JOINT_LIMIT_STATUS)) == JOINT_LIMIT_EXISTS) {
+        positions[index] = std::clamp(pos.y(), joint_limits_(index, JOINT_LIMIT_LOWER), joint_limits_(index, JOINT_LIMIT_UPPER));
+    } else {
+        positions[index] = pos.y();
+    }
     velocities[index] = vel.y();
     accelerations[index] = acc.y();
 }
@@ -116,11 +211,10 @@ void BezierCurveInterpolator::createSingleBezierCurve(size_t i, size_t j, std::l
     auto acc_traj = pos_traj.MakeDerivative(2);
 
     curve_list.emplace_back(start_time, end_time, std::move(pos_traj), std::move(vel_traj), std::move(acc_traj));
-
 }
 
-bool BezierCurveInterpolator::planArmTrajectoryBezierCurveCallback(humanoid_plan_arm_trajectory::planArmTrajectoryBezierCurve::Request& req, 
-                                                                    humanoid_plan_arm_trajectory::planArmTrajectoryBezierCurve::Response& res) {
+bool BezierCurveInterpolator::planArmTrajectoryBezierCurveCallback(kuavo_msgs::planArmTrajectoryBezierCurve::Request& req, 
+                                                                    kuavo_msgs::planArmTrajectoryBezierCurve::Response& res) {
     
     std::cout << "BezierCurveInterpolator::planArmTrajectoryBezierCurveCallback" << std::endl;
     current_interpolate_type_ = interpolate_type_;

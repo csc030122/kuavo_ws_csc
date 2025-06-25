@@ -46,7 +46,7 @@ roslaunch motion_capture_ik ik_node.launch control_hand_side:=1
 
 话题描述: 手臂 IK 求解话题
 
-消息类型: `motion_capture_ik/twoArmHandPoseCmd`
+消息类型: `kuavo_msgs/twoArmHandPoseCmd`
 
 | 字段                  | 类型             | 描述                                                |
 | ------------------- | -------------- | ------------------------------------------------- |
@@ -84,7 +84,7 @@ roslaunch motion_capture_ik ik_node.launch control_hand_side:=1
 
 话题描述: 发布 IK 求解的结果
 
-消息类型: `motion_capture_ik/twoArmHandPose`
+消息类型: `kuavo_msgs/twoArmHandPose`
 
 发布 IK 结果中左右手的结果,
 
@@ -116,7 +116,7 @@ roslaunch motion_capture_ik ik_node.launch control_hand_side:=1
 
 话题描述: IK 逆解服务
 
-消息类型: `motion_capture_ik/twoArmHandPoseCmdSrv`
+消息类型: `kuavo_msgs/twoArmHandPoseCmdSrv`
 
 请求参数:
 
@@ -139,7 +139,7 @@ roslaunch motion_capture_ik ik_node.launch control_hand_side:=1
 
 话题描述: FK 正解服务
 
-消息类型: `motion_capture_ik/fkSrv`
+消息类型: `kuavo_msgs/fkSrv`
 
 | 字段         | 类型             | 描述                                                         |
 | ---------- | -------------- | ---------------------------------------------------------- |
@@ -167,8 +167,8 @@ rosrun motion_capture_ik example_ik_srv.py
 import rospy
 import numpy as np
 import time
-from motion_capture_ik.msg import twoArmHandPoseCmd, ikSolveParam
-from motion_capture_ik.srv import twoArmHandPoseCmdSrv
+from kuavo_msgs.msg import twoArmHandPoseCmd, ikSolveParam
+from kuavo_msgs.srv import twoArmHandPoseCmdSrv
 from sensor_msgs.msg import JointState
 
 # decide use custom ik param or not
@@ -254,8 +254,8 @@ rosrun motion_capture_ik example_ik.py
 import rospy
 import numpy np
 import time
-from motion_capture_ik.msg import twoArmHandPoseCmd, ikSolveParam
-from motion_capture_ik.msg import twoArmHandPose
+from kuavo_msgs.msg import twoArmHandPoseCmd, ikSolveParam
+from kuavo_msgs.msg import twoArmHandPose
 
 # decide use custom ik param or not
 use_custom_ik_param = True
@@ -325,7 +325,7 @@ rosrun motion_capture_ik example_fk_srv.py
 # -*- coding: utf-8 -*-
 
 import rospy
-from motion_capture_ik.srv import fkSrv
+from kuavo_msgs.srv import fkSrv
 
 import numpy as np
 

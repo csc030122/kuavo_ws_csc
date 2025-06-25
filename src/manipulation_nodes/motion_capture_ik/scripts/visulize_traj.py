@@ -10,9 +10,9 @@ from tools.drake_trans import *
 from tools.utils import get_package_path
 from tools.quest3_utils import Quest3ArmInfoTransformer
 from handcontrollerdemorosnode.msg import robotHandPosition
-from motion_capture_ik.msg import headBodyPose
+from kuavo_msgs.msg import headBodyPose
 import argparse
-from motion_capture_ik.msg import twoArmHandPoseCmd, twoArmHandPose, ikSolveParam
+from kuavo_msgs.msg import twoArmHandPoseCmd, twoArmHandPose, ikSolveParam
 from visualization_msgs.msg import Marker
 
 arm_joint_position = np.zeros(14)

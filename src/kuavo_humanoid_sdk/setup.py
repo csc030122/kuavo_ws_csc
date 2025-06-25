@@ -43,10 +43,12 @@ setup(
     'kuavo_humanoid_sdk.kuavo',
     'kuavo_humanoid_sdk.kuavo.core',
     'kuavo_humanoid_sdk.kuavo.core.ros',
+    'kuavo_humanoid_sdk.kuavo_strategy',
+    'kuavo_humanoid_sdk.kuavo_strategy.grasp_box',
     ]+find_msg_subpackages("kuavo_humanoid_sdk/msg"),
     install_requires=[
         "numpy", 
-        "transitions",
+        "transitions"
     ],
     python_requires=">=3.8",
     classifiers=[

@@ -31,39 +31,14 @@ app_nodes_to_check = [
     ]
 
 lidar_node_to_check = [
-        "/autostart_arm_trajectory_bezier_demo",
-        "/chassis_manager",
-        "/dx_motion_control_node",
-        "/dx_route_plan_node",
-        "/fuse_pose_node",
-        "/h12pro_channel_publisher",
-        "/hr_location_node",
-        "/humanoid_plan_arm_trajectory_node",
-        "/imu_transfer_node",
-        "/lidar_state_publisher_node",
-        "/livox_lidar_publisher2",
-        "/livox_rviz",
-        "/map_server_2d",
-        "/nav_gui",
-        "/nav_rviz",
-        "/navigation_manager_server",
-        "/node_edit_pixel_server",
-        "/nodelet_manager",
-        "/odom_lidar_node",
-        "/path_to_gridmap_node",
-        "/pointcloud_to_grid_map_node",
-        "/pointcloud_to_laserscan",
-        "/pointcloud_transfer_node",
-        "/rosout",
-        "/route_edit_server",
-        "/set_nav_cmd_from_rviz_node",
-        "/show_route_plan_node",
-        "/show_routes_stations_node",
-        "/show_tasks_node",
-        "/task_edit_pixel_server",
-        "/version_tag_node",
-        "/virtual_hr_fuse_pose_node",
-        "/virtual_hr_odom_node"
+            "/apriltag_ros_continuous_node",
+            "/camera/realsense2_camera",
+            "/camera/realsense2_camera_manager",
+            "/camera_to_real_frame",
+            "/livox_lidar_publisher2",
+            "/robot_state_publisher",
+            "/rosout",
+            "/rviz"
     ]
 
 # 创建 SSH 对象
@@ -154,10 +129,11 @@ def ssh_send_command(host, port, username, password, command):
         # 打印输出信息
         output = stdout.read().decode()
         error = stderr.read().decode()
-        if output:
-            print("命令输出:", output)
+        # if output:
+        #     print("命令输出:", output)
         if error:
             print("命令错误:", error)
+            print("命令输出:", output)
         # 关闭连接
         ssh.close()
     except Exception as e:

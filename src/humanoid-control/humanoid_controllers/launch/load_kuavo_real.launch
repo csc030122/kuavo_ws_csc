@@ -30,12 +30,18 @@
     <arg name="only_half_up_body" default="false"/>
     <arg name="stand_up_protect" default="true"/>
     <arg name="redundant_imu" default="false"/>
+    <arg name="ruiwo_cxx_sdk" default="true"/>
+    <arg name="arm_move_spd"      default="1.2"/>
+
     <!-- The file defining gait definition -->
 
     <!-- Set with_coredump parameter based on coredump value -->
     <arg name="coredump" default="true"/>
     <arg name="with_coredump" value="--with-coredump" if="$(arg coredump)"/>
     <arg name="with_coredump" value="" unless="$(arg coredump)"/>
+    <arg name="with_ik" default="true"/>
+    <arg name="with_mm_ik" default="true"/>
+    
     <!-- -->
     <arg name="teach_pendant" default="0"/>
     
@@ -61,13 +67,24 @@
     <param name="use_estimator_contact"  value="$(arg use_estimator_contact)"/>
     <param name="stand_up_protect" value="$(arg stand_up_protect)"/>
     <param name="redundant_imu" value="$(arg redundant_imu)"/>
+    <param name="ruiwo_cxx_sdk" value="$(arg ruiwo_cxx_sdk)"/>
 
     <!-- Launch script to collect kuavo-launch information -->
     <node pkg="humanoid_controllers" type="collect_launch_info.sh" name="collect_launch_info" />
     
-   <!-- mpc node -->
+    <!-- teach_pendant=1, teach pendant mode -->
     <param name="teach_pendant"  value="$(arg teach_pendant)"/>
+    <param name="arm_move_spd"  value="$(arg arm_move_spd)"/>
 
+    <!-- MPC调度相关参数 -->
+    <param name="/mpc/schedule/enable" value="false"/>
+    <param name="/mpc/schedule/start_time" value="-1.0"/>
+    <param name="/timeout_warning_ms" value="20"/>
+
+    <group if="$(eval arg('teach_pendant') == 1)">
+      <param name="stand_up_protect" value="false"/>
+    </group>
+    
     <!-- mpc node -->
     <group if="$(arg use_external_mpc)">
       <node pkg="humanoid_interface_ros" type="humanoid_sqp_mpc" name="humanoid_sqp_mpc" output="screen" required="true" launch-prefix="$(find humanoid_controllers)/scripts/start_node.sh $(arg with_coredump)"/>
@@ -91,7 +108,8 @@
     <arg name="cali" default="false" />
     <arg name="cali_arm" default="false" />
     <arg name="cali_leg" default="false" />
-    <arg name="joint_protect_enable" default="true" />
+    <arg name="joint_protect_enable" default="false" />
+    <arg name="cmd_truncation_enable" default="false" />
 
     <param name="real" value="$(arg real)" />
     <param name="log_lcm" value="$(arg log)" />
@@ -99,15 +117,26 @@
     <param name="cali_arm" value="$(arg cali_arm)" />
     <param name="cali_leg" value="$(arg cali_leg)" />
     <param name="joint_protect_enable" value="$(arg joint_protect_enable)" />
+    <param name="cmd_truncation_enable" value="$(arg cmd_truncation_enable)" />
     <node pkg="nodelet" type="nodelet" name="nodelet_manager" args="manager" respawn="false" 
        output="screen" required="true" clear_params="true"
        launch-prefix="$(find humanoid_controllers)/scripts/start_node.sh $(arg with_coredump)">
         <param name="num_worker_threads" type="int" value="10" />
     </node>
 
+    <param name="hardware/is_ready" value="0"/>
     <node pkg="nodelet" type="nodelet" name="nodelet_controller" args="load HumanoidControllerNodelet nodelet_manager" respawn="false" output="screen" required="true" />
+    <group unless="$(arg ruiwo_cxx_sdk)">
+      <node pkg="nodelet" type="nodelet" name="nodelet_hardware" args="load HardwareNodelet nodelet_manager" respawn="false" output="screen" required="true"  />
+    </group>
+    <group if="$(arg ruiwo_cxx_sdk)">
+      <node pkg="nodelet" type="nodelet" name="nodelet_hardware" args="load HardwareNodeletCXX nodelet_manager" respawn="false" output="screen" required="true"  />
+    </group>
 
-    <node pkg="nodelet" type="nodelet" name="nodelet_hardware" args="load HardwareNodelet nodelet_manager" respawn="false" output="screen" required="true"  />
+    <node pkg="nodelet" type="nodelet" name="ekf_se" args="load RobotLocalization/EkfNodelet nodelet_manager" respawn="false" output="screen" required="true" launch-prefix="taskset -c 18">
+      <rosparam command="load" file="$(find humanoid_estimation)/params/ekf_template.yaml" />
+    </node>
+    
     <include file="$(find humanoid_interface)/launch/rosbag_nodelet.launch"/>
     <group if="$(arg use_joystick)">
       <group if="$(eval arg('joystick_type') == 'h12')">
@@ -173,6 +202,18 @@
 
         <!-- 启动 播放音乐服务 -->
         <node pkg="kuavo_audio_player" type="loundspeaker.py" name="play_music_node" output="screen" respawn="true" respawn_delay="5"/>
+        <param name="music_path" value="/home/lab/.config/lejuconfig/music" />
     </group>
 
+    <group if="$(arg with_ik)">
+      <include file="$(find motion_capture_ik)/launch/ik_node.launch"/>
+    </group>
+
+    <group if="$(arg with_mm_ik)">
+      <include file="$(find mobile_manipulator_controllers)/launch/mobile_manipulator_controller.launch">
+        <arg name="sqp_mpc" value="1"/>
+        <arg name="rviz"    value="false"/>
+        <arg name="visualize_mm"   value="false"/>
+      </include>
+    </group>
 </launch>

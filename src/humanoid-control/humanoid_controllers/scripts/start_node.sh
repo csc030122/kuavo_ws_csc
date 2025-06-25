@@ -29,6 +29,9 @@ LOGFILE="${LOG_DIR}/stdout.log"
 # 获取当前脚本的父进程ID和名称，输出到stdout.log的开头
 echo "PPID: $PPID, NODE_NAME: ${NODE_NAME}" >> "${LOG_DIR}/stdout.log"
 
-trap 'echo "Script interrupted at $(date)" >> ${LOGFILE}' INT
-
+# Ignore INT signal and pass it to child processes
+trap '' INT
+trap '' TERM
+trap '' HUP
+trap 'echo "Script interrupted at $(date)" >> ${LOGFILE}' EXIT
 exec stdbuf -o0 -e0 "${@:${START_ARG_IDX}}" 2>&1 | stdbuf -i0 -o0 -e0 tee -a ${LOGFILE}

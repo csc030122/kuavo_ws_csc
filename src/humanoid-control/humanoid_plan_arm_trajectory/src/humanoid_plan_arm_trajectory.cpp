@@ -7,14 +7,14 @@ namespace ocs2 {
     HumanoidPlanArmTrajectory::HumanoidPlanArmTrajectory(const std::string& name, int joint_num, const std::string& interpolate_type) : joint_num_(joint_num), name_(name), interpolate_type_(interpolate_type) {
       joint_state_ = sensor_msgs::JointState();
       traj_ = trajectory_msgs::JointTrajectory();
-      arm_traj_state_ = humanoid_plan_arm_trajectory::planArmState();
+      arm_traj_state_ = kuavo_msgs::planArmState();
     }
 
     void HumanoidPlanArmTrajectory::initializeCommon() {
       nh_->getParam("joint_state_topic", joint_state_topic_);
       nh_->getParam("joint_state_unit", joint_state_unit_);
       arm_traj_pub_ = nh_->advertise<trajectory_msgs::JointTrajectory>(interpolate_type_ + "/arm_traj", 10);
-      arm_traj_state_pub_ = nh_->advertise<humanoid_plan_arm_trajectory::planArmState>(interpolate_type_ + "/arm_traj_state", 10);
+      arm_traj_state_pub_ = nh_->advertise<kuavo_msgs::planArmState>(interpolate_type_ + "/arm_traj_state", 10);
       joint_state_pub_ = nh_->advertise<sensor_msgs::JointState>(joint_state_topic_, 10);
       timer_ = nh_->createTimer(ros::Duration(1.0 / rate_), &HumanoidPlanArmTrajectory::timerCallback, this);
       stop_arm_traj_srv_ = nh_->advertiseService(interpolate_type_ + "/stop_plan_arm_trajectory", &HumanoidPlanArmTrajectory::stopPlanArmTrajectoryCallback, this);

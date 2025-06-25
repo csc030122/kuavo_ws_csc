@@ -685,6 +685,7 @@ def main():
             
             # Save results to JSON
             import json
+            os.makedirs(output_dir, exist_ok=True)
             with open(f"{output_dir}/detailed_results.json", 'w') as f:
                 json.dump(results, f, indent=4)
             

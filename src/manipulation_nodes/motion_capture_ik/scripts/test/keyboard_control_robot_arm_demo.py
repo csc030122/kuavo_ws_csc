@@ -3,7 +3,7 @@
 
 import rospy
 from std_msgs.msg import Float32MultiArray
-from motion_capture_ik.msg import twoArmHandPoseCmd, ikSolveParam, twoArmHandPose, robotHandPosition
+from kuavo_msgs.msg import twoArmHandPoseCmd, ikSolveParam, twoArmHandPose, robotHandPosition
 from kuavo_msgs.srv import changeArmCtrlMode
 import numpy as np
 from key_listener import KeyListener  # Import KeyListener

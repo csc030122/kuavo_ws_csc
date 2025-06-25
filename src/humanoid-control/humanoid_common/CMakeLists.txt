@@ -8,6 +8,7 @@ find_package(catkin REQUIRED
         COMPONENTS
         roscpp
         hardware_interface
+        kuavo_common
         )
 
 catkin_package(
@@ -16,6 +17,7 @@ catkin_package(
         LIBRARIES
         CATKIN_DEPENDS
         roscpp
+        kuavo_common
         qpoases_catkin
         ocs2_core
         ocs2_oc

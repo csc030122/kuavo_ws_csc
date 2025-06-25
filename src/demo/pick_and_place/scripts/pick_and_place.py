@@ -16,7 +16,7 @@ from kuavo_msgs.msg import robotHandPosition, sensorsData
 import numpy as np
 from scipy.interpolate import CubicSpline
 import copy
-from motion_capture_ik.msg import twoArmHandPoseCmd, ikSolveParam, twoArmHandPose
+from kuavo_msgs.msg import twoArmHandPoseCmd, ikSolveParam, twoArmHandPose
 from geometry_msgs.msg import Transform, TransformStamped
 
 import copy
@@ -127,6 +127,7 @@ class Robot:
         
         # Gripper parameters
         self.open_hand = rospy.get_param('/gripper/open_hand', [0, 0, 0, 0, 0, 0])
+        self.view_hand = [0, 100, 0, 0, 0, 0]
         self.close_hand = rospy.get_param('/gripper/close_hand', [100, 100, 80, 75, 75, 75])
         
         # Load joint transition path configuration
@@ -548,6 +549,23 @@ class Robot:
         
         return place_pose
     
+    def view_gripper(self):
+        """view gripper"""
+        rospy.loginfo("Opening gripper to view...")
+        
+        # Create hand position message
+        hand_pose_msg = robotHandPosition()
+        hand_pose_msg.left_hand_position = self.view_hand
+        hand_pose_msg.right_hand_position = self.view_hand
+        
+        # Publish hand position
+        self.gripper_pub.publish(hand_pose_msg)
+        rospy.sleep(0.5)  # Wait for gripper to open
+        
+        self.is_gripper_open = True
+        rospy.loginfo("Gripper opened")
+        return True
+    
     def open_gripper(self):
         """Open gripper"""
         rospy.loginfo("Opening gripper...")
@@ -573,7 +591,7 @@ class Robot:
         hand_pose_msg = robotHandPosition()
         hand_pose_msg.left_hand_position = self.close_hand
         hand_pose_msg.right_hand_position = self.close_hand
-        
+        print(self.close_hand)
         # Publish hand position
         self.gripper_pub.publish(hand_pose_msg)
         rospy.sleep(0.5)  # Wait for gripper to close
@@ -847,7 +865,7 @@ class Robot:
         
         rospy.loginfo(f"放置精度 - 位置误差: {pos_error:.4f}m, 姿态误差: {ori_error:.4f}rad")
         
-        self.open_gripper()
+        # self.open_gripper()
         
         rospy.loginfo("物体放置成功")
         return True
@@ -858,8 +876,7 @@ class Robot:
         
         rospy.loginfo(f"使用 {self.picking_arm} 手臂进行抓取")
         
-        self.open_gripper()
-        
+        # self.open_gripper()
         # 创建目标抓取位姿
         target_grasp_pose = self.create_pose(object_pose, 'pick_grasp')
         
@@ -891,9 +908,9 @@ class Robot:
         rospy.loginfo(f"抓取精度 - 位置误差: {pos_error:.4f}m, 姿态误差: {ori_error:.4f}rad")
         
         # 执行抓取动作
-        if not self.close_gripper():
-            rospy.logerr("\033[31m抓取器关闭失败\033[0m")
-            return False
+        #if not self.close_gripper():
+        #    rospy.logerr("\033[31m抓取器关闭失败\033[0m")
+        #    return False
         
         rospy.sleep(0.1)  # 等待抓取器动作完成
         
@@ -1011,10 +1028,11 @@ class Robot:
                 return False
             
             # Step 2: 检测物体
+            self.view_gripper()
             print("\n[Step 2] Detecting object")
             object_pose = self.detect_with_retry("object", marker_config)
             if object_pose is None:
-                self.open_gripper();
+                #self.open_gripper()
                 self.transition_to_home()
                 return False
             
@@ -1022,10 +1040,12 @@ class Robot:
             print("\n[Step 3] Picking object")
             if not self.get_user_input("Press ENTER to pick the object..."):
                 return False
+            self.open_gripper()
             if not self.pick_object(object_pose):
                 rospy.logerr("\033[31m抓取物体失败，请检查后重试\033[0m")
                 return False
-            
+            self.close_gripper()
+            rospy.sleep(1)
             # Step 4: 检测放置位置
             print("\n[Step 4] Detecting place location")
             place_pose = self.detect_with_retry("place", marker_config)
@@ -1042,9 +1062,10 @@ class Robot:
             if not self.place_object(place_pose):
                 rospy.logerr("\033[31m放置物体失败，请检查后重试\033[0m")
                 return False
-            
+            self.open_gripper()
+
             # Step 6: 返回初始位置
-            rospy.sleep(2)
+            rospy.sleep(1)
             print("\n[Step 6] Returning to home position")
             if not self.get_user_input("Press ENTER to return to home position..."):
                 return False

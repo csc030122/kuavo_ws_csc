@@ -28,14 +28,14 @@ def check_and_print_status():
     global color_callback_count, depth_callback_count
     if color_callback_count >= 20 and depth_callback_count >= 20:
         if color_valid_flag:
-            print_colored_text("RBG camera available", color="green", bold=True)
+            print_colored_text("RBG 图片信息有效", color="green", bold=True)
         else:
-            print_colored_text("RBG camera image not available", color="yellow", bold=True)
+            print_colored_text("RBG 图片信息无效", color="yellow", bold=True)
 
         if depth_valid_flag:
-            print_colored_text("depth camera available", color="green", bold=True)
+            print_colored_text("depth 图片信息有效", color="green", bold=True)
         else:
-            print_colored_text("depth camera image not available", color="yellow", bold=True)
+            print_colored_text("depth 图片信息无效", color="yellow", bold=True)
 
         rospy.signal_shutdown("All callbacks have been executed 20 times.")
 

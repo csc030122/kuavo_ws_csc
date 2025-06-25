@@ -632,6 +632,9 @@ def back_to_home():
     v_max_linear = rospy.get_param('/mpc_path_tracer_node/v_max_linear', 0.4)  # default v_max_linear 0.4 m/s
     dt = rospy.get_param('/mpc_path_tracer_node/dt', 0.1)       # default dt 0.1 s
     
+    # Set motion interface to cmd_vel for back to home
+    rospy.set_param('/mpc_path_tracer_node/motion_interface', '/cmd_vel')
+    
     rospy.loginfo(f"Back to home: Using world frame: '{world_frame}', robot frame: '{robot_frame}'")
     
     # Create path generator and get current robot pose

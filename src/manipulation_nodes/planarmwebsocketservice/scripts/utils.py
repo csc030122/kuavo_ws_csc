@@ -5,6 +5,7 @@ import json
 import hashlib
 import math
 import numpy as np
+
 def get_wifi_ip():
     try:
         # Get all network interfaces
@@ -21,9 +22,30 @@ def get_wifi_ip():
             if netifaces.AF_INET in addresses:
                 return addresses[netifaces.AF_INET][0]["addr"]
 
-        return "WiFi not connected"
+        return None
     except Exception as e:
-        return f"Error: {e}"
+        return None
+
+
+def get_hotspot_ip():
+    try:
+        # Get all network interfaces
+        interfaces = netifaces.interfaces()
+
+        # Find the hotspot interface (usually starts with 'ap')
+        hotspot_interface = next(
+            (iface for iface in interfaces if iface.startswith("ap")), None
+        )
+
+        if hotspot_interface:
+            # Get the IPv4 address of the hotspot interface
+            addresses = netifaces.ifaddresses(hotspot_interface)
+            if netifaces.AF_INET in addresses:
+                return addresses[netifaces.AF_INET][0]["addr"]
+
+        return None
+    except Exception as e:
+        return None
 
 
 # ... (keep the get_wifi() function as is)
@@ -55,6 +77,24 @@ def get_wifi():
         return f"Error: {e}"
     except Exception as e:
         logger.error(f"Unexpected error getting WiFi SSID: {e}")
+        return f"Error: {e}"
+
+def get_hotspot():
+    try:
+        # 读取环境文件中的ROBOT_SERIAL_NUMBER
+        with open('/etc/environment.d/RRNIS.env', 'r') as file:
+            for line in file:
+                if line.startswith('ROBOT_SERIAL_NUMBER'):
+                    robot_serial_number = line.split('=')[1].strip()
+                    return f"{robot_serial_number}的热点"
+                
+        logger.warning("No hotspot found")
+        return "No hotspot found"
+    except FileNotFoundError as e:
+        logger.warning("No environment file found")
+        return f"Error: {e}"
+    except Exception as e:
+        logger.error(f"Unexpected error getting hotspot: {e}")
         return f"Error: {e}"
 
 INIT_ARM_POS = [20, 0, 0, -30, 0, 0, 0, 20, 0, 0, -30, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -182,7 +222,7 @@ def calculate_file_md5(file_path: str) -> str:
             hash_md5.update(chunk)
     return hash_md5.hexdigest()
 
-def get_mac_address():
+def get_wifi_mac_address():
     try:
         # Get all network interfaces
         interfaces = netifaces.interfaces()
@@ -199,5 +239,25 @@ def get_mac_address():
                 return addresses[netifaces.AF_LINK][0]['addr']
 
         return "WiFi interface not found"
+    except Exception as e:
+        return f"Error: {e}"
+
+def get_hotspot_mac_address():
+    try:
+        # Get all network interfaces
+        interfaces = netifaces.interfaces()
+
+        # Find the Hotspot interface (usually starts with 'ap' or similar)
+        hotspot_interface = next(
+            (iface for iface in interfaces if iface.startswith("ap")), None
+        )
+
+        if hotspot_interface:
+            # Get the MAC address of the Hotspot interface
+            addresses = netifaces.ifaddresses(hotspot_interface)
+            if netifaces.AF_LINK in addresses:
+                return addresses[netifaces.AF_LINK][0]['addr']
+
+        return "Hotspot interface not found"
     except Exception as e:
         return f"Error: {e}"

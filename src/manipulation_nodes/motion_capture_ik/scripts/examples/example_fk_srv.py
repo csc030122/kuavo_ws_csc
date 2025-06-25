@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import rospy
-from motion_capture_ik.srv import fkSrv
+from kuavo_msgs.srv import fkSrv
 
 import numpy as np
 

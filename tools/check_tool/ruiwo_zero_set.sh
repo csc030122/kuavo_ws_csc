@@ -17,10 +17,10 @@ current_script_dir=$(dirname "$(realpath "$0")")
 prefix="${current_script_dir%/tools/check_tool}"
 
 
-kuavo_ros_folder_path="$prefix/src/kuavo-ros-control-lejulib/hardware_node/lib/ruiwo_controller"
+kuavo_ros_folder_path="$prefix/src/kuavo-ros-control-lejulib/hardware_plant/lib/ruiwo_controller"
 kuavo_ros_file_path="$kuavo_ros_folder_path/setZero.sh"
 
-kuavo_open_folder_path="$prefix/installed/share/hardware_node/lib/ruiwo_controller"
+kuavo_open_folder_path="$prefix/installed/share/hardware_plant/lib/ruiwo_controller"
 kuavo_open_file_path="$kuavo_open_folder_path/setZero.sh"
 
 

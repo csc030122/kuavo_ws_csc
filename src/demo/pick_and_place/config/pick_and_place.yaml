@@ -13,17 +13,17 @@ offsets:
   # Offsets for pick operation
   pick:
     # Grasp position
-    grasp_x: 0.0
-    grasp_y: 0.0
-    grasp_z: -0.03        # Distance from object for grasping
+    grasp_x: 0.06
+    grasp_y: 0.06
+    grasp_z: -0.04        # Distance from object for grasping
 
   # Offsets for place operation  
   place:
    
     # Place position
-    place_x: 0.0
-    place_y: 0.0
-    place_z: 0.10        # Distance from placement location
+    place_x: -0.04
+    place_y: -0.03
+    place_z: 0.0        # Distance from placement location
     
 # Orientation for pick and place operations (RPY - Roll, Pitch, Yaw in degrees)
 orientation:

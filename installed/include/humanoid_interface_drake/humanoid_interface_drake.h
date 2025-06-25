@@ -3,13 +3,13 @@
 #include <iostream>
 #include <Eigen/Core>
 #include <Eigen/Dense>
-#include "humanoid_interface_drake/common/json_config_reader.hpp"
+#include "kuavo_common/common/json_config_reader.hpp"
 #include "humanoid_interface_drake/ankle_solver/arm_ankle_solver.h"
 #include "humanoid_interface_drake/ankle_solver/arm_joint_controller.h"
 #include "humanoid_interface_drake/ankle_solver/arm_tendon_controller.h"
-#include "humanoid_interface_drake/common/kuavo_settings.h"
-#include "humanoid_interface_drake/common/common.h"
-#include "humanoid_interface_drake/common/utils.h"
+#include "kuavo_common/common/kuavo_settings.h"
+#include "kuavo_common/common/common.h"
+#include "kuavo_common/common/utils.h"
 #include "humanoid_interface_drake/planner/plantIK.h"
 
 #include "drake/systems/framework/diagram_builder.h"

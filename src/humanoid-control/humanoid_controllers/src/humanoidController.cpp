@@ -31,8 +31,9 @@
 #include <humanoid_wbc/StandUpWbc.h>
 #include <ocs2_core/reference/TargetTrajectories.h>
 #include <humanoid_wbc/HierarchicalWbc.h>
-#include "humanoid_interface_drake/common/utils.h"
-#include "humanoid_interface_drake/common/sensor_data.h"
+#include "kuavo_common/common/sensor_data.h"
+#include "kuavo_common/common/utils.h"
+#include "humanoid_interface_drake/kuavo_data_buffer.h"
 #include "humanoid_interface_drake/humanoid_interface_drake.h"
 
 namespace humanoid_controller
@@ -154,6 +155,10 @@ namespace humanoid_controller
     kuavo_settings_ = drake_interface_->getKuavoSettings();
     scalar_t comHeight = drake_interface_->getIntialHeight();
     ros::param::set("/com_height", comHeight);
+    if (ros::param::has("/timeout_warning_ms"))
+    {
+      ros::param::get("/timeout_warning_ms", timeout_warning_ms_);
+    }
     auto &motor_info = kuavo_settings_.hardware_settings;
     headNum_ = motor_info.num_head_joints;
     armNumReal_ = motor_info.num_arm_joints;
@@ -303,6 +308,7 @@ namespace humanoid_controller
     joint_kd_walking_.resize(actuatedDofNumReal_);
     head_kp_.resize(headNum_);
     head_kd_.resize(headNum_);
+    // quat_offset_ = Eigen::Quaterniond(1, 0, 0, 0);
 
     joint_control_modes_ = Eigen::VectorXd::Constant(actuatedDofNumReal_, 2);
     output_tau_ = vector_t::Zero(actuatedDofNumReal_);
@@ -339,8 +345,10 @@ namespace humanoid_controller
     std::cout << "controller squat_initial_state_:" << squat_initial_state_.transpose() << std::endl;
     std::vector<double> initial_state_vector(initial_state_.data(), initial_state_.data() + initial_state_.size());
     std::vector<double> squat_initial_state_vector(squat_initial_state_.data(), squat_initial_state_.data() + squat_initial_state_.size());
+    std::vector<double> default_joint_pos_vector(defalutJointPos_.data(), defalutJointPos_.data() + defalutJointPos_.size());
     controllerNh_.setParam("/initial_state", initial_state_vector);
     controllerNh_.setParam("/squat_initial_state", squat_initial_state_vector);
+    controllerNh_.setParam("/default_joint_pos", default_joint_pos_vector);
 
     joint_state_limit_.resize(actuatedDofNumReal_, 2);
 
@@ -404,6 +412,7 @@ namespace humanoid_controller
     jointAcc_ = vector_t::Zero(info.actuatedDofNum);
     jointTorque_ = vector_t::Zero(info.actuatedDofNum);
     quat_ = Eigen::Quaternion<scalar_t>(1, 0, 0, 0);
+    quat_init = Eigen::Quaternion<scalar_t>(1, 0, 0, 0);
     arm_joint_pos_cmd_prev_ = vector_t::Zero(armNumReal_);
     arm_joint_pos_filter_.setParams(dt_, Eigen::VectorXd::Constant(armNumReal_, arm_joint_pos_filter_cutoff_freq));
     arm_joint_vel_filter_.setParams(dt_, Eigen::VectorXd::Constant(armNumReal_, arm_joint_vel_filter_cutoff_freq));
@@ -412,8 +421,10 @@ namespace humanoid_controller
     // free_acc_filter_.setParams(dt_, acc_filter_params);
     gyro_filter_.setParams(dt_, gyro_filter_params);
     sensorsDataSub_ = controllerNh_.subscribe<kuavo_msgs::sensorsData>("/sensors_data_raw", 10, &humanoidController::sensorsDataCallback, this);
+    robotLocalizationSub_ = controllerNh_.subscribe<nav_msgs::Odometry>("/odometry/filtered", 10, &humanoidController::robotlocalizationCallback, this);
     mpcStartSub_ = controllerNh_.subscribe<std_msgs::Bool>("/start_mpc", 10, &humanoidController::startMpccallback, this);
     arm_joint_trajectory_.initialize(armNumReal_);
+    mm_arm_joint_trajectory_.initialize(armNumReal_);
     arm_joint_traj_sub_ = controllerNh_.subscribe<sensor_msgs::JointState>("/kuavo_arm_traj", 10, [this](const sensor_msgs::JointState::ConstPtr &msg)
       {
         if(msg->name.size() != armNumReal_){
@@ -431,7 +442,23 @@ namespace humanoid_controller
         }
         // std::cout << "arm joint pos: " << arm_joint_trajectory_.pos.size() << std::endl;
       });
-     
+      mm_arm_joint_traj_sub_ = controllerNh_.subscribe<sensor_msgs::JointState>("/mm_kuavo_arm_traj", 10, [this](const sensor_msgs::JointState::ConstPtr &msg)
+      {
+        if(msg->name.size() != armNumReal_){
+          std::cerr << "The dimensin of arm joint pos is NOT equal to the armNumReal_!!" << msg->name.size() << " vs " << armNumReal_ << "\n";
+          return;
+        }
+        for(int i = 0; i < armNumReal_; i++)
+        {
+          // std::cout << "arm joint pos: " << msg->position[i] << std::endl;
+          mm_arm_joint_trajectory_.pos[i] = msg->position[i] * M_PI / 180.0;
+          if(msg->velocity.size() == armNumReal_)
+            mm_arm_joint_trajectory_.vel[i] = msg->velocity[i] * M_PI / 180.0;
+          if(msg->effort.size() == armNumReal_)
+            mm_arm_joint_trajectory_.tau[i] = msg->effort[i];
+        }
+        // std::cout << "arm joint pos: " << arm_joint_trajectory_.pos.size() << std::endl;
+      });
       // Arm TargetTrajectories
       auto armTargetTrajectoriesCallback = [this](const ocs2_msgs::mpc_target_trajectories::ConstPtr &msg)
       {
@@ -459,6 +486,28 @@ namespace humanoid_controller
               gaitManagerPtr_->add(current_gait_.startTime, current_gait_.name);
             std::cout << "[controller] receive current gait name: " << current_gait_.name << " start time: " << current_gait_.startTime << std::endl; });
       head_sub_ = controllerNh_.subscribe("/robot_head_motion_data", 10, &humanoidController::headCmdCallback, this);
+      // Add new subscriber for Float64MultiArray head control
+      auto headArrayCallback = [this](const std_msgs::Float64MultiArray::ConstPtr& msg) {
+          if (msg->data.size() == 2) {
+              if (msg->data[0] < head_joint_limits_[0].first || msg->data[0] > head_joint_limits_[0].second 
+                  || msg->data[1] < head_joint_limits_[1].first || msg->data[1] > head_joint_limits_[1].second) 
+              {
+                  std::cout << "\033[1;31m[headArrayCallback] Invalid robot head motion data. Head joints must be in the range [" 
+                      << head_joint_limits_[0].first << ", " << head_joint_limits_[0].second << "] and [" 
+                      << head_joint_limits_[1].first << ", " << head_joint_limits_[1].second << "].\033[0m" << std::endl;
+                  return;
+              }
+              head_mtx.lock();
+              desire_head_pos_[0] = msg->data[0];
+              desire_head_pos_[1] = msg->data[1];
+              head_mtx.unlock();
+          }
+          else {
+              ROS_WARN("Invalid robot head motion array data. Expected 2 elements, but received %lu elements.", msg->data.size());
+          }
+      };
+
+      head_array_sub_ = controllerNh_.subscribe<std_msgs::Float64MultiArray>("/robot_head_motion_array", 10, headArrayCallback);
       hand_wrench_sub_ = controllerNh_.subscribe<std_msgs::Float64MultiArray>("/hand_wrench_cmd", 10, [&](const std_msgs::Float64MultiArray::ConstPtr &msg)
         {
           if(msg->data.size() != 12)
@@ -466,9 +515,13 @@ namespace humanoid_controller
           for(int i = 0; i < 12; i++)
             hand_wrench_cmd_(i) = msg->data[i];
         }
-      );
+      ); 
       enableArmCtrlSrv_ = controllerNh_.advertiseService("/enable_wbc_arm_trajectory_control", &humanoidController::enableArmTrajectoryControlCallback, this);
+      enableMmArmCtrlSrv_ = controllerNh_.advertiseService("/enable_mm_wbc_arm_trajectory_control", &humanoidController::enableMmArmTrajectoryControlCallback, this);
+      getMmArmCtrlSrv_ = controllerNh_.advertiseService("/get_mm_wbc_arm_trajectory_control", &humanoidController::getMmArmCtrlCallback, this);
       jointCmdPub_ = controllerNh_.advertise<kuavo_msgs::jointCmd>("/joint_cmd", 10);
+      imuPub_ = controllerNh_.advertise<sensor_msgs::Imu>("/imu_data", 10);
+      kinematicPub_ = controllerNh_.advertise<nav_msgs::Odometry>("/kinematic_data", 10);
       mpcPolicyPublisher_ = controllerNh_.advertise<ocs2_msgs::mpc_flattened_controller>(robotName_ + "_mpc_policy", 1, true);
       feettargetTrajectoriesPublisher_ = controllerNh_.advertise<ocs2_msgs::mpc_target_trajectories>("/humanoid_controller/feet_target_policys", 10, true);
 
@@ -593,6 +646,11 @@ namespace humanoid_controller
     const auto mpcTargetTrajectoriesMsg = ros_msg_conversions::createTargetTrajectoriesMsg(pubFeetTrajectories);
     feettargetTrajectoriesPublisher_.publish(mpcTargetTrajectoriesMsg);
   }
+  void humanoidController::robotlocalizationCallback(const nav_msgs::Odometry::ConstPtr &msg)
+  {
+    nav_msgs::Odometry robot_localization_ = *msg;
+    robotlocalizationDataQueue.push(robot_localization_);
+  }
 
   void humanoidController::sensorsDataCallback(const kuavo_msgs::sensorsData::ConstPtr &msg)
   {
@@ -600,6 +658,7 @@ namespace humanoid_controller
     auto &imu_data = msg->imu_data;
     auto &end_effector_data = msg->end_effector_data; // TODO: add end_effector_data to the observation
     SensorData sensor_data;
+    sensor_msgs::Imu imu_msg;
     sensor_data.resize_joint(jointNumReal_+armNumReal_);
     // JOINT DATA
     for (size_t i = 0; i < jointNumReal_+armNumReal_; ++i)
@@ -654,8 +713,73 @@ namespace humanoid_controller
     if (!is_initialized_)
       is_initialized_ = true;
   }
+  void humanoidController::updatakinematics(const SensorData &sensor_data, bool is_initialized_)
+  {
+    SensorData sensor_data_new = sensor_data;
+    ros::Time current_sensor_data_time = ros::Time::now();
+    if (!is_initialized_)
+    {
+      last_sensor_data_time_ = current_sensor_data_time - ros::Duration(0.002);
+    }
+    double diff_time = (current_sensor_data_time - last_sensor_data_time_).toSec();
+    ros::Duration period = ros::Duration(diff_time);
+    nav_msgs::Odometry kinematics_odom;
+    sensor_msgs::Imu imu_msg;
+    Eigen::Quaterniond imu_quat(sensor_data_new.quat_.coeffs().w(), 
+                                sensor_data_new.quat_.coeffs().x(), 
+                                sensor_data_new.quat_.coeffs().y(), 
+                                sensor_data_new.quat_.coeffs().z());
+    imu_msg.header.stamp = current_sensor_data_time;
+    imu_msg.header.frame_id = "dummy_link";
+    imu_msg.header.seq = seq_;
+    imu_msg.orientation.w = sensor_data_new.quat_.coeffs().w();
+    imu_msg.orientation.x = sensor_data_new.quat_.coeffs().x();
+    imu_msg.orientation.y = sensor_data_new.quat_.coeffs().y();
+    imu_msg.orientation.z = sensor_data_new.quat_.coeffs().z();
+    imu_msg.angular_velocity.x = sensor_data_new.angularVel_(0);
+    imu_msg.angular_velocity.y = sensor_data_new.angularVel_(1);
+    imu_msg.angular_velocity.z = sensor_data_new.angularVel_(2);
+    imu_msg.linear_acceleration.x = sensor_data_new.linearAccel_(0);
+    imu_msg.linear_acceleration.y = sensor_data_new.linearAccel_(1);
+    imu_msg.linear_acceleration.z = sensor_data_new.linearAccel_(2);
+    imu_msg.orientation_covariance = {0.05, 0, 0, 0, 0.05, 0, 0, 0, 0.05};
+    imu_msg.angular_velocity_covariance = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+    imu_msg.linear_acceleration_covariance = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+    kinematics_odom = stateEstimate_->updateKinematics(current_sensor_data_time, imu_quat, period);
+    kinematics_odom.header.seq  = seq_;
+    seq_++;
+    imuPub_.publish(imu_msg);
+    kinematicPub_.publish(kinematics_odom);
+    if(!robotlocalizationDataQueue.empty())
+    {
+      nav_msgs::Odometry robot_localization_ = robotlocalizationDataQueue.front();
+      Eigen::Quaterniond robot_quat(robot_localization_.pose.pose.orientation.w, 
+                                    robot_localization_.pose.pose.orientation.x, 
+                                    robot_localization_.pose.pose.orientation.y, 
+                                    robot_localization_.pose.pose.orientation.z);
+      Eigen::Quaterniond sensor_quat(sensor_data_new.quat_.coeffs().w(), 
+                                    sensor_data_new.quat_.coeffs().x(), 
+                                    sensor_data_new.quat_.coeffs().y(), 
+                                    sensor_data_new.quat_.coeffs().z());
+      Eigen::Vector3d robot_eulerAngles = quatToZyx(robot_quat);
+      Eigen::Vector3d sensor_eulerAngles = quatToZyx(sensor_quat);
+      Eigen::Vector3d updata_eulerAngles;
+      updata_eulerAngles << robot_eulerAngles(0), sensor_eulerAngles(1),sensor_eulerAngles(2);
+      robot_quat_state_update_ = Eigen::AngleAxisd(updata_eulerAngles[0], Eigen::Vector3d::UnitZ())*
+                                 Eigen::AngleAxisd(updata_eulerAngles[1], Eigen::Vector3d::UnitY())*
+                                 Eigen::AngleAxisd(updata_eulerAngles[2], Eigen::Vector3d::UnitX());
+      robotlocalizationDataQueue.pop();
+    }
+    sensor_data_new.quat_.w() = robot_quat_state_update_.w();
+    sensor_data_new.quat_.x() = robot_quat_state_update_.x();
+    sensor_data_new.quat_.y() = robot_quat_state_update_.y();
+    sensor_data_new.quat_.z() = robot_quat_state_update_.z();
+    last_sensor_data_time_ = current_sensor_data_time;
+    ros_logger_->publishVector("/sensor_data_new/rpy/zyx", quatToZyx(sensor_data_new.quat_).transpose());
+    ros_logger_->publishVector("/sensor_data_new/quat/wxyz", quatToZyx(sensor_data_new.quat_).transpose());
+    stateEstimate_->updateImu(sensor_data_new.quat_, sensor_data_new.angularVel_, sensor_data_new.linearAccel_, sensor_data_new.orientationCovariance_, sensor_data_new.angularVelCovariance_, sensor_data_new.linearAccelCovariance_);
+  }
   
-
   bool humanoidController::enableArmTrajectoryControlCallback(kuavo_msgs::changeArmCtrlMode::Request &req, kuavo_msgs::changeArmCtrlMode::Response &res)
   {
       use_ros_arm_joint_trajectory_ = req.control_mode;
@@ -663,6 +787,20 @@ namespace humanoid_controller
       return true;
   }
 
+  bool humanoidController::enableMmArmTrajectoryControlCallback(kuavo_msgs::changeArmCtrlMode::Request &req, kuavo_msgs::changeArmCtrlMode::Response &res)
+  {
+      use_mm_arm_joint_trajectory_ = req.control_mode;
+      res.result = true;
+      return true;
+  }
+
+  bool humanoidController::getMmArmCtrlCallback(kuavo_msgs::changeArmCtrlMode::Request &req, kuavo_msgs::changeArmCtrlMode::Response &res)
+  {
+    res.result = true;
+    res.mode = static_cast<int>(use_mm_arm_joint_trajectory_);
+    res.message = "Successfully get mm arm ctrl mode to " + std::to_string(static_cast<int>(use_mm_arm_joint_trajectory_));
+    return true;
+  }
   void humanoidController::starting(const ros::Time &time)
   {
     // Initial state
@@ -693,7 +831,6 @@ namespace humanoid_controller
     {
       hardware_status_ = 1;
     }
-
     // applySensorsData(sensors_data_buffer_ptr_->getLastData());
     currentObservationWBC_.state.setZero(centroidalModelInfoWBC_.stateDim);
     currentObservationWBC_.input.setZero(centroidalModelInfoWBC_.inputDim);
@@ -1215,7 +1352,22 @@ namespace humanoid_controller
       }
       // std::cout << "target_arm_joint_pos[0]: " << arm_joint_trajectory_.pos[0] << std::endl;
     }
-
+    if(use_mm_arm_joint_trajectory_)
+    {
+      // TODO: feedback in planner
+      // auto arm_pos = currentObservation_.state.tail(armNum_); 
+      // optimizedInput2WBC_mrt_.tail(armNum_) = 0.05 * (arm_joint_trajectory_.pos - arm_pos)/dt_;
+      // optimizedState2WBC_mrt_.tail(armNum_) = arm_pos + optimizedInput2WBC_mrt_.tail(armNum_) * dt_;
+      if (only_half_up_body_) 
+      {
+          optimizedState2WBC_mrt_.segment<7>(24) = mm_arm_joint_trajectory_.pos.segment<7>(0);
+          optimizedState2WBC_mrt_.segment<7>(24+7) = mm_arm_joint_trajectory_.pos.segment<7>(7);
+      }
+      else {
+          // 位置、速度
+          optimizedState2WBC_mrt_.tail(armNumReal_) = mm_arm_joint_trajectory_.pos;
+      }
+    }
     // // use filter output
     optimizedState2WBC_mrt_.tail(armNumReal_) = arm_joint_pos_filter_.update(optimizedState2WBC_mrt_.tail(armNumReal_));
     optimizedInput2WBC_mrt_.tail(armNumReal_) = arm_joint_vel_filter_.update(optimizedInput2WBC_mrt_.tail(armNumReal_));
@@ -1547,16 +1699,7 @@ namespace humanoid_controller
       robotVisualizer_->updateHandJointPositions(dexhand_joint_pos_);
     }
 
-    //Publish the observation. Only needed for the command interface
-    const auto t6 = Clock::now();
-    if (std::chrono::duration_cast<std::chrono::milliseconds>(t6 - t1).count() > 1000)
-    {
-      std::cout << "t1-t2: " << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << " ms" << std::endl;
-      std::cout << "t2-t3: " << std::chrono::duration_cast<std::chrono::milliseconds>(t3 - t2).count() << " ms" << std::endl;
-      std::cout << "t3-t4: " << std::chrono::duration_cast<std::chrono::milliseconds>(t4 - t3).count() << " ms" << std::endl;
-      std::cout << "t4-t5: " << std::chrono::duration_cast<std::chrono::milliseconds>(t5 - t4).count() << " ms" << std::endl;
-      std::cout << "t5-t6: " << std::chrono::duration_cast<std::chrono::milliseconds>(t6 - t5).count() << " ms" << std::endl;
-    }
+   
 
     // publish time cost
     std_msgs::Float64 msg;
@@ -1569,6 +1712,19 @@ namespace humanoid_controller
     ros_logger_->publishValue("/monitor/time_cost/controller_loop_time", (ros::Time::now().toSec() - last_ros_time) * 1000);
     last_ros_time = ros::Time::now().toSec();
     lastObservation_ = currentObservation_;
+
+     //Publish the observation. Only needed for the command interface
+    const auto t6 = Clock::now();
+    auto time_cost = std::chrono::duration_cast<std::chrono::milliseconds>(t6 - t1).count();
+    if (time_cost > timeout_warning_ms_)
+    {
+      std::cerr << "humanoidController::controllerLoop time cost: "<< time_cost << " ms" << std::endl;
+      std::cerr << "t1-t2: " << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << " ms" << std::endl;
+      std::cerr << "t2-t3: " << std::chrono::duration_cast<std::chrono::milliseconds>(t3 - t2).count() << " ms" << std::endl;
+      std::cerr << "t3-t4: " << std::chrono::duration_cast<std::chrono::milliseconds>(t4 - t3).count() << " ms" << std::endl;
+      std::cerr << "t4-t5: " << std::chrono::duration_cast<std::chrono::milliseconds>(t5 - t4).count() << " ms" << std::endl;
+      std::cerr << "t5-t6: " << std::chrono::duration_cast<std::chrono::milliseconds>(t6 - t5).count() << " ms" << std::endl;
+    }
   }
 
   void humanoidController::applySensorData()
@@ -1621,7 +1777,8 @@ namespace humanoid_controller
     jointAccWBC_ = data.jointAcc_;
     jointCurrentWBC_ = data.jointTorque_;
 
-    quat_ = data.quat_;
+    quat_ = quat_init.inverse() * data.quat_;
+    
     angularVel_ = data.angularVel_;
     linearAccel_ = data.linearAccel_;
     orientationCovariance_ = data.orientationCovariance_;
@@ -1659,7 +1816,7 @@ namespace humanoid_controller
     {
       last_time_ = current_time_ - ros::Duration(0.001);
       stateEstimate_->updateJointStates(jointPos_, jointVel_);
-      stateEstimate_->updateIntialEulerAngles(quat_);
+      quat_init = stateEstimate_->updateIntialEulerAngles(quat_);
       applySensorData(sensors_data);
       stateEstimate_->set_intial_state(currentObservation_.state);
       measuredRbdState_ = stateEstimate_->getRbdState();
@@ -1679,6 +1836,7 @@ namespace humanoid_controller
     // std::cout << "mode: " << modeNumber2String(est_mode) << std::endl;
     last_time_ = current_time_;
     ros::Duration period = ros::Duration(diff_time);
+    // std::cout << "diff_time: " << period.toSec() << std::endl;
     // std::cout << "diff_time: " << diff_time << std::endl;
 
     vector_t activeTorque_ = jointTorque_;
@@ -1710,6 +1868,8 @@ namespace humanoid_controller
       }
 #endif
       stateEstimate_->updateJointStates(updated_joint_pos, updated_joint_vel); // 使用关节滤波之后的jointPos和jointVel更新状态估计器
+      // stateEstimate_->updateKinematics(period);
+      updatakinematics(sensors_data, is_initialized_);
       measuredRbdState_ = stateEstimate_->update(time, period);                // angle(zyx),pos(xyz),jointPos[info_.actuatedDofNum],angularVel(zyx),linervel(xyz),jointVel[info_.actuatedDofNum]
       currentObservation_.time += period.toSec();
     }

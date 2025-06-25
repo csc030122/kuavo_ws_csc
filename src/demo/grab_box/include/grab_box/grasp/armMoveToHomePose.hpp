@@ -8,9 +8,9 @@
 #include <sensor_msgs/JointState.h>
 #include <visualization_msgs/Marker.h>
 #include <ocs2_robotic_tools/common/RotationTransforms.h>
-#include "motion_capture_ik/changeArmCtrlMode.h"
-#include "motion_capture_ik/twoArmHandPoseCmdSrv.h"
-#include "motion_capture_ik/ikSolveParam.h"
+#include "kuavo_msgs/changeArmCtrlMode.h"
+#include "kuavo_msgs/twoArmHandPoseCmdSrv.h"
+#include "kuavo_msgs/ikSolveParam.h"
 #include "kuavo_msgs/headBodyPose.h"
 #include "kuavo_msgs/changeArmCtrlMode.h"
 #include "grab_box/common/ocs2_ros_interface.hpp"

@@ -39,6 +39,10 @@ class RobotStateMachine(object):
                     dest=dest,
                     before=callback,
                 )
+    
+    def update_customize_config(self):
+        if robot_type == "ocs2":
+            before_callback.update_h12_customize_config()
 
 
 robot_state_machine = RobotStateMachine(

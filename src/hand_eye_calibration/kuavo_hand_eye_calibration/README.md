@@ -58,7 +58,7 @@ roslaunch realsense2_camera rs_camera.launch camera:=left_wrist_camera
 3. 启动标定节点
 
 ```bash
-export DISPLAY=:1.0 # 在机器人实物需要设置 DISPLAY
+export DISPLAY=:1.0 # 机器人实物接屏幕需要设置 DISPLAY=:0.0
 source <kuavo-ros-control>/devel/setup.bash
 roslaunch kuavo_hand_eye_calibration kuavo_hand_eye_calibration.launch handeye_cali_eye_on_hand:=false namespace_prefix:=head
 
@@ -105,7 +105,7 @@ source <kuavo-ros-control>/devel/setup.bash
 roslaunch kuavo_hand_eye_calibration kuavo_hand_eye_evaluate.launch namespace_prefix:=head handeye_cali_eye_on_hand:=false
 
 # 如果标定眼在右手腕
-roslaunch **kuavo_hand_eye_calibration** kuavo_hand_eye_evaluate.launch namespace_prefix:=right_wrist handeye_cali_eye_on_hand:=true
+roslaunch kuavo_hand_eye_calibration kuavo_hand_eye_evaluate.launch namespace_prefix:=right_wrist handeye_cali_eye_on_hand:=true
 
 # 如果标定眼在左手腕
 roslaunch kuavo_hand_eye_calibration kuavo_hand_eye_evaluate.launch namespace_prefix:=left_wrist handeye_cali_eye_on_hand:=true

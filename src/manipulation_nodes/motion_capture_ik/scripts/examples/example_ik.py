@@ -4,8 +4,8 @@
 import rospy
 import numpy as np
 import time
-from motion_capture_ik.msg import twoArmHandPoseCmd, ikSolveParam
-from motion_capture_ik.msg import twoArmHandPose
+from kuavo_msgs.msg import twoArmHandPoseCmd, ikSolveParam
+from kuavo_msgs.msg import twoArmHandPose
 
 # decide use custom ik param or not
 use_custom_ik_param = True

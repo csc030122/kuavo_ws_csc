@@ -29,7 +29,7 @@ AXIS_FORWARD_BACK_TRIGGER = 7
 
 class SimulatedJoystick:
     def __init__(self):
-        rospy.init_node('simulated_joystick')
+        rospy.init_node('joystickSimulator')
         rospy.Subscriber("/stop_robot", Bool, self.stop_robot_callback)
 
         self.joy_pub = rospy.Publisher('/joy', Joy, queue_size=10)

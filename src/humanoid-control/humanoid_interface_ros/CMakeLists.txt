@@ -23,16 +23,22 @@ set(CATKIN_PACKAGE_DEPENDENCIES
   ocs2_robotic_tools
   ocs2_pinocchio_interface
   ocs2_centroidal_model
-  # ocs2_robotic_assets
   ocs2_msgs
+  kuavo_common
   kuavo_msgs
   humanoid_interface
   ocs2_ros_interfaces
   humanoid_interface_drake
+  roscpp
+  rospy
+  std_msgs
+  std_srvs
+  sensor_msgs
 )
 
 find_package(catkin REQUIRED COMPONENTS
   ${CATKIN_PACKAGE_DEPENDENCIES}
+  message_generation
 )
 
 find_package(Boost REQUIRED COMPONENTS
@@ -59,6 +65,7 @@ catkin_package(
     ${PROJECT_NAME}
   CATKIN_DEPENDS
     ${CATKIN_PACKAGE_DEPENDENCIES}
+    message_runtime
   DEPENDS
     Boost
     pinocchio
@@ -86,6 +93,7 @@ add_library(${PROJECT_NAME}
   src/gait/GaitReceiver.cpp
   src/visualization/HumanoidVisualizer.cpp
   src/gait/GaitSwitchByNamePublisher.cpp
+  src/visualization/HumanoidRbdPublisher.cpp
 )
 add_dependencies(${PROJECT_NAME}
   ${${PROJECT_NAME}_EXPORTED_TARGETS}
@@ -440,3 +448,14 @@ install(DIRECTORY scripts
 #############
 ## Testing ##
 #############
+
+# 删除服务消息生成配置
+# add_service_files(
+#   FILES
+#   SetJoyTopic.srv
+# )
+# 
+# generate_messages(
+#   DEPENDENCIES
+#   std_msgs
+# )

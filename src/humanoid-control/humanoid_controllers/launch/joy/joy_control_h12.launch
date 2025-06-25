@@ -1,6 +1,8 @@
 <?xml version="1.0" ?>
 <launch>
     <arg name="start_way" default="auto"/>
+    <param name="channel_map_path" value="$(find humanoid_controllers)/launch/joy/h12pro.json"/>
+
     <group if="$(eval arg('start_way') == 'manual')">
         <include file="$(find h12pro_controller_node)/launch/h12pro_to_joystick.launch"/>
     </group>

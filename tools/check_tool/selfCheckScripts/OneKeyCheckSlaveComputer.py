@@ -70,10 +70,11 @@ def ssh_send_command(host, port, username, password, command):
         # 打印输出信息
         output = stdout.read().decode()
         error = stderr.read().decode()
-        if output:
-            print("命令输出:", output)
+        # if output:
+        #     print("命令输出:", output)
         # if error:
         #     print("命令错误:", error)
+        #     print("命令输出:", output)
         # 关闭连接
         ssh.close()
     except Exception as e:

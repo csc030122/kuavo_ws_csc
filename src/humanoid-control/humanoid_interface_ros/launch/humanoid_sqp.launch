@@ -16,7 +16,6 @@
       <arg name="rviz" value="$(arg rviz)"/>
     </include>
 
-
     <!-- multiplot -->
     <group if="$(arg multiplot)">
       <include file="$(find humanoid_interface_ros)/launch/multiplot.launch"/>
@@ -24,6 +23,7 @@
 
     <!-- make the files into global parameters -->
     <param name="multiplot"         value="$(arg multiplot)"/>
+    <param name="armRealDof"         value="14"/>
     
     <node pkg="humanoid_interface_ros" type="humanoid_sqp_mpc" name="humanoid_sqp_mpc" output="screen" launch-prefix=""/>
 
@@ -38,6 +38,7 @@
     
     <node pkg="humanoid_interface_ros" type="humanoid_hand_control" name="humanoid_hand_control" output="screen" launch-prefix=""/>
     <node pkg="humanoid_interface_ros" type="humanoid_VR_hand_control" name="humanoid_VR_hand_control" output="screen" launch-prefix=""/>
+    <node pkg="humanoid_interface_ros" type="humanoid_Arm_time_target_control" name="humanoid_Arm_time_target_control" output="screen"/>
 
     <group if="$(arg use_joystick)">
       <group if="$(eval arg('joystick_type') == 'h12')">

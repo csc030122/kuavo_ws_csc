@@ -8,10 +8,10 @@
 #include <eigen3/Eigen/Dense>
 #include "kuavo_estimation/base_filter/InEKF.h"
 #include "humanoid_interface/common/TopicLogger.h"
-#include "humanoid_interface_drake/common/kuavo_settings.h"
+#include "kuavo_common/common/kuavo_settings.h"
 #include "humanoid_interface_drake/humanoid_interface_drake.h"
 #include "humanoid_estimation/StateEstimateBase.h"
-#include "humanoid_interface_drake/common/json_config_reader.hpp"
+#include "kuavo_common/common/json_config_reader.hpp"
 #define END_FRAMES_TORSO 0
 #define END_FRAMES_L_FOOT_SOLE 1
 #define END_FRAMES_R_FOOT_SOLE 2

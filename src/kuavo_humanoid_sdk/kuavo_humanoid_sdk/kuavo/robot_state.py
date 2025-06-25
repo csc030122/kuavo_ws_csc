@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 # coding: utf-8
 import time
+import copy
 from typing import Tuple
 from kuavo_humanoid_sdk.interfaces.data_types import (
-    KuavoImuData, KuavoJointData, KuavoOdometry, KuavoArmCtrlMode,EndEffectorState)
+    KuavoImuData, KuavoJointData, KuavoOdometry, KuavoArmCtrlMode,EndEffectorState, 
+    KuavoManipulationMpcControlFlow, KuavoManipulationMpcCtrlMode, KuavoManipulationMpcFrame)
 from kuavo_humanoid_sdk.kuavo.core.ros.state import KuavoRobotStateCore
 
 class KuavoRobotState:
@@ -12,115 +14,113 @@ class KuavoRobotState:
 
     @property
     def imu_data(self) -> KuavoImuData:
-        """Get Robot IMU Data.
+        """获取 Kuavo 机器人IMU数据。
 
-        Gets the current IMU sensor data from the robot, including gyroscope, accelerometer,
-        free acceleration and orientation quaternion measurements.
+        获取机器人当前的 IMU 传感器数据，包括陀螺仪、加速度计、自由加速度和方向四元数测量值。
 
         Returns:
-            :class:`KuavoImuData`: IMU data containing:
-                * gyro (:obj:`tuple` of :obj:`float`): Gyroscope measurements (x, y, z) in rad/s
-                * acc (:obj:`tuple` of :obj:`float`): Accelerometer measurements (x, y, z) in m/s^2
-                * free_acc (:obj:`tuple` of :obj:`float`): Free acceleration (x, y, z) in m/s^2
-                * quat (:obj:`tuple` of :obj:`float`): Orientation quaternion (x, y, z, w)
+            :class:`KuavoImuData`: IMU数据包含:
+                * gyro (:obj:`tuple` of :obj:`float`): 陀螺仪测量值 (x, y, z)，单位rad/s
+                * acc (:obj:`tuple` of :obj:`float`): 加速度计测量值 (x, y, z)，单位m/s^2
+                * free_acc (:obj:`tuple` of :obj:`float`): 自由加速度 (x, y, z)，单位m/s^2
+                * quat (:obj:`tuple` of :obj:`float`): 方向四元数 (x, y, z, w)
         """
         return self._rs_core.imu_data
     
     @property
     def joint_state(self) -> KuavoJointData:
-        """Get Robot Joint Data.
+        """获取 Kuavo 机器人关节数据。
 
-        Get Robot Joint Data, including joint positions, velocities, torques and accelerations.
+        获取机器人关节数据，包括关节位置、速度、扭矩和加速度。
 
-        The data includes:
-            - Joint positions (angles) in radians
-            - Joint velocities in radians/second 
-            - Joint torques/efforts in Newton-meters, A
-            - Joint acceleration
+        数据包括:
+            - 关节位置(角度)，单位为弧度
+            - 关节速度，单位为弧度/秒
+            - 关节扭矩/力矩，单位为牛顿米、安培
+            - 关节加速度
 
         Returns:
-            KuavoJointData: A dictionary containing joint state data with the following keys:
-                position (list[float]): Joint positions, length = joint_dof(28)
-                velocity (list[float]): Joint velocities, length = joint_dof(28)  
-                torque (list[float]): Joint torques, length = joint_dof(28)
-                acceleration (list[float]): Joint accelerations, length = joint_dof(28)
+            KuavoJointData: 包含以下关节状态数据的字典:
+                * position (list[float]): 关节位置，长度 = joint_dof(28)
+                * velocity (list[float]): 关节速度，长度 = joint_dof(28)
+                * torque (list[float]): 关节扭矩，长度 = joint_dof(28)
+                * acceleration (list[float]): 关节加速度，长度 = joint_dof(28)
         """
         return self._rs_core.joint_data
     
     @property
     def com_height(self)->float:
-        """Get the height of the robot's center of mass.
+        """获取机器人质心高度。
 
         Returns:
-            float: The height of the robot's center of mass in meters.
+            float: 机器人质心高度，单位为米。
         """
         return self._rs_core.com_height
     
     @property
     def odometry(self) -> KuavoOdometry:
-        """Get Robot Odometry Data.
+        """获取 Kuavo 机器人里程计数据。
 
-        Gets the current odometry data from the robot, including position, orientation,
-        linear velocity and angular velocity measurements.
+        获取机器人当前的里程计数据，包括位置、方向、线速度和角速度测量值。
 
         Returns:
-            KuavoOdometry: A dictionary containing odometry data with the following keys:
-                position (tuple): Position (x, y, z) in meters
-                orientation (tuple): Orientation as quaternion (x, y, z, w)
-                linear (tuple): Linear velocity (x, y, z) in m/s
-                angular (tuple): Angular velocity (x, y, z) in rad/s
+            KuavoOdometry: 包含以下里程计数据的字典:
+                * position (tuple): 位置 (x, y, z)，单位为米
+                * orientation (tuple): 方向四元数 (x, y, z, w)
+                * linear (tuple): 线速度 (x, y, z)，单位为m/s
+                * angular (tuple): 角速度 (x, y, z)，单位为rad/s
         """
         return self._rs_core.odom_data   
 
     
     def robot_position(self) -> Tuple[float, float, float]:
-        """Returns the robot's position in world coordinates.
+        """返回 Kuavo 机器人在世界坐标系中的位置。
 
         Returns:
-            Tuple[float, float, float]: Position (x, y, z) in meters.
+            Tuple[float, float, float]: 位置 (x, y, z)，单位为米。
         """
-        return self._rs_core.odom_data.position
+        return tuple(self._rs_core.odom_data.position)
 
     def robot_orientation(self) -> Tuple[float, float, float, float]:
-        """Returns the robot's orientation in world coordinates.
+        """返回 Kuavo 机器人在世界坐标系中的方向。
 
         Returns:
-            Tuple[float, float, float, float]: Orientation as quaternion (x, y, z, w).
+            Tuple[float, float, float, float]: 方向四元数 (x, y, z, w)。
         """
-        return self._rs_core.odom_data.orientation
+        return tuple(self._rs_core.odom_data.orientation)
 
     def linear_velocity(self) -> Tuple[float, float, float]:
-        """Returns the robot's linear velocity in world coordinates.
+        """返回 Kuavo 机器人在世界坐标系中的线速度。
 
         Returns:
-            Tuple[float, float, float]: Linear velocity (x, y, z) in m/s.
+            Tuple[float, float, float]: 线速度 (x, y, z)，单位为m/s。
         """
-        return self._rs_core.odom_data.linear
+        return tuple(self._rs_core.odom_data.linear)
     
 
     def angular_velocity(self) -> Tuple[float, float, float]:
-        """Returns the robot's angular velocity in world coordinates.
+        """返回 Kuavo 机器人在世界坐标系中的角速度。
 
         Returns:
-            Tuple[float, float, float]: Angular velocity (x, y, z).
+            Tuple[float, float, float]: 角速度 (x, y, z)。
         """
-        return self._rs_core.odom_data.angular
+        return tuple(self._rs_core.odom_data.angular)
 
     def arm_joint_state(self) -> KuavoJointData:
-        """Get the current state of the robot arm joints.
+        """获取 Kuavo 机器人手臂关节的当前状态。
 
-        Get the current state of the robot arm joints, including:
-            - Joint positions (angles) in radians
-            - Joint velocities in radians/second 
-            - Joint torques/efforts in Newton-meters, A
-            - Joint acceleration
+        获取 Kuavo 机器人手臂关节的当前状态，包括:
+            - 关节位置(角度)，单位为弧度
+            - 关节速度，单位为弧度/秒
+            - 关节扭矩/力矩，单位为牛顿米、安培
+            - 关节加速度
 
         Returns:
-            KuavoJointData: Arm joint data containing:
-                position: list[float] * arm_dof(14)
-                velocity: list[float] * arm_dof(14)
-                torque: list[float]   * arm_dof(14)
-                acceleration: list[float] * arm_dof(14)
+            KuavoJointData: 手臂关节数据包含:
+                * position: list[float] * arm_dof(14)
+                * velocity: list[float] * arm_dof(14)
+                * torque: list[float] * arm_dof(14)
+                * acceleration: list[float] * arm_dof(14)
         """
         # Get arm joint states from index 12 to 25 (14 arm joints)
         arm_joint_indices = range(12, 12+14)
@@ -132,31 +132,54 @@ class KuavoRobotState:
         )
 
     def arm_control_mode(self) -> KuavoArmCtrlMode:
-        """Get the current control mode of the robot arm.
+        """获取 Kuavo 机器人手臂的当前控制模式。
 
         Returns:
-            KuavoArmCtrlMode: Current arm control mode:
-                ArmFixed: 0 - The robot arm is in a fixed position.
-                AutoSwing: 1 - The robot arm is in automatic swing mode.
-                ExternalControl: 2 - The robot arm is controlled externally.
-                or None.
+            KuavoArmCtrlMode: 当前手臂控制模式:
+                * ArmFixed: 0 - 机器人手臂处于固定位置。
+                * AutoSwing: 1 - 机器人手臂处于自动摆动模式。
+                * ExternalControl: 2 - 机器人手臂由外部控制。
+                * None - 机器人手臂处于未知状态。
         """
-        return self._rs_core.arm_control_mode
+        return KuavoArmCtrlMode(self._rs_core.arm_control_mode)
+    
+    def manipulation_mpc_ctrl_mode(self) -> KuavoManipulationMpcCtrlMode:
+        """获取 Kuavo 机器人 Manipulation MPC 的当前控制模式。    
+
+        Returns:
+            KuavoManipulationMpcCtrlMode: 当前 Manipulation MPC 控制模式。
+        """
+        return self._rs_core.manipulation_mpc_ctrl_mode
+    
+    def manipulation_mpc_control_flow(self) -> KuavoManipulationMpcControlFlow:
+        """获取 Kuavo 机器人 Manipulation MPC 的当前控制流。
+
+        Returns:
+            KuavoManipulationMpcControlFlow: 当前 Manipulation MPC 控制流。
+        """
+        return self._rs_core.manipulation_mpc_control_flow
+    
+    def manipulation_mpc_frame(self) -> KuavoManipulationMpcFrame:
+        """获取机器人操作MPC的当前帧。
+
+        Returns:
+            KuavoManipulationMpcFrame: 末端执行器 Manipulation MPC 坐标系
+        """
+        return self._rs_core.manipulation_mpc_frame
     
     def head_joint_state(self) -> KuavoJointData:
-        """Get the current state of the robot head joints.
+        """获取机器人头部关节的当前状态。
 
-        Gets the current state data for the robot's head joints, including position,
-        velocity, torque and acceleration values.
+        获取机器人头部关节的当前状态数据，包括位置、速度、扭矩和加速度值。
 
         Returns:
-            KuavoJointData: A data structure containing the head joint states:
-                position (list[float]): Joint positions in radians, length=head_dof(2)
-                velocity (list[float]): Joint velocities in rad/s, length=head_dof(2) 
-                torque (list[float]): Joint torques in Nm, length=head_dof(2)
-                acceleration (list[float]): Joint accelerations in rad/s^2, length=head_dof(2)
+            KuavoJointData: 包含头部关节状态的数据结构:
+                * position (list[float]): 关节位置，单位为弧度，长度=head_dof(2)
+                * velocity (list[float]): 关节速度，单位为rad/s，长度=head_dof(2)
+                * torque (list[float]): 关节扭矩，单位为Nm，长度=head_dof(2)
+                * acceleration (list[float]): 关节加速度，单位为rad/s^2，长度=head_dof(2)
                 
-            The joint order is [yaw, pitch].
+            关节顺序为 [偏航角, 俯仰角]。
         """
         # Get head joint states from last 2 indices
         head_joint_indices = range(len(self._rs_core.joint_data.position)-2, len(self._rs_core.joint_data.position))
@@ -168,58 +191,58 @@ class KuavoRobotState:
         )
     
     def eef_state(self)->Tuple[EndEffectorState, EndEffectorState]:
-        """Get the current state of the robot's end effectors.
+        """获取机器人末端执行器的当前状态。
 
         Returns:
-            Tuple[EndEffectorState, EndEffectorState]: A tuple containing the state of the left and right end effectors.
-                Each EndEffectorState contains:
-                    - position: (float, float, float) - XYZ position in meters
-                    - orientation: (float, float, float, float) - Quaternion orientation
-                    - state: EndEffectorState.GraspingState - Current grasping state (UNKNOWN, OPEN, CLOSED)
+            Tuple[EndEffectorState, EndEffectorState]: 包含左右末端执行器状态的元组。
+                每个EndEffectorState包含:
+                    - position: (float, float, float) ，XYZ位置，单位为米
+                    - orientation: (float, float, float, float) ，四元数方向
+                    - state: EndEffectorState.GraspingState ，当前抓取状态 (UNKNOWN, OPEN, CLOSED)
         """
-        return self._rs_core.eef_state
+        return copy.deepcopy(self._rs_core.eef_state)
 
     def gait_name(self)->str:
-        """Get the current gait name of the robot.
+        """获取机器人的当前步态名称。
 
         Returns:
-            str: The name of the current gait, e.g. 'trot', 'walk', 'stance', 'custom_gait'.
+            str: 当前步态的名称，例如 'trot'、'walk'、'stance'、'custom_gait'。
         """
         return self._rs_core.gait_name()
     
 
     def is_stance(self) -> bool:
-        """Check if the robot is currently in stance mode.
+        """检查机器人当前是否处于站立模式。
 
         Returns:
-            bool: True if robot is in stance mode, False otherwise.
+            bool: 如果机器人处于站立模式返回True，否则返回False。
         """
         return self._rs_core.is_gait('stance')
 
     def is_walk(self) -> bool:
-        """Check if the robot is currently in walk mode.
+        """检查机器人当前是否处于行走模式。
 
         Returns:
-            bool: True if robot is in walk mode, False otherwise.
+            bool: 如果机器人处于行走模式返回True，否则返回False。
         """
         return self._rs_core.is_gait('walk')
 
     def is_step_control(self) -> bool:
-        """Check if the robot is currently in step control mode.
+        """检查机器人当前是否处于单步控制模式。
 
         Returns:
-            bool: True if robot is in step control mode, False otherwise.
+            bool: 如果机器人处于单步控制模式返回True，否则返回False。
         """
         return self._rs_core.is_gait('custom_gait')
 
     def wait_for_stance(self, timeout:float=5.0)->bool:
-        """Wait for the robot to enter stance state.
+        """等待机器人进入站立模式。
 
         Args:
-            timeout (float): The maximum time to wait for the robot to enter stance state in seconds.
+            timeout (float): 等待机器人进入站立状态的最长时间，单位为秒。
 
         Returns:
-            bool: True if the robot enters stance state within the specified timeout, False otherwise.
+            bool: 如果机器人在指定超时时间内进入站立状态返回True，否则返回False。
         """
         wait_time = 0
         while not self._rs_core.is_gait('stance') and wait_time < timeout:
@@ -228,24 +251,24 @@ class KuavoRobotState:
         return self._rs_core.is_gait('stance')
     
     def wait_for_trot(self, timeout:float=5.0)->bool:
-        """Wait for the robot to enter trot state.
+        """等待机器人进入踏步状态。
 
         Args:
-            timeout (float): The maximum time to wait for the robot to enter trot state in seconds.
+            timeout (float): 等待机器人进入踏步状态的最长时间，单位为秒。
 
         Returns:
-            bool: True if the robot enters trot state within the specified timeout, False otherwise.
+            bool: 如果机器人在指定超时时间内进入踏步状态返回True，否则返回False。
         """
         return self.wait_for_walk(timeout=timeout)
 
     def wait_for_walk(self, timeout:float=5.0)->bool:
-        """Wait for the robot to enter walk state.
+        """等待机器人进入行走模式。
 
         Args:
-            timeout (float): The maximum time to wait for the robot to enter walk state in seconds.
+            timeout (float): 等待机器人进入行走状态的最长时间，单位为秒。
 
         Returns:
-            bool: True if the robot enters walk state within the specified timeout, False otherwise.
+            bool: 如果机器人在指定超时时间内进入行走状态返回True，否则返回False。
         """
         wait_time = 0
         while not self._rs_core.is_gait('walk') and wait_time < timeout:
@@ -254,16 +277,23 @@ class KuavoRobotState:
         return self._rs_core.is_gait('walk')
 
     def wait_for_step_control(self, timeout:float=5.0)->bool:
-        """Wait for the robot to enter step control state.
+        """等待机器人进入单步控制模式。
 
         Args:
-            timeout (float): The maximum time to wait for the robot to enter step control state in seconds.
+            timeout (float): 等待机器人进入单步控制模式的最长时间，单位为秒。
 
         Returns:
-            bool: True if the robot enters step control state within the specified timeout, False otherwise.
+            bool: 如果机器人在指定超时时间内进入单步控制模式返回True，否则返回False。
         """
         wait_time = 0
         while not self._rs_core.is_gait('custom_gait') and wait_time < timeout:
             time.sleep(0.1)
             wait_time += 0.1
         return self._rs_core.is_gait('custom_gait')
+    
+# if __name__ == "__main__":
+#     state = KuavoRobotState()
+#     print(state.manipulation_mpc_frame())
+#     print(state.manipulation_mpc_control_flow())
+#     print(state.manipulation_mpc_ctrl_mode())
+#     print(state.arm_control_mode())

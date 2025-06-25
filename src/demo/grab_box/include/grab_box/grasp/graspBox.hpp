@@ -9,10 +9,10 @@
 #include <visualization_msgs/Marker.h>
 #include <visualization_msgs/MarkerArray.h>
 #include <ocs2_robotic_tools/common/RotationTransforms.h>
-#include "motion_capture_ik/changeArmCtrlMode.h"
-#include "motion_capture_ik/twoArmHandPoseCmdSrv.h"
-#include "motion_capture_ik/ikSolveParam.h"
-#include "motion_capture_ik/fkSrv.h"
+#include "kuavo_msgs/changeArmCtrlMode.h"
+#include "kuavo_msgs/twoArmHandPoseCmdSrv.h"
+#include "kuavo_msgs/ikSolveParam.h"
+#include "kuavo_msgs/fkSrv.h"
 #include "kuavo_msgs/headBodyPose.h"
 #include "kuavo_msgs/changeArmCtrlMode.h"
 #include "grab_box/common/ocs2_ros_interface.hpp"
@@ -63,10 +63,10 @@ namespace GrabBox
       planed_traj_pub_ = nh.advertise<visualization_msgs::MarkerArray>("/grasp_box/planed_two_hand_trajectory", 10);
       solved_traj_pub_ = nh.advertise<visualization_msgs::MarkerArray>("/grasp_box/solved_two_hand_trajectory", 10);
       eef_wrench_pub_ = nh.advertise<std_msgs::Float64MultiArray>("/hand_wrench_cmd", 10);
-      ik_cmd_pub_ = nh.advertise<motion_capture_ik::twoArmHandPoseCmd>("ik/two_arm_hand_pose_cmd", 10);
+      ik_cmd_pub_ = nh.advertise<kuavo_msgs::twoArmHandPoseCmd>("mm/two_arm_hand_pose_cmd", 10);
       base_pose_cmd_pub_ = nh.advertise<std_msgs::Float64MultiArray>("/base_pose_cmd", 10);
 
-      fk_srv_ = nh.serviceClient<motion_capture_ik::fkSrv>("/ik/fk_srv");
+      fk_srv_ = nh.serviceClient<kuavo_msgs::fkSrv>("/ik/fk_srv");
       while(!nh.hasParam("/com_height"))
       {
         ROS_ERROR_STREAM("com_height parameter is NOT found, waiting for 0.1s.");
@@ -302,7 +302,7 @@ namespace GrabBox
 
       if(current_time_ <= 2*dt_){
         std::cout << "send!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
-      if(!changeKinematicMpcControlMode(1))//Arm only control mode
+      if(!changeKinematicMpcControlMode(3))//Base and Arm control mode
         return BT::NodeStatus::FAILURE;
     }
       current_time_ += dt_;
@@ -544,10 +544,10 @@ namespace GrabBox
       const Eigen::Vector3d& left_hand_vel, const Eigen::Vector3d& right_hand_vel,
       const Vector6d &torso_ref = Vector6d::Zero())
     {
-      motion_capture_ik::twoArmHandPoseCmd msg = getIKCmdMsg(left_hand_pose, right_hand_pose, torso_ref);
+      kuavo_msgs::twoArmHandPoseCmd msg = getIKCmdMsg(left_hand_pose, right_hand_pose, torso_ref);
       ik_cmd_pub_.publish(msg);
       return true;
-      // motion_capture_ik::twoArmHandPoseCmdSrv::Response response;
+      // kuavo_msgs::twoArmHandPoseCmdSrv::Response response;
       // bool ret = sendIKCmdSrv(msg, response);
       // if(ret && response.success)
       // {
@@ -616,9 +616,9 @@ namespace GrabBox
       // return false;
     }
 
-    motion_capture_ik::twoArmHandPoseCmd getIKCmdMsg(const HandPose& left_hand_pose, const HandPose& right_hand_pose, const Vector6d &torso_ref)
+    kuavo_msgs::twoArmHandPoseCmd getIKCmdMsg(const HandPose& left_hand_pose, const HandPose& right_hand_pose, const Vector6d &torso_ref)
     {
-      motion_capture_ik::twoArmHandPoseCmd msg;
+      kuavo_msgs::twoArmHandPoseCmd msg;
       msg.ik_param = ikParam_;
       msg.use_custom_ik_param = true;
       msg.joint_angles_as_q0 = false;
@@ -648,7 +648,7 @@ namespace GrabBox
       return std::move(msg);
     }
 
-    bool sendIKCmdSrv(const motion_capture_ik::twoArmHandPoseCmd& msg, motion_capture_ik::twoArmHandPoseCmdSrv::Response& response)
+    bool sendIKCmdSrv(const kuavo_msgs::twoArmHandPoseCmd& msg, kuavo_msgs::twoArmHandPoseCmdSrv::Response& response)
     {
       const std::string service_name = "/ik/two_arm_hand_pose_cmd_srv";
       ros::NodeHandle nh;
@@ -660,8 +660,8 @@ namespace GrabBox
       }
 
       // 创建服务代理
-      ros::ServiceClient client = nh.serviceClient<motion_capture_ik::twoArmHandPoseCmdSrv>(service_name);
-      motion_capture_ik::twoArmHandPoseCmdSrv srv; // 创建服务请求对象
+      ros::ServiceClient client = nh.serviceClient<kuavo_msgs::twoArmHandPoseCmdSrv>(service_name);
+      kuavo_msgs::twoArmHandPoseCmdSrv srv; // 创建服务请求对象
       srv.request.twoArmHandPoseCmdRequest = msg; // 假设 `cmd` 是请求中的字段，将 `msg` 赋值给它
 
       // 调用服务
@@ -737,7 +737,7 @@ namespace GrabBox
     bool getTwoHandPose(const Eigen::VectorXd &q, TwoHandPose &hand_poses)
     {
       auto& [l_pose, r_pose] = hand_poses;
-      motion_capture_ik::fkSrv srv;
+      kuavo_msgs::fkSrv srv;
       srv.request.q.resize(q.size());
       for (int i = 0; i < q.size(); ++i)
         srv.request.q[i] = q(i);
@@ -915,7 +915,7 @@ namespace GrabBox
       torso_ref(5) = 0;//roll
     }
   private:
-    motion_capture_ik::ikSolveParam ikParam_;
+    kuavo_msgs::ikSolveParam ikParam_;
     ros::Publisher pubArmTraj_;
     ros::Publisher pubBodyPose_;
     ros::Publisher pubBoxMarker_;

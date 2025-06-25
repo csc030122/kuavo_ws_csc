@@ -19,7 +19,9 @@ roslaunch humanoid_controllers load_kuavo_real.launch teach_pendant:=1 # 正常�
 # 只有上半身的机器人(轮臂机器人), 请运行以下命令:
 source devel/setup.bash
 roslaunch humanoid_controllers load_kuavo_real_half_up_body.launch teach_pendant:=1 # 只有上半身的机器人
-``` 
+```
+
+启动之后需要按 o 键使能电机
 
 ## 录制数据包
 
@@ -60,7 +62,7 @@ frame_2: [6.674225439283481, 0.2622862835336425, 0.8742997290724711, 0.043660091
 ```
 
 ## 播放录制的动作
-请先确保机器人在正常的分支下启动(电机正常使能的分支), 然后执行以下命令播放之前录制的动作:
+请先确保机器人在正常的分支下启动（能全身正常站立）, 然后执行以下命令播放之前录制的动作:
 
 ### 播放记录的rosbag文件
 ```bash

@@ -52,6 +52,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ros/ros.h>
 #include "humanoid_interface/common/TopicLogger.h"
 #include <std_srvs/Empty.h>
+#include <ocs2_centroidal_model/CentroidalModelRbdConversions.h>
 
 #define X_MAX_SINGLE_STEP_SIZE 0.15
 #define Y_MAX_SINGLE_STEP_SIZE 0.05
@@ -73,6 +74,8 @@ namespace humanoid {
     ZP // height, pitch
   };
 
+
+    
 
 /**
  * Manages the ModeSchedule and the TargetTrajectories for switched model.
@@ -138,6 +141,12 @@ class SwitchedModelReferenceManager : public ReferenceManager {
 
  private:
   double calTerrainHeight(const contact_flag_t& contact_flags, const feet_array_t<vector3_t>& feet_pos);
+  void processFullBodySchedule(const vector_t& initState, FullBodySchedule& fullBodySchedule);
+  void setArmTrajectory(scalar_t current_time, scalar_t startTime, FullBodySchedule& fullBodySchedule);
+
+  TargetTrajectories generateTargetwithfullBodySchedule(scalar_t initTime, scalar_t scheduleStartTime, scalar_t scheduleEndTime, const vector_t& initState, 
+                                                                     const TargetTrajectories& targetTrajectories, const FullBodySchedule& fullBodySchedule, ModeSchedule& modeSchedule);
+
 
   void modifyReferences(scalar_t initTime, scalar_t finalTime, const vector_t& initState, TargetTrajectories& targetTrajectories,
                         ModeSchedule& modeSchedule) override;
@@ -240,6 +249,8 @@ class SwitchedModelReferenceManager : public ReferenceManager {
   const CentroidalModelInfo& info_;
   std::unique_ptr<PinocchioEndEffectorKinematics> endEffectorKinematicsPtr_;
 
+  ocs2_msgs::mpc_target_trajectories armTargetTrajectoriesMsg_;
+
   ros::Subscriber targetVelocitySubscriber_;
   ros::Subscriber targetPoseSubscriber_;
   ros::Subscriber targetPoseWorldSubscriber_;
@@ -247,6 +258,7 @@ class SwitchedModelReferenceManager : public ReferenceManager {
   ros::Subscriber poseTargetTrajectoriesSubscriber_;
   ros::Subscriber footPoseTargetTrajectoriesSubscriber_;
   ros::Subscriber eef_wrench_sub_;
+  ros::Subscriber fullBodyTargetTrajectoriesSubscriber_;
   ros::Subscriber estContactStateSubscriber_;
   ros::Publisher footContactPointPublisher_;
   ros::Publisher footDesiredPointPublisher_;
@@ -256,6 +268,7 @@ class SwitchedModelReferenceManager : public ReferenceManager {
   ros::Publisher singleStepModePublisher_;
   ros::Publisher currentFootPosesPublisher_;
   ros::Publisher currentFootCenterPosePublisher_;
+  ros::Publisher armTargetPublisher_;
   ros::ServiceServer change_arm_control_service_;
   ros::ServiceServer get_arm_control_mode_service_;
   ros::ServiceServer singleStepControlService_;
@@ -292,6 +305,8 @@ class SwitchedModelReferenceManager : public ReferenceManager {
   vector_t TargetState_, initTargetState_;
   scalar_array_t lastTimeTrajectoryWithVel;
   vector_array_t lastStateTrajectoryWithVel;
+  TargetTrajectories fullBodyTargetTrajectories_;
+  TargetTrajectories fullBodyArmTargetTrajectories_;
   int feetJointNums_ = 12;
   int armJointNums_ = 10;// will replace in initialize
   int armRealDof_ = 14;
@@ -316,20 +331,42 @@ class SwitchedModelReferenceManager : public ReferenceManager {
   BufferedValue<TargetTrajectories> armFullDofTargetTrajectories_;
 
   BufferedValue<TargetTrajectories> poseTargetTrajectories_;
+  BufferedValue<vector_t> armWrenchBuffer_;
 
   int cntMPC_ = 0;
   ros::NodeHandle nodeHandle_;
   bool update_foot_trajectory_ = false;
+  bool update_full_body_trajecory_ = false;
   FootPoseSchedule footPoseSchedule_;
+  FullBodySchedule fullBodySchedule_;
+  CentroidalModelRbdConversions rbdConversions_;
   ros::Time lastArmControlModeWarnTime_ = ros::Time(0);
 
 
   double arm_move_spd_{1.2};
   double terrainHeight_ = 0.0;
   double terrainHeightPrev_ = 0.0;
+  double fullbodyScheduleStartTime_ = 0.0;
+  double fullbodyScheduleEndTime_ = 0.0;
   std::string last_gait_name_="stance";
   double vel_norm_{0};
   bool only_half_up_body_{false};
+
+  TargetTrajectories fullBodyHeadTargetTrajectories_;  // 存储头部轨迹
+  ros::Publisher headArrayPublisher_;  // 头部轨迹发布器
+
+  Eigen::Vector2d lastFootCalibrationDiffXY_ = Eigen::Vector2d::Zero();
+  // 处理全身轨迹
+  void processFullBodyTrajectories(scalar_t initTime, scalar_t finalTime, scalar_t timeHorizon, 
+                                  TargetTrajectories& targetTrajectories, const vector_t& initState,
+                                  const feet_array_t<vector3_t>& feet_pos);
+
+  // 在线校准轨迹
+  void calibrateTrajectoryOnline(scalar_t initTime, scalar_t finalTime, 
+                                const vector_t& currentState, 
+                                TargetTrajectories& targetTrajectories,
+                                const feet_array_t<vector3_t>& currentFeet);
+
 };
 
 }  // namespace humanoid

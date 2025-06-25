@@ -10,11 +10,11 @@
 #include <algorithm>
 
 // msg
-#include <humanoid_plan_arm_trajectory/bezierCurveCubicPoint.h>
-#include <humanoid_plan_arm_trajectory/jointBezierTrajectory.h>
+#include <kuavo_msgs/bezierCurveCubicPoint.h>
+#include <kuavo_msgs/jointBezierTrajectory.h>
 
 // srv
-#include <humanoid_plan_arm_trajectory/planArmTrajectoryBezierCurve.h>
+#include <kuavo_msgs/planArmTrajectoryBezierCurve.h>
 
 namespace ocs2 {
   namespace humanoid {
@@ -49,18 +49,20 @@ namespace ocs2 {
         virtual void initialize(ros::NodeHandle& nh, ros::NodeHandle& private_nh);
       private:
         void initializeSpecific() override;
+        void initializeLimitations() override;
         void interpolate() override;
         void update() override;
         void reset() override;
 
         void evaluate(const int index, const std::list<BezierCurve>& curve_list, double current_step, std::vector<double>& positions, std::vector<double>& velocities, std::vector<double>& accelerations);
         void createSingleBezierCurve(size_t i, size_t j, std::list<BezierCurve>& curve_list);
-        bool planArmTrajectoryBezierCurveCallback(humanoid_plan_arm_trajectory::planArmTrajectoryBezierCurve::Request& req, 
-                                                   humanoid_plan_arm_trajectory::planArmTrajectoryBezierCurve::Response& res);
+        bool planArmTrajectoryBezierCurveCallback(kuavo_msgs::planArmTrajectoryBezierCurve::Request& req, 
+                                                   kuavo_msgs::planArmTrajectoryBezierCurve::Response& res);
 
         double total_time_ = 0.0;
         ControlPointsType control_points_;
         std::vector<std::list<BezierCurve>> bezier_curves_; 
+        Eigen::MatrixXd joint_limits_;
     };
   }
 }

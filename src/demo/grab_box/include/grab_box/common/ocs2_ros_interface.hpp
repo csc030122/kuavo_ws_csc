@@ -10,9 +10,9 @@
 #include <ocs2_core/reference/TargetTrajectories.h>
 #include <ocs2_mpc/SystemObservation.h>
 
-#include "motion_capture_ik/changeArmCtrlMode.h"
-#include "motion_capture_ik/twoArmHandPoseCmdSrv.h"
-#include "motion_capture_ik/ikSolveParam.h"
+#include "kuavo_msgs/changeArmCtrlMode.h"
+#include "kuavo_msgs/twoArmHandPoseCmdSrv.h"
+#include "kuavo_msgs/ikSolveParam.h"
 #include "kuavo_msgs/headBodyPose.h"
 #include "kuavo_msgs/changeArmCtrlMode.h"
 #include "kuavo_msgs/footPoseTargetTrajectoriesSrv.h"

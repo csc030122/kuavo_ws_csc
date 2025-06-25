@@ -5,11 +5,25 @@
 #include <ros/ros.h>
 #include <sensor_msgs/JointState.h>
 #include <trajectory_msgs/JointTrajectory.h>
-#include <humanoid_plan_arm_trajectory/planArmState.h>
+#include <kuavo_msgs/planArmState.h>
 #include <std_srvs/Trigger.h>
 
 namespace ocs2 {
   namespace humanoid {
+
+    #define HAND_JOINT_TOTAL_NUM 12
+
+    enum JointLimitation {
+      JOINT_LIMIT_LOWER = 0,
+      JOINT_LIMIT_UPPER = 1,
+      JOINT_LIMIT_STATUS = 2
+    };
+
+    enum JointLimitStatus {
+      JOINT_LIMIT_NOT_EXISTS = 0,
+      JOINT_LIMIT_EXISTS = 1
+    };
+
     class HumanoidPlanArmTrajectory {
       public:
         HumanoidPlanArmTrajectory(const std::string& name = "HumanoidPlanArmTrajectory", int joint_num = 0, const std::string& interpolate_type = "");
@@ -30,6 +44,7 @@ namespace ocs2 {
         virtual void update() = 0; // update the joint state from the trajectory
         virtual void reset() = 0; // reset the trajectory
         virtual void initializeSpecific() = 0;
+        virtual void initializeLimitations() = 0;
         void initializeCommon();
         
         std::vector<std::string> joint_names_;
@@ -57,7 +72,16 @@ namespace ocs2 {
         bool interpolate_finished_ = false;
         sensor_msgs::JointState joint_state_;
         trajectory_msgs::JointTrajectory traj_;
-        humanoid_plan_arm_trajectory::planArmState arm_traj_state_;
+        kuavo_msgs::planArmState arm_traj_state_;
+
+        const std::array<std::string, 14> arm_joint_names_ = {
+            "zarm_l1_joint", "zarm_l2_joint", "zarm_l3_joint", "zarm_l4_joint", "zarm_l5_joint", "zarm_l6_joint", "zarm_l7_joint",
+            "zarm_r1_joint", "zarm_r2_joint", "zarm_r3_joint", "zarm_r4_joint", "zarm_r5_joint", "zarm_r6_joint", "zarm_r7_joint"
+        };
+        const std::array<std::string, 2> head_joint_names_ = { "zhead_1_joint", "zhead_2_joint" };
+        // 贝塞尔曲线插值器中使用弧度值，此处为手指关节限位(0 ~ 100)的转换
+        constexpr static double hand_joint_lower_limit_ = 0.0;
+        constexpr static double hand_joint_upper_limit_ = 1.7453;
     };
   }
 }

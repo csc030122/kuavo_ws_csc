@@ -3,6 +3,7 @@ import threading
 import signal
 import time
 import sys
+from RemoteCompiler import ROSRemoteCompiler  # 导入远程编译模块
 
 # 定义两个服务的配置（可扩展为类或字典）
 pkill_command = "pkill -f ros"
@@ -15,24 +16,26 @@ SERVICES = [
         "username": "kuavo",
         "password": "leju_kuavo",
         "remote_path": "/home/kuavo/kuavo_ros_application",
-        "pkill_cmd": "pkill -f ros",  # 通用 ROS 进程杀死命令
+        "ros_distro": "noetic",  # 添加 ROS 版本
+        "pkill_cmd": "pkill -f ros",
         "launch_cmd": 'nohup bash -ic "cd ~/kuavo_ros_application && export DISPLAY=:1.0 && source devel/setup.bash && roslaunch dynamic_biped sensor_robot_enable.launch" &',
         "nodes_to_check": [
-        "/apriltag_ros_continuous_node",
-        "/ar_control_node",
-        "/camera/realsense2_camera",
-        "/camera/realsense2_camera_manager",
-        "/camera_to_real_frame",
-        "/joint_state_publisher",
-        "/play_music_node",
-        "/point_cloud_mask_node",
-        "/realsense_yolo_segment_node",
-        "/realsense_yolo_transform_torso_node",
-        "/record_music_node",
-        "/robot_state_publisher",
-        "/rosout",
-        "/rviz"
-        ]
+            "/apriltag_ros_continuous_node",
+            "/ar_control_node",
+            "/camera/realsense2_camera",
+            "/camera/realsense2_camera_manager",
+            "/camera_to_real_frame",
+            "/joint_state_publisher",
+            "/play_music_node",
+            "/point_cloud_mask_node",
+            "/realsense_yolo_segment_node",
+            "/realsense_yolo_transform_torso_node",
+            "/record_music_node",
+            "/robot_state_publisher",
+            "/rosout",
+            "/rviz"
+        ],
+        "packages_to_build": ["apriltag_ros", " "]  # 指定按顺序编译的包列表
     },
     {
         "name": "lidar",
@@ -41,7 +44,8 @@ SERVICES = [
         "username": "kuavo",
         "password": "leju_kuavo",
         "remote_path": "/home/kuavo/kuavo_ros_navigation",
-        "pkill_cmd": "pkill -f lidar",  # 假设 lidar 特定进程杀死命令
+        "ros_distro": "noetic",  # 添加 ROS 版本
+        "pkill_cmd": "pkill -f lidar",
         "launch_cmd": 'nohup bash -ic "cd ~/kuavo_ros_navigation && export DISPLAY=:1.0 && source devel/setup.bash && roslaunch livox_ros_driver2  start_mid360.launch" &',
         "nodes_to_check": [
             "/apriltag_ros_continuous_node",
@@ -52,17 +56,19 @@ SERVICES = [
             "/robot_state_publisher",
             "/rosout",
             "/rviz"
-        ]
+        ],
+        "packages_to_build": ["livox_ros_driver2"]  # 单包编译
     }
 ]
 
-# 定义实时输出函数（线程安全）
-# def print_output(stream, prefix=""):
-#     for line in iter(stream.readline, ""):
-#         print(f"[{prefix}] {line}", end="")
+# 定义实时输出函数（线程安全），修改为保存输出
+def save_output(stream, output_list):
+    for line in iter(stream.readline, ""):
+        output_list.append(line)
+
 # 定义实时输出函数（线程安全），修改为不打印日志
 def print_output(stream, prefix=""):
-    for _ in iter(stream.readline, ""):
+    for line in iter(stream.readline, ""):
         pass
 
 def check_nodes(ssh, service_config):
@@ -80,6 +86,50 @@ def check_nodes(ssh, service_config):
         return True
     except Exception as e:
         print(f"[{service_config['name']}] 节点检查失败: {e}")
+        return False
+
+def compile_package(service_config):
+    """编译指定包（支持多个依赖包按顺序编译）"""
+    try:
+        print(f"[{service_config['name']}] 开始编译依赖包...")
+        
+        # 创建远程编译器实例
+        compiler = ROSRemoteCompiler(
+            host=service_config["host"],
+            port=service_config["port"],
+            username=service_config["username"],
+            password=service_config["password"]
+        )
+        
+        # 调用编译方法
+        success = compiler.compile_packages(
+            workspace_path=service_config["remote_path"],
+            package_list=service_config["packages_to_build"],
+            ros_distro=service_config.get("ros_distro", "noetic")
+        )
+        
+        return success
+    except Exception as e:
+        print(f"[{service_config['name']}] 编译失败: {e}")
+        return False
+
+def check_and_compile_package(ssh, service_config):
+    """检查指定包是否编译，若未编译则编译"""
+    try:
+        # 检查第一个包（通常是最基础的依赖）
+        base_package = service_config["packages_to_build"][0]
+        
+        check_command = f'bash -ic "cd {service_config["remote_path"]}/devel/lib && ls | grep {base_package}"'
+        stdin, stdout, stderr = ssh.exec_command(check_command)
+        output = stdout.read().decode().strip()
+        
+        if base_package not in output:
+            return compile_package(service_config)
+        
+        print(f"[{service_config['name']}] 基础依赖包已编译，跳过编译")
+        return True
+    except Exception as e:
+        print(f"[{service_config['name']}] 检查编译状态失败: {e}")
         return False
 
 def start_service(service_config):
@@ -105,6 +155,11 @@ def start_service(service_config):
         if result != 'Exists':
             ssh.close()
             print(remote_path + result)
+            return None, False
+
+        # 检查并编译指定包
+        if not check_and_compile_package(ssh, service_config):
+            ssh.close()
             return None, False
 
         # 2. 杀死旧进程
@@ -165,11 +220,10 @@ def close_all_connections(active_ssh_connections):
             print(f"关闭连接出错: {e}")
     print("所有 SSH 连接已关闭")
 
-
 if __name__ == "__main__":
     active_ssh_connections = start_all_services()
     try:
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
-        close_all_connections(active_ssh_connections)    
+        close_all_connections(active_ssh_connections)

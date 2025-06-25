@@ -5,6 +5,7 @@ import time
 import rospy
 from sensor_msgs.msg import Joy
 from h12pro_controller_node.msg import h12proRemoteControllerChannel
+from h12pro_controller_node.msg import UpdateH12CustomizeConfig
 from robot_state.robot_state_machine import robot_state_machine, RobotStateMachine, states
 from transitions.core import MachineError
 from utils.utils import read_json_file
@@ -14,11 +15,13 @@ import signal
 import sys
 from ocs2_msgs.msg import mpc_observation
 from kuavo_msgs.msg import sensorsData
-from kuavo_ros_interfaces.msg import robotHandPosition, robotHeadMotionData
+from kuavo_msgs.msg import robotHandPosition, robotHeadMotionData
 from sensor_msgs.msg import JointState
 import math
 from humanoid_plan_arm_trajectory.msg import bezierCurveCubicPoint, jointBezierTrajectory, planArmState
 from trajectory_msgs.msg import JointTrajectory
+from concurrent.futures import ThreadPoolExecutor
+import threading
 
 rospack = rospkg.RosPack()
 pkg_path = rospack.get_path('h12pro_controller_node')
@@ -62,6 +65,9 @@ class Config:
 
     CALLBACK_FREQUENCY = 100
     LONG_PRESS_THRESHOLD = 1.0
+
+    SCALE_RIGHT_STICK_Z = 0.2  # 右摇杆上下（上站下蹲）缩放比例
+    SCALE_LEFT_STICK_Y = 0.25  # 左摇杆左右（左右平移）缩放比例
     
     @staticmethod
     def get_default_channels() -> List[int]:
@@ -130,15 +136,16 @@ class H12ToJoyControllerNode:
         self.joy_msg = Joy(axes=[0.0] * 8, buttons=[0] * 11)
         self.channels_msg: Optional[Tuple[int, ...]] = None
         self.joy_pub = rospy.Publisher('/joy', Joy, queue_size=10)
+        self.is_stopping = False    # cd按钮下蹲标志位
 
     @staticmethod
     def _create_channel_mapping() -> Dict[int, ChannelMapping]:
         """Create channel mapping configuration."""
         return {
             1: ChannelMapping(1, axis_index=Config.AXIS_MAPPING['RIGHT_STICK_YAW'], reverse=True),
-            2: ChannelMapping(2, axis_index=Config.AXIS_MAPPING['RIGHT_STICK_Z'], reverse=True, scale=0.2),  # 右摇杆上下（上站下蹲）限制，限制为满值运动时的0.2倍
+            2: ChannelMapping(2, axis_index=Config.AXIS_MAPPING['RIGHT_STICK_Z'], reverse=True, scale=Config.SCALE_RIGHT_STICK_Z),
             3: ChannelMapping(3, axis_index=Config.AXIS_MAPPING['LEFT_STICK_X']),
-            4: ChannelMapping(4, axis_index=Config.AXIS_MAPPING['LEFT_STICK_Y'], reverse=True, scale=0.25),  # 左摇杆左右（左右平移）限制，限制为满值运动时的0.25倍
+            4: ChannelMapping(4, axis_index=Config.AXIS_MAPPING['LEFT_STICK_Y'], reverse=True, scale=Config.SCALE_LEFT_STICK_Y),
             6: ChannelMapping(6, button_index=Config.BUTTON_MAPPING['START'], 
                             is_button=True, trigger_value=Config.H12_AXIS_RANGE_MAX),
             7: ChannelMapping(7, button_index=Config.BUTTON_MAPPING['Y'], 
@@ -168,10 +175,14 @@ class H12ToJoyControllerNode:
         # Process each channel
         for index, channel_value in enumerate(self.channels_msg):
             if mapping := self.channel_mapping.get(index + 1):
+                if index + 1 == 2 and self.is_stopping:
+                    mapping.scale = 1.0
                 if mapping.is_button:
                     self.joy_msg.buttons[mapping.button_index] = mapping.get_current_state(channel_value)
                 else:
                     self.joy_msg.axes[mapping.axis_index] = mapping.get_current_state(channel_value)
+                if index + 1 == 2 and self.is_stopping:
+                    mapping.scale = Config.SCALE_RIGHT_STICK_Z
 
         self.joy_pub.publish(self.joy_msg)
 
@@ -215,6 +226,11 @@ class H12PROControllerNode:
         self.should_pub_head_motion_data = robotHeadMotionData()
         self.start_way = rospy.get_param("start_way", "auto")
         self.real_robot = rospy.get_param("real_robot", False)
+        
+        # 添加线程池
+        self.executor = ThreadPoolExecutor(max_workers=2)
+        self._state_transition_lock = threading.Lock()
+        
         self._setup_ros_components()
         
     def _setup_ros_components(self) -> None:
@@ -278,6 +294,15 @@ class H12PROControllerNode:
             queue_size=1, 
             tcp_nodelay=True
         )
+        self.update_h12_customize_config_sub = rospy.Subscriber(
+            "/update_h12_customize_config",
+            UpdateH12CustomizeConfig,
+            self._update_h12_customize_config_callback,
+            queue_size=1
+        )
+    
+    def _update_h12_customize_config_callback(self, msg):
+        self.robot_state_machine.update_customize_config()
         
     def publish_arm_joint_state(self):
         if self.plan_arm_is_finished is False and len(self.should_pub_arm_joint_state.position) > 0:
@@ -460,9 +485,11 @@ class H12PROControllerNode:
             msg: Channel message for response.
         """
         try:
-            if current_state == "stance":
+            if current_state in ["stance", "walk", "trot"]:
+                self.h12_to_joy_node.is_stopping = True
                 self._gradually_move_right_stick_down()
-          
+                self.h12_to_joy_node.is_stopping = False
+                
             getattr(self.robot_state_machine, "stop")(source=current_state)
             stop_msg = h12proRemoteControllerChannel()
             channels = Config.get_default_channels()
@@ -515,6 +542,7 @@ class H12PROControllerNode:
             source: Source state.
             msg: Channel message for response.
         """
+        # 准备状态转换参数
         kwargs = {
             "trigger": trigger,
             "source": source,
@@ -522,16 +550,26 @@ class H12PROControllerNode:
         }
         if "arm_pose" in trigger:
             kwargs["current_arm_joint_state"] = self.current_arm_joint_state
-        getattr(self.robot_state_machine, trigger)(**kwargs)
-        
-        if trigger in Config.VALID_STATES:
-            new_msg = h12proRemoteControllerChannel()
-            channels = Config.get_default_channels()
-            channels[Config.TRIGGER_CHANNEL_MAP[trigger]] = Config.H12_AXIS_RANGE_MAX
-            new_msg.channels = tuple(channels)
             
-            self.h12_to_joy_node.update_channels_msg(msg=new_msg)
-            self.h12_to_joy_node.process_channels()
+        # 提交到线程池执行状态转换
+        def state_transition_task():
+            with self._state_transition_lock:
+                try:
+                    getattr(self.robot_state_machine, trigger)(**kwargs)
+                    
+                    # 如果是有效状态,更新消息
+                    if trigger in Config.VALID_STATES:
+                        new_msg = h12proRemoteControllerChannel()
+                        channels = Config.get_default_channels()
+                        channels[Config.TRIGGER_CHANNEL_MAP[trigger]] = Config.H12_AXIS_RANGE_MAX
+                        new_msg.channels = tuple(channels)
+                        
+                        self.h12_to_joy_node.update_channels_msg(msg=new_msg)
+                        self.h12_to_joy_node.process_channels()
+                except Exception as e:
+                    rospy.logerr(f"Error in state transition task: {e}")
+                    
+        self.executor.submit(state_transition_task)
 
     def _handle_joystick_input(self, msg: h12proRemoteControllerChannel) -> None:
         """Handle joystick input when no state transition occurs."""
@@ -589,6 +627,11 @@ class H12PROControllerNode:
         except Exception as e:
             rospy.logwarn(f"Error handling switch {key}: {e}")
             return None
+
+    def __del__(self):
+        """Cleanup resources."""
+        if hasattr(self, 'executor'):
+            self.executor.shutdown(wait=True)
 
 class ConfigError(Exception):
     """Custom exception for configuration errors."""

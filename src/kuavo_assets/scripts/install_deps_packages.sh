@@ -3,6 +3,7 @@
 SCRIPT_DIR=$(dirname $(readlink -f "$0"))
 PACKAGE_FILE=$SCRIPT_DIR/packages_with_versions.txt
 
+
 ECHO_WARN() {
     local msg="$1"
     echo -e "\033[33m[Depend] ${msg}\033[0m" >&2
@@ -48,6 +49,10 @@ function install_packages() {
 
 ### Start
 ECHO_WARN "Check and Install depend packages ..."
+
+bash $SCRIPT_DIR/install_robot_localization_env.sh >&2
+
+
 check_packages_installed "bash"
 result=$?
 

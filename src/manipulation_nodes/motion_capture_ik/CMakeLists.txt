@@ -15,6 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   message_generation
   geometry_msgs
+  kuavo_msgs
 )
 find_package(BZip2 REQUIRED)
 
@@ -22,27 +23,32 @@ find_package(Boost REQUIRED COMPONENTS
   system
   filesystem
 )
-add_message_files(
-  FILES 
-  robotArmQVVD.msg
-  ikSolveError.msg
-  handPose.msg
-  armHandPose.msg
-  twoArmHandPose.msg
-  headBodyPose.msg
-  ikSolveParam.msg
-  twoArmHandPoseCmd.msg
-  robotHandPosition.msg
-  headBodyPose.msg
-)
-add_service_files(
-  DIRECTORY srv
-  FILES
-  changeArmCtrlMode.srv
-  twoArmHandPoseCmdSrv.srv
-  changeArmCtrlModeKuavo.srv
-  fkSrv.srv
-)
+
+# use kuavo_msgs instead
+
+# add_message_files(
+#   FILES
+  # robotArmQVVD.msg
+  # ikSolveError.msg
+  # handPose.msg
+  # armHandPose.msg
+  # twoArmHandPose.msg
+  # headBodyPose.msg
+  # ikSolveParam.msg
+  # twoArmHandPoseCmd.msg
+  # robotHandPosition.msg
+  # headBodyPose.msg
+#)
+# add_service_files(
+#   DIRECTORY srv
+#   FILES
+
+  # changeArmCtrlMode.srv
+  # twoArmHandPoseCmdSrv.srv
+  # changeArmCtrlModeKuavo.srv
+  # fkSrv.srv
+# )
+
 generate_messages(
   DEPENDENCIES
   std_msgs

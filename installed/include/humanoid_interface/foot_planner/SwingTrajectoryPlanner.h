@@ -40,6 +40,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 #include "ocs2_core/thread_support/BufferedValue.h"
+#include "humanoid_interface/foot_planner/InverseKinematics.h"
 
 namespace ocs2 {
 namespace humanoid {
@@ -83,7 +84,7 @@ class SwingTrajectoryPlanner {
               const feet_array_t<scalar_array_t>& maxHeightSequence, 
               const TargetTrajectories& targetTrajectories, 
               const scalar_t& initTime);
-  vector3_t findFootPosNext(int feet, int current_index, int swingStartIndex, int swingFinalIndex, const ModeSchedule& modeSchedule, const vector3_t &last_stance_position);
+  std::pair<vector3_t, std::vector<vector3_t>> findFootPosNext(int feet, int current_index, int swingStartIndex, int swingFinalIndex, const ModeSchedule& modeSchedule, const vector3_t &last_stance_position);
   
   // 存储规划值到 vector 中
   std::vector<scalar_t> saveTrajectoryToVector() const {
@@ -198,6 +199,19 @@ class SwingTrajectoryPlanner {
         }
     }
   }
+  vector_t getArmEeWrenchConstraint() const
+  {
+    return armEeWrenchConstraint_;
+  }
+
+  void setArmEeWrenchConstraint(const vector_t& hand_wrench)
+  {
+    if (hand_wrench.size() == 12)
+      armEeWrenchConstraint_ = hand_wrench;
+    else
+      std::cout << "[SwingTrajectoryPlanner] hand_wrench size is not 12" << std::endl;
+  }
+
   void modifyHeightSequences(const ModeSchedule &modeSchedule, feet_array_t<scalar_array_t> &liftOffHeightSequence, feet_array_t<scalar_array_t> &touchDownHeightSequence);
 
   scalar_t getXvelocityConstraint(size_t leg, scalar_t time) const;
@@ -267,7 +281,7 @@ class SwingTrajectoryPlanner {
   inline bool getFinalYawSingleStepMode() const { return final_yaw_single_step_mode_; }
   inline void setFinalYawSingleStepMode(bool mode) { final_yaw_single_step_mode_ = mode; }
   inline double getFinalYawSingleStepTime() const { return final_yaw_single_step_time_; }
-
+  void setInverseKinematics(std::shared_ptr<InverseKinematics> inverseKinematics) { inverseKinematics_ = inverseKinematics; }
  private:
   vector3_t calNextFootPos(int feet, scalar_t current_time, scalar_t stop_time,
                                                          scalar_t next_middle_time, const vector_t &next_middle_body_pos,
@@ -332,7 +346,8 @@ class SwingTrajectoryPlanner {
   feet_array_t<std::vector<DrakeInterpolator>> footXInterpolators_;
   feet_array_t<std::vector<DrakeInterpolator>> footYInterpolators_;
   feet_array_t<std::vector<DrakeInterpolator>> footZInterpolators_;
-
+  
+  vector_t armEeWrenchConstraint_ = vector_t::Zero(12);
   hand_array_t<std::vector<SplineCpg>> armJointTrajectories_;
   hand_array_t<std::vector<scalar_t>> armJointTrajectoriesEvents_;
   feet_array_t<vector3_t> feetXYOffset_;
@@ -359,6 +374,7 @@ class SwingTrajectoryPlanner {
   double target_yaw_ = 0.0;
   bool final_yaw_single_step_mode_ = false;
   double final_yaw_single_step_time_ = 0.0;
+  std::shared_ptr<InverseKinematics> inverseKinematics_;
 };
 
 SwingTrajectoryPlanner::Config loadSwingTrajectorySettings(const std::string& fileName,

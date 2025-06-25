@@ -1,7 +1,10 @@
 <launch>
-    <arg name="marker_id1" default="776" />                                      <!-- TODO: Your marker id (Original ArUco) -->
-    <arg name="marker_id2" default="777" />                                      <!-- TODO: Your marker id (Original ArUco) -->
-    <arg name="marker_size" default="0.05" />                                    <!-- TODO: Your marker side length in m -->
+    <arg name="marker_id1" default="777" />                                      <!-- TODO: Your marker id (Original ArUco) -->
+    <arg name="marker_id2" default="776" />                                      <!-- TODO: Your marker id (Original ArUco) -->
+    <arg name="marker_id3" default="775" />  
+    <arg name="marker_size1" default="0.05" />                                    <!-- TODO: Your marker side length in m -->
+    <arg name="marker_size2" default="0.10" />
+    <arg name="marker_size3" default="0.10" />
     <arg name="marker_frame1" default="marker_object_frame" />                    <!-- Set marker frame name -->
     <arg name="marker_frame2" default="marker_place_frame" />                    <!-- Set marker frame name -->
     <arg name="wrist_marker_frame1" default="wrist_marker_object_frame" />
@@ -63,7 +66,7 @@
         <node pkg="kuavo_hand_eye_calibration" type="publish_calibration_tf.py" name="$(arg wrist_side)_wrist_publish_calibration_tf" 
             args="--camera_type $(arg wrist_camera_type) 
                 --namespace_prefix $(arg wrist_side)_wrist 
-                --handeye_cali_eye_on_hand false
+                --handeye_cali_eye_on_hand true
                 --parent_frame $(arg wrist_side)_wrist_camera_link
                 --child_frame $(arg wrist_side)_wrist_camera_color_optical_frame" output="log"/>
     </group>
@@ -83,11 +86,11 @@
 
     <group >
         <include file="$(find pick_and_place)/launch/aruco_detect_double.launch">
-            <arg name="marker1Id" value="$(arg marker_id1)" />
+            <arg name="marker1Id" value="$(arg marker_id3)" />
             <arg name="marker1_frame" value="$(arg marker_frame1)" />
             <arg name="marker2Id" value="$(arg marker_id2)" />
             <arg name="marker2_frame" value="$(arg marker_frame2)" />
-            <arg name="markerSize" value="$(arg marker_size)" />
+            <arg name="markerSize" value="$(arg marker_size2)" />
             <arg name="parent_name" value="$(arg ref_frame)" />
             <arg name="image" value="$(arg image_topic)" />
             <arg name="camera_info" value="$(arg info_topic)" />
@@ -99,9 +102,9 @@
         <include file="$(find pick_and_place)/launch/aruco_detect_double.launch">
             <arg name="marker1Id" value="$(arg marker_id1)" />
             <arg name="marker1_frame" value="$(arg wrist_marker_frame1)" />
-            <arg name="marker2Id" value="$(arg marker_id2)" />
+            <arg name="marker2Id" value="$(arg marker_id3)" />
             <arg name="marker2_frame" value="$(arg wrist_marker_frame2)" />
-            <arg name="markerSize" value="$(arg marker_size)" />
+            <arg name="markerSize" value="$(arg marker_size1)" />
             <arg name="parent_name" value="$(arg wrist_ref_frame)" />
             <arg name="image" value="$(arg wrist_image_topic)" />
             <arg name="camera_info" value="$(arg wrist_info_topic)" />
@@ -124,7 +127,7 @@
         <arg name="control_hand_side" value="$(arg control_hand_side)" />
         <arg name="run_quest3_monitor" value="0" />
         <arg name="record_bag" value="false" />
-        <arg name="ee_type" value="jodell" />
+        <arg name="ee_type" value="qiangnao" />
         <arg name="eef_z_bias" value="$(arg eef_z_bias)" />
         <arg name="log_type" value="log" />
     </include>

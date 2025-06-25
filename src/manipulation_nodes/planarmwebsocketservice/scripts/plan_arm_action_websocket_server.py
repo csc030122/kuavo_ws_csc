@@ -9,13 +9,15 @@ if current_dir not in sys.path:
     sys.path.insert(0, current_dir)
 
 
-from utils import get_wifi_ip, get_wifi, get_mac_address
+from utils import get_wifi_ip, get_hotspot_ip, get_wifi_mac_address, get_hotspot_mac_address, get_wifi, get_hotspot
 import json
 import websockets
 import asyncio
 import socket
 import signal
 import argparse
+import pwd
+from pathlib import Path
 from queue import Empty
 from typing import Set
 
@@ -34,40 +36,88 @@ from kuavo_ros_interfaces.msg import planArmState
 active_connections: Set[websockets.WebSocketServerProtocol] = set()
 
 ROBOT_NAME = os.getenv("ROBOT_NAME", "KUAVO")
-ROBOT_IP = get_wifi_ip()
-ROBOT_CONNECT_WIFI = get_wifi()
-ROBOT_WS_ADDRESS = f"ws://{ROBOT_IP}:8888"
-ROBOT_WS_LOGGER_ADDRESS = f"ws://{ROBOT_IP}:8889"
-BROADCAST_IP = f"{ROBOT_IP.rsplit('.', 1)[0]}.255"
-BROADCAST_PORT = 8443
-ROBOT_MAC_ADDRESS = get_mac_address()
 ROBOT_USERNAME = "lab"
+BROADCAST_PORT = 8443
 package_name = 'planarmwebsocketservice'
 package_path = rospkg.RosPack().get_path(package_name)
 ROBOT_UPLOAD_FOLDER = package_path + "/upload_files"
+sudo_user = os.environ.get("SUDO_USER")
+if sudo_user:
+    user_info = pwd.getpwnam(sudo_user)
+    home_path = user_info.pw_dir
+else:
+    home_path = os.path.expanduser("~")
+ROBOT_ACTION_FILE_FOLDER = os.path.join(home_path, '.config', 'lejuconfig', 'action_files')
+try:
+    Path(ROBOT_ACTION_FILE_FOLDER).mkdir(parents=True, exist_ok=True)
+except Exception as e:
+    print(f"创建 ROBOT_ACTION_FILE_FOLDER 目录时出错: {e}")
 
-robot_info = {
-    "data": {
-        "robot_name": ROBOT_NAME,
-        "robot_ip": ROBOT_IP,
-        "robot_connect_wifi": ROBOT_CONNECT_WIFI,
-        "robot_ws_address": ROBOT_WS_ADDRESS,
-        "robot_ws_logger_address": ROBOT_WS_LOGGER_ADDRESS,
-        "robot_upload_folder": ROBOT_UPLOAD_FOLDER,
-        "robot_username": ROBOT_USERNAME,
-        "robot_mac_address": ROBOT_MAC_ADDRESS,
+wifi_ip = get_wifi_ip()
+hotspot_ip = get_hotspot_ip()
+robot_infos = {}
+
+if wifi_ip:
+    robot_infos["wifi"] = {
+        "data": {
+            "robot_name": ROBOT_NAME,
+            "robot_ip": wifi_ip,
+            "robot_connect_wifi": get_wifi(),
+            "robot_ws_address": f"ws://{wifi_ip}:8888",
+            "robot_ws_logger_address": f"ws://{wifi_ip}:8889",
+            "robot_upload_folder": ROBOT_UPLOAD_FOLDER,
+            "robot_action_file_folder": ROBOT_ACTION_FILE_FOLDER,
+            "robot_username": ROBOT_USERNAME,
+            "robot_mac_address": get_wifi_mac_address(),
+        }
     }
-}
 
-async def broadcast_robot_info():
+if hotspot_ip:
+    robot_infos["hotspot"] = {
+        "data": {
+            "robot_name": ROBOT_NAME,
+            "robot_ip": hotspot_ip,
+            "robot_connect_wifi": get_hotspot(),
+            "robot_ws_address": f"ws://{hotspot_ip}:8888",
+            "robot_ws_logger_address": f"ws://{hotspot_ip}:8889",
+            "robot_upload_folder": ROBOT_UPLOAD_FOLDER,
+            "robot_action_file_folder": ROBOT_ACTION_FILE_FOLDER,
+            "robot_username": ROBOT_USERNAME,
+            "robot_mac_address": get_hotspot_mac_address(),
+        }
+    }
+
+
+async def broadcast_robot_info_wifi():
+    if "wifi" not in robot_infos:
+        rospy.logwarn("WiFi信息不存在，无法广播。")
+        return
+
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    print(f"Broadcasting to {BROADCAST_IP}:{BROADCAST_PORT}")
-    print(f"Broadcasting robot info: {robot_info}")
+    robot_info = robot_infos["wifi"]
+    broadcast_ip = f"{robot_info['data']['robot_ip'].rsplit('.', 1)[0]}.255"
+    print(f"Broadcasting to {broadcast_ip}:{BROADCAST_PORT} with info: {robot_info}")
     while True:
         message = json.dumps(robot_info).encode("utf-8")
-        sock.sendto(message, (BROADCAST_IP, BROADCAST_PORT))
+        sock.sendto(message, (broadcast_ip, BROADCAST_PORT))
+        await asyncio.sleep(1)
+
+async def broadcast_robot_info_hotspot():
+    if "hotspot" not in robot_infos:
+        rospy.logwarn("Hotspot信息不存在，无法广播。")
+        return
+
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    robot_info = robot_infos["hotspot"]
+    broadcast_ip = f"{robot_info['data']['robot_ip'].rsplit('.', 1)[0]}.255"
+    print(f"Broadcasting to {broadcast_ip}:{BROADCAST_PORT} with info: {robot_info}")
+    while True:
+        message = json.dumps(robot_info).encode("utf-8")
+        sock.sendto(message, (broadcast_ip, BROADCAST_PORT))
         await asyncio.sleep(1)
 
 async def handle_websocket(websocket, path):
@@ -130,12 +180,19 @@ async def websocket_server():
     await server.wait_closed()
 
 async def main(robot_type):
+
+    if not robot_infos:
+        rospy.logerr("WiFi和Hotspot都未连接。正在关闭...")
+        return
+
     set_robot_type(robot_type)
     print("Starting ROS node initialization")
     ros_init_task = asyncio.create_task(init_ros_node())
 
-    print("Starting broadcast task")
-    broadcast_task = asyncio.create_task(broadcast_robot_info())
+    print("Starting Wi-Fi broadcast task")
+    broadcast_wifi_task = asyncio.create_task(broadcast_robot_info_wifi())
+    print("Starting Hotspot broadcast task")
+    broadcast_hotspot_task = asyncio.create_task(broadcast_robot_info_hotspot())
     print("Starting WebSocket server task")
     websocket_server_task = asyncio.create_task(websocket_server())
 
@@ -157,12 +214,14 @@ async def main(robot_type):
         await stop_event.wait()
     finally:
         print("Shutting down gracefully...")
-        broadcast_task.cancel()
+        broadcast_wifi_task.cancel()
+        broadcast_hotspot_task.cancel()
         websocket_server_task.cancel()
         process_responses_task.cancel()
         try:
             await asyncio.gather(
-                broadcast_task,
+                broadcast_wifi_task,
+                broadcast_hotspot_task,
                 websocket_server_task,
                 process_responses_task,
                 return_exceptions=True

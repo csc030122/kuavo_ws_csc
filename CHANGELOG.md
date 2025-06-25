@@ -1,10 +1,56 @@
+# Beta
+
+## Breaking Changes
+- 无
+
+## 文档相关
+- Kuavo Humanoid SDK 更新使用示例和搬箱子案例文档中文描述，[文档链接](./src/kuavo_humanoid_sdk/README.md)
+- Kuavo Humanoid SDK 更新所有使用文档为中文格式，[文档链接](./src/kuavo_humanoid_sdk/README.md)
+- 示教功能文档补充说明示教模式启动机器人需要按‘o’后才开始记录，[文档链接](./src/manipulation_nodes/teach_pendant/readme.md)
+- 运动控制 API 文档新增电机Kp/Kd 参数 ROS 服务接口描述，[文档链接](./docs/运动控制API.md)
+- Kuavo Humanoid SDK 增加搬箱子策略模块使用文档，[文档链接](./src/kuavo_humanoid_sdk/README.md)
+
+## 新增功能
+- Kuavo Humanoid SDK 拆分 websocket 为单独模块 Kuavo Humanoid Websocket SDK，原先 SDK 将不支持在 Windows 系统下运行
+- 新增机器人 collision 碰撞对，实现横向移动保护
+- Kuavo Humanoid SDK 新增修改和获取电机Kp/Kd 参数接口以及使用示例，目前仅支持`youda`驱动类型的电机
+- 新增修改和获取电机Kp/Kd 参数 ROS 服务接口，目前仅支持`youda`驱动类型的电机
+- Kuavo Humanoid SDK 新增搬箱子策略模块以及 gazebo 仿真策略使用示例
+
+## 修复问题
+- 修复 VR 手柄无法控制灵巧手手指的问题
+- 修复 h12 自启服务启动时贝塞尔插值器获取参数失败问题
+- 增加运动学 yaw 滤波，修复 imu yaw 角度漂移问题
+- 修复桌面软件自启动服务存在`urdfFile`参数配置找不到的问题
+- 修复桌面软件连接机器人热点后，无法显示机器人 IP 地址和无法连接问题
+- 修复桌面软件上传文件存放路径错误的问题，存放路径为 `$HOME/.config/lejuconfig/action_files`
+- 修复半身控制模式下，启动机器人时手臂突然抽搐的错误
+- 修复触觉手控制器初始化两遍的错误，可能会影响灵巧手控制
+
+## 其他改进
+- 优化上下位机 DHCP 配置工具，默认下位机为DHCP分配主机并增加声卡 udev 规则配置
+- 取消 MobileManipulatorController 启动时一直打印等待`com_height`参数的日志
+- 取消 MobileManipulatorController 节点启动时一直刷屏提示等待接收观测数据
+
 # 1.1.5
+
+## Breaking Changes
+- 迁移`motion_capture_ik`包中的定义的消息到`kuavo_msgs`中统一维护
 
 ## 文档相关
 - VR 遥操作增加如何查看 Quest3 和 Kuavo 的网络延迟的视频， [文档链接](./docs/Quest3_VR_basic.md)
 - [kuavo humanoid sdk] 更新安装文档和 API 文档，详情见 [文档链接](./src/kuavo_humanoid_sdk/README.md)
 
 ## 新增功能
+- 新增一键启动 Kuavo Humanoid SDK 依赖的所有功能包启动文件
+- 单步控制接口增加支持完全指定腾空相轨迹功能
+- Kuavo Humanoid SDK 新增 KuavoRobotObservation 类，用于获取机器人当前的控制指令
+- Kuavo Humanoid SDK 新增 websocket 模式使用示例以及适配音频模块接口
+- Kuavo Humanoid SDK 原子技能新增 运动学 MPC 接口，找 tag 和 接近 tag 策略模块，搬箱子基础框架
+- Ruiwo 电机新增 C++ SDK 控制并支持参数切换C++/Python SDK，可通过参数`rui_cxx_sdk`指定，默认值为`true`
+- 硬件节点默认打开关节保护检测功能，并取消触发关节保护之后的动作
+- [kuavo humanoid sdk] 新增视觉接口和工具类接口，详情见[使用案例](./src/kuavo_humanoid_sdk/examples/vision_robot_example.py)
+- 新增机器人 weboscket 节点配置成开机启动的 systemctl 服务
 - 新增版本号为 49 的机器人模型， 特点相机模型为 orbbec 
 - 下位机胸部 NUC 增加音频播放 ROS 服务
 - 新增一键自检功能：IMU硬件连接，手臂电机通讯响应，灵巧手抓握测试，遥控器硬件信号，上下位机通信检查，相机/雷达/音响检查, [文档链接](tools/check_tool/selfCheckScripts/README.md)
@@ -18,6 +64,27 @@
 - 站立保护功能支持站立失败缩腿后重新使用键盘或北通遥控器重复尝试站立
 
 ## 修复问题
+- 修复由于触觉手 SDK 存在的非法越界访问内存错误导致的程序崩溃问题，已更新 SDK 版本到最新的`0.4.4`
+- 修复手眼标定功能包及手腕相机抓取功能包的部分问题
+- 修复 Kuavo Humanoid SDK 增加音频视觉模块后导致的不兼容的问题
+- 修复对贝塞尔曲线插值器得出的关节角度值未进行限位处理导致的插值结果存在错误的控制命令问题
+- 修复 h12 遥控器控制机器人站立下蹲等动作的阈值，防止出现摔倒等情况
+- 修复 CTRL+C 等方式退出程序时，手臂电机未正常解锁问题
+- 修复示教模式下未关闭站立保护功能的错误
+- 修复命令启动机器人程序时，h12 遥控器控制逻辑和开机自启动方式不一致问题
+- 修复 `/cmd_pose_world`话题存在无法导致重新回到原点的问题
+- 修复执行手臂电机辨识相序脚本报错找不到文件的问题
+- 修复 4pro 进阶版机器人半身控制时，H12播放手臂动作异常问题
+- 修复末端为夹爪时程序启动崩溃的问题，原因是：初始化夹爪 ROS timer 顺序比硬件夹爪资源要早，导致夹爪 timer callback 访问了非法的资源
+- 修复 HardwareTool.py 工具校准程序报错，手臂电机设置零点时提示找不到相关文件问题
+- 修复 ROBOT_VERSION 为 49 的 kuavo.json 配置文件缺少电流保护相关的配置`joint_current_limits`字段
+- 修复 websocket 广播机器人信息接口缺失`robot_action_file_folder`字段
+- 修复手眼标定 launch 文件中相机话题名称错误的问题
+- 修复终端日志频繁刷音频节点检测不到设备的问题
+- 修复 h12 遥控器开机自启动和使用终端启动（joystick_type=h12）存在不一致的问题 
+- 修复 ROBOT_VERSION 为 49 时缺少一些配置文件错误
+- 改进关节保护手部速度阈值以及关节保护电机力矩阈值
+- 改进关节保护堵转检测时间窗口从 0.1 增加到 0.2
 - 修复机器人半身状态下/轮臂机器人初始手臂不弯曲
 - 修复仿真和实物的键盘控制，请求原地旋转(j or l)10%无法执行的问题
 - 修复当前机器人不支持步态设置连续的单腿浮空状态的问题
@@ -27,6 +94,8 @@
 - 修复 48 版本 kuavo.json 配置文件缺少`joint_current_limits`导致无法启动程序问题
 
 ## 其他改进
+- 硬件检查工具支持扫描和测试触觉灵巧手功能，使用文档见 [文档链接](./tools/check_tool/readme.md)
+- 更换音频播放节点 pip 源为 aliyun 避免安装等待过长时间
 - 仿真环境时跳过机器人自动蹲起站立过程
 - 新增 KuavoCrashReport 工具，用于收集机器人故障信息，并上传反馈给乐聚人员，[使用文档链接](./tools/crash-report/README.md)
 - 升级了 Quest3 的 APK 程序 //kuavo.lejurobot.com/Quest_apks/leju_kuavo_hand-0.0.1-147-g85b5c38.apk ，显示出识别的骨骼效果，能方便的查看到 Quest3 识别出错的情况。以及更新 Meta SDK 到 0.74 改进识别的稳定性。

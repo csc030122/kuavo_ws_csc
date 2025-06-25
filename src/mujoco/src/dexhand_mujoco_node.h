@@ -35,6 +35,12 @@ public:
      * @brief Stop the TouchDexHand node and cleanup resources
      */
     void stop();
+
+    /**
+     * @brief Get the hand joints num
+     * @return the hand joints num
+     */
+    int get_hand_joints_num();
     
     void readCallback(const mjData *d);
     void writeCallback(mjData *d);
@@ -75,6 +81,8 @@ private:
     std::thread publish_thread_;
     bool running_{false};
 
+    int finger_count_;
+    int hand_count_;
     double frequency_;
 
     std::shared_ptr<mujoco_node::MujocoDexHand> r_dexhand_ = nullptr;

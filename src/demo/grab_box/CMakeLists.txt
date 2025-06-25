@@ -20,7 +20,6 @@ find_package(catkin REQUIRED COMPONENTS
     ocs2_robotic_tools
     kuavo_msgs
     sensor_msgs
-    motion_capture_ik
     humanoid_interface
     humanoid_interface_ros
     apriltag_ros

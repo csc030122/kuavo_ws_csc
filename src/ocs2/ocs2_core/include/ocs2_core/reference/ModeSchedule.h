@@ -95,39 +95,65 @@ struct ModeSchedule {
 
   bool existValidFootPose() const{
     size_t count = 0;
-    for (const auto& enableFoot : enableFootSequence)
-      if(enableFoot)
+    for (int i = 0; i < enableFootSequence.size(); i++)
+    {
+      if(enableFootSequence[i])
         count++;
-    if(count > 1)//最后一个
-      return true;
+      if(count > 1)//最后一个
+        return true;
+    }
+    
     return false;
   }
 
   bool existValidFootPose(scalar_t time) const{
     size_t count = 0;
     const size_t index_start = std::lower_bound(eventTimes.begin(), eventTimes.end(), time) - eventTimes.begin();
-    for (int i = index_start+1; i < enableFootSequence.size(); i++)
+    for(size_t i = index_start+1; i < enableFootSequence.size(); i++)
+    {
       if(enableFootSequence[i])
         count++;
-    if(count > 0)//最后一个
-      return true;
+      if(count > 0)//最后一个
+        return true;
+    }
+    
     return false;
   }
-
-
 
   /** Clears modeSchedule */
   void clear() {
     eventTimes.clear();
     modeSequence.clear();
+    enableFootSequence.clear();
+    enableFullBodySequence.clear();
+    footPoseSequence.clear();
+    torsoPoseSequence.clear();
+    swingHeightSequence.clear();
+    fullBodyStateSequence.clear();
+    timeTrajectorySequence.clear();
+    additionalFootPoseSequence.clear();
   }
+
+  /**
+   * Gets a sub-schedule within the specified time range
+   * @param [in] startTime: start time of the sub-schedule
+   * @param [in] endTime: end time of the sub-schedule
+   * @param [out] subSchedule: output ModeSchedule containing events within [startTime, endTime]
+   * @return true if successfully found modes within the time range, false otherwise
+   */
+  bool getSubSchedule(scalar_t startTime, scalar_t endTime, ModeSchedule& subSchedule) const;
 
   std::vector<scalar_t> eventTimes;  // event times of size N - 1
   std::vector<size_t> modeSequence;  // mode sequence of size N
   std::vector<bool> enableFootSequence;  // decide whether foot is enabled or not at each mode at each event time
+  std::vector<bool> enableFullBodySequence;
   std::vector<Eigen::Vector4d> footPoseSequence;  // foot pos(xyz yaw) of each mode at each event time
   std::vector<Eigen::Vector4d> torsoPoseSequence; // torso pos(xyz yaw) of each mode at each event time
+  std::vector<std::vector<Eigen::Vector4d>> additionalFootPoseSequence; // additional foot pos(xyz yaw) of each mode at each event time
+  std::vector<double> swingHeightSequence; // swing height of each mode at swing phase
   // bool with_pos_sequence{false};  // whether posSequence is available or not
+  std::vector<vector_array_t> fullBodyStateSequence;
+  std::vector<scalar_array_t> timeTrajectorySequence;
 };
 
 /** Exchanges the given values. */

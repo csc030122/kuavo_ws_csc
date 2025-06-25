@@ -14,6 +14,7 @@ find_package(catkin REQUIRED
   ocs2_mobile_manipulator_ros
   motion_capture_ik
   kuavo_msgs
+  std_srvs
 )
 find_package(PkgConfig REQUIRED)
 find_package(yaml-cpp REQUIRED)

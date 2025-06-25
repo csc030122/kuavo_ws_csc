@@ -55,6 +55,44 @@ struct TargetTrajectories {
     return TargetTrajectories(timeTrajectory, newStates, inputTrajectory);
   };
 
+  TargetTrajectories segmentTargetTrajectories(scalar_t startTime, scalar_t endTime, bool trim = true)
+  {
+    TargetTrajectories targetTrajectories;
+    targetTrajectories.timeTrajectory.push_back(startTime);
+    targetTrajectories.stateTrajectory.push_back(getDesiredState(startTime));
+    targetTrajectories.inputTrajectory.push_back(getDesiredInput(startTime));
+    for (size_t i = 0; i < timeTrajectory.size(); ++i)
+    {
+      if (timeTrajectory[i] > startTime && timeTrajectory[i] < endTime)
+      {
+        targetTrajectories.timeTrajectory.push_back(timeTrajectory[i]);
+        targetTrajectories.stateTrajectory.push_back(stateTrajectory[i]);
+        targetTrajectories.inputTrajectory.push_back(inputTrajectory[i]);
+      }
+    }
+
+    targetTrajectories.timeTrajectory.push_back(endTime);
+    targetTrajectories.stateTrajectory.push_back(getDesiredState(endTime));
+    targetTrajectories.inputTrajectory.push_back(getDesiredInput(endTime));
+
+    if (trim && timeTrajectory.size() > 2)
+    {
+      for (size_t i = 1; i < timeTrajectory.size(); ++i)
+      {// 清理前前一个轨迹点
+        if (timeTrajectory.size() <= 2)
+          break;
+        if (timeTrajectory[i] < startTime)
+        {
+          timeTrajectory.erase(timeTrajectory.begin());
+          stateTrajectory.erase(stateTrajectory.begin());
+          inputTrajectory.erase(inputTrajectory.begin());
+        }else{
+          break;
+        }
+      }
+    }
+    return targetTrajectories;
+  }
   // fill the target trajectories with the other one
   void fillTargetTrajectories(const TargetTrajectories &other,
                               int startIndex)

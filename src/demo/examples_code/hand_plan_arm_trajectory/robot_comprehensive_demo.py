@@ -4,10 +4,10 @@ import rospy
 import json
 import math
 import numpy as np
-from kuavo_msgs.srv import planArmTrajectoryBezierCurve, planArmTrajectoryBezierCurveRequest
-from kuavo_msgs.msg import bezierCurveCubicPoint, jointBezierTrajectory
+from humanoid_plan_arm_trajectory.srv import planArmTrajectoryBezierCurve, planArmTrajectoryBezierCurveRequest
+from humanoid_plan_arm_trajectory.msg import bezierCurveCubicPoint, jointBezierTrajectory
 from sensor_msgs.msg import JointState
-from kuavo_msgs.msg import JointTrajectory
+from trajectory_msgs.msg import JointTrajectory
 from kuavo_msgs.srv import changeArmCtrlMode, changeArmCtrlModeRequest
 from kuavo_msgs.msg import sensorsData
 from kuavo_msgs.msg import robotHandPosition, robotHeadMotionData

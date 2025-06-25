@@ -9,17 +9,17 @@ PyPI 项目地址: https://pypi.org/project/kuavo-humanoid-sdk/
 
 ## 安装
 **提示：对于本 SDK 目前存在两个版本，正式发布版与beta内测版, 他们的区别是：**
-- 正式发布版：稳定版，对应[kuavo-ros-opensource](https://gitee.com/leju-robot/kuavo-ros-opensource/)的`master` 分支提供的功能，
-- beta内测版：该版本较正式版会激进一些，同时也会提供更丰富的功能，对应[kuavo-ros-opensource](https://gitee.com/leju-robot/kuavo-ros-opensource/)的`beta` 分支提供的功能。
+- 正式发布版：稳定版，对应 [kuavo-ros-opensource](https://gitee.com/leju-robot/kuavo-ros-opensource/) 的 `master` 分支提供的功能，
+- beta内测版：该版本较正式版会激进一些，同时也会提供更丰富的功能，对应 [kuavo-ros-opensource](https://gitee.com/leju-robot/kuavo-ros-opensource/) 的 `beta` 分支提供的功能。
 
-**温馨提示：请务必明确您需要安装的版本，如果您的SDK版本与`kuavo-ros-opensource`未匹配，可能会出现某些功能不可用的错误。**
+**温馨提示：请务必明确您需要安装的版本，如果您的SDK版本与 `kuavo-ros-opensource` 未匹配，可能会出现某些功能不可用的错误。**
 
-安装最新的**正式版** Kuavo Humanoid SDK，可以使用 pip：
+安装最新的 **正式版** Kuavo Humanoid SDK，可以使用 pip：
 ```bash
 pip install kuavo-humanoid-sdk
 ```
 
-安装最新的**beta版** Kuavo Humanoid SDK，可以使用 pip：
+安装最新的 **beta版** Kuavo Humanoid SDK，可以使用 pip：
 ```bash
 pip install --pre kuavo-humanoid-sdk
 
@@ -58,17 +58,17 @@ pip uninstall kuavo_humanoid_sdk && pip install kuavo_humanoid_sdk
 pip install --upgrade --pre kuavo_humanoid_sdk
 ```
 
-## 描述
+## 文档
 
 有关详细的 SDK 文档和使用示例，请参阅 [sdk_description.md](sdk_description.md)。
 
-## 文档
-文档提供两种格式：
+此外我们还提供了两种格式的文档：
 - HTML 格式：[docs/html](docs/html), **需要自己执行脚本生成**
 - Markdown 格式：[docs/markdown](docs/markdown)
 
 我们推荐您自己执行文档脚本生成文档到本地, 文档会输出到`docs/html`和`docs/markdown`文件夹:
 ```bash
+catkin build kuavo_msgs ocs2_msgs motion_capture_ik
 chmod +x ./gen_docs.sh
 ./gen_docs.sh
 ```
@@ -76,3 +76,67 @@ chmod +x ./gen_docs.sh
 我们推荐您使用`html`查看文档更加方便，比如:
 ![](docs/images/image.png)
 
+## 搬箱子案例
+**编译**：
+```
+catkin build humanoid_controllers kuavo_msgs gazebo_sim ar_control
+```
+
+**运行**：
+
+⚠️ 在运行之前, 需要确认机器人版本`ROBOT_VERSION=45`，否则会机器人末端控制会有问题
+```
+# 启动gazebo场景
+roslaunch humanoid_controllers load_kuavo_gazebo_manipulate.launch joystick_type:=bt2pro
+
+# 启动ar_tag转换码操作和virtual操作
+roslaunch ar_control robot_strategies.launch  
+
+# 运行搬箱子案例
+python3 grasp_box_example.py 
+```
+
+🚨 第一次启动gazebo场景前需要修改tag尺寸：
+
+在`/opt/ros/noetic/share/apriltag_ros/config/tags.yaml`文件中将tag的size尺寸修改为和立方体tag码的尺寸一致（只需做一次）
+```
+standalone_tags:
+    [
+        {id: 0, size: 0.088, name: 'tag_0'},
+        {id: 1, size: 0.088, name: 'tag_1'},
+        {id: 2, size: 0.088, name: 'tag_2'},
+        {id: 3, size: 0.088, name: 'tag_3'},
+        {id: 4, size: 0.088, name: 'tag_4'},
+        {id: 5, size: 0.088, name: 'tag_5'},
+        {id: 6, size: 0.088, name: 'tag_6'},
+        {id: 7, size: 0.088, name: 'tag_7'},
+        {id: 8, size: 0.088, name: 'tag_8'},
+        {id: 9, size: 0.088, name: 'tag_9'},
+    ]
+```
+🚨 每次启动gazebo场景后需要手动打光：
+
+需要在机器人腰部位置附近给个点光源，否则会找不到tag
+
+![](docs/images/gazebo.jpg)
+
+
+**测试**
+```
+python3 -m pytest test_grasp_box_strategy.py -v
+```
+测试用例主要验证抓取盒子案例的各个策略模块：
+- `test_head_find_target_success_rotate_head`: 测试仅通过头部旋转成功找到目标
+- `test_head_find_target_success_rotate_body`: 测试需要旋转身体后成功找到目标
+- `test_head_find_target_timeout`: 测试搜索超时未找到目标的情况
+- `test_head_find_target_invalid_id`: 测试目标ID无效的情况
+- `test_walk_approach_target_success`: 测试成功接近目标
+- `test_walk_approach_target_no_data`: 测试目标数据不存在的情况
+- `test_walk_to_pose_success`: 测试成功移动到指定位姿
+- `test_walk_to_pose_failure`: 测试移动到指定位姿失败的情况
+- `test_arm_move_to_target_success`: 测试手臂成功移动到目标位置
+- `test_arm_move_to_target_failure`: 测试手臂移动失败的情况
+- `test_arm_transport_target_up_success`: 测试成功抬起箱子
+- `test_arm_transport_target_up_failure`: 测试抬起箱子失败的情况
+- `test_arm_transport_target_down_success`: 测试成功放下箱子
+- `test_arm_transport_target_down_failure`: 测试放下箱子失败的情况

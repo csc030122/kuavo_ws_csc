@@ -9,8 +9,8 @@ import time
 import argparse
 from kuavo_msgs.msg import armTargetPoses
 from kuavo_msgs.srv import changeArmCtrlMode, changeArmCtrlModeRequest, changeArmCtrlModeResponse
-from motion_capture_ik.srv import twoArmHandPoseCmdSrv
-from motion_capture_ik.msg import twoArmHandPoseCmd, ikSolveParam
+from kuavo_msgs.srv import twoArmHandPoseCmdSrv
+from kuavo_msgs.msg import twoArmHandPoseCmd, ikSolveParam
 
 from kuavo_msgs.msg import robotHandPosition
 from kuavo_msgs.msg import robotHeadMotionData
@@ -140,30 +140,112 @@ class Quaternion:
         self.y = 0     
         self.z = 0
 
-def ToQuaternion(yaw, pitch, roll): # yaw (Z), pitch (Y), roll (X)
-
-    # Abbreviations for the various angular functions
-    cy = math.cos(yaw * 0.5)
-    sy = math.sin(yaw * 0.5)
-    cp = math.cos(pitch * 0.5)
-    sp = math.sin(pitch * 0.5)
-    cr = math.cos(roll * 0.5)
-    sr = math.sin(roll * 0.5)
- 
-    q = Quaternion()
-    q.w = cy * cp * cr + sy * sp * sr
-    q.x = cy * cp * sr - sy * sp * cr
-    q.y = sy * cp * sr + cy * sp * cr
-    q.z = sy * cp * cr - cy * sp * sr
+# yaw (Z), pitch (Y), roll (X)
+# 欧拉角(Z-Y-X顺序) → 旋转矩阵 → 四元数
+def euler_to_rotation_matrix(yaw_adaptive=0, pitch_adaptive=0, roll_adaptive=0,
+                            yaw_manual=0, pitch_manual=0, roll_manual=0):
+    """
+    欧拉角(Z-Y-X顺序) → 旋转矩阵
+    参数:
+        yaw (float):   绕Z轴旋转角度（弧度）
+        pitch (float): 绕Y轴旋转角度（弧度）
+        roll (float):  绕X轴旋转角度（弧度）
+    返回:
+        np.ndarray: 3x3旋转矩阵
+    """
+    # 计算三角函数值
+    cy, sy = np.cos(yaw_adaptive), np.sin(yaw_adaptive)
+    cp, sp = np.cos(pitch_adaptive), np.sin(pitch_adaptive)
     
+    R = np.array([
+        [cy * cp,   -sy,        cy * sp],
+        [sy * cp,    cy,        sy * sp],
+        [-sp,        0,         cp     ]
+    ])
+
+    # 存在自定义参数 需要二次旋转
+    if yaw_manual or pitch_manual or roll_manual:
+
+        # 初始化为单位矩阵
+        R_manual = np.array([
+            [1, 0, 0],
+            [0, 1, 0],
+            [0, 0, 1]
+        ])
+        if abs(yaw_manual) > 0.01:
+            print("yaw_manual=",yaw_manual)
+            c, s = np.cos(yaw_manual), np.sin(yaw_manual)
+            R_manual = np.array([[c, -s, 0], [s, c, 0], [0, 0, 1]]) @ R_manual
+
+        if abs(pitch_manual) > 0.01:
+            print("pitch_manual=",pitch_manual)
+            c, s = np.cos(pitch_manual), np.sin(pitch_manual)
+            R_manual = np.array([[c, 0, s], [0, 1, 0], [-s, 0, c]]) @ R_manual
+
+        if abs(roll_manual) > 0.01:
+            print("roll_manual=",roll_manual)
+            c, s = np.cos(roll_manual), np.sin(roll_manual)
+            R_manual = np.array([[1, 0, 0], [0, c, -s], [0, s, c]]) @ R_manual
+
+        return R @ R_manual
+    # 不存在自定义参数,直接输出旋转矩阵
+    else :
+        return R
+
+def rotation_matrix_to_quaternion(R):
+    """
+    旋转矩阵 → 四元数
+    参数:
+        R (np.ndarray): 3x3旋转矩阵
+    返回:
+        np.ndarray: 四元数 [x, y, z, w]
+    """
+    # 计算四元数分量
+    trace = np.trace(R)
+
+    q = Quaternion()
+
+    if trace > 0:
+        q.w = math.sqrt(trace + 1.0) / 2
+        q.x = (R[2, 1] - R[1, 2]) / (4 * q.w)
+        q.y = (R[0, 2] - R[2, 0]) / (4 * q.w)
+        q.z = (R[1, 0] - R[0, 1]) / (4 * q.w)
+    else:
+        # 处理w接近零的情况
+        i = np.argmax([R[0, 0], R[1, 1], R[2, 2]])
+        j = (i + 1) % 3
+        k = (j + 1) % 3
+        t = np.zeros(4)
+        t[i] = math.sqrt(R[i, i] - R[j, j] - R[k, k] + 1) / 2
+        t[j] = (R[i, j] + R[j, i]) / (4 * t[i])
+        t[k] = (R[i, k] + R[k, i]) / (4 * t[i])
+        t[3] = (R[k, j] - R[j, k]) / (4 * t[i])
+
+        q.x, q.y, q.z, q.w = t  # 重排序为[x, y, z, w]
+
+    # 归一化（防止数值误差）
     norm = math.sqrt(q.w * q.w + q.x * q.x + q.y * q.y + q.z * q.z)
     if norm > 0:
         q.w /= norm
         q.x /= norm
         q.y /= norm
         q.z /= norm
-
     return q
+
+def euler_to_quaternion_via_matrix(yaw_adaptive=0, pitch_adaptive=0, roll_adaptive=0,
+                                    yaw_manual=0, pitch_manual=0, roll_manual=0):
+    """
+    欧拉角 → 旋转矩阵 → 四元数
+    参数:
+        yaw (float):   绕Z轴旋转角度(弧度)
+        pitch (float): 绕Y轴旋转角度(弧度)
+        roll (float):  绕X轴旋转角度(弧度)
+    返回:
+        np.ndarray: 四元数 [x, y, z, w]
+    """
+    R = euler_to_rotation_matrix(yaw_adaptive, pitch_adaptive, roll_adaptive,
+                                yaw_manual, pitch_manual, roll_manual)
+    return rotation_matrix_to_quaternion(R)
 
 ######################### 识别apriltag标签部分 ###########################################
 
@@ -316,7 +398,9 @@ def main():
     set_head_target(0, 20)
     print("head down")
     time.sleep(2)
-    
+
+##########################################   寻找AprilTag码   #########################################
+
     # 获取指定ID的AprilTag的平均数据
     tag_data = processor.get_averaged_apriltag_data(tag_id=0)
 
@@ -324,8 +408,11 @@ def main():
     if rospy.is_shutdown():
         return None
 
+##########################################   参数准备   #########################################
+
     # 判断左手还是右手 后续都会根据这个参数进行判断
     # position_flag > 0 为左手，否则为右手
+    # 若要固定用哪只手抓取, 在这里固定position_flag的值即可
     if False:
         position_flag=-1
     else :
@@ -336,15 +423,19 @@ def main():
     # 获取机器人版本
     robot_version = get_parameter('robot_version')
     #不同型号机器人的初始位置 (机器人坐标系)
-    if robot_version == 45:
+    if robot_version == 45 or robot_version == 49:
         robot_zero_x = -0.0173
         robot_zero_y = -0.2927
         robot_zero_z = -0.2837
-
+        
     elif robot_version == 42:
         robot_zero_x = -0.0175
         robot_zero_y = -0.25886
         robot_zero_z = -0.20115
+
+    else :
+        print("机器人版本号错误, 仅支持42 45 49")
+
 
     # 设置手臂运动模式为外部控制
     set_arm_control_mode(2)
@@ -354,11 +445,6 @@ def main():
     hand_control_pub = rospy.Publisher('/control_robot_hand_position', robotHandPosition, queue_size=10)
     # 创建消息对象
     hand_control_msg = robotHandPosition()
-
-    # 手部松开
-    hand_control_msg.left_hand_position =open_hand  # 左手位置   
-    hand_control_msg.right_hand_position = open_hand  # 右手位置
-    hand_control_pub.publish(hand_control_msg)  # 发布消息
 
 ########################################## 运动控制 ik求解 #########################################
     # 创建请求对象
@@ -392,7 +478,8 @@ def main():
         relative_angle= math.atan((robot_zero_y-set_y)/(set_x-robot_zero_x))
         print(f"relative_angle: {relative_angle}")
         #计算四元数
-        quat=ToQuaternion(relative_angle*offset_angle, -1.57 , 0)
+        quat=euler_to_quaternion_via_matrix(relative_angle*offset_angle, -1.57 , 0)
+        #quat=euler_to_quaternion_via_matrix(relative_angle*offset_angle, -1.57 , 0, 1.57, 0, 0 )
         eef_pose_msg.hand_poses.left_pose.quat_xyzw = [quat.x,quat.y,quat.z,quat.w]  # 带yaw角
         #eef_pose_msg.hand_poses.left_pose.quat_xyzw = [-0.4996018366446333, -0.49999984146591725, 0.49999984146591725, 0.5003981633553666]  # 水平状态
         eef_pose_msg.hand_poses.left_pose.elbow_pos_xyz = np.zeros(3)
@@ -414,7 +501,8 @@ def main():
         relative_angle=math.atan((set_y-robot_zero_y)/(set_x-robot_zero_x))
         print(f"relative_angle: {relative_angle}")
         # 计算四元数
-        quat=ToQuaternion(relative_angle*offset_angle, -1.57 , 0.2)
+        quat=euler_to_quaternion_via_matrix(relative_angle*offset_angle, -1.57 , 0)
+        #quat=euler_to_quaternion_via_matrix(relative_angle*offset_angle, -1.57 , 0, 1.57, 0, 0 )
         eef_pose_msg.hand_poses.right_pose.quat_xyzw = [quat.x,quat.y,quat.z,quat.w]  # 带yaw角
         #eef_pose_msg.hand_poses.right_pose.quat_xyzw =[0.4996018366446333, -0.49999984146591725, -0.49999984146591725, 0.5003981633553666]  # 水平状态
         eef_pose_msg.hand_poses.right_pose.elbow_pos_xyz = np.zeros(3)
@@ -427,8 +515,26 @@ def main():
 
     # 逆解成功
     if(res.success):
+########################################## 展示ik结果 ####################################################
+        
+        l_pos = res.hand_poses.left_pose.pos_xyz
+        l_pos_error = np.linalg.norm(l_pos - eef_pose_msg.hand_poses.left_pose.pos_xyz)
+        r_pos = res.hand_poses.right_pose.pos_xyz
+        r_pos_error = np.linalg.norm(r_pos - eef_pose_msg.hand_poses.right_pose.pos_xyz)
+        
+        # 打印部分逆解结果
+        print(f"time_cost: {res.time_cost:.2f} ms. left_pos_error: {1e3*l_pos_error:.2f} mm, right_pos_error: {1e3*r_pos_error:.2f} mm")
+        print(f"left_joint_angles: {res.hand_poses.left_pose.joint_angles}")
+        print(f"right_joint_angles: {res.hand_poses.right_pose.joint_angles}")
+        print(f"res.q_arm: {res.q_arm}")
+        
 ########################################## 运动控制 准备姿态 #########################################
         
+        # 手部松开
+        hand_control_msg.left_hand_position =open_hand  # 左手位置   
+        hand_control_msg.right_hand_position = open_hand  # 右手位置
+        hand_control_pub.publish(hand_control_msg)  # 发布消息
+
         # 初始位置
         print("move to position 0")
         publish_arm_target_poses([1.5], [20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0,
@@ -477,18 +583,6 @@ def main():
 
 ########################################## 运动控制 执行ik结果 #########################################
 
-        l_pos = res.hand_poses.left_pose.pos_xyz
-        l_pos_error = np.linalg.norm(l_pos - eef_pose_msg.hand_poses.left_pose.pos_xyz)
-        r_pos = res.hand_poses.right_pose.pos_xyz
-        r_pos_error = np.linalg.norm(r_pos - eef_pose_msg.hand_poses.right_pose.pos_xyz)
-        
-        # 打印部分逆解结果
-        print(f"time_cost: {res.time_cost:.2f} ms. left_pos_error: {1e3*l_pos_error:.2f} mm, right_pos_error: {1e3*r_pos_error:.2f} mm")
-        print(f"left_joint_angles: {res.hand_poses.left_pose.joint_angles}")
-        print(f"right_joint_angles: {res.hand_poses.right_pose.joint_angles}")
-        print(f"res.q_arm: {res.q_arm}")
-        
-        # ik结束 执行ik结果
         # 0.35 0.52
         if  position_flag > 0 :
             joint_end_angles = np.concatenate([res.hand_poses.left_pose.joint_angles, [0.35, 0.0, 0.0, -0.52, 0.0, 0.0, 0.0]])
@@ -499,7 +593,7 @@ def main():
         # 调用函数并传入times和values
         publish_arm_target_poses([3], degrees_list)
         print("完成逆解并根据逆解结果到达定位置")
-        time.sleep(3.5)
+        time.sleep(5)
 
         print("ik结束")
 
@@ -566,7 +660,7 @@ def main():
     # ik失败
     else :
         print("ik失败,程序退出")
-
+########################################## 流程结束 后续处理 #########################################
     # 回到初始位置
     publish_arm_target_poses([1.5], [20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0, 
                                 20.0, 0.0, 0.0, -30.0, 0.0, 0.0, 0.0])

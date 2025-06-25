@@ -94,16 +94,22 @@ ROBOT_SERIAL_NUMBER=<机器人编号>
 
 ### 1. 机器人行走测试
 
-`cmd_vel` 模式
+`cmd_vel` 模式(速度控制)
 
 ```bash
-roslaunch automatic_test test_robot_walk.launch sim:=false test_cmd_vel:=true test_cmd_pose:=false
+roslaunch automatic_test test_robot_walk.launch sim:=false test_cmd_vel:=true
 ```
 
-`cmd_pose` 模式
+`cmd_pose` 模式(位置控制)
 
 ```bash
-roslaunch automatic_test test_robot_walk.launch sim:=false test_cmd_vel:=false test_cmd_pose:=true
+roslaunch automatic_test test_robot_walk.launch sim:=false test_cmd_pose:=true
+```
+
+`cmd_pose_world` 模式(世界坐标系位置控制)
+
+```bash
+roslaunch automatic_test test_robot_walk.launch sim:=false test_cmd_pose_world:=true
 ```
 
 这个测试会执行预定义的路径（圆形、方形、S形, 三角形, 直线路径），测试机器人的行走能力。

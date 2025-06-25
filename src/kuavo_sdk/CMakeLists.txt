@@ -51,7 +51,6 @@ find_package(catkin REQUIRED COMPONENTS
 
 ## Generate messages in the 'msg' folder
 
-
 ## Generate services in the 'srv' folder
 
 

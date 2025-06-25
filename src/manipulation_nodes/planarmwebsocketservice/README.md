@@ -66,6 +66,7 @@
         "robot_ws_address": ROBOT_WS_ADDRESS,
         "robot_ws_logger_address": ROBOT_WS_LOGGER_ADDRESS,
         "robot_upload_folder": ROBOT_UPLOAD_FOLDER,
+        "robot_action_file_folder": ROBOT_ACTION_FILE_FOLDER,
         "robot_username": ROBOT_USERNAME,
         "robot_mac_address": ROBOT_MAC_ADDRESS,
     }
@@ -247,6 +248,69 @@ response:
 | 名称   | 类型  | 描述        |
 | ---- | --- | --------- |
 | code | int | 错误码 0: 成功 |
+
+### 下载音频文件后确认由上位机还是下位机来执行
+
+request:
+
+```json
+{
+    "cmd": "check_music_path",
+    "data": {
+        "is_reset_cmd": True,
+        "music_filename": "music_filename",
+    }
+}
+```
+
+| 名称       | 类型  | 描述                                                  |
+| -------- | --- | --------------------------------------------------- |
+| is_reset_cmd     | boolean | 是否是重置遥控器配置指令，重置则该值为 True，单独下载音频该值为 False |
+| music_filename   | string |   下载音乐文件的名字，单独下载音频的时候传入完整带后缀的文件名，如果改次是重置配置则传入空值  |
+
+response:
+
+```json
+{
+    "cmd": "check_music_path",
+    "data": {
+        "code": 0,
+        "msg": "Body NUC"
+    }
+}
+```
+
+| 名称       | 类型  | 描述                                                  |
+| -------- | --- | --------------------------------------------------- |
+| code     | int | 执行结果码，0: 成功，1：失败 |
+| msg   | string |   执行结果信息，如果 code 为 0，则返回 Body NUC/Head NUC，表示路径；如果 code 为 1 返回错误信息 |
+
+### 更新 h12 遥控器配置文件
+
+request:
+
+```json
+{
+    "cmd": "update_h12_config"
+}
+```
+
+response:
+
+```json
+{
+    "cmd": "update_h12_config",
+    "data": {
+        "code": 0,
+        "msg": "Body NUC"
+    }
+}
+```
+
+| 名称       | 类型  | 描述                                                  |
+| -------- | --- | --------------------------------------------------- |
+| code     | int | 执行结果码，0: 成功，1：失败 |
+| msg   | string |   执行结果信息，如果 code 为 0，则返回 Body NUC/Head NUC，表示音乐存放路径；如果 code 为 1 返回错误信息 |
 
 ### logger 日志 websocket
 

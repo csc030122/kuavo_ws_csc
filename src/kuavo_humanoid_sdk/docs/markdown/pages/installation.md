@@ -1,33 +1,33 @@
 <a id="installation"></a>
 
-# Installation
+# 安装指南
 
-## Installation
+## 安装
 
-There are two ways to install the Kuavo Humanoid SDK:
+安装 Kuavo Humanoid SDK 有两种方式:
 
-1. Install from PyPI (recommended)
-
-   #### NOTE
-   There are currently two versions of this SDK, the stable version and the beta version. Their differences are:
-   - stable version: corresponding to the functionality provided by the master branch of [kuavo-ros-opensource](https://gitee.com/leju-robot/kuavo-ros-opensource/).
-   - Beta version: This version is more aggressive than the official version and also provides richer functionality, corresponding to the functionality provided by the beta branch of [kuavo-ros-opensource](https://gitee.com/leju-robot/kuavo-ros-opensource/).
+1. 通过 PyPI 安装(推荐)
 
    #### NOTE
-   Please be clear about which version you need to install. If your SDK version does not match kuavo-ros-opensource, some features may not be available.
+   目前 SDK 有两个版本,稳定版和测试版。它们的区别是:
+   - **稳定版**: 对应 [kuavo-ros-opensource](https://gitee.com/leju-robot/kuavo-ros-opensource/) 仓库 master 分支提供的功能。
+   - **测试版**: 该版本比正式版更激进,提供更丰富的功能,对应 [kuavo-ros-opensource](https://gitee.com/leju-robot/kuavo-ros-opensource/) 仓库 beta 分支提供的功能。
 
-   Install the latest **stable version** of Kuavo Humanoid SDK using pip:
+   #### WARNING
+   请明确你需要安装的版本，如果你的 SDK 版本与 kuavo-ros-opensource 不匹配,某些功能可能无法使用。
+
+   使用 pip 安装最新的 **稳定版** Kuavo Humanoid SDK:
    ```bash
    pip install kuavo-humanoid-sdk
    ```
 
-   Install the latest **beta version** of Kuavo Humanoid SDK using pip:
+   使用 pip 安装最新的 **测试版** Kuavo Humanoid SDK:
    ```bash
    pip install --pre kuavo-humanoid-sdk
    ```
-2. **Or** install in development mode
+2. **或者** 以开发模式本地安装
 
-   Clone the repository and install in editable mode:
+   克隆代码仓库并以可编辑模式安装:
    ```bash
    git clone https://gitee.com/leju-robot/kuavo-ros-opensource.git
    cd kuavo-ros-opensource/src/kuavo_humanoid_sdk
@@ -35,38 +35,40 @@ There are two ways to install the Kuavo Humanoid SDK:
    ./install.sh
    ```
 
-   This allows you to modify the source code and have the changes take effect immediately without reinstalling.
+   这种方式允许你修改源代码,修改后无需重新安装即可生效。
 
-## Upgrading
+## 升级
 
-> Before upgrading, you can check the currently installed version with:
+> 升级前,你可以通过以下命令查看当前安装的版本:
 
 > ```bash
 > pip show kuavo-humanoid-sdk
-> # Output:
+> # 输出:
 > Name: kuavo-humanoid-sdk
 > Version: 0.1.2
 > ...
 > ```
 
 > #### NOTE
-> If the version number contains the letter b, it indicates a beta version, e.g., Version: 0.1.2b113
+> 如果版本号中包含字母 b,表示这是测试版,例如 Version: 0.1.2b113
 
-> To upgrade from a **stable version** to the latest stable version:
+> 如果版本号中包含字母 a,表示这是开发版,例如 Version: 0.1.2a113
+
+> 从 **稳定版** 升级到最新稳定版:
 
 > ```bash
 > pip install --upgrade kuavo_humanoid_sdk
 > ```
 
-> To upgrade from a **beta version** to the latest stable version:
+> 从 **测试版** 升级到最新稳定版:
 
 > ```bash
 > pip install --upgrade --force-reinstall kuavo_humanoid_sdk
-> # or
+> # 或者
 > pip uninstall kuavo_humanoid_sdk && pip install kuavo_humanoid_sdk
 > ```
 
-> To upgrade from a **stable/beta version** to the latest beta version:
+> 从 **稳定版/测试版** 升级到最新测试版:
 
 > ```bash
 > pip install --upgrade --pre kuavo_humanoid_sdk

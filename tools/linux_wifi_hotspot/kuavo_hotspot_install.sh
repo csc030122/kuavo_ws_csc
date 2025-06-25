@@ -7,9 +7,13 @@ HOTSPOT_SSID="kuavo-$(hostname)的热点"
 echo -e "\033[32m\n🚀🚀🚀 开始安装...\n\033[0m"
 
 # @@@ INSTALL
-sudo add-apt-repository ppa:lakinduakash/lwh -y || { echo -e "\e[31m❌ Failed to add repository\e[0m"; exit 1; }
 sudo apt update
-sudo apt install -y linux-wifi-hotspot || { echo -e "\e[31m❌ Failed to install linux-wifi-hotspot\e[0m"; exit 1; }
+wget https://kuavo.lejurobot.com/statics/linux-wifi-hotspot_4.7.2_amd64.deb
+sudo dpkg -i linux-wifi-hotspot_4.7.2_amd64.deb || true
+sudo apt install -f || true
+rm linux-wifi-hotspot_4.7.2_amd64.deb
+dpkg -l | grep linux-wifi-hotspot || { echo -e "\e[31m❌ Failed to install linux-wifi-hotspot\e[0m"; exit 1; }
+
 
 # @@@ CREATE HOTSPOT
 wlan0=$(iw dev | awk '$1=="Interface" && $2 !~ /^(ap|lo|docker|veth)/{print $2; exit}')

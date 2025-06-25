@@ -138,6 +138,7 @@ namespace mobile_manipulator_controller
     void controlBasePos(const vector_t& mmState, const vector_t& mmInput);
     SystemObservation forwardSimulation(const SystemObservation& currentObservation);
     bool controlService(kuavo_msgs::changeTorsoCtrlMode::Request& req, kuavo_msgs::changeTorsoCtrlMode::Response& res);
+    bool getKinematicMpcControlModeService(kuavo_msgs::changeTorsoCtrlMode::Request& req, kuavo_msgs::changeTorsoCtrlMode::Response& res);
     void pubHumanoid2MMTf();
     vector_t getMMEefPose(const vector_t& state);
     visualization_msgs::MarkerArray getVisualizeTrajectoryMsg(const std::deque<Eigen::VectorXd>& twoHandPoseTrajectory, std::vector<double> rgba={1,0,0,1});
@@ -157,6 +158,7 @@ namespace mobile_manipulator_controller
     ros::Publisher armTrajPublisher_;
     ros::ServiceServer kinematicMpcControlSrv_;
     tf2_ros::StaticTransformBroadcaster staticBroadcaster_;
+    ros::ServiceServer getKinematicMpcControlModeSrv_;
 
     double comHeight_;
     size_t humanoidStateDim_{38};//12+12+14
@@ -167,7 +169,7 @@ namespace mobile_manipulator_controller
     ControlType controlType_ = ControlType::None;
     bool velControl_{true};
     Vector6d basePoseDeltaLimit_;
-    Vector6d basePoseCmd_;
+    // Vector6d basePoseCmd_;
     ros::Time basePoseCmdUpdatedTime_;
     double terrain_height_{0};
     bool visualizeMm_{true};

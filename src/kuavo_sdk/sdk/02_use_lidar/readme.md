@@ -14,6 +14,8 @@
 - 雷达官方 github 地址：https://github.com/Livox-SDK
 - 雷达出厂默认ip：192.168.1.191，上位机ip：192.168.1.102
 
+⚠️⚠️⚠️ **注意： 使用雷达时, 上位机不能存在其他192.168.1.xx网段的网络连接**
+
 ## 驱动下载编译
 ```bash
 mkdir -p caktin_livox_ros_driver2/src

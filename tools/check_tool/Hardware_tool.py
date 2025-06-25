@@ -472,7 +472,7 @@ def handTouch_usb():
 def ruiwo_zero():
         
     kuavo_ros_file_path = folder_path +"/ruiwo_zero_set.sh" 
-    kuavo_open_file_path = folder_path +"../../installed/share/hardware_node/lib/ruiwo_controller/setZero.sh" 
+    kuavo_open_file_path = folder_path +"../../installed/share/hardware_plant/lib/ruiwo_controller/setZero.sh" 
     
 
     if os.path.exists(kuavo_ros_file_path):
@@ -526,7 +526,7 @@ def update_kuavo():
 def arm_setzero():
 
     kuavo_ros_file_path = folder_path +"/arm_setzero.sh" 
-    kuavo_open_file_path = folder_path +"../../installed/share/hardware_node/lib/ruiwo_controller/arm_setzero.sh" 
+    kuavo_open_file_path = folder_path +"../../installed/share/hardware_plant/lib/ruiwo_controller/arm_setzero.sh" 
     
     if os.path.exists(kuavo_ros_file_path):
         command = "bash "+ kuavo_ros_file_path
@@ -542,7 +542,7 @@ def arm_setzero():
 def arm_breakin():
 
     kuavo_ros_file_path = folder_path + "/arm_breakin.sh" 
-    kuavo_open_file_path = folder_path + "../../installed/share/hardware_node/lib/ruiwo_controller/arm_breakin.sh" 
+    kuavo_open_file_path = folder_path + "../../installed/share/hardware_plant/lib/ruiwo_controller/arm_breakin.sh" 
     
     if os.path.exists(kuavo_ros_file_path):
         command = "bash "+ kuavo_ros_file_path
@@ -555,6 +555,45 @@ def arm_breakin():
     # 使用 subprocess.run() 运行命令
     subprocess.run(command, shell=True)
     
+def fix_ros_key():
+    # 脚本路径
+    script_paths = [
+        os.path.join(folder_path, "fix_ros_key.sh"),
+        os.path.join(folder_path, "../../tools/check_tool/fix_ros_key.sh")
+    ]
+    
+    script_path = None
+    # 检查脚本是否存在
+    for path in script_paths:
+        if os.path.exists(path):
+            script_path = path
+            break
+    
+    if not script_path:
+        print(f"{bcolors.FAIL}错误：未找到fix_ros_key.sh脚本{bcolors.ENDC}")
+        print("请检查脚本路径是否正确或是否存在该脚本")
+        return
+    
+    try:
+        print(f"{bcolors.OKCYAN}正在执行ROS密钥更新脚本...{bcolors.ENDC}")
+        # 使用subprocess运行脚本，设置stdout和stderr为None（默认继承父进程的终端输出）
+        result = subprocess.run(
+            f"bash {script_path}",
+            shell=True,
+            stdout=None,  # 直接输出到终端
+            stderr=None,  # 直接输出到终端
+            check=True  # 若脚本返回非0状态码则抛出异常
+        )
+        print(f"{bcolors.OKGREEN}ROS密钥更新成功！{bcolors.ENDC}")
+        
+    except subprocess.CalledProcessError as e:
+        print(f"{bcolors.FAIL}ROS密钥更新失败，返回码：{e.returncode}{bcolors.ENDC}")
+        print(f"{bcolors.FAIL}脚本执行异常，请检查脚本内容或权限{bcolors.ENDC}")
+    except FileNotFoundError:
+        print(f"{bcolors.FAIL}错误：未找到bash解释器，请确保系统已安装bash{bcolors.ENDC}")
+    except Exception as e:
+        print(f"{bcolors.FAIL}执行脚本时发生未知错误：{str(e)}{bcolors.ENDC}")
+
 def license_sign():
     FILE = "/home/lab/.config/lejuconfig/ec_master.key"
     # 检查文件是否存在
@@ -798,6 +837,7 @@ def secondary_menu():
         # print("m. MAC 地址")
         print("l. license导入")
         print("m. 执行手臂磨线")
+        print("n. 更新ros密钥")
         print("u. 配置robot上线提醒")
         print("t. 恢复出厂文件夹")
 
@@ -912,12 +952,17 @@ def secondary_menu():
                 else:
                     print(bcolors.FAIL + "无效的选项编号，请重新输入！\n" + bcolors.ENDC)
             break
+        elif option == "n":
+            print(bcolors.HEADER + "###开始，更新ros密钥###" + bcolors.ENDC)
+            fix_ros_key()
+            print(bcolors.HEADER + "###结束，更新ros密钥###" + bcolors.ENDC)   
+            break
         elif option == "u":
             print(bcolors.HEADER + "###开始，robot上线提醒配置###" + bcolors.ENDC)
             robot_login()
             print("运行指令将触发提示：sudo systemctl start report_robot_network_info.service")
             print(bcolors.HEADER + "###结束，robot上线提醒配置###" + bcolors.ENDC)   
-            break   
+            break
         elif option == "t":
             print(bcolors.HEADER + "###开始，恢复出厂文件夹###" + bcolors.ENDC)
             reset_folder()
