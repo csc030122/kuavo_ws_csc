@@ -131,6 +131,8 @@ public:
     void saveZeroPosition();
     void set_teach_pendant_mode(int mode);
     void changeEncoderZeroRound(int index, double direction);
+    void multi_turn_zeroing(const std::vector<int>& dev_ids);
+    std::vector<int> get_all_joint_addresses();
     
     /**
      * @brief Set the positions object
