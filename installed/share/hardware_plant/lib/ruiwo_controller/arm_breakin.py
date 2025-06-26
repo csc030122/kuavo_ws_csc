@@ -5,6 +5,9 @@ from SimpleSDK import RUIWOTools
 import sys
 import threading
 
+# 缺失的电机ID
+MISSING_MOTOR_IDS = {5, 6, 11, 12}
+
 # 相关参数
 MOTION_DURATION = 2  # 每个动作的执行时间（秒）
 POS_KP = 30
@@ -69,15 +72,14 @@ def read_joint_ids():
 
 # 读取机器人的版本号
 def get_robot_version():
-    # 获取用户的主目录
     home_dir = os.path.expanduser('/home/lab/')
     bashrc_path = os.path.join(home_dir, '.bashrc')
 
     if os.path.exists(bashrc_path):
         with open(bashrc_path, 'r') as file:
             lines = file.readlines()
-        for line in reversed(lines):  # 从文件末尾开始读取
-            line = line.strip()  # 去除行首和行尾的空白字符
+        for line in reversed(lines):
+            line = line.strip()
             if line.startswith("export ROBOT_VERSION=") and "#" not in line:
                 version = line.split("=")[1].strip()
                 print(f"---------- 检测到 ROBOT_VERSION = {version} ----------")
@@ -87,10 +89,17 @@ def get_robot_version():
                     print(f"[RUIWO motor]:Warning: ROBOT_VERSION '{version}' 不是有效值。")
                     break
     print("[RUIWO motor]:Warning: ROBOT_VERSION 未找到或无效，需要手动选择模式。")
-    return None  # 返回None表示需要手动选择
+    return None
 
-# 获取机器人模式（长手/短手）
-def get_robot_mode():
+# 获取机器人模式（长手/短手/假手型）
+def get_robot_mode(robot_version, enable_results):
+    failed_ids = [dev_id for dev_id, success in enable_results if not success]
+    is_FourPro_Standard = set(failed_ids) == MISSING_MOTOR_IDS
+    
+    if is_FourPro_Standard:
+        print("检测到4Pro标准版，假手（缺少5、6、11、12号电机），将执行对应的动作序列")
+        return "FourPro_Standard"
+    
     print("\n请选择机器人模式：")
     print("1. 长手模式")
     print("2. 短手模式")
@@ -102,6 +111,7 @@ def get_robot_mode():
             return "short"
         else:
             print("输入无效，请重新选择！")
+    return None
 
 # 定义长手和短手的动作
 long_arm_actions = [
@@ -124,45 +134,62 @@ short_arm_actions = [
     [0.40, 0.20, 0.00, 0.20, -0.10, 0.00]
 ]
 
-# 读取机器人的版本号
+# 4Pro标准版假手动作（新机器人类型动作）
+FourPro_Standard_actions = [
+    [0.23, 0.00, 0.00, 0.00, 0.00, 0.00],
+    [1.30, 1.00, -1.40, 1.30, 0.00, 0.00],
+    [2.00, -0.50, -0.30, 1.50, 0.00, 0.00],
+    [1.10, -2.00, -2.30, -1.50, 0.00, 0.00],
+    [0.23, -0.40, -1.30, 1.00, 0.00, 0.00],
+    [1.25, 0.00, -1.90, 0.70, 0.00, 0.00],
+    [0.23, 0.00, 0.00, 0.00, 0.00, 0.00]
+]
+
+# 读取机器人版本号
 robot_version = get_robot_version()
-
-# 根据版本号或手动选择确定动作
-if robot_version:
-    if robot_version in ["40", "41", "42"]:
-        base_actions = short_arm_actions
-        print("现在将要执行 KUAVO 机器的短手版。")
-    elif robot_version in ["43", "44", "45", "46", "47", "48", "49"]:
-        base_actions = long_arm_actions
-        print("现在将要执行 KUAVO 机器的长手版。")
-    else:
-        print(f"[RUIWO motor]:Error: 未知的 ROBOT_VERSION '{robot_version}'，程序退出。")
-        exit(1)
-else:
-    # 版本号无效，手动选择模式
-    robot_mode = get_robot_mode()
-    if robot_mode == "short":
-        base_actions = short_arm_actions
-        print("现在将要执行 KUAVO 机器的短手版。")
-    elif robot_mode == "long":
-        base_actions = long_arm_actions
-        print("现在将要执行 KUAVO 机器的长手版。")
-    else:
-        print("[RUIWO motor]:Error: 未知的机器模式，程序退出。")
-        exit(1)
-
-# 等待用户确认
 input("请确认机器型号无误后，按回车键继续...")
 
-# 读取关节 ID 列表
+# 读取关节配置
 joint_ids = read_joint_ids()
-
-# 读取零点位置
 zero_positions = read_zero_positions()
-# 读取电机正反转配置
 reverse_addresses = read_motor_reverse_config()
 
-# 生成包含左右手的完整动作序列
+# 初始化硬件
+ruiwo = RUIWOTools()
+open_canbus = ruiwo.open_canbus()
+if not open_canbus:
+    print("[RUIWO motor]:Canbus状态:", "[", open_canbus, "]")
+    exit(1)
+print("[RUIWO motor]:Canbus状态:", "[", open_canbus, "]")
+
+# 使能电机并检测模式
+enable_results = []
+enable_all_success = True
+for dev_id in joint_ids:
+    state = ruiwo.enter_motor_state(dev_id)
+    success = isinstance(state, list)
+    enable_results.append((dev_id, success))
+    print(f"[RUIWO motor]:ID: {dev_id} 使能:  [{state if success else '失败'}]")
+    enable_all_success = enable_all_success and success
+
+# 确定机器人模式
+robot_mode = get_robot_mode(robot_version, enable_results)
+if robot_mode is None:
+    print("[RUIWO motor]:错误：无法确定机器人模式，程序退出。")
+    exit(1)
+
+# 选择动作序列
+if robot_mode == "FourPro_Standard":
+    base_actions = FourPro_Standard_actions
+    print("执行4Pro假手机器人动作序列。")
+elif robot_mode == "long":
+    base_actions = long_arm_actions
+    print("执行长手版动作序列。")
+else:
+    base_actions = short_arm_actions
+    print("执行短手版动作序列。")
+
+# 生成左右手完整动作
 full_base_actions = []
 left_joint_ids = joint_ids[:6]
 right_joint_ids = joint_ids[6:]
@@ -172,44 +199,18 @@ for action in base_actions:
     for i in range(len(left_action)):
         left_id = left_joint_ids[i]
         right_id = right_joint_ids[i]
-        # 判断两个关节在反向列表中的情况
+        # 镜像逻辑：根据电机配置取反
         if (left_id in reverse_addresses) ^ (right_id in reverse_addresses):
-            # 一个在反向列表，一个不在，说明是镜像安装，右手取反
             right_action.append(-action[i])
         elif (left_id in reverse_addresses) and (right_id in reverse_addresses):
-            # 两个都在反向列表，说明是倒着安装，右手取反
             right_action.append(-action[i])
         else:
-            # 两个都不在反向列表，右手取反以实现对称运动
             right_action.append(-action[i])
     full_action = left_action + right_action
     full_base_actions.append(full_action)
 
-# 创建对象
-ruiwo = RUIWOTools()
-# 打开CAN总线
-open_canbus = ruiwo.open_canbus()
-if not open_canbus:
-    print("[RUIWO motor]:Canbus status:", "[", open_canbus, "]")
-    exit(1)
-print("[RUIWO motor]:Canbus status:", "[", open_canbus, "]")
-
-# 使能所有关节电机
-enable_all_success = True  # 标记是否所有电机都使能成功
-for dev_id in joint_ids:
-    state = ruiwo.enter_motor_state(dev_id)
-    if isinstance(state, list):
-        print(f"[RUIWO motor]:ID: {dev_id} Enable:  [Succeed]")
-    else:
-        print(f"[RUIWO motor]:ID: {dev_id} Enable:  [{state}]")
-        enable_all_success = False  # 只要有一个电机使能失败，就标记为失败
-if not enable_all_success:
-    print("有电机使能失败，程序退出。")
-    exit(1)  # 退出程序
-
-# 计算一个完整动作周期所需的时间
+# 计算动作周期
 cycle_time = len(base_actions) * MOTION_DURATION
-# 获取用户输入的测试时长
 test_duration = get_test_duration(cycle_time)
 start_time = time.perf_counter()
 
@@ -244,21 +245,30 @@ listen_thread = threading.Thread(target=listen_for_exit)
 listen_thread.daemon = True  # 设置为守护线程，主线程结束时自动退出
 listen_thread.start()
 
-def check_motor_status(joint_ids):
+# 电机状态检查（跳过缺失电机）
+def check_motor_status(joint_ids, robot_mode):
     disabled_motors = []  # 记录失能的电机ID
-    for dev_id in joint_ids:
+    # 根据机器人模式确定需要检查的电机ID（跳过缺失电机）
+    if robot_mode == "FourPro_Standard":
+        motors_to_check = [dev_id for dev_id in joint_ids if dev_id not in MISSING_MOTOR_IDS]
+    else:
+        motors_to_check = joint_ids
+    
+    for dev_id in motors_to_check:
         state = ruiwo.enter_motor_state(dev_id)
         if isinstance(state, list):
-            # 检查故障码是否为15
+            # 检查故障码是否为15（失能状态）
             if state[-2] == 15:  # 倒数第二个元素为故障码
                 disabled_motors.append(dev_id)  # 记录失能的电机ID
         else:
             print(f"\033[91m电机 {dev_id} 状态获取失败！\033[0m")
             return False, disabled_motors  # 状态获取失败，直接返回False
+    
     # 如果有失能的电机，输出失能的电机列表
     if disabled_motors:
         print(f"\033[91m以下电机失能：{disabled_motors}\033[0m")
         return False, disabled_motors  # 返回False表示有电机失能
+    
     return True, []  # 所有电机状态正常
 
 while True:
@@ -282,15 +292,17 @@ while True:
             
         # 检查所有电机状态，是否出现失能情况
         if not motor_disabled:
-            status, disabled_motors = check_motor_status(joint_ids)
+            status, disabled_motors = check_motor_status(joint_ids, robot_mode)
             if not status:
                 motor_disabled = True
                 print(f"\033[91m检测到电机失能，停止当前动作！请检查以下电机：{disabled_motors}。检查完毕后，按 'c' 失能所有电机并退出程序。\033[0m")
                 while True:
                     user_input = input().strip().lower()
                     if user_input == 'c':
-                        # 失能所有关节电机
+                        # 失能所有关节电机（跳过缺失电机）
                         for dev_id in joint_ids:
+                            if robot_mode == "FourPro_Standard" and dev_id in MISSING_MOTOR_IDS:
+                                continue
                             state = ruiwo.enter_reset_state(dev_id)
                             if isinstance(state, list):
                                 print(f"{get_timestamp()} [RUIWO motor]:ID: {dev_id} Disable:  [Succeed]")
@@ -325,6 +337,9 @@ while True:
         for step in range(int(steps)):
             loop_start = time.perf_counter()
             for joint_index, dev_id in enumerate(joint_ids):
+                # 跳过缺失的电机
+                if robot_mode == "FourPro_Standard" and dev_id in MISSING_MOTOR_IDS:
+                    continue
                 # 计算当前位置到目标位置的插值
                 interpolated_pos = current_positions[joint_index] + (target_positions[joint_index] - current_positions[joint_index]) * (step / steps)
                 zero_position = zero_positions[joint_index]
@@ -343,9 +358,11 @@ while True:
 
         print(f"{get_timestamp()} 动作 {current_frame_index + 1} 执行完成，开始向位置 {next_frame_index + 1} 运动")
 
-# 在程序结束时返回到零点位置
+# 在程序结束时返回到零点位置（跳过缺失电机）
 print(f"{get_timestamp()} 正在返回到零点位置...")
 for joint_index, dev_id in enumerate(joint_ids):
+    if robot_mode == "FourPro_Standard" and dev_id in MISSING_MOTOR_IDS:
+        continue
     zero_position = zero_positions[joint_index]
     state = ruiwo.run_ptm_mode(dev_id, zero_position, 0, POS_KP, POS_KD, 0)
     if isinstance(state, list):
@@ -356,8 +373,11 @@ for joint_index, dev_id in enumerate(joint_ids):
 # 等待返回零点动作完成
 time.sleep(MOTION_DURATION)
 
-# 失能所有关节电机
+# 失能所有关节电机（跳过缺失电机）
+print(f"{get_timestamp()} 失能所有关节电机...")
 for dev_id in joint_ids:
+    if robot_mode == "FourPro_Standard" and dev_id in MISSING_MOTOR_IDS:
+        continue
     state = ruiwo.enter_reset_state(dev_id)
     if isinstance(state, list):
         print(f"{get_timestamp()} [RUIWO motor]:ID: {dev_id} Disable:  [Succeed]")

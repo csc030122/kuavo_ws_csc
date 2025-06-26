@@ -516,6 +516,8 @@ class H12PROControllerNode:
         triggers = self.robot_state_machine.machine.get_triggers(current_state)
         
         for trigger in triggers:
+            if trigger == "trot":
+                continue            # 跳过 trot 模式的状态转换
             trigger_keys = set(
                 self._config["state_transitions"][current_state][trigger]
             )
