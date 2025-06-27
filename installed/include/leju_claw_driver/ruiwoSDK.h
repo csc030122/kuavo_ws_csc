@@ -6,6 +6,7 @@ extern "C"
 #endif
 
 #include <stdint.h>
+#include <stdbool.h>
 #include "bmapi.h"
 
 #define TEST_MSG_RX_TIMEOUT 1000
@@ -63,7 +64,7 @@ int run_ptm_mode(RUIWOTools* ruiwo, uint32_t dev_id, float pos, float vel, float
 int run_ptm_mode_No_response(RUIWOTools* ruiwo, uint32_t dev_id, float pos, float vel, float pos_kp, float pos_kd, float torque, float* state_list);
 int run_vel_mode(RUIWOTools* ruiwo, uint32_t dev_id, float vel, float vel_kp, float vel_kd, float vel_ki, float* state_list);
 int run_torque_mode(RUIWOTools* ruiwo, uint32_t dev_id, float torque, float* state_list);
-void initialize_ruiwoSDK(RUIWOTools *ruiwo);
+void initialize_ruiwoSDK(RUIWOTools *ruiwo, bool is_claw);
 #ifdef __cplusplus
 }
 #endif
