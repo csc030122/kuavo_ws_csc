@@ -83,6 +83,7 @@
 
     <group if="$(eval arg('teach_pendant') == 1)">
       <param name="stand_up_protect" value="false"/>
+      <param name="only_half_up_body" value="true"/>
     </group>
     
     <!-- mpc node -->
