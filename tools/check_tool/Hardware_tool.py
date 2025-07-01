@@ -594,6 +594,36 @@ def fix_ros_key():
     except Exception as e:
         print(f"{bcolors.FAIL}执行脚本时发生未知错误：{str(e)}{bcolors.ENDC}")
 
+def hip_imu_serial_set():
+    kuavo_ros_file_path = folder_path + "/hip_imu_serial_set.sh"
+    kuavo_open_file_path = folder_path + "../../installed/share/hardware_plant/lib/hipnuc_imu/scripts/hip_imu_serial_set.sh" 
+    
+    if os.path.exists(kuavo_ros_file_path):
+        command = "bash "+ kuavo_ros_file_path
+    elif os.path.exists(kuavo_open_file_path):
+        command = "bash "+ kuavo_open_file_path
+    else:
+        print(f"The file {file_path} does not exist.")
+        return
+        
+    # 使用 subprocess.run() 运行命令
+    subprocess.run(command, shell=True)
+
+def hip_imu_test():
+    kuavo_ros_file_path = folder_path + "/hip_imu_test.sh"
+    kuavo_open_file_path = folder_path + "../../installed/share/hardware_plant/lib/hipnuc_imu/scripts/hip_imu_test.sh" 
+    
+    if os.path.exists(kuavo_ros_file_path):
+        command = "bash "+ kuavo_ros_file_path
+    elif os.path.exists(kuavo_open_file_path):
+        command = "bash "+ kuavo_open_file_path
+    else:
+        print(f"The file {file_path} does not exist.")
+        return
+        
+    # 使用 subprocess.run() 运行命令
+    subprocess.run(command, shell=True)
+
 def license_sign():
     FILE = "/home/lab/.config/lejuconfig/ec_master.key"
     # 检查文件是否存在
@@ -838,6 +868,8 @@ def secondary_menu():
         print("l. license导入")
         print("m. 执行手臂磨线")
         print("n. 更新ros密钥")
+        print("o. 国产IMU配置udev规则")
+        print("p. 国产IMU测试")
         print("u. 配置robot上线提醒")
         print("t. 恢复出厂文件夹")
 
@@ -956,6 +988,16 @@ def secondary_menu():
             print(bcolors.HEADER + "###开始，更新ros密钥###" + bcolors.ENDC)
             fix_ros_key()
             print(bcolors.HEADER + "###结束，更新ros密钥###" + bcolors.ENDC)   
+            break
+        elif option == "o":
+            print(bcolors.HEADER + "###开始，国产IMU配置udev规则###" + bcolors.ENDC)
+            hip_imu_serial_set()
+            print(bcolors.HEADER + "###结束，国产IMU配置udev规则###" + bcolors.ENDC)   
+            break
+        elif option == "p":
+            print(bcolors.HEADER + "###开始，国产IMU测试###" + bcolors.ENDC)
+            hip_imu_test()
+            print(bcolors.HEADER + "###结束，国产IMU测试###" + bcolors.ENDC)
             break
         elif option == "u":
             print(bcolors.HEADER + "###开始，robot上线提醒配置###" + bcolors.ENDC)
