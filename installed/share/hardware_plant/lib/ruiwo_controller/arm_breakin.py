@@ -295,7 +295,7 @@ while True:
             status, disabled_motors = check_motor_status(joint_ids, robot_mode)
             if not status:
                 motor_disabled = True
-                print(f"\033[91m检测到电机失能，停止当前动作！请检查以下电机：{disabled_motors}。检查完毕后，按 'c' 失能所有电机并退出程序。\033[0m")
+                print(f"\033[91m检测到电机失能，停止当前动作！请检查以下电机：{disabled_motors}。检查完毕后，输入两次 ['c' + 回车] 失能所有电机并退出程序。\033[0m")
                 while True:
                     user_input = input().strip().lower()
                     if user_input == 'c':
