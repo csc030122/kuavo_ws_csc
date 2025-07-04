@@ -2,6 +2,9 @@
 #include <pinocchio/algorithm/frames.hpp>
 #include <pinocchio/algorithm/kinematics.hpp>
 #include "std_srvs/SetBool.h"
+#include <xmlrpcpp/XmlRpcValue.h>
+#include <xmlrpcpp/XmlRpcException.h>
+#include <fstream>
 
 #include "humanoid_controllers/humanoidController.h"
 
@@ -158,6 +161,16 @@ namespace humanoid_controller
     if (ros::param::has("/timeout_warning_ms"))
     {
       ros::param::get("/timeout_warning_ms", timeout_warning_ms_);
+    }
+    if (ros::param::has("/pull_up_force_threshold"))
+    {
+      ros::param::get("/pull_up_force_threshold", pull_up_force_threshold_);
+      std::cout << "pull_up_force_threshold: " << pull_up_force_threshold_ << std::endl;
+    }
+    if (ros::param::has("/enable_pull_up_protect"))
+    {
+      ros::param::get("/enable_pull_up_protect", enable_pull_up_protect_);
+      std::cout << "enable_pull_up_protect: " << enable_pull_up_protect_ << std::endl;
     }
     auto &motor_info = kuavo_settings_.hardware_settings;
     headNum_ = motor_info.num_head_joints;
@@ -533,6 +546,19 @@ namespace humanoid_controller
       rHandWrenchPub_ = controllerNh_.advertise<geometry_msgs::WrenchStamped>("/hand_wrench/right_hand", 10);
       currentGaitNameSrv_ = controllerNh_.advertiseService(robotName_ + "_get_current_gait_name", 
         &humanoidController::getCurrentGaitNameCallback, this);
+      arm_control_mode_sub_ = controllerNh_.subscribe<std_msgs::Float64MultiArray>("/humanoid/mpc/arm_control_mode", 10,[&](const std_msgs::Float64MultiArray::ConstPtr &msg)
+      {
+        if(msg->data.size() == 0)
+        {
+          ROS_ERROR("The dimensin of arm control mode is 0!!");
+          return;
+        }
+        if (msg->data[0] != mpcArmControlMode_)
+        {
+          mpcArmControlMode_ = static_cast<ArmControlMode>(msg->data[0]);
+          std::cout << "[controller] mpc arm control mode changed to: " << mpcArmControlMode_ << std::endl;
+        }
+      });
       
       // dexhand state
       dexhand_state_sub_ = controllerNh_.subscribe("/dexhand/state", 10, &humanoidController::dexhandStateCallback, this);
@@ -582,9 +608,12 @@ namespace humanoid_controller
       {
         std::cerr << "Failed to start keyboard thread" << std::endl;
         exit(1);
-    }
+      }
 
-
+    
+    // 设置CPU内核隔离
+    setupCpuIsolation();
+    
     return true;
   }
   void humanoidController::headCmdCallback(const kuavo_msgs::robotHeadMotionData::ConstPtr &msg)
@@ -1874,8 +1903,11 @@ namespace humanoid_controller
       currentObservation_.time += period.toSec();
     }
     bool new_pull_up_state = false;
-    if (isPreUpdateComplete && is_stance_mode_ && !only_half_up_body_ && currentObservation_.time - standupTime_ > 4 ) // 只有非半身轮臂模式站立状态&&站起来稳定之后进行保护
-      new_pull_up_state = stateEstimate_->checkPullUp();
+     // 只有非半身轮臂模式站立状态&&站起来稳定之后进行保护, 并且手臂不是外部遥操作模式才可触发拉起保护
+    if (enable_pull_up_protect_ && isPreUpdateComplete && is_stance_mode_ && 
+    !only_half_up_body_ && currentObservation_.time - standupTime_ > 4 
+    && mpcArmControlMode_ != ArmControlMode::EXTERN_CONTROL)
+      new_pull_up_state = stateEstimate_->checkPullUp(pull_up_force_threshold_);
     ros_logger_->publishValue("/state_estimate/pull_up_state", new_pull_up_state);
     if (new_pull_up_state && !isPullUp_)
     {
@@ -2399,6 +2431,166 @@ namespace humanoid_controller
     {
       ROS_INFO("Received enable wbc value: %s", msg->data ? "true" : "false");
       disable_wbc_ = !msg->data;
+    }
+  }
+
+  void humanoidController::setupCpuIsolation()
+  {
+    // 从ROS参数获取隔离的CPU核心索引
+    std::vector<int> isolated_cpus;
+    std::vector<int> actually_isolated_cpus;
+    
+    // 从全局参数服务器获取隔离CPU列表
+    if (ros::param::has("/isolated_cpus")) {
+      XmlRpc::XmlRpcValue xml_cpus;
+      if (ros::param::get("/isolated_cpus", xml_cpus)) {
+        if (xml_cpus.getType() == XmlRpc::XmlRpcValue::TypeArray) {
+          for (int i = 0; i < xml_cpus.size(); ++i) {
+            try {
+              // 检查数组元素是否存在
+              if (xml_cpus[i].getType() == XmlRpc::XmlRpcValue::TypeInvalid) {
+                std::cerr << "Error: array element " << i << " is invalid" << std::endl;
+                continue;
+              }
+              
+              // 尝试转换为double
+              double value;
+              if (xml_cpus[i].getType() == XmlRpc::XmlRpcValue::TypeInt) {
+                value = static_cast<int>(xml_cpus[i]);
+              } else if (xml_cpus[i].getType() == XmlRpc::XmlRpcValue::TypeDouble) {
+                value = static_cast<double>(xml_cpus[i]);
+              } else {
+                std::cerr << "Error: array element " << i << " is not a number, type: " << xml_cpus[i].getType() << std::endl;
+                continue;
+              }
+              
+              isolated_cpus.push_back(static_cast<int>(value));
+            } catch (const std::exception& e) {
+              std::cerr << "Error: parameter conversion failed, index " << i << ": " << e.what() << std::endl;
+            }
+          }
+        }
+        else{
+          std::cerr << "Error: isolated_cpus is not an array, type: " << xml_cpus.getType() << std::endl;
+        }
+      }
+      else{
+        std::cerr << "Error: failed to get isolated_cpus parameter" << std::endl;
+      }
+    } else {
+      std::cout << "未设置 /isolated_cpus 参数，跳过CPU亲和性设置" << std::endl;
+      return;
+    }
+    
+    // 检查是否有隔离的核心
+    if (isolated_cpus.size() >= 1) {
+      // 检查CPU核心编号是否有效
+      int max_cpu = sysconf(_SC_NPROCESSORS_ONLN);
+      std::cout << "系统CPU核心数: " << max_cpu << std::endl;
+      
+      for (size_t i = 0; i < isolated_cpus.size(); ++i) {
+        if (isolated_cpus[i] < 0 || isolated_cpus[i] >= max_cpu) {
+          std::cerr << "警告: CPU核心 " << isolated_cpus[i] << " 超出有效范围 [0, " << max_cpu-1 << "]" << std::endl;
+          return;
+        }
+      }
+      
+      // 获取 /proc/cmdline 中的 isolcpus 参数列表
+      std::vector<int> isolcpus_list;
+      std::ifstream cmdline_file("/proc/cmdline");
+      if (cmdline_file.is_open()) {
+        std::string line;
+        std::getline(cmdline_file, line);
+        cmdline_file.close();
+        
+        // 查找 isolcpus 参数
+        size_t isolcpus_pos = line.find("isolcpus=");
+        if (isolcpus_pos != std::string::npos) {
+          size_t start = isolcpus_pos + 9; // "isolcpus=" 长度为9
+          size_t end = line.find(' ', start);
+          if (end == std::string::npos) end = line.length();
+          
+          std::string isolcpus_value = line.substr(start, end - start);
+          
+          // 解析 isolcpus 参数 (格式如: "1,3-5,7")
+          size_t pos = 0;
+          while (pos < isolcpus_value.length()) {
+            size_t comma_pos = isolcpus_value.find(',', pos);
+            std::string range = isolcpus_value.substr(pos, comma_pos - pos);
+            
+            size_t dash_pos = range.find('-');
+            if (dash_pos != std::string::npos) {
+              // 处理范围
+              int start_cpu = std::stoi(range.substr(0, dash_pos));
+              int end_cpu = std::stoi(range.substr(dash_pos + 1));
+              for (int j = start_cpu; j <= end_cpu; ++j) {
+                isolcpus_list.push_back(j);
+              }
+            } else {
+              // 处理单个CPU
+              isolcpus_list.push_back(std::stoi(range));
+            }
+            
+            if (comma_pos == std::string::npos) break;
+            pos = comma_pos + 1;
+          }
+          std::cout << "已隔离CPU列表: ";
+          for (size_t i = 0; i < isolcpus_list.size(); ++i) {
+            std::cout << isolcpus_list[i];
+            if (i < isolcpus_list.size() - 1) std::cout << ", ";
+          }
+          std::cout << std::endl;
+        } else {
+          std::cout << "未在 /proc/cmdline 中找到 isolcpus 参数" << std::endl;
+        }
+      } else {
+        std::cerr << "警告: 无法打开 /proc/cmdline 文件" << std::endl;
+      }
+      
+      // 判断每个CPU是否在隔离列表中
+      for (size_t i = 0; i < isolated_cpus.size(); ++i) {
+        int cpu_id = isolated_cpus[i];
+        
+        // 检查是否在 isolcpus 列表中
+        if (std::find(isolcpus_list.begin(), isolcpus_list.end(), cpu_id) != isolcpus_list.end()) {
+          actually_isolated_cpus.push_back(cpu_id);
+          std::cout << "CPU " << cpu_id << " 已隔离" << std::endl;
+        } else {
+          std::cout << "CPU " << cpu_id << " 未隔离" << std::endl;
+        }
+      }
+    } else {
+      std::cout << "隔离的核心列表为空，跳过CPU亲和性设置" << std::endl;
+      return;
+    }
+
+    // 只有在有真正隔离的CPU时才设置亲和性
+    if (actually_isolated_cpus.size() >= 1) {
+      // 设置CPU亲和性到隔离的核心
+      cpu_set_t cpuset;
+      CPU_ZERO(&cpuset);
+      
+      // 将所有真正隔离的核心添加到CPU集合中
+      for (size_t i = 0; i < actually_isolated_cpus.size(); ++i) {
+        CPU_SET(actually_isolated_cpus[i], &cpuset);
+      }
+      
+      std::cout << "设置WBC线程亲和性到隔离核心: ";
+      for (size_t i = 0; i < actually_isolated_cpus.size(); ++i) {
+        std::cout << actually_isolated_cpus[i];
+        if (i < actually_isolated_cpus.size() - 1) std::cout << ", ";
+      }
+      std::cout << std::endl;
+      
+      // 设置当前线程的CPU亲和性
+      int result = pthread_setaffinity_np(pthread_self(), sizeof(cpuset), &cpuset);
+      if (result != 0) {
+        std::cerr << "警告: 设置线程CPU亲和性失败，错误码: " << result << " (" << strerror(result) << ")" << std::endl;
+      } else {
+        std::cout << "成功设置CPU亲和性到隔离核心" << std::endl;
+      }
+    } else {
+      std::cout << "没有真正隔离的CPU核心，跳过CPU亲和性设置" << std::endl;
     }
   }
 

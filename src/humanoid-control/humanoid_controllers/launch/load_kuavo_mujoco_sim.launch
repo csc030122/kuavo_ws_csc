@@ -64,6 +64,9 @@
     <param name="only_half_up_body"   value="$(arg only_half_up_body)"/>
     <param name="build_cppad_state"   value="0"/>  <!-- build_cppad_state is set to 0(waiting), 1(building), 2(done) -->
     <param name="visualize_humanoid" value="$(arg visualize_humanoid)" />
+    <rosparam param="isolated_cpus">[2, 3]</rosparam>
+    <param name="enable_pull_up_protect" value="true"/>
+    <param name="pull_up_force_threshold" value="0.70"/>
 
     <!-- Launch script to collect kuavo-launch information -->
     <node pkg="humanoid_controllers" type="collect_launch_info.sh" name="collect_launch_info" />

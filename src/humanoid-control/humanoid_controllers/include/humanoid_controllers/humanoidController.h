@@ -312,6 +312,7 @@ namespace humanoid_controller
     ros::Subscriber arm_target_traj_sub_;//最终的手臂目标位置
     ros::Subscriber foot_pos_des_sub_;
     ros::Subscriber hand_wrench_sub_;
+    ros::Subscriber arm_control_mode_sub_;
     ros::Subscriber contact_force_sub_;
     ros::Publisher mpcPolicyPublisher_;
 
@@ -360,6 +361,7 @@ namespace humanoid_controller
     size_t jointNumReal_ = 12;
     size_t armNumReal_ = 0;
     size_t actuatedDofNumReal_ = 12;// 实物的自由度
+    ArmControlMode mpcArmControlMode_ = ArmControlMode::AUTO_SWING; // KEEP = 0, AUTO_SWING = 1, EXTERN_CONTROL = 2
     int armDofMPC_ = 7; // 单手臂的自由度，会从配置文件中重新计算
     int armDofReal_ = 7; // 实际单手臂的自由度
     int armDofDiff_ = 0; // 单手臂的自由度差
@@ -448,11 +450,16 @@ namespace humanoid_controller
     bool updateSensorDataFromShm();      // 从共享内存更新传感器数据
     void publishJointCmdToShm(const kuavo_msgs::jointCmd& jointCmdMsg);         // 发布关节命令到共享内存
     
+    // CPU内核隔离设置
+    void setupCpuIsolation();  // 从ROS参数获取隔离CPU索引并设置线程亲和性
+    
     // 传感器数据发布
     ros::Publisher sensor_data_raw_pub_;
     feet_array_t<vector3_t> foot_pos_desired_;
     bool visualizeHumanoid_ = true;
     double timeout_warning_ms_ = 1000;
+    double pull_up_force_threshold_ = 0.70;
+    bool enable_pull_up_protect_ = false;
 
     std::vector<std::pair<double, double> > head_joint_limits_ = {{-80, 80}, {-25, 25}};
 

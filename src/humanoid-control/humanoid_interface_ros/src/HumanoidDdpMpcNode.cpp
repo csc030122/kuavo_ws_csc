@@ -69,7 +69,7 @@ int main(int argc, char **argv)
   }
   // Robot interface
   HumanoidInterface interface(taskFile, urdfFile, referenceFile, gaitCommandFile, version_num);
-  interface.setupCPUconfig();
+  // interface.setupCPUconfig();
   auto switchedModelReferenceManagerPtr = interface.getSwitchedModelReferenceManagerPtr();
   // Gait receiver
   auto gaitReceiverPtr =

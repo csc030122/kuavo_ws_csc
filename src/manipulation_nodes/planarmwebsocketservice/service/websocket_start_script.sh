@@ -38,17 +38,6 @@ cd "$REPO_ROOT"
 source /opt/ros/noetic/setup.bash --extend
 source devel/setup.bash --extend
 
-# 启动 tact 动作文件执行节点
-roslaunch humanoid_plan_arm_trajectory humanoid_plan_arm_trajectory.launch &
-PLAN_PID=$!
-
-# 检测动作执行节点启动
-echo "正在启动动作执行节点..."
-while ! rosnode list | grep -q "autostart_arm_trajectory_bezier_demo"; do
-    sleep 1
-done
-echo "动作执行节点已启动。"
-
 # 检查是否有 wifi 连接
 echo "正在检测 WiFi 连接..."
 

@@ -77,7 +77,7 @@ int main(int argc, char **argv)
   }
   // Robot interface
   HumanoidInterface interface(taskFile, urdfFile, referenceFile, gaitCommandFile, version_num);
-  interface.setupCPUconfig();// 配置内核隔离和线程优先级
+  // interface.setupCPUconfig();// 配置内核隔离和线程优先级
   // Gait receiver
   auto gaitReceiverPtr =
       std::make_shared<GaitReceiver>(nodeHandle, interface.getSwitchedModelReferenceManagerPtr(), robotName);

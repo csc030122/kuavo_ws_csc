@@ -540,8 +540,15 @@ def is_player_in_body():
 
 def upload_music_file(music_filename=""):
     # 将音乐文件上传到上位机指定路径
+    # TODO: 上位机是 AGX 用户名为 leju_kuavo 但这种情况下音频设备在下位机，不需要拷贝文件
+
+    result = subprocess.run(['systemctl', 'is-active', 'isc-dhcp-server'])
+    if result.returncode == 0:
+        remote_host = "192.168.26.12"
+    else:
+        remote_host = "192.168.26.1"
+
     remote_user = "kuavo"
-    remote_host = "192.168.26.12"
     remote_path = "/home/kuavo/.config/lejuconfig/"
 
     encoded_password = os.getenv("KUAVO_REMOTE_PASSWORD")
@@ -550,11 +557,11 @@ def upload_music_file(music_filename=""):
     remote_password = base64.b64decode(encoded_password).decode('utf-8')
 
     if not music_filename:
-        # 将全部音频文件拷贝过去
-        scp_cmd = ["scp", "-r", MUSIC_FILE_FOLDER]
+        # 将全部音频文件拷贝过去, scp 命令中添加 -o StrictHostKeyChecking=no 参数，跳过主机验证，防止传输失败
+        scp_cmd = ["scp", "-r", "-o", "StrictHostKeyChecking=no", MUSIC_FILE_FOLDER]
     else:
         # 拷贝单个音频文件
-        scp_cmd = ["scp", MUSIC_FILE_FOLDER, music_filename]
+        scp_cmd = ["scp", "-o", "StrictHostKeyChecking=no", MUSIC_FILE_FOLDER, music_filename]
     cmd = [
         "sshpass", "-p", remote_password,
         *scp_cmd,
@@ -638,6 +645,64 @@ async def update_h12_config_handler(
         target=websocket,
     )
     response_queue.put(response)
+
+# 登录到上位机上面执行下载指令
+def download_data_pilot_to_head():
+    # TODO: 上位机是 AGX 用户名为 leju_kuavo 但这种情况下音频设备在下位机，不需要拷贝文件
+
+    result = subprocess.run(['systemctl', 'is-active', 'isc-dhcp-server'])
+    if result.returncode == 0:
+        remote_host = "192.168.26.12"
+    else:
+        remote_host = "192.168.26.1"
+
+    remote_user = "leju_kuavo"
+    remote_path = "/home/leju_kuavo/kuavo_data_pilot/src/kuavo_data_pilot_bin/dist/app"
+    encoded_password = os.getenv("KUAVO_REMOTE_PASSWORD")
+    if encoded_password is None:
+        raise ValueError("Failed to get remote password.")
+    remote_password = base64.b64decode(encoded_password).decode('utf-8')
+
+    # 远程登录到上位机，执行下载 https://kuavo.lejurobot.com/kuavo_data_pilot_app/kuavo_data_pilot_app_latest 文件
+    ssh_cmd = [
+        "sshpass", "-p", remote_password,
+        "ssh", f"{remote_user}@{remote_host}",
+        "mkdir", "-p", remote_path,
+        "&&", "cd", remote_path,
+        "&&", "wget", "-O", "kuavo_data_pilot_app_latest", "https://kuavo.lejurobot.com/kuavo_data_pilot_app/kuavo_data_pilot_app_latest",
+        "&&", "chmod", "+x", "kuavo_data_pilot_app_latest"
+    ]
+    result = subprocess.run(ssh_cmd, stdout=None, stderr=None)
+    return result
+
+# 更新训练场上位机 agx 程序
+async def update_data_pilot_handler(
+    websocket: websockets.WebSocketServerProtocol, data: dict
+):
+    payload = Payload(
+        cmd="update_data_pilot", data={"code": 0, "msg": "msg"}
+    )
+
+    response = Response(
+        payload=payload,
+        target=websocket,
+    )
+
+    try:
+        result = download_data_pilot_to_head()
+        if result.returncode == 0:
+            payload.data["code"] = 0
+            payload.data["msg"] = "Success"
+        else:
+            payload.data["code"] = 1
+            payload.data["msg"] = "Failed to download data pilot to head."
+    except Exception as e:
+        print(f"An error occurred while updating the data pilot: {e}")
+        payload.data["code"] = 1
+        payload.data["msg"] = f"Error occurred while updating the data pilot: {str(e)}"
+
+    response_queue.put(response)
+
 
 # Add a function to clean up when a websocket connection is closed
 def cleanup_websocket(websocket: websockets.WebSocketServerProtocol):

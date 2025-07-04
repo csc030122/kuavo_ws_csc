@@ -18,23 +18,24 @@ const sidebars = {
       type: 'category',
       label: '产品介绍',
       items: [
-                {
+        'basic_usage/kuavo-ros-control/docs/1产品介绍/产品介绍',
+        {
           type: 'category',
           label: 'KUAVO4Pro新版介绍',
           items: [
-        'basic_usage/kuavo-ros-control/docs/1产品介绍/KUAVO_4PRO 标准版产品介绍',
-        'basic_usage/kuavo-ros-control/docs/1产品介绍/KUAVO_4PRO 进阶版产品介绍',
-        'basic_usage/kuavo-ros-control/docs/1产品介绍/KUAVO_4PRO MaxA版产品介绍',
-        'basic_usage/kuavo-ros-control/docs/1产品介绍/KUAVO_4PRO MaxB版产品介绍',
-        'basic_usage/kuavo-ros-control/docs/1产品介绍/KUAVO_4PRO 展厅版产品介绍',
-        'basic_usage/kuavo-ros-control/docs/1产品介绍/KUAVO_4PRO 展厅算力版产品介绍',
+            'basic_usage/kuavo-ros-control/docs/1产品介绍/KUAVO_4PRO 标准版产品介绍',
+            'basic_usage/kuavo-ros-control/docs/1产品介绍/KUAVO_4PRO 进阶版产品介绍',
+            'basic_usage/kuavo-ros-control/docs/1产品介绍/KUAVO_4PRO MaxA版产品介绍',
+            'basic_usage/kuavo-ros-control/docs/1产品介绍/KUAVO_4PRO MaxB版产品介绍',
+            'basic_usage/kuavo-ros-control/docs/1产品介绍/KUAVO_4PRO 展厅版产品介绍',
+            'basic_usage/kuavo-ros-control/docs/1产品介绍/KUAVO_4PRO 展厅算力版产品介绍',
           ],
         },
         {
           type: 'category',
           label: 'KUAVO4Pro旧版介绍',
           items: [
-            'basic_usage/kuavo-ros-control/docs/1产品介绍/产品介绍',
+            'basic_usage/kuavo-ros-control/docs/1产品介绍/KUAVO_4PRO产品介绍',
             'basic_usage/kuavo-ros-control/docs/1产品介绍/KUAVO_4_1产品介绍',
           ],
         },
@@ -97,6 +98,7 @@ const sidebars = {
             'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/数据采集案例',
             'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/yolov8目标检测案例',
             'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/手臂正逆运动学案例',
+            'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/机器人手臂示教案例',
             'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/手臂轨迹规划案例',
             'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/键盘控制案例',
             'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/强化学习案例',
@@ -104,6 +106,7 @@ const sidebars = {
             'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/大模型联网搜索与视觉推理案例',
             'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/二维码抓取水瓶案例',
             'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/基于人脸识别的简易语音交互案例',
+            'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/全身打太极动作案例',
           ],
         },
         {
@@ -121,7 +124,7 @@ const sidebars = {
                 'basic_usage/kuavo-ros-control/docs/5功能案例/拓展案例/模仿学习使用案例/常见问题',
               ],
             },
-            'basic_usage/kuavo-ros-control/docs/5功能案例/拓展案例/机器人导航案例',
+            'basic_usage/kuavo-ros-control/docs/5功能案例/拓展案例/机器人开源导航案例',
             'basic_usage/kuavo-ros-control/docs/5功能案例/拓展案例/手腕相机抓取放置案例',
             'basic_usage/kuavo-ros-control/docs/5功能案例/拓展案例/百度EdgeBoard接入机器人案例',
           ],

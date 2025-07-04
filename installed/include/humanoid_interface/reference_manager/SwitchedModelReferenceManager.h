@@ -62,11 +62,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace ocs2 {
 namespace humanoid {
 
-  enum ArmControlMode {
-    KEEP = 0,
-    AUTO_SWING = 1,
-    EXTERN_CONTROL = 2
-  };
+  
 
   enum TorsoControlMode {
     SIX_DOF = 0,// x,y,z, yaw, pitch, roll

@@ -5,7 +5,7 @@ import rospy
 from std_msgs.msg import Float32, Float32MultiArray
 from sensor_msgs.msg import JointState
 # from kuavo_ros_interfaces.srv import ocs2ChangeArmCtrlMode
-from kuavo_sdk.srv import changeArmCtrlMode
+from kuavo_msgs.srv import changeArmCtrlMode
 import numpy as np
 import time
 
@@ -47,7 +47,7 @@ if __name__ == '__main__':
     q0 = [0.0]*14
     q1 = [0.0]*14
     # q1[0:7] = [0, 0, 0, 0, 0, 0, 0]
-    q1[7:14] = [-90, -60, -0, -90, 0, 30, 30]
+    q1[7:14] = [-90, -0, -0, -90, 90, 0, 0]
     # q1[7:14] = [-0, -0, -0, -0, 0, 0, 0]
     num = 90
     for i in range(num):

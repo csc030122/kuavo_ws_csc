@@ -46,6 +46,12 @@ namespace ocs2
   namespace humanoid
   {
 
+    enum ArmControlMode {
+      KEEP = 0,
+      AUTO_SWING = 1,
+      EXTERN_CONTROL = 2
+    };
+
     enum ModeNumber
     {
       FF = 0,

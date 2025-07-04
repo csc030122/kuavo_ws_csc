@@ -68,7 +68,9 @@
     <param name="stand_up_protect" value="$(arg stand_up_protect)"/>
     <param name="redundant_imu" value="$(arg redundant_imu)"/>
     <param name="ruiwo_cxx_sdk" value="$(arg ruiwo_cxx_sdk)"/>
-
+    <rosparam param="isolated_cpus">[2, 3]</rosparam>
+    <param name="enable_pull_up_protect" value="true"/>
+    <param name="pull_up_force_threshold" value="0.70"/>
     <!-- Launch script to collect kuavo-launch information -->
     <node pkg="humanoid_controllers" type="collect_launch_info.sh" name="collect_launch_info" />
     
