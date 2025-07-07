@@ -65,9 +65,14 @@ class RuiWoActuator():
         print("[RUIWO motor]:Canbus status:","[",open_canbus,"]")
         self.get_config(config)
 
-        all_joint_addresses = self.Left_joint_address + self.Right_joint_address
-        active_dev_ids = [addr for addr in all_joint_addresses if addr not in disable_joint_ids]
-        self.RUIWOTools.multi_turn_zeroing(active_dev_ids)
+        # cali_arm 模式下进行多圈清零
+        if setZero:
+            all_joint_addresses = self.Left_joint_address + self.Right_joint_address
+            active_dev_ids = [addr for addr in all_joint_addresses if addr not in disable_joint_ids]
+            self.RUIWOTools.multi_turn_zeroing(active_dev_ids)
+            print("[RUIWO motor]: Calibration mode detected, performing multi-turn zeroing...")
+        else:
+            print("[RUIWO motor]: Normal mode, skipping multi-turn zeroing")
 
         self.sendposlock = threading.Lock()
         self.recvposlock = threading.Lock()
