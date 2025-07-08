@@ -19,6 +19,8 @@ import ctypes
 from tools.drake_trans import *
 
 from kuavo_msgs.srv import changeArmCtrlMode, changeArmCtrlModeKuavo
+from kuavo_msgs.msg import sensorsData
+from std_srvs.srv import Trigger, TriggerResponse
 
 import numpy as np
 from pydrake.all import (
@@ -135,6 +137,14 @@ class IkRos:
         self.__button_y_last = False
         self.trigger_reset_mode = False
 
+        # 检查是否是半身模式
+        self.only_half_up_body = False
+        if rospy.has_param('/only_half_up_body'):
+            self.only_half_up_body = rospy.get_param('/only_half_up_body')
+
+        # 添加服务
+        self.arm_mode_service = rospy.Service('/quest3/set_arm_mode_changing', Trigger, self.set_arm_mode_changing_callback)
+
         # self.hand_pub_timer = rospy.Timer(rospy.Duration(0.001), self.hand_finger_data_process)
 
 
@@ -169,6 +179,16 @@ class IkRos:
         self.ik_cmd_sub = rospy.Subscriber(
             "/ik/two_arm_hand_pose_cmd", twoArmHandPoseCmd, self.two_arm_hand_pose_target_callback
         )
+
+        self.sensor_data_raw_sub = rospy.Subscriber(
+            "/sensors_data_raw", sensorsData, self.sensor_data_raw_callback
+        )
+        self.arm_mode_changing = False
+        self.sensor_data_raw = None
+        self.maxSpeed = rospy.get_param("/arm_move_spd_half_up_body", 0.18)
+        self.threshold_arm_diff_half_up_body = rospy.get_param("/threshold_arm_diff_half_up_body", 0.2)
+        self._interp_time_last = rospy.Time.now().to_sec()
+
 
         self.pub = rospy.Publisher("/kuavo_arm_traj", JointState, queue_size=10)
         self.pub_origin_joint = rospy.Publisher("/kuavo_arm_traj_origin", Float32MultiArray, queue_size=10)
@@ -365,11 +385,14 @@ class IkRos:
                     sys.stdout.write("\r\033[91mDetected VR ERROR!!! Please restart VR app in quest3 or check the battery level of the joystick!!!\033[0m")
                 rate.sleep()
             print("[ik]: OK-guesture recieved!!!")
+
         if self.__send_srv:
             print("[ik]: Send start service signal to robot, wait for response.")
             self.change_arm_ctrl_mode(2)
             # self.change_arm_ctrl_mode4kuavo(True)
             print("\033[92m[ik]: Recied start signal response, Start teleoperation.\033[0m")
+
+        self.arm_mode_changing = True
         if self.__as_mc_ik:
             print("[ik]: If you want to stop teleoperation, please make a Shot-guesture(hold on for 1-2 seconds).")
         q_last = self.arm_ik.q0() if self.external_q0 is None else self.external_q0
@@ -382,9 +405,11 @@ class IkRos:
         run_count, fail_count = 0, 0
         sum_time_cost = 0.0
         arm_q_filtered = [0.0] * 14
+        is_runing = False
         while not rospy.is_shutdown():
             self.hand_finger_data_process(0)
             # print(f"q_now: {q_now}")
+            is_runing_last = is_runing
             is_runing = self.quest3_arm_info_transformer.is_runing if self.__as_mc_ik else True
             self.__current_pose, self.__current_pose_right = self.get_two_arm_pose(q_last)
             self.pub_solved_arm_eef_pose(q_last, self.__current_pose, self.__current_pose_right)
@@ -405,6 +430,8 @@ class IkRos:
                 sys.stdout.write("\rStatus: {}, is target far?: {}".format("RUNING" if is_runing else "STOPED", self.judge_target_is_far()))
                 continue
             
+            if(not is_runing_last and is_runing):
+                self.arm_mode_changing = True
             if self.__target_pose[0] is None or self.__target_pose_right[0] is None or \
                 self.__current_pose[0] is None or self.__current_pose_right[0] is None:
                 rate.sleep()
@@ -496,12 +523,42 @@ class IkRos:
             rate.sleep()
 
     def publish_joint_states(self, q_now, q_last):
+        
         arm_agl_limited = self.limit_angle(q_now[-14:])
         msg = JointState()
         msg.name = ["arm_joint_" + str(i) for i in range(1, 15)]
         msg.header.stamp = rospy.Time.now()
-        msg.position = 180.0 / np.pi * np.array(arm_agl_limited)
-        self.pub.publish(msg)
+        
+        if self.only_half_up_body and self.sensor_data_raw is None:
+            print(f"[ik_ros_uni]: sensor_data_raw is None")
+            return
+
+        if self.only_half_up_body and self.arm_mode_changing:
+            # 获取当前关节角度
+            arm_current_state = np.array(self.sensor_data_raw.joint_data.joint_q[12:26]).copy()
+            
+            # 计算状态差
+            delta_state = np.array(arm_agl_limited) - np.array(arm_current_state)
+            total_distance = np.linalg.norm(delta_state)
+            
+            # 如果距离太小，直接使用目标状态
+            if total_distance < self.threshold_arm_diff_half_up_body:
+                arm_agl_interpolated = arm_agl_limited
+                self.arm_mode_changing = False
+            else:
+                
+                max_move = self.maxSpeed
+            
+                scale = np.clip(max_move / total_distance, 0, 1)
+                arm_agl_interpolated = arm_current_state + delta_state * scale
+            
+            msg.position = 180.0 / np.pi * np.array(arm_agl_interpolated)
+            self.pub.publish(msg)
+        else:
+            # 非插值模式下直接使用目标状态
+            msg.position = 180.0 / np.pi * np.array(arm_agl_limited)
+            self.pub.publish(msg)
+        
 
     def kuavo_joint_states_callback(self, joint_states_msg):
         # 手臂状态正解
@@ -798,8 +855,38 @@ class IkRos:
             # 重置所有姿态
             print(f"\033[91m[IK]Reset arm mode.\033[0m")
             self.trigger_reset_mode = True
+            self.arm_mode_changing = False
+        elif new_mode == 2:
+            print(f"\033[91m[IK]Arm mode changing.\033[0m")
+            self.arm_mode_changing = True
             
+    def sensor_data_raw_callback(self, msg):
+        self.sensor_data_raw = msg
 
+    def set_arm_mode_changing_callback(self, req):
+        """服务回调函数，设置arm_mode_changing为True"""
+
+        self.arm_mode_changing = True
+        
+        if self.only_half_up_body:
+            # 发送当前手臂的关节状态到kuavo_arm_traj来清空mpc节点话题接收队列
+            # 防止半身手臂切换时刻mpc执行旧的kuavo_arm_tarj
+            if self.sensor_data_raw is None:
+                print(f"[ik_ros_uni]: sensor_data_raw is None")
+            else:
+                rate = rospy.Rate(1 / self.controller_dt)
+                arm_current_state = np.array(self.sensor_data_raw.joint_data.joint_q[12:26]).copy()
+                msg = JointState()
+                msg.name = ["arm_joint_" + str(i) for i in range(1, 15)]
+                msg.header.stamp = rospy.Time.now()
+                msg.position = 180.0 / np.pi * np.array(arm_current_state)
+                for i in range(20):
+                    self.pub.publish(msg)
+                    rate.sleep()
+        response = TriggerResponse()
+        response.success = True
+        response.message = "Arm mode changing set to True"
+        return response
 
 if __name__ == "__main__":
     rospy.init_node("diff_ik_node", anonymous=True)

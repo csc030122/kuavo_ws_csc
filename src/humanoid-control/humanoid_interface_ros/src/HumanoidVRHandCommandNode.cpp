@@ -2,6 +2,7 @@
 #include <ros/package.h>
 #include <cmath>
 #include "std_msgs/Float64.h"
+#include <std_srvs/Trigger.h>
 
 #include <ocs2_core/Types.h>
 #include <ocs2_core/misc/LoadData.h>
@@ -468,6 +469,27 @@ class VRHandCommandNode {
       srv.request.control_mode = mode;
       auto change_arm_mode_service_client_ = nh_.serviceClient<kuavo_msgs::changeArmCtrlMode>("/humanoid_change_arm_ctrl_mode");
 
+      // 调用设置arm_mode_changing的服务
+      std_srvs::Trigger trigger_srv;
+      
+      // Control mode:
+      // 0: Keep current arm pose
+      // 1: Auto swing arms during walking
+      // 2: External control through VR/teleoperation
+      if (mode == 2 && ros::service::exists("/quest3/set_arm_mode_changing", false)) {
+        
+        auto set_arm_mode_changing_client_ = nh_.serviceClient<std_srvs::Trigger>("/quest3/set_arm_mode_changing");
+        if (set_arm_mode_changing_client_.call(trigger_srv))
+        {
+          ROS_INFO("Set arm mode changing service call successful");
+        }
+        else
+        {
+          ROS_ERROR("Failed to call set arm mode changing service");
+        }
+      }
+      else ROS_WARN("Service /quest3/set_arm_mode_changing skipping call");
+      
       // 调用服务
       if (change_arm_mode_service_client_.call(srv))
       {
