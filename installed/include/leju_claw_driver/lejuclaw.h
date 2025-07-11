@@ -94,9 +94,10 @@ private:
     static constexpr float IMPACT_INTERVAL_MS = 100.0f;            // 冲击间隔时间，单位 ms
     
     // 夹爪夹到物品检测参数
-    static constexpr float GRAB_DETECTION_CURRENT_THRESHOLD = 1.0f; // 夹到物品检测电流阈值，只检测关爪方向正电流，单位 A
+    static constexpr float GRAB_DETECTION_CURRENT_THRESHOLD = 1.0f; // 夹到物品检测电流阈值，单位 A
     static constexpr float GRAB_DETECTION_TIME_MS = 100.0f;         // 夹到物品检测持续时间，单位 ms
     static constexpr float GRAB_HOLD_CURRENT = 0.05f;               // 夹到物品后保持电流，单位 A
+    static constexpr float LIMIT_RANGE_PERCENT = 5.0f;              // 限位范围百分比，在此范围内才执行3A反冲，单位 %
     
     // 初始化寻找零点参数
     static constexpr float ZERO_CONTROL_KP = 0.0f;                  // 零点控制比例增益，零点寻找时使用
