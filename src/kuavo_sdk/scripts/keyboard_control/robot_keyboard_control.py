@@ -664,12 +664,6 @@ class KeyBoardRobotController:
             self.joy_msg.buttons[BUTTON_Y] = 1  # 发送walk
         elif key == 'c':
             self.joy_msg.buttons[BUTTON_A] = 1  # 发送stance
-        elif key == 't':
-            self.joy_msg.buttons[BUTTON_B] = 1  # 发送trot
-        elif key == 'b':  # ESC键
-            self.joy_msg.buttons[BUTTON_BACK] = 1  # 发送BUTTON_BACK
-        elif key == 'o' or key == 'f':
-            self.joy_msg.buttons[BUTTON_START] = 1  # 发送BUTTON_START
             
         cmdvel = [self.joy_msg.axes[AXIS_LEFT_STICK_X],self.joy_msg.axes[AXIS_LEFT_STICK_Y], 0, 0, 0, self.joy_msg.axes[AXIS_RIGHT_STICK_YAW]]
         print(f"cmdvel: {[f'{x * 100:.0f}%' for x in cmdvel]}", end='\r')
@@ -725,8 +719,7 @@ class KeyBoardRobotController:
                         print("Use keys to control:")
                         print("WASD: Left stick, control forward/backward, left/right")
                         print("IKJL/QE: Right stick, up/down, turn left/right")
-                        print("R: walk, C: stance, T: trot")
-                        print("B: BUTTON_BACK, O/F: BUTTON_START")
+                        print("R: walk, C: stance")
                         print("<space>: Reset all axes to zero")
                         print("Press Ctrl-C to exit")
 

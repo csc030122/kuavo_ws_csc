@@ -11,13 +11,13 @@ import rospy
 import numpy as np
 from enum import Enum
 
-from motion_capture_ik.srv import fkSrv
+from kuavo_msgs.srv import fkSrv
 from kuavo_msgs.msg import sensorsData
 
 from kuavo_msgs.msg import armTargetPoses
 from kuavo_msgs.srv import changeArmCtrlMode, changeArmCtrlModeRequest, changeArmCtrlModeResponse
-from motion_capture_ik.srv import twoArmHandPoseCmdSrv
-from motion_capture_ik.msg import twoArmHandPoseCmd, ikSolveParam
+from kuavo_msgs.srv import twoArmHandPoseCmdSrv
+from kuavo_msgs.msg import twoArmHandPoseCmd, ikSolveParam
 
 # 获取机器人版本
 def get_parameter(param_name):

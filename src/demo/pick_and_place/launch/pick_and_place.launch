@@ -123,13 +123,4 @@
         <param name="wrist_marker_place_frame" value="$(arg wrist_marker_frame2)" />
     </node> 
 
-    <include file="$(find motion_capture_ik)/launch/visualize.launch">
-        <arg name="control_hand_side" value="$(arg control_hand_side)" />
-        <arg name="run_quest3_monitor" value="0" />
-        <arg name="record_bag" value="false" />
-        <arg name="ee_type" value="qiangnao" />
-        <arg name="eef_z_bias" value="$(arg eef_z_bias)" />
-        <arg name="log_type" value="log" />
-    </include>
-
 </launch>

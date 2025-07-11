@@ -948,6 +948,9 @@ void PhysicsThread(mj::Simulate *sim, const char *filename)
       int hand_joints_num = g_dexhand_node->get_hand_joints_num();
       g_nh_ptr->setParam("end_effector_joints_num", hand_joints_num);
   }
+  else {
+    g_nh_ptr->setParam("end_effector_joints_num", 0);
+  }
 
   std::cout << "[mujoco_node]: waiting for init qpos" << std::endl;
   while (ros::ok())

@@ -29,8 +29,8 @@ KUAVO Humanoid SDK是一个用于控制KUAVO人形机器人的综合Python SDK�
         **触觉灵巧手 (QiangNao_Touch)**: 位置、速度、扭矩、触觉状态  
     - End-effector position and orientation  
         **末端执行器位置和方向**  
-- **Motion states**: stand, walk, step_control, trot  
-    **运动状态**: 站立、行走、步态控制、小跑  
+- **Motion states**: stand, walk, step_control  
+    **运动状态**: 站立、行走、步态控制  
 
 ### Motion Control 运动控制
 - **Arm Control 手臂控制**  
@@ -56,17 +56,9 @@ KUAVO Humanoid SDK是一个用于控制KUAVO人形机器人的综合Python SDK�
     - Position control  
         **位置控制**  
 
-- **Torso Control 躯干控制**  
-    - Height control (squatting)  
-        **高度控制 (下蹲)**  
-    - Forward/backward tilt control  
-        **前倾/后倾控制**  
-
 - **Dynamic Motion Control 动态运动控制**  
     - Stance  
         **站立**  
-    - Trot  
-        **小跑**  
     - Walking (xy and yaw velocity control)  
         **行走 (xy 和偏航速度控制)**  
     - Stepping (gait switching)  

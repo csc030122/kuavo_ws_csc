@@ -11,7 +11,7 @@ import math
 import tf2_ros
 import geometry_msgs.msg
 from sensor_msgs.msg import JointState
-from kuavo_msgs.srv import changeArmCtrlMode
+from kuavo_msgs.srv import changeArmCtrlMode, twoArmHandPoseCmdSrv
 from kuavo_msgs.msg import robotHandPosition, sensorsData
 import numpy as np
 from scipy.interpolate import CubicSpline
@@ -65,7 +65,9 @@ class Robot:
         # Initialize publishers and subscribers
         self.joint_pub = rospy.Publisher('/kuavo_arm_traj', JointState, queue_size=1, tcp_nodelay=True)
         self.gripper_pub = rospy.Publisher('/control_robot_hand_position', robotHandPosition, queue_size=1, tcp_nodelay=True)
-        self.ik_pub = rospy.Publisher('/ik/two_arm_hand_pose_cmd', twoArmHandPoseCmd, queue_size=10)
+        
+        # IK service client
+        self.ik_service_client = rospy.ServiceProxy('/ik/two_arm_hand_pose_cmd_srv', twoArmHandPoseCmdSrv)
 
         self.sensor_data_sub = rospy.Subscriber(
             '/sensors_data_raw', 
@@ -85,6 +87,15 @@ class Robot:
         self.tf_pub_timer = rospy.Timer(rospy.Duration(0.01), self.publish_ee_poses)  # 20Hz
 
         self.has_wrist = rospy.get_param('~has_wrist', True)
+        
+        # Wait for IK service to be available
+        rospy.loginfo("Waiting for IK service to be available...")
+        try:
+            rospy.wait_for_service('/ik/two_arm_hand_pose_cmd_srv', timeout=10.0)
+            rospy.loginfo("IK service is available")
+        except rospy.ROSException:
+            rospy.logerr("IK service not available after 10 seconds")
+            raise
         
         rospy.loginfo("Robot initialized successfully")
     
@@ -147,7 +158,8 @@ class Robot:
         rospy.loginfo("Pick and place parameters loaded successfully")
     
     def compute_ik(self, poses_dict):
-        """Compute IK for both arms based on the poses dictionary"""
+        """Compute IK for both arms based on the poses dictionary
+        """
         
         # Create IK command message
         ik_cmd = twoArmHandPoseCmd()
@@ -191,13 +203,21 @@ class Robot:
             poses_dict['right'].transform.rotation.z,
             poses_dict['right'].transform.rotation.w
         ]
-        # Publish IK command
-        self.ik_pub.publish(ik_cmd)
         
-        # In a real implementation, we would wait for the IK solution
-        # and return the joint angles. For now, we'll just return None.
-        # Return placeholder joint angles (in a real implementation, this would be the actual IK solution)
-    
+        try:
+            # Call IK service
+            response = self.ik_service_client(ik_cmd)
+            
+            if response.success:
+                rospy.loginfo(f"IK solved successfully in {response.time_cost:.2f}ms")
+                return response.q_arm
+            else:
+                rospy.logerr("IK service call failed")
+                return None
+                
+        except rospy.ServiceException as e:
+            rospy.logerr(f"IK service call failed: {e}")
+            return None
 
     def cubic_spline_interpolate(self, start_transform, end_pose, num_points=200):
         """Generate a path using cubic spline interpolation for position and slerp for rotation"""
@@ -355,7 +375,7 @@ class Robot:
         return path_transforms
 
     def move_to_pose(self, target_pose, arm=None):
-        """Move robot to specified pose"""
+        """Move robot to specified pose using IK service and direct joint control"""
         rospy.loginfo(f"Using {arm} arm for movement")
         
         # Get current transform of the selected arm
@@ -378,7 +398,6 @@ class Robot:
         # Generate interpolation path
         path_transforms = self.cubic_spline_interpolate(current_transform, target_pose, self.path_points)
         
-        
         # For each point in the path, compute IK and move
         for i, transform in enumerate(path_transforms):
             
@@ -394,10 +413,25 @@ class Robot:
                 "right": transform if arm == "right" else other_transform,
             }
             
-            # Compute IK for this pose
-            self.compute_ik(poses_dict)
-            rospy.sleep(0.01)  # Small delay between waypoints
-        
+            # Compute IK for this pose using service
+            joint_angles = self.compute_ik(poses_dict)
+            
+            if joint_angles is not None:
+                # Publish joint trajectory directly
+                joint_msg = JointState()
+                joint_msg.header.stamp = rospy.Time.now()
+                joint_msg.name = self.joint_names
+                joint_angles = list(joint_angles)
+                if arm == "right":
+                    joint_angles = list(self.current_arm_joint_state[0:7]) + list(joint_angles[7:14])
+                else:
+                    joint_angles = list(joint_angles[0:7]) + list(self.current_arm_joint_state[7:14])
+                joint_msg.position = [math.degrees(i) for i in joint_angles]
+                self.joint_pub.publish(joint_msg)
+                rospy.sleep(0.01)  # Small delay between waypoints
+            else:
+                rospy.logerr(f"Failed to compute IK for waypoint {i}")
+                return False
         final_poses_dict = {
             "left": self.pose_to_transformstamped(target_pose) if arm == "left" else other_transform,
             "right": self.pose_to_transformstamped(target_pose) if arm == "right" else other_transform,
@@ -405,7 +439,18 @@ class Robot:
         
         rospy.loginfo("Sending final pose command multiple times to increase precision...")
         for _ in range(10): 
-            self.compute_ik(final_poses_dict)
+            joint_angles = self.compute_ik(final_poses_dict)
+            if joint_angles is not None:
+                joint_msg = JointState()
+                joint_msg.header.stamp = rospy.Time.now()
+                joint_msg.name = self.joint_names
+                if arm == "right":
+                    joint_angles = list(self.current_arm_joint_state[0:7]) + list(joint_angles[7:14])
+                else:
+                    joint_angles = list(joint_angles[0:7]) + list(self.current_arm_joint_state[7:14])
+                joint_msg.position = [math.degrees(i) for i in joint_angles]
+
+                self.joint_pub.publish(joint_msg)
             rospy.sleep(0.01) 
         
         rospy.loginfo("Movement completed")
@@ -555,8 +600,13 @@ class Robot:
         
         # Create hand position message
         hand_pose_msg = robotHandPosition()
-        hand_pose_msg.left_hand_position = self.view_hand
-        hand_pose_msg.right_hand_position = self.view_hand
+        if self.picking_arm == "left":
+            hand_pose_msg.left_hand_position = self.view_hand
+            hand_pose_msg.right_hand_position = self.open_hand
+        else:
+            hand_pose_msg.left_hand_position = self.open_hand
+            hand_pose_msg.right_hand_position = self.view_hand
+
         
         # Publish hand position
         self.gripper_pub.publish(hand_pose_msg)
@@ -589,9 +639,13 @@ class Robot:
         
         # Create hand position message
         hand_pose_msg = robotHandPosition()
-        hand_pose_msg.left_hand_position = self.close_hand
-        hand_pose_msg.right_hand_position = self.close_hand
-        print(self.close_hand)
+        if self.picking_arm == "left":
+            hand_pose_msg.left_hand_position = self.close_hand
+            hand_pose_msg.right_hand_position = self.open_hand
+        else:
+            hand_pose_msg.left_hand_position = self.open_hand
+            hand_pose_msg.right_hand_position = self.close_hand
+        
         # Publish hand position
         self.gripper_pub.publish(hand_pose_msg)
         rospy.sleep(0.5)  # Wait for gripper to close
@@ -816,7 +870,18 @@ class Robot:
             }
             
             # 计算IK并等待执行完成
-            self.compute_ik(poses_dict)
+            joint_angles = self.compute_ik(poses_dict)
+            if joint_angles is not None:
+                # Publish joint trajectory directly
+                joint_msg = JointState()
+                joint_msg.header.stamp = rospy.Time.now()
+                joint_msg.name = self.joint_names
+                if arm == "right":
+                    joint_angles = list(self.current_arm_joint_state[0:7]) + list(joint_angles[7:14])
+                else:
+                    joint_angles = list(joint_angles[0:7]) + list(self.current_arm_joint_state[7:14])
+                joint_msg.position = [math.degrees(i) for i in joint_angles]
+                self.joint_pub.publish(joint_msg)
             rospy.sleep(0.1)  # 给系统一个短暂的时间来执行命令
             
             last_error = pos_error

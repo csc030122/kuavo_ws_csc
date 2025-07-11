@@ -6,6 +6,8 @@ import math
 import numpy as np
 from humanoid_plan_arm_trajectory.srv import planArmTrajectoryBezierCurve, planArmTrajectoryBezierCurveRequest
 from humanoid_plan_arm_trajectory.msg import bezierCurveCubicPoint, jointBezierTrajectory
+from kuavo_ros_interfaces.srv import stopPlanArmTrajectory
+from kuavo_ros_interfaces.msg import robotHandPosition, robotHeadMotionData
 from sensor_msgs.msg import JointState
 from trajectory_msgs.msg import JointTrajectory
 from kuavo_msgs.srv import changeArmCtrlMode, changeArmCtrlModeRequest
@@ -25,6 +27,8 @@ x_shift = START_FRAME_TIME - 1
 
 # 用于存储关节状态的消息对象
 joint_state = JointState()
+hand_state = robotHandPosition()
+head_state = robotHeadMotionData()
 
 # 存储当前手臂关节状态的列表
 current_arm_joint_state = []
@@ -61,7 +65,7 @@ def traj_callback(msg):
     4. 将关节速度从弧度/秒转换为角度/秒
     5. 设置关节力矩为0
     """
-    global joint_state
+    global joint_state, hand_state, head_state
     if len(msg.points) == 0:
         return
     point = msg.points[0]
@@ -87,6 +91,12 @@ def traj_callback(msg):
     joint_state.velocity = [math.degrees(vel) for vel in point.velocities[:14]]
     # 设置关节力矩为0
     joint_state.effort = [0] * 14
+
+    hand_state.left_hand_position = [int(math.degrees(pos)) for pos in point.positions[14:20]]
+    hand_state.right_hand_position = [int(math.degrees(pos)) for pos in point.positions[20:26]]
+
+    head_state.joint_data = [math.degrees(pos) for pos in point.positions[26:]]
+
 
 def call_change_arm_ctrl_mode_service(arm_ctrl_mode):
     """
@@ -147,8 +157,6 @@ def add_init_frame(frames):
         servos, keyframe, attribute = frame["servos"], frame["keyframe"], frame["attribute"]
         for index, value in enumerate(servos):
             key = index + 1
-            if key == 15:
-                break
             # 为每个关节初始化轨迹数据
             if key not in action_data:
                 action_data[key] = []
@@ -397,15 +405,11 @@ def main():
     rospy.init_node('arm_trajectory_bezier_demo')
     
     # 创建订阅者和发布者
-    traj_sub = rospy.Subscriber('/bezier/arm_traj', JointTrajectory, traj_callback, queue_size=1, tcp_nodelay=True)
+    rospy.Subscriber('/bezier/arm_traj', JointTrajectory, traj_callback, queue_size=1, tcp_nodelay=True)
+    rospy.Subscriber('/sensors_data_raw', sensorsData, sensors_data_callback, queue_size=1, tcp_nodelay=True)
     kuavo_arm_traj_pub = rospy.Publisher('/kuavo_arm_traj', JointState, queue_size=1, tcp_nodelay=True)
-    sensor_data_sub = rospy.Subscriber(
-            '/sensors_data_raw', 
-            sensorsData, 
-            sensors_data_callback, 
-            queue_size=1, 
-            tcp_nodelay=True
-    )
+    control_hand_pub = rospy.Publisher('/control_robot_hand_position', robotHandPosition, queue_size=1, tcp_nodelay=True)
+    control_head_pub = rospy.Publisher('/robot_head_motion_data', robotHeadMotionData, queue_size=1, tcp_nodelay=True)
     
     # 切换手臂控制模式为双臂控制
     call_change_arm_ctrl_mode_service(2)
@@ -433,10 +437,12 @@ def main():
     rate = 100
     while not rospy.is_shutdown():
         try:
-            global joint_state
+            global joint_state, hand_state, head_state
             if len(joint_state.position) == 0:
                 continue
             kuavo_arm_traj_pub.publish(joint_state)
+            control_hand_pub.publish(hand_state)
+            control_head_pub.publish(head_state)
         except Exception as e:
             rospy.logerr(f"Failed to publish arm trajectory: {e}")
         except KeyboardInterrupt:
