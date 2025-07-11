@@ -17,6 +17,7 @@
 #include <time.h>
 #include <chrono>
 #include "ruiwoSDK.h"
+#include <algorithm>
 
 class LeJuClaw
 {
@@ -51,8 +52,13 @@ public:
     int initialize(bool init_bmlib);
     void enable();
     void disable();
-    void go_to_zero();
     void set_zero();
+    void go_to_zero();
+    void go_to_zero_with_current_control();
+    bool find_claw_limit_velocity_control(bool is_open_direction, float kp, float kd, float alpha,
+                            float max_current, float stall_current_threshold, 
+                            float stall_velocity_threshold, float dt, 
+                            int stable_time_ms, int timeout_ms);
     void set_positions(const std::vector<uint8_t> &index, const std::vector<double> &positions, const std::vector<double> &torque, const std::vector<double> &velocity);
     void set_torque(const std::vector<uint8_t> &index, const std::vector<double> &torque);
     void set_velocity(const std::vector<uint8_t> &index, const std::vector<double> &velocity);
@@ -66,7 +72,58 @@ public:
     MotorStateDataVec get_motor_state();
     std::vector<int> disable_joint_ids;
     
+    void set_claw_kpkd(int kp, int kd);
+    float lowPassFilter(float input, float prevOutput, float alpha);
+    void clear_all_torque();
+
 private:
+    // 控制参数常量
+    static constexpr float DEFAULT_KP = 7.00f;                     // 比例增益系数，用于位置控制
+    static constexpr float DEFAULT_KD = 2.50f;                     // 微分增益系数，用于阻尼控制
+    static constexpr float DEFAULT_ALPHA = 0.20f;                  // 低通滤波器系数，用于信号平滑
+    static constexpr float DEFAULT_MAX_CURRENT = 1.80f;            // 最大电流限制，单位 A
+    static constexpr float DEFAULT_MIN_ERROR = 0.10f;              // 最小误差阈值，用于判断到位精度
+    static constexpr float DEFAULT_DT = 0.002f;                    // 控制周期，单位 s
+    static constexpr int DEFAULT_TIMEOUT_MS = 300;                 // 超时时间，单位 ms
+    // 卡死检测参数
+    static constexpr float STUCK_DETECTION_DELAY_MS = 50.0f;       // 卡死检测延迟时间，单位 ms
+    static constexpr float STUCK_DETECTION_TIME_MS = 50.0f;        // 卡死检测持续时间，单位 ms
+    static constexpr float STUCK_POSITION_THRESHOLD = 0.002f;      // 卡死位置阈值，单位 rad
+    static constexpr float IMPACT_CURRENT = 3.0f;                  // 冲击电流阈值，单位 A
+    static constexpr float IMPACT_DURATION_MS = 100.0f;            // 冲击持续时间，单位 ms
+    static constexpr float IMPACT_INTERVAL_MS = 100.0f;            // 冲击间隔时间，单位 ms
+    
+    // 夹爪夹到物品检测参数
+    static constexpr float GRAB_DETECTION_CURRENT_THRESHOLD = 1.0f; // 夹到物品检测电流阈值，只检测关爪方向正电流，单位 A
+    static constexpr float GRAB_DETECTION_TIME_MS = 100.0f;         // 夹到物品检测持续时间，单位 ms
+    static constexpr float GRAB_HOLD_CURRENT = 0.05f;               // 夹到物品后保持电流，单位 A
+    
+    // 初始化寻找零点参数
+    static constexpr float ZERO_CONTROL_KP = 0.0f;                  // 零点控制比例增益，零点寻找时使用
+    static constexpr float ZERO_CONTROL_KD = 1.0f;                  // 零点控制微分增益，零点寻找时使用
+    static constexpr float ZERO_CONTROL_ALPHA = 1.50f;              // 零点控制低通滤波系数
+    static constexpr float ZERO_CONTROL_MAX_CURRENT = 1.80f;        // 零点控制最大电流限制，单位 A
+    static constexpr float ZERO_CONTROL_DT = 0.001f;                // 零点控制周期，单位 s
+    static constexpr int ZERO_STABLE_TIME_MS = 2000;                // 零点稳定时间，单位 ms
+    static constexpr int ZERO_FIND_TIMEOUT_MS = 6000;               // 零点寻找超时时间，单位 ms
+    static constexpr float STALL_CURRENT_THRESHOLD = 1.50f;         // 堵转电流阈值，超过阈值后认为到达限位，单位 A
+    static constexpr float STALL_VELOCITY_THRESHOLD = 0.80f;        // 堵转速度阈值，超过阈值后认为到达限位，单位 rad/s
+    static constexpr int ZERO_WAIT_MS = 500;                        // 零点等待时间，单位 ms
+    static constexpr float OPEN_LIMIT_ADJUSTMENT = -10.0f;          // 开限位调整值，百分比，单位 rad
+    static constexpr float CLOSE_LIMIT_ADJUSTMENT = 0.0f;           // 关限位调整值，百分比，单位 rad
+    static constexpr float TARGET_VELOCITY = 65.0f;                 // 限位寻找目标速度，单位 rad/s
+    // 关爪限位寻找参数
+    static constexpr float CLOSE_STUCK_DETECTION_THRESHOLD = 0.02f; // 关爪卡死检测阈值，单位 rad
+    static constexpr int CLOSE_NORMAL_MODE_DELAY_MS = 1000;         // 关爪正常模式延迟时间，单位 ms
+    static constexpr int CLOSE_IMPACT_DURATION_MS = 200;            // 关爪冲击持续时间，单位 ms
+    static constexpr int CLOSE_IMPACT_INTERVAL_MS = 100;            // 关爪冲击间隔时间，单位 ms
+    static constexpr int CLOSE_MAX_ATTEMPTS = 5;                    // 关爪最大尝试次数
+    
+    std::vector<float> create_zero_vector(size_t size);
+    void send_torque_with_lock(const std::vector<float>& torques);
+    void send_claw_torque_only(const std::vector<float>& torques);  // 发送夹爪电流，左右独立控
+    
+    private:
     void control_thread();
     // void get_parameter();
     void get_config(const std::string &config_file);
@@ -89,6 +146,9 @@ private:
     
     // // ptm:力控模式 servo:伺服模式
     static inline  std::string Control_mode = "ptm";
+    
+    // 3A电流使用统计
+    static inline int three_amp_current_usage_count = 0;
 
     
     std::vector<bool> Claw_joint_online;
@@ -128,6 +188,12 @@ private:
     std::vector<std::vector<float>> joint_status;
     std::vector<float> joint_start_positions;  // 行程起点位置
     std::vector<float> joint_end_positions;    // 行程终点位置
+    
+    // 夹爪夹到物品状态跟踪
+    std::vector<bool> claw_grabbed_item;       // 夹爪是否夹到物品
+    std::vector<std::chrono::steady_clock::time_point> grab_detection_start_times; // 夹到物品检测开始时间
+    std::vector<bool> grab_detection_active;   // 夹到物品检测是否激活
+    std::vector<float> last_grab_directions;   // 上次夹爪运动方向
 
 };
 
