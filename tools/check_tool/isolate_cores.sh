@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # isolate_cores.sh
-# 用途：在 Ubuntu 上隔离 CPU 核心 2 和 3，需 root 权限运行，重启后生效
+# 用途：在 Ubuntu 上隔离 CPU 核心 2、3 和 7，需 root 权限运行，重启后生效
 
 set -e
 
@@ -17,13 +17,13 @@ fi
 echo "备份 $GRUB_CONF → $BACKUP_CONF"
 cp "$GRUB_CONF" "$BACKUP_CONF"
 
-# 在 GRUB_CMDLINE_LINUX 中添加 isolcpus=2,3
+# 在 GRUB_CMDLINE_LINUX 中添加 isolcpus=2,3,7
 if grep -q "isolcpus[=]" "$GRUB_CONF"; then
   # 如果已有 isolcpus，则直接替换数字
-  sed -i -r "s/isolcpus=[0-9,]*/isolcpus=2,3/g" "$GRUB_CONF"
+  sed -i -r "s/isolcpus=[0-9,]*/isolcpus=2,3,7/g" "$GRUB_CONF"
 else
   # 否则在末尾追加
-  sed -i -r "s/^(GRUB_CMDLINE_LINUX=\")/\1isolcpus=2,3 /" "$GRUB_CONF"
+  sed -i -r "s/^(GRUB_CMDLINE_LINUX=\")/\1isolcpus=2,3,7 /" "$GRUB_CONF"
 fi
 
 echo "更新完毕，新的 GRUB 配置："
