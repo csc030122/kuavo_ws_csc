@@ -220,6 +220,7 @@ namespace humanoid_controller
     std::queue<SensorData> sensorDataQueue;
     std::queue<nav_msgs::Odometry> robotlocalizationDataQueue;
     std::mutex sensor_data_mutex_;
+    std::mutex robotlocalization_data_mutex_;
 
     std::thread keyboardThread_;
     int imuType_;

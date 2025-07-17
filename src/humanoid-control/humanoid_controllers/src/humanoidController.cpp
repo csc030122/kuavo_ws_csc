@@ -678,6 +678,7 @@ namespace humanoid_controller
   void humanoidController::robotlocalizationCallback(const nav_msgs::Odometry::ConstPtr &msg)
   {
     nav_msgs::Odometry robot_localization_ = *msg;
+    std::lock_guard<std::mutex> lock(robotlocalization_data_mutex_);
     robotlocalizationDataQueue.push(robot_localization_);
   }
 
@@ -779,8 +780,10 @@ namespace humanoid_controller
     seq_++;
     imuPub_.publish(imu_msg);
     kinematicPub_.publish(kinematics_odom);
-    if(!robotlocalizationDataQueue.empty())
-    {
+    { // robotlocalization_data_mutex_
+      std::lock_guard<std::mutex> lock(robotlocalization_data_mutex_);
+      if(!robotlocalizationDataQueue.empty())
+      {
       nav_msgs::Odometry robot_localization_ = robotlocalizationDataQueue.front();
       Eigen::Quaterniond robot_quat(robot_localization_.pose.pose.orientation.w, 
                                     robot_localization_.pose.pose.orientation.x, 
@@ -794,11 +797,12 @@ namespace humanoid_controller
       Eigen::Vector3d sensor_eulerAngles = quatToZyx(sensor_quat);
       Eigen::Vector3d updata_eulerAngles;
       updata_eulerAngles << robot_eulerAngles(0), sensor_eulerAngles(1),sensor_eulerAngles(2);
-      robot_quat_state_update_ = Eigen::AngleAxisd(updata_eulerAngles[0], Eigen::Vector3d::UnitZ())*
+              robot_quat_state_update_ = Eigen::AngleAxisd(updata_eulerAngles[0], Eigen::Vector3d::UnitZ())*
                                  Eigen::AngleAxisd(updata_eulerAngles[1], Eigen::Vector3d::UnitY())*
                                  Eigen::AngleAxisd(updata_eulerAngles[2], Eigen::Vector3d::UnitX());
       robotlocalizationDataQueue.pop();
-    }
+      }
+    }  // robotlocalization_data_mutex_
     sensor_data_new.quat_.w() = robot_quat_state_update_.w();
     sensor_data_new.quat_.x() = robot_quat_state_update_.x();
     sensor_data_new.quat_.y() = robot_quat_state_update_.y();
