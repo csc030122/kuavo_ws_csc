@@ -131,11 +131,12 @@
 ## 连接机器人 
 > 如希望实现此功能，先在机器人下位机运行下面命令
 ```bash
-cd <kuavo-ros-opensource>/src/manipulation_nodes/planarmwebsocketservice/service/
+sudo su
+cd /home/lab/kuavo-ros-opensource/src/manipulation_nodes/planarmwebsocketservice/service/
 chmod +x websocket_deploy_script.sh 
 ./websocket_deploy_script.sh
 # 等待上面成功运行，然后运行下面命令
-cd <kuavo-ros-opensource>/tools/user_groups_tools/
+cd /home/lab/kuavo-ros-opensource/tools/user_groups_tools/
 chmod +x add_user_groups.sh
 ./add_user_groups.sh
 ```
