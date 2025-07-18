@@ -84,20 +84,18 @@ private:
     static constexpr float DEFAULT_MAX_CURRENT = 1.80f;            // 最大电流限制，单位 A
     static constexpr float DEFAULT_MIN_ERROR = 0.10f;              // 最小误差阈值，用于判断到位精度
     static constexpr float DEFAULT_DT = 0.002f;                    // 控制周期，单位 s
-    static constexpr int DEFAULT_TIMEOUT_MS = 300;                 // 超时时间，单位 ms
     // 卡死检测参数
     static constexpr float STUCK_DETECTION_DELAY_MS = 50.0f;       // 卡死检测延迟时间，单位 ms
     static constexpr float STUCK_DETECTION_TIME_MS = 50.0f;        // 卡死检测持续时间，单位 ms
     static constexpr float STUCK_POSITION_THRESHOLD = 0.002f;      // 卡死位置阈值，单位 rad
     static constexpr float IMPACT_CURRENT = 3.0f;                  // 冲击电流阈值，单位 A
-    static constexpr float IMPACT_DURATION_MS = 100.0f;            // 冲击持续时间，单位 ms
+    static constexpr float IMPACT_DURATION_MS = 200.0f;            // 冲击持续时间，单位 ms
     static constexpr float IMPACT_INTERVAL_MS = 100.0f;            // 冲击间隔时间，单位 ms
-    
-    // 夹爪夹到物品检测参数
-    static constexpr float GRAB_DETECTION_CURRENT_THRESHOLD = 1.0f; // 夹到物品检测电流阈值，单位 A
-    static constexpr float GRAB_DETECTION_TIME_MS = 100.0f;         // 夹到物品检测持续时间，单位 ms
-    static constexpr float GRAB_HOLD_CURRENT = 0.05f;               // 夹到物品后保持电流，单位 A
-    static constexpr float LIMIT_RANGE_PERCENT = 5.0f;              // 限位范围百分比，在此范围内才执行3A反冲，单位 %
+    static constexpr float LIMIT_RANGE_PERCENT = 5.0f;             // 限位范围百分比，在此范围内才执行3A反冲，单位 %
+    // 稳定检测参数
+    static constexpr float STABLE_POSITION_THRESHOLD = 0.005f;     // 稳定位置阈值，单位 rad
+    static constexpr float STABLE_VELOCITY_THRESHOLD = 0.1f;       // 稳定速度阈值，单位 rad/s
+    static constexpr float STABLE_DETECTION_TIME_MS = 50.0f;       // 稳定检测时间，单位 ms
     
     // 初始化寻找零点参数
     static constexpr float ZERO_CONTROL_KP = 0.0f;                  // 零点控制比例增益，零点寻找时使用
@@ -189,13 +187,6 @@ private:
     std::vector<std::vector<float>> joint_status;
     std::vector<float> joint_start_positions;  // 行程起点位置
     std::vector<float> joint_end_positions;    // 行程终点位置
-    
-    // 夹爪夹到物品状态跟踪
-    std::vector<bool> claw_grabbed_item;       // 夹爪是否夹到物品
-    std::vector<std::chrono::steady_clock::time_point> grab_detection_start_times; // 夹到物品检测开始时间
-    std::vector<bool> grab_detection_active;   // 夹到物品检测是否激活
-    std::vector<float> last_grab_directions;   // 上次夹爪运动方向
-
 };
 
 #endif // LEJUCLAW_CPP_H
