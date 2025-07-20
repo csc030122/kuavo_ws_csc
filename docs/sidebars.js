@@ -107,8 +107,6 @@ const sidebars = {
             'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/二维码抓取水瓶案例',
             'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/基于人脸识别的简易语音交互案例',
             'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/全身打太极动作案例',
-            'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/策略模块搬箱子案例',
-            'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/机器人开源导航案例/机器人开源导航案例'
           ],
         },
         {
@@ -128,6 +126,14 @@ const sidebars = {
             },
             'basic_usage/kuavo-ros-control/docs/5功能案例/拓展案例/手腕相机抓取放置案例',
             'basic_usage/kuavo-ros-control/docs/5功能案例/拓展案例/百度EdgeBoard接入机器人案例',
+          ],
+        },
+        {
+          type: 'category',
+          label: '综合案例',
+          items: [
+            'basic_usage/kuavo-ros-control/docs/5功能案例/综合案例/策略模块搬箱子案例',
+            'basic_usage/kuavo-ros-control/docs/5功能案例/综合案例/机器人开源导航案例',
           ],
         },
         {
