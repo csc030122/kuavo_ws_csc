@@ -83,16 +83,38 @@ def get_robot_version():
             if line.startswith("export ROBOT_VERSION=") and "#" not in line:
                 version = line.split("=")[1].strip()
                 print(f"---------- 检测到 ROBOT_VERSION = {version} ----------")
-                if version in ["40", "41", "42", "43", "44", "45", "46", "47", "48", "49"]:
+                if version in ROBOT_VERSION_MAPPING:
                     return version
                 else:
-                    print(f"[RUIWO motor]:Warning: ROBOT_VERSION '{version}' 不是有效值。")
+                    print(f"[RUIWO motor]:Warning: ROBOT_VERSION '{version}' 不在映射表中。")
                     break
     print("[RUIWO motor]:Warning: ROBOT_VERSION 未找到或无效，需要手动选择模式。")
     return None
 
-# 获取机器人模式（长手/短手/假手型）
+# ROBOT_VERSION 到机器人模式的映射
+ROBOT_VERSION_MAPPING = {
+    # 短手版本
+    "40": "short",
+    "41": "short",
+    "42": "short",
+    
+    # 长手版本
+    "43": "long",
+    "44": "long",
+    "45": "long",
+    "46": "long",
+    "47": "long",
+    "48": "long",
+    "49": "long",
+    
+    # 特殊版本号（长手）
+    "100045": "long",
+    "100049": "long",
+}
+
+# 获取机器人模式（自动映射 + 电机检测）
 def get_robot_mode(robot_version, enable_results):
+    # 通过电机使能结果检测是否为4Pro标准版
     failed_ids = [dev_id for dev_id, success in enable_results if not success]
     is_FourPro_Standard = set(failed_ids) == MISSING_MOTOR_IDS
     
@@ -100,7 +122,23 @@ def get_robot_mode(robot_version, enable_results):
         print("检测到4Pro标准版，假手（缺少5、6、11、12号电机），将执行对应的动作序列")
         return "FourPro_Standard"
     
-    print("\n请选择机器人模式：")
+    # 若ROBOT_VERSION存在且在映射表中，自动选择对应模式
+    if robot_version and robot_version in ROBOT_VERSION_MAPPING:
+        auto_mode = ROBOT_VERSION_MAPPING[robot_version]
+        print(f"根据 ROBOT_VERSION = {robot_version}，自动选择动作：{auto_mode}")
+        
+        # 根据模式返回对应的描述
+        if auto_mode == "long":
+            print("执行长手版动作序列。")
+        elif auto_mode == "short":
+            print("执行短手版动作序列。")
+        elif auto_mode == "FourPro_Standard":
+            print("执行4Pro假手机器人动作序列。")
+        
+        return auto_mode
+    
+    # 若无法自动确定，则手动选择
+    print(f"\n无法根据 ROBOT_VERSION = {robot_version} 自动确定模式，请手动选择：")
     print("1. 长手模式")
     print("2. 短手模式")
     while True:
@@ -134,7 +172,7 @@ short_arm_actions = [
     [0.40, 0.20, 0.00, 0.20, -0.10, 0.00]
 ]
 
-# 4Pro标准版假手动作（新机器人类型动作）
+# 4Pro标准版假手动作
 FourPro_Standard_actions = [
     [0.23, 0.00, 0.00, 0.00, 0.00, 0.00],
     [1.30, 1.00, -1.40, 1.30, 0.00, 0.00],
@@ -178,16 +216,15 @@ if robot_mode is None:
     print("[RUIWO motor]:错误：无法确定机器人模式，程序退出。")
     exit(1)
 
-# 选择动作序列
+# 根据机器人模式选择动作序列
 if robot_mode == "FourPro_Standard":
     base_actions = FourPro_Standard_actions
-    print("执行4Pro假手机器人动作序列。")
 elif robot_mode == "long":
     base_actions = long_arm_actions
-    print("执行长手版动作序列。")
-else:
+elif robot_mode == "short":
     base_actions = short_arm_actions
-    print("执行短手版动作序列。")
+else:
+    pass
 
 # 生成左右手完整动作
 full_base_actions = []
@@ -264,7 +301,7 @@ def check_motor_status(joint_ids, robot_mode):
             print(f"\033[91m电机 {dev_id} 状态获取失败！\033[0m")
             return False, disabled_motors  # 状态获取失败，直接返回False
     
-    # 如果有失能的电机，输出失能的电机列表
+    # 若有失能的电机，输出失能的电机列表
     if disabled_motors:
         print(f"\033[91m以下电机失能：{disabled_motors}\033[0m")
         return False, disabled_motors  # 返回False表示有电机失能
