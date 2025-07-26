@@ -43,6 +43,7 @@
 #include "kuavo_msgs/getCurrentGaitName.h"
 #include "humanoid_controllers/shm_manager.h"
 #include <std_msgs/Int8.h> 
+#include "kuavo_common/common/common.h"
 
 namespace humanoid_controller
 {
@@ -181,7 +182,7 @@ namespace humanoid_controller
     virtual void updateStateEstimation(const ros::Time &time, bool is_init = false);
 
     virtual void setupHumanoidInterface(const std::string &taskFile, const std::string &urdfFile, const std::string &referenceFile, const std::string &gaitFile,
-                                        bool verbose, int robot_version_int);
+                                        bool verbose, RobotVersion rb_version);
     virtual void setupMpc();
     virtual void setupMrt();
     virtual void setupStateEstimate(const std::string &taskFile, bool verbose);

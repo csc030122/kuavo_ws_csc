@@ -144,17 +144,15 @@ namespace humanoid_controller
 
   bool humanoidController::init(HybridJointInterface *robot_hw, ros::NodeHandle &controller_nh, bool is_nodelet_node)
   {
-    int robot_version_int;
-    RobotVersion robot_version(3, 4);
+    RobotVersion rb_version(3, 4);
     if (controllerNh_.hasParam("/robot_version"))
     {
-        controllerNh_.getParam("/robot_version", robot_version_int);
-        int major = robot_version_int / 10;
-        int minor = robot_version_int % 10;
-        robot_version = RobotVersion(major, minor);
+        int rb_version_int;
+        controllerNh_.getParam("/robot_version", rb_version_int);
+        rb_version = RobotVersion::create(rb_version_int);
     }
     is_nodelet_node_ = is_nodelet_node;
-    drake_interface_ = HighlyDynamic::HumanoidInterfaceDrake::getInstancePtr(robot_version, true, 2e-3);
+    drake_interface_ = HighlyDynamic::HumanoidInterfaceDrake::getInstancePtr(rb_version, true, 2e-3);
     kuavo_settings_ = drake_interface_->getKuavoSettings();
     scalar_t comHeight = drake_interface_->getIntialHeight();
     ros::param::set("/com_height", comHeight);
@@ -176,7 +174,7 @@ namespace humanoid_controller
     headNum_ = motor_info.num_head_joints;
     armNumReal_ = motor_info.num_arm_joints;
     jointNumReal_ = motor_info.num_joints - headNum_ - armNumReal_;
-    std::string imu_type_str = motor_info.getIMUType(robot_version_int);
+    std::string imu_type_str = motor_info.getIMUType(rb_version);
     if (imu_type_str == "xsens")
     {
       imuType_ = 2;
@@ -275,7 +273,7 @@ namespace humanoid_controller
 #ifdef KUAVO_CONTROL_LIB_FOUND
     joint_filter_ptr_ = new HighlyDynamic::JointFilter(&plant, &kuavo_settings_, 12, dt_, ros_logger_);
 #endif
-    setupHumanoidInterface(taskFile, urdfFile, referenceFile, gaitCommandFile, verbose, robot_version_int);
+    setupHumanoidInterface(taskFile, urdfFile, referenceFile, gaitCommandFile, verbose, rb_version);
     setupMpc();
     setupMrt();
     // Visualization
@@ -330,7 +328,7 @@ namespace humanoid_controller
     Eigen::Vector3d acc_filter_params;
     Eigen::Vector3d gyro_filter_params;
     double arm_joint_pos_filter_cutoff_freq=20,arm_joint_vel_filter_cutoff_freq=20,mrt_joint_vel_filter_cutoff_freq=200;
-    auto drake_interface_ = HighlyDynamic::HumanoidInterfaceDrake::getInstancePtr(robot_version, true, 2e-3);
+    auto drake_interface_ = HighlyDynamic::HumanoidInterfaceDrake::getInstancePtr(rb_version, true, 2e-3);
     defalutJointPos_.head(jointNum_) = drake_interface_->getDefaultJointState();
     defalutJointPos_.tail(armNum_) = vector_t::Zero(armNum_);
     currentArmTargetTrajectories_ = {{0.0}, {vector_t::Zero(armNumReal_)}, {vector_t::Zero(info.inputDim)}};
@@ -2025,9 +2023,9 @@ namespace humanoid_controller
   }
 
   void humanoidController::setupHumanoidInterface(const std::string &taskFile, const std::string &urdfFile, const std::string &referenceFile, const std::string &gaitCommandFile,
-                                                  bool verbose, int robot_version_int)
+                                                  bool verbose,  RobotVersion rb_version)
   {
-    HumanoidInterface_ = std::make_shared<HumanoidInterface>(taskFile, urdfFile, referenceFile, gaitCommandFile, robot_version_int);
+    HumanoidInterface_ = std::make_shared<HumanoidInterface>(taskFile, urdfFile, referenceFile, gaitCommandFile, rb_version);
     rbdConversions_ = std::make_shared<CentroidalModelRbdConversions>(HumanoidInterface_->getPinocchioInterface(),
                                                                       HumanoidInterface_->getCentroidalModelInfo());
     // **************** create the centroidal model for WBC ***********
@@ -2038,7 +2036,7 @@ namespace humanoid_controller
 
     vector_t defaultJointState(pinocchioInterfaceWBCPtr_->getModel().nq - 6);
     defaultJointState.setZero();
-    auto drake_interface_ = HighlyDynamic::HumanoidInterfaceDrake::getInstancePtr(RobotVersion(robot_version_int / 10, robot_version_int % 10), true, 2e-3);
+    auto drake_interface_ = HighlyDynamic::HumanoidInterfaceDrake::getInstancePtr(rb_version, true, 2e-3);
     defaultJointState.head(jointNum_) = drake_interface_->getDefaultJointState();
 
     // CentroidalModelInfo

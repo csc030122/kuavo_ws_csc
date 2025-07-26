@@ -62,11 +62,11 @@ public:
             std::cerr << "使用默认版本 42" << std::endl;
         }
         else{
-            this->robot_version_int = std::atoi(robot_version_env);
-            std::cout << "使用环境变量 ROBOT_VERSION: " << this->robot_version_int << std::endl;
+            this->rb_version = RobotVersion::create(std::atoi(robot_version_env));
+            std::cout << "使用环境变量 ROBOT_VERSION: " << this->rb_version.to_string() << std::endl;
         }
         hardware_param = HardwareParam();
-        hardware_param.robot_version = this->robot_version_int;
+        hardware_param.robot_version = this->rb_version;
         if (kuavo_assets_path == ""){
             hardware_param.kuavo_assets_path = KUAVO_ASSETS_PATH; // 使用编译 KUAVO_ASSETS_PATH
         }
@@ -254,7 +254,7 @@ public:
         Eigen::Vector3d acc, gyro;
         Eigen::Quaterniond quat;
         auto motor_info = hardware_plant_->get_motor_info();
-        auto imu_type_str_ = motor_info.getIMUType(robot_version_int);
+        auto imu_type_str_ = motor_info.getIMUType(rb_version);
         for (int i = 0; i < SAMPLE_COUNT; ++i)
         {
             // 读取最新IMU数据
@@ -351,7 +351,7 @@ public:
 
 private:
     double dt_ = 0.001;
-    int robot_version_int = 45;
+    RobotVersion rb_version{4, 5};
     HardwareParam hardware_param;
     std::unique_ptr<HardwarePlant> hardware_plant_;
 };

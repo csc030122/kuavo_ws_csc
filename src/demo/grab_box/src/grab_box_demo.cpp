@@ -57,16 +57,14 @@ int main(int argc, char **argv)
   factory.registerNodeType<CmdPoseMoveToDestination>("CmdPoseMoveToDestination");
   factory.registerNodeType<CmdPoseWorldMoveToDestination>("CmdPoseWorldMoveToDestination");
 
-  RobotVersion robot_version(4, 2);
+  RobotVersion rb_version(4, 2);
   if (nh.hasParam("/robot_version"))
   {
-    int robot_version_int;
-    nh.getParam("/robot_version", robot_version_int);
-    int major = robot_version_int / 10;
-    int minor = robot_version_int % 10;
-    robot_version = RobotVersion(major, minor);
+    int rb_version_int;
+    nh.getParam("/robot_version", rb_version_int);
+    rb_version = RobotVersion::create(rb_version_int);
   }
-  auto humanoid_drake_interface = HighlyDynamic::HumanoidInterfaceDrake::getInstancePtr(robot_version, true, 2e-3);
+  auto humanoid_drake_interface = HighlyDynamic::HumanoidInterfaceDrake::getInstancePtr(rb_version, true, 2e-3);
 
   // Register the custom logger
   CSVLogger::getInstance().initialize("behavior_tree_log.csv");

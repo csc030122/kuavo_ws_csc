@@ -46,6 +46,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "humanoid_interface/common/ModelSettings.h"
 #include "humanoid_interface/initialization/HumanoidInitializer.h"
 #include "humanoid_interface/reference_manager/SwitchedModelReferenceManager.h"
+#include "kuavo_common/common/common.h"
 // #include "humanoid_interface_drake/humanoid_interface_drake.h"
 
 /**
@@ -71,7 +72,7 @@ namespace ocs2
        * @param [in] useHardFrictionConeConstraint: Which to use hard or soft friction cone constraints.
        */
       HumanoidInterface(const std::string &taskFile, const std::string &urdfFile, const std::string &referenceFile, const std::string &gaitFile,
-                        int robot_version_int, bool useHardFrictionConeConstraint = false);
+                        RobotVersion rb_version, bool useHardFrictionConeConstraint = false);
 
       ~HumanoidInterface() override = default;
 
@@ -157,7 +158,7 @@ namespace ocs2
       int build_cppad_status_ {0};
 
       size_t joint_Num_ = 12;
-      int robot_version_int_=34;//default to 34
+      RobotVersion rb_version_ = RobotVersion(3, 4); //default to 34
     };
 
   } // namespace humanoid

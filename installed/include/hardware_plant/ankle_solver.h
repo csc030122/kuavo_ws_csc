@@ -31,7 +31,7 @@ public:
     Eigen::VectorXd motor_to_joint_position_pro_(const Eigen::VectorXd& p);
     Eigen::VectorXd motor_to_joint_velocity_pro_(const Eigen::VectorXd& q, const Eigen::VectorXd& p, const Eigen::VectorXd& v);
     Eigen::VectorXd motor_to_joint_torque_pro_(const Eigen::VectorXd& q, const Eigen::VectorXd& p, const Eigen::VectorXd& c);
-    void getconfig(const int robot_version);
+    void getconfig(const int ankle_solver_type);
     AnkleSolverType getAnkleSolverType(){
         return  static_cast<AnkleSolverType>(ankle_solver_type_);
     };

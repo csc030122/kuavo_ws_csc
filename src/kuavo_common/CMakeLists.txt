@@ -52,6 +52,7 @@ endif()
 # Source Files
 # ==============================================================================
 set(SRC_OBJECTS
+    src/common/common.cpp
     src/kuavo_common.cpp
     src/common/kuavo_settings.cpp
     src/common/utils.cpp

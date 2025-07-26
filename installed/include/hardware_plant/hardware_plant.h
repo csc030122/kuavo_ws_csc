@@ -5,6 +5,7 @@
 #include "kuavo_common/common/robot_state.h"
 #include "kuavo_common/common/sensor_data.h"
 #include "kuavo_common/common/kuavo_settings.h"
+#include "kuavo_common/common/common.h"
 #include "kuavo_common/common/json_config_reader.hpp"
 #include "kuavo_common/kuavo_common.h"
 #include "actuators_interface.h"
@@ -38,7 +39,7 @@ inline std::vector<double> eigenToStdVector(const Eigen::VectorXd& vec) {
 struct HardwareParam {
     bool cali_leg{false};
     std::vector<double> default_joint_pos;
-    int robot_version{42};
+    RobotVersion robot_version{4, 2};
     bool cali{false}; 
     bool cali_arm{false};
     int build_cppad_state{0};
@@ -203,7 +204,7 @@ private:
     HardwareSettings motor_info;
     bool has_end_effectors{false};
     double q_hip_pitch_prev_;
-    RobotVersion robot_version_;
+    RobotVersion rb_version_;
     std::string ecmaster_type_ = "elmo";
     HardwareParam hardware_param_;
 

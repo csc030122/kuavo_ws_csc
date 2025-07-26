@@ -56,13 +56,15 @@ int main(int argc, char **argv)
   nodeHandle.getParam("/referenceFile", referenceFile);
   nodeHandle.getParam("/gaitCommandFile", gaitCommandFile);
 
-  int version_num;
+  RobotVersion rb_version(3, 4);
   if (nodeHandle.hasParam("/robot_version"))
   {
-    nodeHandle.getParam("/robot_version", version_num);
+    int rb_version_int;
+    nodeHandle.getParam("/robot_version", rb_version_int);
+    rb_version = RobotVersion::create(rb_version_int);
   }
   // Robot interface
-  HumanoidInterface interface(taskFile, urdfFile, referenceFile, gaitCommandFile, version_num);
+  HumanoidInterface interface(taskFile, urdfFile, referenceFile, gaitCommandFile, rb_version);
 
   // MRT
   MRT_ROS_Interface mrt(robotName);
