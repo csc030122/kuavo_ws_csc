@@ -402,14 +402,19 @@ class KeyBoardArmController:
         self.ik_service=IkArmService()
 
         #不同型号机器人的初始位置 (机器人坐标系) 和 手臂长度(单位米)
-        if robot_version == 45 or robot_version == 49 :
+        def start_with_version(version_number:int, series:int):
+            """判断版本号是否属于某系列"""
+            # PPPPMMMMN
+            MMMMN_MASK = 100000
+            return (version_number % MMMMN_MASK) == series
+        if start_with_version(robot_version, 45) or start_with_version(robot_version, 49):
             self.robot_zero_x = -0.0173
             self.robot_zero_y = -0.2927
             self.robot_zero_z = -0.2837
             self.robot_upper_arm = 0.30
             self.robot_lower_arm = 0.40
 
-        elif robot_version == 42 :
+        elif start_with_version(robot_version, 42):
             self.robot_zero_x = -0.0175
             self.robot_zero_y = -0.25886
             self.robot_zero_z = -0.20115
@@ -596,11 +601,15 @@ if __name__ == "__main__":
     try:
         # 获取机器人版本
         my_robot_version = get_parameter('robot_version')
-
-        if my_robot_version == 42 or my_robot_version == 45 or my_robot_version == 49 :
+        def start_with_version(version_number:int, series:int):
+            """判断版本号是否属于某系列"""
+            # PPPPMMMMN
+            MMMMN_MASK = 100000
+            return (version_number % MMMMN_MASK) == series
+        if start_with_version(my_robot_version, 42) or start_with_version(my_robot_version, 45) or start_with_version(my_robot_version, 49):
             print("机器人版本为:",my_robot_version)
         else :
-            print("机器人版本号错误, 仅支持42 45 49")
+            print("机器人版本号错误, 仅支持42 45 49系列")
             pass
 
         # Right Arm
