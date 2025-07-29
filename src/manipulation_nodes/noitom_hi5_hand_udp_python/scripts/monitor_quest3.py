@@ -10,6 +10,7 @@ import rospy
 import tf
 import numpy as np
 import math
+import netifaces
 from pprint import pprint
 from kuavo_ros_interfaces.msg import robotHeadMotionData
 from noitom_hi5_hand_udp_python.msg import PoseInfoList, PoseInfo, JoySticks
@@ -23,6 +24,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
 
 # Import the hand_pose_pb2 module
 import protos.hand_pose_pb2 as event_pb2
+import protos.robot_info_pb2 as robot_info_pb2
 
 class Quest3BoneFramePublisher:
     def __init__(self):
@@ -63,7 +65,40 @@ class Quest3BoneFramePublisher:
         self.listener = tf.TransformListener()
         self.hand_finger_tf_pub = rospy.Publisher('/quest_hand_finger_tf', TFMessage, queue_size=10)
         signal.signal(signal.SIGINT, self.signal_handler)
+        self.broadcast_ips = []
+        self.robot_info_sent_initial_broadcast = False
+        self.robot_info_lock = threading.Lock()
 
+    def update_broadcast_ips(self, ips_list):
+        """Updates the list of broadcast IPs."""
+        if isinstance(ips_list, list):
+            self.broadcast_ips = sorted(list(set(ips_list))) # Store unique sorted IPs
+            rospy.loginfo(f"Updated broadcast IPs to: {self.broadcast_ips}")
+        else:
+            rospy.logwarn("Failed to update broadcast IPs: input is not a list.")
+
+    def send_robot_info_on_broadcast_ips(self, robot_name, robot_version, start_port, end_port):
+        """Sends RobotDescription protobuf message to all broadcast IPs within a port range."""
+        if not self.broadcast_ips:
+            rospy.logwarn("No broadcast IPs configured. Cannot send robot info.")
+            return
+        rospy.loginfo(f"Broadcasting robot info: Name='{robot_name}', Version={robot_version}, "
+                      f"Ports={start_port}-{end_port} to IPs: {self.broadcast_ips}")
+        robot_desc = robot_info_pb2.RobotDescription()
+        robot_desc.robot_name = robot_name
+        robot_desc.robot_version = robot_version
+        serialized_message = robot_desc.SerializeToString()
+
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as send_sock:
+            send_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+            for ip in self.broadcast_ips:
+                for port in range(start_port, end_port + 1):
+                    try:
+                        send_sock.sendto(serialized_message, (ip, port))
+                        rospy.logdebug(f"Sent robot info to {ip}:{port}")
+                    except Exception as e:
+                        rospy.logerr(f"Error sending robot info to {ip}:{port}: {e}")
+ 
     def load_config(self):
         if os.path.exists(self.CONFIG_FILE):
             with open(self.CONFIG_FILE, 'r') as f:
@@ -278,10 +313,34 @@ class Quest3BoneFramePublisher:
         print("Socket connection restarted successfully.")
         return True
 
-    def waiting_for_quest3_broadcast(self):
+    def _periodic_robot_info_broadcaster(self):
+        """Periodically broadcasts robot info while waiting for Quest3."""
+        rospy.loginfo("Starting periodic robot info broadcaster thread (kuavo, 0, ports 11050-11060).")
+        robot_version = int(rospy.get_param('/robot_version', 45))
+        while not self.exit_listen_thread_for_quest3_broadcast and not rospy.is_shutdown():
+            if not self.broadcast_ips:
+                rospy.logwarn_throttle(10, "_periodic_robot_info_broadcaster: broadcast_ips is empty. Robot info will not be sent until IPs are updated.")
+
+            self.send_robot_info_on_broadcast_ips("kuavo", robot_version, 11050, 11060)
+            # Sleep for 1 second, but check the exit condition more frequently
+            # to allow faster shutdown if needed.
+            for _ in range(10): # Check every 0.1 seconds
+                if self.exit_listen_thread_for_quest3_broadcast or rospy.is_shutdown():
+                    break
+                time.sleep(0.1)
+        rospy.loginfo("Stopping periodic robot info broadcaster thread.")
+
+    def broadcast_robot_info_and_wait_for_quest3(self):
+        """Broadcasts robot information and waits for a Quest3 device to connect."""
         start_port = 11000
         end_port = 11010
         threads = []
+
+        # Start the periodic robot info broadcaster thread
+        periodic_broadcaster_thread = threading.Thread(target=self._periodic_robot_info_broadcaster)
+        periodic_broadcaster_thread.daemon = False # Ensure it completes before program exit if main threads finish
+        periodic_broadcaster_thread.start()
+ 
         for port in range(start_port, end_port + 1):
             thread = threading.Thread(target=self.listen_for_quest3_broadcasts, args=(port,))
             thread.daemon = False  # Set as non-daemon thread to wait for threads to finish
@@ -297,6 +356,11 @@ class Quest3BoneFramePublisher:
         for thread in threads:
             thread.join()
 
+        # Wait for the periodic broadcaster thread to finish as well
+        periodic_broadcaster_thread.join()
+
+        if self.server_address and self.server_address[0]:
+            print(f"\033[92mQuest3 device found at IP: {self.server_address[0]}\033[0m")
         print("\033[92m" + "Received Quest3 Broadcast, starting to connect." + "\033[0m")
 
     def listen_for_quest3_broadcasts(self, port):
@@ -308,6 +372,7 @@ class Quest3BoneFramePublisher:
             return
         sock.settimeout(1)  # Set timeout to 1 second
         self.listening_udp_ports_cnt += 1
+
         while not self.exit_listen_thread_for_quest3_broadcast:
             try:
                 data, addr = sock.recvfrom(1024)
@@ -318,13 +383,39 @@ class Quest3BoneFramePublisher:
             except socket.timeout:
                 continue
 
+def get_local_broadcast_ips():
+    """
+    Gets a list of local IPv4 broadcast IP addresses for all active interfaces.
+    Requires the 'netifaces' library to be imported.
+    """
+    broadcast_ips = []
+    excluded_prefixes = ("docker", "br-", "veth")
+    try:
+        for iface_name in netifaces.interfaces():
+            if any(iface_name.startswith(prefix) for prefix in excluded_prefixes):
+                continue
+            if_addresses = netifaces.ifaddresses(iface_name)
+            if netifaces.AF_INET in if_addresses:
+                for link_addr in if_addresses[netifaces.AF_INET]:
+                    # Ensure 'broadcast' key exists and its value is not None or empty
+                    if 'broadcast' in link_addr and link_addr['broadcast']:
+                        broadcast_ips.append(link_addr['broadcast'])
+        # Return unique broadcast IPs, sorted for consistency
+        return sorted(list(set(broadcast_ips)))
+    except Exception as e: # Catch any error during netifaces operations
+        rospy.logerr(f"Error getting broadcast IPs using 'netifaces': {e}. Ensure 'netifaces' is installed and network interfaces are configured correctly.")
+        return []
 
 if __name__ == "__main__":
-
     publisher = Quest3BoneFramePublisher()
+
+    broadcast_ips = get_local_broadcast_ips()
+    print(f"Local broadcast IPs: {broadcast_ips}")
+
+    publisher.update_broadcast_ips(broadcast_ips)
     if len(sys.argv) < 2 or "." not in sys.argv[1]:
-        print("Quest3 IP not received. Attempting to auto-connect and waiting for Quest3 broadcasts. Please ensure the Quest3 app is running and both Quest3 and the robot are on the same network.\n未收到 Quest3 的 IP，请确保 Quest3 应用正在运行并且 Quest3 和机器人在同一网络下。")
-        publisher.waiting_for_quest3_broadcast()
+        print("IP not specified. Waiting for Quest3 to connect. Please ensure Quest3 and the robot are on the same LAN and the router has broadcast mode enabled.\n未指定IP。正在等待 Quest3 主动连接。请确保 Quest3 和机器人在同一个局域网下，并且路由器已开启广播模式。")
+        publisher.broadcast_robot_info_and_wait_for_quest3()
     else:
         try:
 
