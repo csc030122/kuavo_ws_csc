@@ -1,6 +1,18 @@
 # Beta
 
 ## Breaking Changes
+
+## 文档相关
+
+## 新增功能
+
+## 修复问题
+
+## 其他改进
+
+# 1.2.1
+
+## Breaking Changes
 - 无
 
 ## 文档相关
