@@ -27,7 +27,7 @@ find_package(Boost REQUIRED COMPONENTS
 # use kuavo_msgs instead
 
 # add_message_files(
-#   FILES
+  # FILES
   # robotArmQVVD.msg
   # ikSolveError.msg
   # handPose.msg
@@ -38,7 +38,7 @@ find_package(Boost REQUIRED COMPONENTS
   # twoArmHandPoseCmd.msg
   # robotHandPosition.msg
   # headBodyPose.msg
-#)
+# )
 # add_service_files(
 #   DIRECTORY srv
 #   FILES

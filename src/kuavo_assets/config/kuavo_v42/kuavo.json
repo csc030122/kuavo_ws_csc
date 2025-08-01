@@ -129,11 +129,16 @@
         "r_r_arm_bar_motor", "r_l_arm_bar_motor",
         "r_r_hand_socket", "r_l_hand_socket", "r_r_arm_tendon_socket", "r_l_arm_tendon_socket", "r_r_arm_bar_frame", "r_l_arm_bar_frame"],
       
-    "end_frames_name_ik":  ["base_link", "zarm_l7_link", "zarm_r7_link", "zarm_l4_link", "zarm_r4_link"], 
+    "end_frames_name_ik":  ["base_link", "zarm_l7_end_effector", "zarm_r7_end_effector", "zarm_l4_link", "zarm_r4_link"],
+    "arm_end_joints": ["zarm_l7_joint", "zarm_r7_joint"],
     "shoulder_frame_names" : ["zarm_l1_link", "zarm_r1_link"],
     "eef_visual_stl_files" : ["l_hand_roll.STL", "r_hand_roll.STL"],
-    "upper_arm_length": 22.0,
-    "lower_arm_length": 19.0,
+    "upper_arm_length": 0.1646,
+    "lower_arm_length": 0.36229,
+    "shoulder_width": 0.15,
+    "eef_z_offset": -0.0,
+    "base_height_offset": 0.23,
+    "base_chest_offset_x": -0.0,
     
     "motor_velocities_factor": 0.005,
     "joint_velocities_limit": {

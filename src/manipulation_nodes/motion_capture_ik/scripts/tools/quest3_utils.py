@@ -8,6 +8,7 @@ from drake_trans import *
 from geometry_msgs.msg import Pose, Quaternion
 from sensor_msgs.msg import JointState
 from visualization_msgs.msg import Marker
+from visualization_msgs.msg import MarkerArray
 from noitom_hi5_hand_udp_python.msg import PoseInfo, PoseInfoList, JoySticks
 from kuavo_msgs.msg import headBodyPose
 import rospy
@@ -71,7 +72,7 @@ fullBodyBoneIds_leju_arms = [bone_name_to_index[name] for name in bone_names]
 # Create a reverse mapping from index to bone name
 index_to_bone_name = {index: bone_names[index] for index in range(len(bone_names))}
 
-bias_chest_to_base_link = [0.0, 0, 0.23]
+bias_chest_to_base_link = [0.0, 0, 0.42]
 
 class HeadBodyPose:
     head_pitch = 0.0
@@ -84,10 +85,11 @@ class HeadBodyPose:
 
 
 class Quest3ArmInfoTransformer:
-    def __init__(self, model_path, vis_pub=True, predict_gesture=False, eef_visual_stl_files=None):
+    def __init__(self, model_path, vis_pub=True, predict_gesture=False, eef_visual_stl_files=None, hand_reference_mode="thumb_index"):
         self.predict_gesture = predict_gesture
         self.model_path = model_path
         self.vis_pub = vis_pub
+        self.hand_reference_mode = hand_reference_mode  # "fingertips", "middle_finger", "thumb_index"
         self.left_finger_joints = None # down dom to 6 dof
         self.right_finger_joints = None
         self.left_hand_pose = None # pos + quaternion
@@ -113,7 +115,7 @@ class Quest3ArmInfoTransformer:
         self.base_shoulder_x_bias = 0.0
         self.base_shoulder_y_bias = 0.15
         self.base_shoulder_z_bias = 0.42
-        self.shoulder_width = 0.29
+        self.shoulder_width = 0.15
         self.head_body_pose = HeadBodyPose()
         # Add new variables for arm length measurement
         self.measure_arm_length = True
@@ -133,6 +135,10 @@ class Quest3ArmInfoTransformer:
         self.marker_pub_elbow = rospy.Publisher("visualization_marker/elbow", Marker, queue_size=10)
         self.marker_pub_elbow_right = rospy.Publisher("visualization_marker_right/elbow", Marker, queue_size=10)
         self.marker_pub_shoulder = rospy.Publisher("visualization_marker/shoulder", Marker, queue_size=10)
+       
+        # 新增：一次性发布human三个部位的MarkerArray
+        self.marker_pub_human_array_left = rospy.Publisher("visualization_marker/human_array_left", MarkerArray, queue_size=10)
+        self.marker_pub_human_array_right = rospy.Publisher("visualization_marker/human_array_right", MarkerArray, queue_size=10)
         # self.marker_pub_shoulder_human = rospy.Publisher("visualization_marker/shoulder_human", Marker, queue_size=10)
         self.marker_pub_shoulder_right = rospy.Publisher("visualization_marker_right/shoulder", Marker, queue_size=10)
         # self.marker_pub_shoulder_human_right = rospy.Publisher("visualization_marker_right/shoulder_human", Marker, queue_size=10)
@@ -142,7 +148,9 @@ class Quest3ArmInfoTransformer:
         self.joint_state_puber = rospy.Publisher('/joint_states', JointState, queue_size=10)
         self.shoulder_angle_puber = rospy.Publisher('/quest3_debug/shoulder_angle', Float32MultiArray, queue_size=10)
         self.chest_axis_puber = rospy.Publisher('/quest3_debug/chest_axis', Float32MultiArray, queue_size=10)
-        self.head_body_pose_puber = rospy.Publisher('/kuavo_head_body_orientation', headBodyPose, queue_size=10)
+        self.head_body_pose_puber = rospy.Publisher('/kuavo_head_body_orientation_data', headBodyPose, queue_size=10)
+        self.head_body_pose_control_puber = rospy.Publisher('/kuavo_head_body_orientation', headBodyPose, queue_size=10)
+        
         self.left_joystick = None
         self.right_joystick = None
         if eef_visual_stl_files is not None:
@@ -153,25 +161,30 @@ class Quest3ArmInfoTransformer:
             self.hand_gesture_predictor = HandGesturePredictor(hand_gesture_model_path)
         self.listener = tf.TransformListener()
         if rospy.has_param("/quest3/upper_arm_length"):
-            self.upper_arm_length = rospy.get_param("/quest3/upper_arm_length")/100.0
+            self.upper_arm_length = rospy.get_param("/quest3/upper_arm_length")
             print(f"get rosparams upper_arm_length: {self.upper_arm_length}")
+        else:
+            print("/quest3/upper_arm_length not found")
         if rospy.has_param("/quest3/lower_arm_length"):
-            self.lower_arm_length = rospy.get_param("/quest3/lower_arm_length")/100.0
+            self.lower_arm_length = rospy.get_param("/quest3/lower_arm_length")
             print(f"get rosparams lower_arm_length: {self.lower_arm_length}")
-        if rospy.has_param("/quest3/base_shoulder_x_bias"):
-            self.base_shoulder_x_bias = rospy.get_param("/quest3/base_shoulder_x_bias")
-            print(f"get rosparams base_shoulder_x_bias: {self.base_shoulder_x_bias}")
-        if rospy.has_param("/quest3/base_shoulder_y_bias"):
-            self.base_shoulder_y_bias = rospy.get_param("/quest3/base_shoulder_y_bias")
-            print(f"get rosparams base_shoulder_y_bias: {self.base_shoulder_y_bias}")
-        if rospy.has_param("/quest3/base_shoulder_z_bias"):
-            self.base_shoulder_z_bias = rospy.get_param("/quest3/base_shoulder_z_bias")
-            print(f"get rosparams base_shoulder_z_bias: {self.base_shoulder_z_bias}")
+        else:
+            print("/quest3/lower_arm_length not found")
+        if rospy.has_param("/quest3/base_height_offset"):
+            bias_chest_to_base_link[2] = rospy.get_param("/quest3/base_height_offset")
+            print(f"get rosparams base_height_offset: {bias_chest_to_base_link[2]}")
+        else:
+            print("/quest3/base_height_offset not found")
+        if rospy.has_param("/quest3/base_chest_offset_x"):
+            bias_chest_to_base_link[0] = rospy.get_param("/quest3/base_chest_offset_x")
+            print(f"get rosparams base_chest_offset_x: {bias_chest_to_base_link[0]}")
+        else:
+            print("/quest3/base_chest_offset_x not found")
         if rospy.has_param("/quest3/shoulder_width"):
-            self.shoulder_width = rospy.get_param("/quest3/shoulder_width")/100.0
+            self.shoulder_width = rospy.get_param("/quest3/shoulder_width")
             print(f"get rosparams shoulder_width: {self.shoulder_width}")
-        delta_z = self.base_shoulder_z_bias - 0.42
-        bias_chest_to_base_link[2] += delta_z
+        else:
+            print("/quest3/shoulder_width not found")
               
     def read_joySticks_msg(self, msg):
         self.left_joystick = [msg.left_trigger, msg.left_grip]
@@ -209,7 +222,7 @@ class Quest3ArmInfoTransformer:
             self.ok_gesture_counts = 0
             if(self.shot_gesture_counts >= max_counts):
                 self.is_runing = False
-        if self.is_runing and self.control_torso:
+        if self.is_runing:
             self.pub_head_body_pose_msg(self.head_body_pose)
 
 
@@ -252,6 +265,130 @@ class Quest3ArmInfoTransformer:
             rospy.logerr(f"Error in get_relative_finger_poses: {e}")
             return np.zeros(63)
 
+    def get_hand_transform(self, side):
+        """
+        根据配置的hand_reference_mode获取手部变换矩阵
+        """
+        if self.pose_info_list is None:
+            return None
+            
+        if self.hand_reference_mode == "palm":
+            return self.pose_info2_transform(self.pose_info_list[bone_name_to_index[side + "HandPalm"]])
+        elif self.hand_reference_mode == "fingertips":
+            T_hand = self.compute_hand_center_from_fingertips(side)
+            if T_hand is None:
+                T_hand = self.pose_info2_transform(self.pose_info_list[bone_name_to_index[side + "HandPalm"]])
+            return T_hand
+        elif self.hand_reference_mode == "middle_finger":
+            T_hand = self.compute_hand_center_from_middle_finger(side)
+            if T_hand is None:
+                T_hand = self.pose_info2_transform(self.pose_info_list[bone_name_to_index[side + "HandPalm"]])
+            return T_hand
+        elif self.hand_reference_mode == "thumb_index":
+            T_hand = self.compute_hand_center_from_thumb_index(side)
+            if T_hand is None:
+                T_hand = self.pose_info2_transform(self.pose_info_list[bone_name_to_index[side + "HandPalm"]])
+            return T_hand
+        else:
+            # 默认使用手掌
+            return self.pose_info2_transform(self.pose_info_list[bone_name_to_index[side + "HandPalm"]])
+
+    def compute_hand_center_from_middle_finger(self, side):
+        """
+        使用中指尖作为手的参考点
+        """
+        if self.pose_info_list is None:
+            return None
+            
+        try:
+            # 获取中指尖的位置
+            middle_finger_pose = self.pose_info_list[bone_name_to_index[side + "HandMiddleTip"]]
+            middle_finger_pos = [middle_finger_pose.position.x, middle_finger_pose.position.y, middle_finger_pose.position.z]
+            
+            # 使用手掌的方向
+            hand_palm_pose = self.pose_info_list[bone_name_to_index[side + "HandPalm"]]
+            hand_orientation = hand_palm_pose.orientation
+            
+            # 构建变换矩阵
+            T_hand_middle = np.eye(4)
+            T_hand_middle[:3, 3] = middle_finger_pos
+            quat = [hand_orientation.x, hand_orientation.y, hand_orientation.z, hand_orientation.w]
+            T_hand_middle[:3, :3] = quaternion_to_matrix(quat)
+            
+            return T_hand_middle
+            
+        except (KeyError, IndexError):
+            return None
+
+    def compute_hand_center_from_thumb_index(self, side):
+        """
+        使用拇指和食指中点作为手的参考点
+        """
+        if self.pose_info_list is None:
+            return None
+            
+        try:
+            # 获取拇指尖和食指尖的位置
+            thumb_pose = self.pose_info_list[bone_name_to_index[side + "HandThumbTip"]]
+            index_pose = self.pose_info_list[bone_name_to_index[side + "HandIndexTip"]]
+            
+            thumb_pos = np.array([thumb_pose.position.x, thumb_pose.position.y, thumb_pose.position.z])
+            index_pos = np.array([index_pose.position.x, index_pose.position.y, index_pose.position.z])
+            
+            # 计算中点
+            center_pos = (thumb_pos + index_pos) / 2.0
+            
+            # 使用手掌的方向
+            hand_palm_pose = self.pose_info_list[bone_name_to_index[side + "HandPalm"]]
+            hand_orientation = hand_palm_pose.orientation
+            
+            # 构建变换矩阵
+            T_hand_center = np.eye(4)
+            T_hand_center[:3, 3] = center_pos
+            quat = [hand_orientation.x, hand_orientation.y, hand_orientation.z, hand_orientation.w]
+            T_hand_center[:3, :3] = quaternion_to_matrix(quat)
+            
+            return T_hand_center
+            
+        except (KeyError, IndexError):
+            return None
+
+    def compute_hand_center_from_fingertips(self, side):
+        """
+        计算手指尖的中心位置作为手的参考点
+        """
+        if self.pose_info_list is None:
+            return None
+            
+        # 获取所有手指尖的位置
+        finger_tips = ["HandThumbTip", "HandIndexTip", "HandMiddleTip", "HandRingTip", "HandLittleTip"]
+        finger_positions = []
+        
+        for finger_tip in finger_tips:
+            try:
+                pose_info = self.pose_info_list[bone_name_to_index[side + finger_tip]]
+                finger_positions.append([pose_info.position.x, pose_info.position.y, pose_info.position.z])
+            except (KeyError, IndexError):
+                continue
+        
+        if len(finger_positions) < 3:  # 至少需要3个手指尖
+            return None
+            
+        # 计算手指尖的中心位置
+        center_pos = np.mean(finger_positions, axis=0)
+        
+        # 使用手掌的方向
+        hand_palm_pose = self.pose_info_list[bone_name_to_index[side + "HandPalm"]]
+        hand_orientation = hand_palm_pose.orientation
+        
+        # 构建变换矩阵
+        T_hand_center = np.eye(4)
+        T_hand_center[:3, 3] = center_pos
+        quat = [hand_orientation.x, hand_orientation.y, hand_orientation.z, hand_orientation.w]
+        T_hand_center[:3, :3] = quaternion_to_matrix(quat)
+        
+        return T_hand_center
+
     def compute_finger_joints(self, side):
         if self.predict_gesture:
             gesture, confidence, inference_time = self.hand_gesture_predictor.predict(self.get_relative_finger_poses(side))
@@ -268,7 +405,10 @@ class Quest3ArmInfoTransformer:
         """
         if self.pose_info_list is None:
             return None
-        T_hand = self.pose_info2_transform(self.pose_info_list[bone_name_to_index[side + "HandPalm"]])
+        
+        # 根据配置的hand_reference_mode获取手部变换矩阵
+        T_hand = self.get_hand_transform(side)
+        
         T_finger_thumb_tip = self.pose_info2_transform(self.pose_info_list[bone_name_to_index[side + "HandThumbTip"]])
         finger_index_tip_ori = self.pose_info_list[bone_name_to_index[side + "HandIndexTip"]].orientation
         finger_middle_tip_ori = self.pose_info_list[bone_name_to_index[side + "HandMiddleTip"]].orientation
@@ -536,7 +676,7 @@ class Quest3ArmInfoTransformer:
             scaled_elbow_pos: scaled elbow position
             scaled_hand_pos: scaled hand position
         """
-        human_upper_arm_length = math.sqrt((elbow_pos[0] - shoulder_pos[0])**2 + (elbow_pos[1] - shoulder_pos[1])**2 + (elbow_pos[2] - shoulder_pos[2])**2)
+        human_upper_arm_length = math.sqrt((elbow_pos[0] - human_shoulder_pos[0])**2 + (elbow_pos[1] - human_shoulder_pos[1])**2 + (elbow_pos[2] - human_shoulder_pos[2])**2)
         human_lower_arm_length = math.sqrt((hand_pos[0] - elbow_pos[0])**2 + (hand_pos[1] - elbow_pos[1])**2 + (hand_pos[2] - elbow_pos[2])**2)
 
         # Collect arm length data if measurement is active
@@ -555,27 +695,28 @@ class Quest3ArmInfoTransformer:
                     self.right_lower_arm_lengths.pop(0) 
             # Use the latest measurements for scaling
             radi1 = self.upper_arm_length/human_upper_arm_length
-            radi2 = self.lower_arm_length/human_lower_arm_length
+            radi2 = (self.lower_arm_length + self.upper_arm_length)/(human_lower_arm_length + human_upper_arm_length)
         else:
             # Use average measurements for scaling
             if side == "Left":
-                radi1 = self.upper_arm_length/self.avg_left_upper_arm_length
+                radi1 = self.upper_arm_length/human_upper_arm_length
                 # radi1 = self.upper_arm_length/self.left_upper_arm_lengths[-1]
-                radi2 = (self.lower_arm_length + self.upper_arm_length)/(self.avg_left_lower_arm_length + self.avg_left_upper_arm_length)
+                # radi2 = (self.lower_arm_length + self.upper_arm_length)/(self.avg_left_lower_arm_length + self.avg_left_upper_arm_length)
+                radi2 = self.lower_arm_length/human_lower_arm_length
                 # radi2 = (self.lower_arm_length + self.upper_arm_length)/(self.left_lower_arm_lengths[-1] + self.left_upper_arm_lengths[-1])
             else:
-                radi1 = self.upper_arm_length/self.avg_right_upper_arm_length
+                radi1 = self.upper_arm_length/human_upper_arm_length
                 # radi1 = self.upper_arm_length/self.right_upper_arm_lengths[-1]
-                radi2 = (self.lower_arm_length + self.upper_arm_length)/(self.avg_right_lower_arm_length + self.avg_right_upper_arm_length)
+                # radi2 = (self.lower_arm_length + self.upper_arm_length)/(self.avg_right_lower_arm_length + self.avg_right_upper_arm_length)
                 # radi2 = (self.lower_arm_length + self.upper_arm_length)/(self.right_lower_arm_lengths[-1] + self.right_upper_arm_lengths[-1])
-        
+                radi2 = self.lower_arm_length/human_lower_arm_length
         scaled_elbow_pos = np.zeros(3)
         scaled_hand_pos = np.zeros(3)
         for i in range(3):
             scaled_elbow_pos[i] = shoulder_pos[i] + radi1 * (elbow_pos[i] - human_shoulder_pos[i])
-            # scaled_hand_pos[i] = scaled_elbow_pos[i] + (hand_pos[i] - (human_shoulder_pos[i] + (elbow_pos[i] - shoulder_pos[i]) / radi1))*radi2
+            scaled_hand_pos[i] = scaled_elbow_pos[i] + (hand_pos[i] - elbow_pos[i])*radi2
             # scaled_hand_pos[i] = shoulder_pos[i] + radi2 * (hand_pos[i] - human_shoulder_pos[i])
-            scaled_hand_pos[i] = radi2 * (hand_pos[i])
+            # scaled_hand_pos[i] = radi2 * (hand_pos[i])
 
 
         return scaled_elbow_pos, scaled_hand_pos
@@ -645,12 +786,14 @@ class Quest3ArmInfoTransformer:
         
 
         human_shoulder_pos = list(shoulder_pos[:])
+
         if (side == "Right"):
             shoulder_pos[1] = -self.shoulder_width
         elif (side == "Left"):
             shoulder_pos[1] = self.shoulder_width
         # human_hand_pos = hand_pos[:].copy()
-
+        # human_elbow_pos = elbow_pos[:].copy()
+        # human_hand_pos = hand_pos[:].copy()
         # Scale arm positions
         elbow_pos, hand_pos = self.scale_arm_positions(shoulder_pos, elbow_pos, hand_pos, human_shoulder_pos, side)
         
@@ -659,16 +802,37 @@ class Quest3ArmInfoTransformer:
             marker = self.construct_point_marker(hand_pos, 0.08, 0.9, color=[1, 0, 0])
             elbow_marker = self.construct_point_marker(elbow_pos, 0.1, color=[0, 1, 0])
             shoulder_marker = self.construct_point_marker(shoulder_pos, 0.1, color=[0, 0, 1])
-            # huaman_marker = self.construct_point_marker(human_hand_pos, 0.1, 0.8, color=[1, 1, 1])
+            # human_shoulder_marker = self.construct_point_marker(human_shoulder_pos, 0.02, 0.8, color=[1, 1, 1])
+            # human_elbow_marker = self.construct_point_marker(human_elbow_pos, 0.02, 0.8, color=[1, 1, 1])
+            # human_hand_marker = self.construct_point_marker(human_hand_pos, 0.02, 0.8, color=[1, 1, 1])
+            # huaman_marker = self.construct_point_marker(human_hand_pos, 0.02, 0.8, color=[1, 1, 1])
             if side == "Left":
                 self.marker_pub.publish(marker)
                 self.marker_pub_elbow.publish(elbow_marker)
                 self.marker_pub_shoulder.publish(shoulder_marker)
+                # # 只保留一次性发布human三个部位的MarkerArray
+                # human_array = MarkerArray()
+                # human_shoulder_marker.id = 0
+                # human_elbow_marker.id = 1
+                # human_hand_marker.id = 2
+                # human_array.markers.append(human_shoulder_marker)
+                # human_array.markers.append(human_elbow_marker)
+                # human_array.markers.append(human_hand_marker)
+                # self.marker_pub_human_array_left.publish(human_array)
                 # self.marker_pub_human.publish(huaman_marker)
             else:
                 self.marker_pub_right.publish(marker)
                 self.marker_pub_elbow_right.publish(elbow_marker)
                 self.marker_pub_shoulder_right.publish(shoulder_marker)
+                # # 只保留一次性发布human三个部位的MarkerArray
+                # human_array = MarkerArray()
+                # human_shoulder_marker.id = 0
+                # human_elbow_marker.id = 1
+                # human_hand_marker.id = 2
+                # human_array.markers.append(human_shoulder_marker)
+                # human_array.markers.append(human_elbow_marker)
+                # human_array.markers.append(human_hand_marker)
+                # self.marker_pub_human_array_right.publish(human_array)
             chest_pos = [chest_pose.position.x, chest_pose.position.y, chest_pose.position.z]
             chest_marker = self.construct_point_marker(chest_pos, 0.1, 0.8)
             self.marker_pub_chest.publish(chest_marker)
@@ -684,7 +848,7 @@ class Quest3ArmInfoTransformer:
         """
         Check if the VR system is error.
         """
-        if self.left_hand_pose is None:
+        if self.left_hand_pose is None or self.right_hand_pose is None:
             return False
         left_hand_pos = self.left_hand_pose[0]
         right_hand_pos = self.right_hand_pose[0]
@@ -708,12 +872,12 @@ class Quest3ArmInfoTransformer:
         T = pos_rpy_to_transform(pos, rpy)
         return T
     
-    def construct_marker(self, arm_pose_p, arm_pose_q, r, g, b, side):
+    def construct_marker(self, arm_pose_p, arm_pose_q, rgba, side, marker_id):
         if len(arm_pose_q) != 4 or len(arm_pose_p)!= 3:
             print("Invalid arm pose, cannot construct marker")
             return None
         marker = Marker()
-        # marker.id = id
+        marker.id = marker_id
         marker.header.frame_id = (
             "base_link"  # set frame_id according to the actual situation
         )
@@ -740,10 +904,10 @@ class Quest3ArmInfoTransformer:
         marker.scale.x = 1
         marker.scale.y = 1
         marker.scale.z = 1
-        marker.color.a = 0.3
-        marker.color.r = r
-        marker.color.g = g
-        marker.color.b = b
+        marker.color.a = rgba[3]
+        marker.color.r = rgba[0]
+        marker.color.g = rgba[1]
+        marker.color.b = rgba[2]
         marker.header.stamp = rospy.Time.now()
         marker.pose.position.x = arm_pose_p[0]
         marker.pose.position.y = arm_pose_p[1]
@@ -868,3 +1032,5 @@ class Quest3ArmInfoTransformer:
         msg.body_y = 0.0
         msg.body_height = max(-0.4, min(head_body_pose.body_height + 0.3, 0.2))
         self.head_body_pose_puber.publish(msg)
+        if self.control_torso:
+            self.head_body_pose_control_puber.publish(msg)

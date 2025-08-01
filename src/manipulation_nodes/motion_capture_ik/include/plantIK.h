@@ -59,6 +59,7 @@ namespace HighlyDynamic
     std::unique_ptr<drake::systems::Context<double>> plant_context_;
     std::vector<std::string> frames_name_;
     Eigen::VectorXd prev_q_sol;
+    int nq_;
   };
 
 } // namespace drake

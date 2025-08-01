@@ -7,9 +7,12 @@ import argparse
 import argparse
 from std_msgs.msg import Float32, Float32MultiArray, Int32
 from sensor_msgs.msg import JointState
-from handcontrollerdemorosnode.msg import armPoseWithTimeStamp, robotHandPosition
+from handcontrollerdemorosnode.msg import armPoseWithTimeStamp
+from kuavo_msgs.msg import robotHandPosition
 from kuavo_msgs.srv import controlLejuClaw, controlLejuClawRequest
 from kuavo_msgs.msg import lejuClawCommand
+from visualization_msgs.msg import Marker, MarkerArray
+from geometry_msgs.msg import Point, Quaternion, Vector3
 import time
 import math
 import sys
@@ -20,7 +23,7 @@ from tools.drake_trans import *
 
 from kuavo_msgs.srv import changeArmCtrlMode, changeArmCtrlModeKuavo
 from kuavo_msgs.msg import sensorsData
-from std_srvs.srv import Trigger, TriggerResponse
+from std_srvs.srv import Trigger, TriggerResponse, SetBool, SetBoolRequest, SetBoolResponse
 
 import numpy as np
 from pydrake.all import (
@@ -51,7 +54,8 @@ from ik.torso_ik import ArmIk
 
 import rospy
 from noitom_hi5_hand_udp_python.msg import handRotationEular
-from noitom_hi5_hand_udp_python.msg import PoseInfo, PoseInfoList, JoySticks
+from noitom_hi5_hand_udp_python.msg import PoseInfo, PoseInfoList
+from kuavo_msgs.msg import JoySticks
 from tools.quest3_utils import Quest3ArmInfoTransformer
 from kuavo_msgs.msg import ikSolveError, handPose, robotArmQVVD, armHandPose, twoArmHandPose, twoArmHandPoseCmd
 
@@ -65,6 +69,7 @@ import os
 SCHED_OTHER = 0
 SCHED_FIFO = 1
 SCHED_RR = 2
+num_arm_joints_var = 14
 
 def str2bool(v):
     if isinstance(v, bool):
@@ -107,7 +112,7 @@ control_finger_type = 0
 control_torso = 0
 
 class IkRos:
-    def __init__(self, ik, ctrl_arm_idx=ArmIdx.LEFT, q_limit=None, publish_err=True, use_original_pose=False, end_effector_type="", send_srv=True, predict_gesture=False):
+    def __init__(self, ik, ctrl_arm_idx=ArmIdx.LEFT, q_limit=None, publish_err=True, use_original_pose=False, end_effector_type="", send_srv=True, predict_gesture=False, hand_reference_mode="thumb_index"):
         self.__start_time = None
         self.__timestamp = None
         self.__ctrl_arm_idx = ctrl_arm_idx
@@ -135,6 +140,8 @@ class IkRos:
         self.__send_srv = send_srv
         self.__freeze_finger = False
         self.__button_y_last = False
+        self.__arm_dof = num_arm_joints_var
+        self.__single_arm_dof = self.__arm_dof//2
         self.trigger_reset_mode = False
 
         # 检查是否是半身模式
@@ -142,6 +149,7 @@ class IkRos:
         if rospy.has_param('/only_half_up_body'):
             self.only_half_up_body = rospy.get_param('/only_half_up_body')
 
+        self.use_arm_collision = rospy.get_param('~use_arm_collision', False)
         # 添加服务
         self.arm_mode_service = rospy.Service('/quest3/set_arm_mode_changing', Trigger, self.set_arm_mode_changing_callback)
 
@@ -149,12 +157,12 @@ class IkRos:
 
 
         model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
-        self.quest3_arm_info_transformer = Quest3ArmInfoTransformer(model_path, predict_gesture=predict_gesture)
+        self.quest3_arm_info_transformer = Quest3ArmInfoTransformer(model_path, predict_gesture=predict_gesture, hand_reference_mode=hand_reference_mode)
         self.quest3_arm_info_transformer.control_torso = control_torso
         initial_state = np.array([0, 0, 0, 0, 0, 0])  # 初始状态 [x, y, z, vx, vy, vz]
         initial_covariance = np.eye(6)  # 初始协方差矩阵
-        process_noise = np.eye(6) * 0.001  # 过程噪声协方差矩阵
-        measurement_noise = np.eye(3) * 1.1  # 测量噪声协方差矩阵
+        process_noise = np.eye(6) * 0.01  # 过程噪声协方差矩阵
+        measurement_noise = np.eye(3) * 0.01  # 测量噪声协方差矩阵
 
         initial_state[0:3] = self.arm_ik.left_hand_pose(self.arm_ik.q0())[0]
         self.kf_left = KalmanFilter3D(initial_state, initial_covariance, process_noise, measurement_noise)
@@ -184,13 +192,18 @@ class IkRos:
             "/sensors_data_raw", sensorsData, self.sensor_data_raw_callback
         )
         self.arm_mode_changing = False
+        # 检测到碰撞后，由外部控制手臂
+        self.collision_check_control = False
         self.sensor_data_raw = None
-        self.maxSpeed = rospy.get_param("/arm_move_spd_half_up_body", 0.18)
+        self.maxSpeed = rospy.get_param("/arm_move_spd_half_up_body", 0.21)
         self.threshold_arm_diff_half_up_body = rospy.get_param("/threshold_arm_diff_half_up_body", 0.2)
         self._interp_time_last = rospy.Time.now().to_sec()
 
 
-        self.pub = rospy.Publisher("/kuavo_arm_traj", JointState, queue_size=10)
+        if self.use_arm_collision:
+            self.pub = rospy.Publisher("/arm_collision/kuavo_arm_traj", JointState, queue_size=2)
+        else:
+            self.pub = rospy.Publisher("/kuavo_arm_traj", JointState, queue_size=2)
         self.pub_origin_joint = rospy.Publisher("/kuavo_arm_traj_origin", Float32MultiArray, queue_size=10)
         self.pub_filtered_joint = rospy.Publisher("/kuavo_arm_traj_filtered", Float32MultiArray, queue_size=10)
         self.pub_real_arm_hand_pose = rospy.Publisher("/drake_ik/real_arm_hand_pose", twoArmHandPose, queue_size=10)
@@ -209,9 +222,18 @@ class IkRos:
         self.pub_ik_input_pos = rospy.Publisher(
             "/drake_ik/input_pos", Float32MultiArray, queue_size=10
         )
+        self.pub_q0_tmp = rospy.Publisher(
+            "/drake_ik/q0_tmp", Float32MultiArray, queue_size=10
+        )
         self.leju_claw_command_pub = rospy.Publisher(
             "leju_claw_command", lejuClawCommand, queue_size=10
         )
+        
+        # 添加可视化marker发布器
+        self.ik_visualization_pub = rospy.Publisher(
+            "/ik_visualization_markers", MarkerArray, queue_size=10
+        )
+        
         try:
             end_effector_mapping = {
                 QIANGNAO: QIANGNAO,
@@ -245,7 +267,7 @@ class IkRos:
 
         self.run()
         self.ik_thread.join()
-
+   
     def run(self):
         while rospy.is_shutdown() is False:
             rospy.spin()
@@ -277,8 +299,8 @@ class IkRos:
 
     def limit_angle(self, q):
         if self.__q_lb is not None and self.__q_ub is not None:
-            q_limited = np.zeros(14)
-            for i in range(14):
+            q_limited = np.zeros(self.__arm_dof)
+            for i in range(self.__arm_dof):
                 q_limited[i] = max(self.__q_lb[i], min(q[i], self.__q_ub[i]))
             return q_limited
         else:
@@ -353,10 +375,10 @@ class IkRos:
         msg.header.stamp = rospy.Time.now()
         msg.left_pose.pos_xyz = current_pose[0]
         msg.left_pose.quat_xyzw = current_pose[1]
-        msg.left_pose.joint_angles = q_robot[-14:-7]
+        msg.left_pose.joint_angles = q_robot[-self.__arm_dof:-self.__single_arm_dof]
         msg.right_pose.pos_xyz = current_pose_right[0]
         msg.right_pose.quat_xyzw = current_pose_right[1]
-        msg.right_pose.joint_angles = q_robot[-7:]
+        msg.right_pose.joint_angles = q_robot[-self.__single_arm_dof:]
         self.pub_ik_solved_eef_pose.publish(msg)
 
     def ik_controller_thread(self):
@@ -404,7 +426,7 @@ class IkRos:
         print(f"IK Type: {self.arm_ik.type()}")
         run_count, fail_count = 0, 0
         sum_time_cost = 0.0
-        arm_q_filtered = [0.0] * 14
+        arm_q_filtered = [0.0] * self.__arm_dof
         is_runing = False
         while not rospy.is_shutdown():
             self.hand_finger_data_process(0)
@@ -427,7 +449,7 @@ class IkRos:
                 continue
             elif(self.__as_mc_ik and (not is_runing)):
                 rate.sleep()
-                sys.stdout.write("\rStatus: {}, is target far?: {}".format("RUNING" if is_runing else "STOPED", self.judge_target_is_far()))
+                sys.stdout.write("\rStatus0: {}, is target far?: {}".format("RUNING" if is_runing else "STOPED", self.judge_target_is_far()))
                 continue
             
             if(not is_runing_last and is_runing):
@@ -465,10 +487,58 @@ class IkRos:
                         r_elbow_pos[0] = 0.0 if r_elbow_pos[0] < 0.0 else r_elbow_pos[0]
                     right_shoulder_rpy_in_robot = self.quest3_arm_info_transformer.right_shoulder_rpy_in_robot
                 time_0 = time.time()
+                # 通过限制初值，避免迭代到不可解的区域
                 q0_tmp = q_last.copy()
                 threashold = -3.0
-                q0_tmp[-14] += 0.5 if q0_tmp[-14] < threashold else 0.0
-                q0_tmp[-7] += 0.5 if q0_tmp[-7] < threashold else 0.0      
+                q0_tmp[-self.__arm_dof] += 0.5 if q0_tmp[-self.__arm_dof] < threashold else 0.0
+                q0_tmp[-self.__single_arm_dof] += 0.5 if q0_tmp[-self.__single_arm_dof] < threashold else 0.0
+                if self.__arm_dof == 8: # 针对roban的调整
+                    if q0_tmp[-self.__arm_dof + 2] > 0.5:
+                        q0_tmp[-self.__arm_dof + 2] = 0.5
+                    if q0_tmp[-self.__arm_dof + 2] < -0.5:
+                        q0_tmp[-self.__arm_dof + 2] = -0.5
+                    if q0_tmp[-self.__single_arm_dof + 2] > 0.5:
+                        q0_tmp[-self.__single_arm_dof + 2] = 0.5
+                    if q0_tmp[-self.__single_arm_dof + 2] < -0.5:
+                        q0_tmp[-self.__single_arm_dof + 2] = -0.5
+                    if q0_tmp[-self.__single_arm_dof] > 0.0:
+                        q0_tmp[-self.__single_arm_dof] = 0.0
+                    if q0_tmp[0] > 0.0:
+                        q0_tmp[0] = 0.0
+
+                
+                # q0_tmp[-self.__single_arm_dof + 3] = -0.5
+                # q0_tmp[-self.__arm_dof+3] = -0.5
+                
+                # # 计算肘部角度并设置到q0_tmp中
+                # # 获取肩膀位置
+                # left_shoulder_pos = self.get_shoulder_position(q0_tmp, "left")
+                # right_shoulder_pos = self.get_shoulder_position(q0_tmp, "right")
+                
+                # # 计算左臂肘部角度
+                # if left_shoulder_pos is not None and l_elbow_pos is not None and l_hand_pose is not None:
+                #     left_elbow_angle = self.calculate_elbow_angle(left_shoulder_pos, l_elbow_pos, l_hand_pose)
+                #     if left_elbow_angle is not None:
+                #         # 左臂肘部关节通常是第4个关节（索引3）
+                #         elbow_joint_idx = 3
+                #         q0_tmp[-self.__arm_dof + elbow_joint_idx] = -left_elbow_angle
+                #         print(f"左臂肘部角度: {left_elbow_angle * 180.0 / np.pi:.2f}°")
+                
+                # # 计算右臂肘部角度
+                # if right_shoulder_pos is not None and r_elbow_pos is not None and r_hand_pose is not None:
+                #     right_elbow_angle = self.calculate_elbow_angle(right_shoulder_pos, r_elbow_pos, r_hand_pose)
+                #     if right_elbow_angle is not None:
+                #         # 右臂肘部关节通常是第4个关节（索引3）
+                #         elbow_joint_idx = 3
+                #         q0_tmp[-self.__single_arm_dof + elbow_joint_idx] = -right_elbow_angle
+                #         print(f"右臂肘部角度: {right_elbow_angle * 180.0 / np.pi:.2f}°")
+                
+                # # 发布q0_tmp
+                # q0_tmp_msg = Float32MultiArray()
+                # q0_tmp_msg.data = q0_tmp * 180.0 / np.pi  # 转换为角度
+                # self.pub_q0_tmp.publish(q0_tmp_msg)
+                
+                
                 q_now = arm_ik.computeIK(
                     q0_tmp, l_hand_pose, r_hand_pose, l_hand_RPY, r_hand_RPY, l_elbow_pos, r_elbow_pos, left_shoulder_rpy_in_robot, right_shoulder_rpy_in_robot
                 )
@@ -478,16 +548,16 @@ class IkRos:
                 self.pub_time_cost.publish(Float32(1e3 * time_cost))
                 if q_now is not None:
                     msg = Float32MultiArray()
-                    msg.data = q_now[-14:] * 180.0 / np.pi
+                    msg.data = q_now[-self.__arm_dof:] * 180.0 / np.pi
                     self.pub_origin_joint.publish(msg)
-                    arm_q_filtered = self.limit_angle(q_now[-14:])
-                    arm_q_filtered = self.limit_angle_by_velocity(q_last[-14:], arm_q_filtered, vel_limit=720.0)
+                    arm_q_filtered = self.limit_angle(q_now[-self.__arm_dof:])
+                    arm_q_filtered = self.limit_angle_by_velocity(q_last[-self.__arm_dof:], arm_q_filtered, vel_limit=720.0)
                     msg.data = arm_q_filtered * 180.0 / np.pi
                     self.pub_filtered_joint.publish(msg)
                     self.publish_joint_states(q_now=arm_q_filtered, q_last=q_last)
                     # self.quest3_arm_info_transformer.pub_whole_body_joint_state_msg(arm_q_filtered, map_finger=self.__as_mc_ik)
-                    q_last[:7] = q_now[:7]
-                    q_last[-14:] = arm_q_filtered
+                    q_last[:self.__single_arm_dof] = q_now[:self.__single_arm_dof]
+                    q_last[-self.__arm_dof:] = arm_q_filtered
                 else:
                     fail_count += 1
                     # print(f"""\nq_last:{q_last}\n l_hand_pose:{l_hand_pose}\n 
@@ -502,11 +572,12 @@ class IkRos:
                 run_count += 1
                 success_rate = 100 * (1.0 - fail_count / float(run_count))
                 sum_time_cost += time_cost
-                sys.stdout.write(
-                    "\rStatus: {}, IK success rate: {:.1f}%, avg time-cost: {:.1f} ms, is target far?: {}".format(
-                        "RUNING" if is_runing else "STOPED", success_rate, 1e3 * sum_time_cost/run_count, self.judge_target_is_far()
+                if run_count % 10 == 0:
+                    sys.stdout.write(
+                        "\rStatus1: {}, IK success rate: {:.1f}%, avg time-cost: {:.1f} ms, is target far?: {}".format(
+                            "RUNING" if is_runing else "STOPED", success_rate, 1e3 * sum_time_cost/run_count, self.judge_target_is_far()
+                        )
                     )
-                )
 
             if self.__publish_err and q_now is not None:
                 msg_pose_err = ikSolveError()
@@ -523,10 +594,9 @@ class IkRos:
             rate.sleep()
 
     def publish_joint_states(self, q_now, q_last):
-        
-        arm_agl_limited = self.limit_angle(q_now[-14:])
+        arm_agl_limited = self.limit_angle(q_now[-self.__arm_dof:])
         msg = JointState()
-        msg.name = ["arm_joint_" + str(i) for i in range(1, 15)]
+        msg.name = ["arm_joint_" + str(i) for i in range(1, self.__arm_dof+1)]
         msg.header.stamp = rospy.Time.now()
         
         if self.only_half_up_body and self.sensor_data_raw is None:
@@ -553,17 +623,16 @@ class IkRos:
                 arm_agl_interpolated = arm_current_state + delta_state * scale
             
             msg.position = 180.0 / np.pi * np.array(arm_agl_interpolated)
-            self.pub.publish(msg)
         else:
             # 非插值模式下直接使用目标状态
             msg.position = 180.0 / np.pi * np.array(arm_agl_limited)
-            self.pub.publish(msg)
         
+        self.pub.publish(msg)
 
     def kuavo_joint_states_callback(self, joint_states_msg):
         # 手臂状态正解
         self.__joint_states = np.array(joint_states_msg.q)
-        q_drake = np.zeros(7+14)
+        q_drake = np.zeros(7+self.__arm_dof)
         q_drake[0] = 1.0
         q_drake[7:] = self.__joint_states
         left_hand_pose = self.arm_ik.left_hand_pose(q_drake)
@@ -574,11 +643,11 @@ class IkRos:
         arm_hand_pose_msg.left_pose.pos_xyz = left_hand_pose[0]
         r, p, y = left_hand_pose[1]
         arm_hand_pose_msg.left_pose.quat_xyzw = rpy_to_quaternion(r, p, y)
-        arm_hand_pose_msg.left_pose.joint_angles = self.__joint_states[:7]
+        arm_hand_pose_msg.left_pose.joint_angles = self.__joint_states[:self.__single_arm_dof]
         arm_hand_pose_msg.right_pose.pos_xyz = right_hand_pose[0]
         r, p, y = right_hand_pose[1]
         arm_hand_pose_msg.right_pose.quat_xyzw = rpy_to_quaternion(r, p, y)
-        arm_hand_pose_msg.right_pose.joint_angles = self.__joint_states[-7:]
+        arm_hand_pose_msg.right_pose.joint_angles = self.__joint_states[-self.__single_arm_dof:]
         self.pub_real_arm_hand_pose.publish(arm_hand_pose_msg)
         # print(f"received joint_states: {self.__joint_states}")
 
@@ -641,6 +710,60 @@ class IkRos:
         milliseconds_int = struct.unpack("<I", bytes(reversed_bytes))[0]
         return milliseconds_int
     
+    def get_shoulder_position(self, q, side="left"):
+        """
+        获取肩膀位置
+        Args:
+            q: 关节角度
+            side: "left" 或 "right"
+        Returns:
+            np.array: 肩膀位置 [x, y, z]
+        """
+        try:
+            self.arm_ik._ArmIk__plant.SetPositions(self.arm_ik._ArmIk__plant_context, q)
+            if side.lower() == "left":
+                shoulder_frame = self.arm_ik._ArmIk__plant.GetFrameByName(self.arm_ik.shoulder_frame_names[0])
+            else:
+                shoulder_frame = self.arm_ik._ArmIk__plant.GetFrameByName(self.arm_ik.shoulder_frame_names[1])
+            
+            shoulder_pose = shoulder_frame.CalcPoseInWorld(self.arm_ik._ArmIk__plant_context)
+            return shoulder_pose.translation()
+        except Exception as e:
+            print(f"获取肩膀位置失败: {e}")
+            return None
+
+    def calculate_elbow_angle(self, shoulder_pos, elbow_pos, hand_pos):
+        """
+        计算肘部关节的夹角
+        Args:
+            shoulder_pos: 肩膀位置 [x, y, z]
+            elbow_pos: 肘部位置 [x, y, z]
+            hand_pos: 手部位置 [x, y, z]
+        Returns:
+            float: 肘部关节角度（弧度）
+        """
+        if shoulder_pos is None or elbow_pos is None or hand_pos is None:
+            return None
+            
+        # 计算向量
+        vec_shoulder_to_elbow = np.array(elbow_pos) - np.array(shoulder_pos)
+        vec_elbow_to_hand = np.array(hand_pos) - np.array(elbow_pos)
+        
+        # 计算向量长度
+        len_shoulder_elbow = np.linalg.norm(vec_shoulder_to_elbow)
+        len_elbow_hand = np.linalg.norm(vec_elbow_to_hand)
+        
+        # 避免除零错误
+        if len_shoulder_elbow < 1e-6 or len_elbow_hand < 1e-6:
+            return None
+            
+        # 计算夹角（弧度）
+        cos_angle = np.dot(vec_shoulder_to_elbow, vec_elbow_to_hand) / (len_shoulder_elbow * len_elbow_hand)
+        cos_angle = np.clip(cos_angle, -1.0, 1.0)  # 限制在[-1, 1]范围内
+        angle = np.arccos(cos_angle)
+        
+        return angle
+
     def generate_ik_solve_error_msg(self, pose_res, pose_des):
         rad2deg = 180.0/np.pi      
         hand_pose_err = handPose()
@@ -672,7 +795,7 @@ class IkRos:
 
         t_play = 0.0
         last_norm = 100.0
-        last_v = np.zeros(7)
+        last_v = np.zeros(self.__single_arm_dof)
         while t_sim < t_duration:
             pose = arm_ik.left_hand_pose(last_q) if ctrl_arm_idx.name() == ArmIdx.LEFT.name() else arm_ik.right_hand_pose(last_q)
             pos_target, quat_target = self.__target_pose if ctrl_arm_idx.name() == ArmIdx.LEFT.name() else self.__target_pose_right
@@ -688,13 +811,13 @@ class IkRos:
             # 仅控制单臂
             v_max = 1.0
             vd_max = 5.0
-            v0 = np.zeros(7)
+            v0 = np.zeros(self.__single_arm_dof)
             if ctrl_arm_idx.name() == ArmIdx.LEFT.name():
                 v0 = diff_ik.solve_left_hand(last_q, last_v, V_G_vec, dt, v_max, vd_max)
-                q0[7:14] += dt*v0
+                q0[self.__single_arm_dof:self.__arm_dof] += dt*v0
             if ctrl_arm_idx.name() == ArmIdx.RIGHT.name():
                 v0 = diff_ik.solve_right_hand(last_q, last_v, V_G_vec, dt, v_max, vd_max)
-                q0[-7:] += dt*v0
+                q0[-self.__single_arm_dof:] += dt*v0
             time_cost = time.time() - time_0
             # animate trajectory
             diff_ik.visualize_animation([last_q, q0], t_play, dt)
@@ -856,6 +979,7 @@ class IkRos:
             print(f"\033[91m[IK]Reset arm mode.\033[0m")
             self.trigger_reset_mode = True
             self.arm_mode_changing = False
+            self.collision_check_control = False
         elif new_mode == 2:
             print(f"\033[91m[IK]Arm mode changing.\033[0m")
             self.arm_mode_changing = True
@@ -883,9 +1007,21 @@ class IkRos:
                 for i in range(20):
                     self.pub.publish(msg)
                     rate.sleep()
+
         response = TriggerResponse()
         response.success = True
         response.message = "Arm mode changing set to True"
+        return response
+    
+    def collision_control_complete(self, req):
+        """服务回调函数，设置collision_check_control状态"""
+        self.collision_check_control = req.data
+        if not req.data:
+            self.arm_mode_changing = True
+
+        response = SetBoolResponse()
+        response.success = True
+        response.message = "Collision check control set to " + str(self.collision_check_control)
         return response
 
 if __name__ == "__main__":
@@ -910,6 +1046,7 @@ if __name__ == "__main__":
     parser.add_argument("--control_torso", type=int, default=0, help="0: do NOT control, 1: control torso.")
     parser.add_argument("--predict_gesture", type=str2bool, default=False, help="Use Neural Network to predict hand gesture, True or False.")
     parser.add_argument("--eef_z_bias", type=float, default=-0.0, help="End effector z-axis bias distance.")
+    parser.add_argument("--hand_reference_mode", type=str, default="thumb_index", help="Hand reference mode: fingertips, middle_finger, or thumb_index.")
     args, unknown = parser.parse_known_args()
     # ee_type
     end_effector_type=""
@@ -924,12 +1061,11 @@ if __name__ == "__main__":
         print(e)
     ctrl_arm_idx = ArmIdx(args.ctrl_arm_idx)
     ik_type_idx = IkTypeIdx(args.ik_type_idx)
-    eef_z_bias = args.eef_z_bias
-    print(type(args.send_srv))
     send_srv = args.send_srv
     control_finger_type = args.control_finger_type
     control_torso = args.control_torso
     predict_gesture = args.predict_gesture
+    hand_reference_mode = args.hand_reference_mode
 
     print(f"\033[92mControl {ctrl_arm_idx.name()} arms.\033[0m")
     print(f"\033[92mIk type: {ik_type_idx.name()}\033[0m")
@@ -938,6 +1074,7 @@ if __name__ == "__main__":
     current_pkg_path = get_package_path("motion_capture_ik")
     kuavo_assests_path = get_package_path("kuavo_assets")
     robot_version = os.environ.get('ROBOT_VERSION', '40')
+
     model_file = kuavo_assests_path + f"/models/biped_s{robot_version}/urdf/drake/biped_v3_arm.urdf"
     model_config_file = kuavo_assests_path + f"/config/kuavo_v{robot_version}/kuavo.json"
     # model_file = current_pkg_path + "/models/biped_gen4.0/urdf/biped_v3_arm.urdf"
@@ -953,10 +1090,19 @@ if __name__ == "__main__":
     shoulder_frame_names = model_config["shoulder_frame_names"]
     upper_arm_length = model_config["upper_arm_length"]
     lower_arm_length = model_config["lower_arm_length"]
-    # print(f"upper_arm_length: {upper_arm_length}, lower_arm_length: {lower_arm_length}")
-    # rospy.set_param("/quest3/upper_arm_length", upper_arm_length)
-    # rospy.set_param("/quest3/lower_arm_length", lower_arm_length)
+    num_arm_joints_var = model_config["NUM_ARM_JOINT"]
+    eef_z_bias = model_config.get("eef_z_offset", 0.0)
+    base_chest_offset_x = model_config.get("base_chest_offset_x", 0.0)
+    print(f"num_arm_joints_var: {num_arm_joints_var}")
+    print(f"upper_arm_length: {upper_arm_length}, lower_arm_length: {lower_arm_length}")
+
+    rospy.set_param("/quest3/shoulder_width", model_config.get("shoulder_width", 0.15))
+    rospy.set_param("/quest3/base_height_offset", model_config.get("base_height_offset", 0.23))
+    rospy.set_param("/quest3/base_chest_offset_x", base_chest_offset_x)
+    rospy.set_param("/quest3/upper_arm_length", upper_arm_length)
+    rospy.set_param("/quest3/lower_arm_length", lower_arm_length)
     
+    print(f"shoulder_width: {model_config.get('shoulder_width', 0.15)}")
     print(f"Model file: {model_file}")
     print(f"Model config file: {model_config_file}")
     print(f"shoulder_frame_names: {shoulder_frame_names}")
@@ -981,14 +1127,19 @@ if __name__ == "__main__":
             eef_z_bias=eef_z_bias,
             shoulder_frame_names=shoulder_frame_names
             )
+    solver_tol_default = 9.0e-3
+    iterations_limit_default = 100
+    if robot_version == "13":
+        solver_tol_default = 9.0e-6
+        iterations_limit_default = 2000
     if ik_type_idx == IkTypeIdx.TorsoIK:
         arm_ik = ArmIk(
             model_file,
             end_frames_name,
             meshcat,
             constraint_tol=9e-3,
-            solver_tol=9.0e-3,
-            iterations_limit=100,
+            solver_tol=solver_tol_default,
+            iterations_limit=iterations_limit_default,
             eef_z_bias=eef_z_bias,
             ctrl_arm_idx=ctrl_arm_idx,
             as_mc_ik=True,
@@ -996,20 +1147,24 @@ if __name__ == "__main__":
 
         )
         arm_ik.init_state(0.0, 0.0)
+        
+    print("\n" + "*"*10 + "IK ARM INFO" + "*"*10)
     arm_length_left, arm_length_right = arm_ik.get_arm_length()
     p_bS = arm_ik.get_two_frame_dis_vec(shoulder_frame_names[0], end_frames_name[0])
-    upper_arm_length = 100.0 * arm_ik.get_two_frame_dis(shoulder_frame_names[0], end_frames_name[3])
-    lower_arm_length = 100.0 * arm_ik.get_two_frame_dis(end_frames_name[3], end_frames_name[1])
-    shoulder_width_vec = 100.0 * arm_ik.get_two_frame_dis_vec(shoulder_frame_names[0], shoulder_frame_names[1])
-    shoulder_width = shoulder_width_vec[1]/2
-    print(f"shoulder_width_vec: {shoulder_width_vec} m")
-    print(f"p_bS: {p_bS} m")
+    upper_arm_length = arm_ik.get_two_frame_dis(shoulder_frame_names[0], end_frames_name[3])
+    lower_arm_length = arm_ik.get_two_frame_dis(end_frames_name[3], end_frames_name[1])
+    shoulder_width_vec = arm_ik.get_two_frame_dis_vec(shoulder_frame_names[0], shoulder_frame_names[1])
+    # shoulder_width = shoulder_width_vec[1]/2
     print(f"upper_arm_length: {upper_arm_length:.3f} cm, lower_arm_length: {lower_arm_length:.3f} cm")
-    rospy.set_param("/quest3/base_shoulder_x_bias", float(p_bS[0]))
-    rospy.set_param("/quest3/base_shoulder_y_bias", float(p_bS[1]))
-    rospy.set_param("/quest3/base_shoulder_z_bias", float(p_bS[2]))
-    rospy.set_param("/quest3/upper_arm_length", float(upper_arm_length))
-    rospy.set_param("/quest3/lower_arm_length", float(lower_arm_length))
-    rospy.set_param("/quest3/shoulder_width", float(shoulder_width))
-    print(f"\033[92mLeft Arm Length: {arm_length_left:.3f} m, Right Arm Length:{arm_length_right:.3f} m.\033[0m")
-    ik_ros = IkRos(arm_ik, ctrl_arm_idx=ctrl_arm_idx, q_limit=q_limit, end_effector_type=end_effector_type, send_srv=send_srv, predict_gesture=predict_gesture)
+    print(f"shoulder_width: {shoulder_width_vec[1]/2} m")
+    print(f"bias_chest_to_base_link: {p_bS} m")
+    # rospy.set_param("/quest3/base_shoulder_x_bias", float(p_bS[0]))
+    # rospy.set_param("/quest3/base_shoulder_y_bias", float(p_bS[1]))
+    # rospy.set_param("/quest3/base_shoulder_z_bias", float(p_bS[2]))
+    # rospy.set_param("/quest3/upper_arm_length", float(upper_arm_length))
+    # rospy.set_param("/quest3/lower_arm_length", float(lower_arm_length))
+    # rospy.set_param("/quest3/shoulder_width", float(shoulder_width))
+    # print(f"\033[92mLeft Arm Length: {arm_length_left:.3f} m, Right Arm Length:{arm_length_right:.3f} m.\033[0m")
+    print("*"*10 + "IK ARM INFO END" + "*"*10 + "\n")
+
+    ik_ros = IkRos(arm_ik, ctrl_arm_idx=ctrl_arm_idx, q_limit=q_limit, end_effector_type=end_effector_type, send_srv=send_srv, predict_gesture=predict_gesture, hand_reference_mode=hand_reference_mode)
