@@ -172,24 +172,25 @@ class IkRos:
         # TO-DO(matthew): subscribe to joint states
         # update joint states
         self.joint_sub = rospy.Subscriber(
-            "/robot_arm_q_v_tau", robotArmQVVD, self.kuavo_joint_states_callback
+            "/robot_arm_q_v_tau", robotArmQVVD, self.kuavo_joint_states_callback, queue_size=10
         )
         self.quest_bone_poses_sub = rospy.Subscriber(
-            "/leju_quest_bone_poses", PoseInfoList, self.quest_bone_poses_callback
+            "/leju_quest_bone_poses", PoseInfoList, self.quest_bone_poses_callback, queue_size=3
         )
 
         self.joySticks_sub = rospy.Subscriber(
             "/quest_joystick_data",
             JoySticks,
             self.joySticks_data_callback,
+            queue_size=3
         )
 
         self.ik_cmd_sub = rospy.Subscriber(
-            "/ik/two_arm_hand_pose_cmd", twoArmHandPoseCmd, self.two_arm_hand_pose_target_callback
+            "/ik/two_arm_hand_pose_cmd", twoArmHandPoseCmd, self.two_arm_hand_pose_target_callback, queue_size=10
         )
 
         self.sensor_data_raw_sub = rospy.Subscriber(
-            "/sensors_data_raw", sensorsData, self.sensor_data_raw_callback
+            "/sensors_data_raw", sensorsData, self.sensor_data_raw_callback, queue_size=1
         )
         self.arm_mode_changing = False
         # 检测到碰撞后，由外部控制手臂
