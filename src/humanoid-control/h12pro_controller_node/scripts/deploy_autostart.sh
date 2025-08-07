@@ -22,9 +22,9 @@ echo "MONITOR_OCS2_H12PRO: $MONITOR_OCS2_H12PRO"
 echo "KUAVO_REMOTE_PATH: $KUAVO_REMOTE_PATH"
 
 cd $KUAVO_ROS_CONTROL_WS_PATH
-if [ -d "$INSTALLED_DIR" ] && [ -f "$INSTALLED_DIR/devel/setup.bash" ]; then
+if [ -d "$INSTALLED_DIR" ] && [ -f "$INSTALLED_DIR/setup.bash" ]; then
     echo "Sourcing existing installation..."
-    source $INSTALLED_DIR/devel/setup.bash
+    source $INSTALLED_DIR/setup.bash
 fi
 catkin build humanoid_controllers
 catkin build h12pro_controller_node
