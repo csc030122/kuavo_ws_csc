@@ -1129,7 +1129,7 @@ if __name__ == "__main__":
             shoulder_frame_names=shoulder_frame_names
             )
     solver_tol_default = 9.0e-3
-    iterations_limit_default = 100
+    iterations_limit_default = 500
     if robot_version == "13":
         solver_tol_default = 9.0e-6
         iterations_limit_default = 2000
