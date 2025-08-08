@@ -161,13 +161,13 @@ class IkRos:
         self.quest3_arm_info_transformer.control_torso = control_torso
         initial_state = np.array([0, 0, 0, 0, 0, 0])  # 初始状态 [x, y, z, vx, vy, vz]
         initial_covariance = np.eye(6)  # 初始协方差矩阵
-        process_noise = np.eye(6) * 0.01  # 过程噪声协方差矩阵
-        measurement_noise = np.eye(3) * 0.01  # 测量噪声协方差矩阵
+        process_noise = np.eye(6) * 0.001  # 过程噪声协方差矩阵
+        measurement_noise = np.eye(3) * 1.1  # 测量噪声协方差矩阵
 
         initial_state[0:3] = self.arm_ik.left_hand_pose(self.arm_ik.q0())[0]
-        self.kf_left = KalmanFilter3D(initial_state, initial_covariance, process_noise, measurement_noise)
+        self.kf_left = KalmanFilter3D(initial_state, initial_covariance, process_noise, measurement_noise,dt = 1)
         initial_state[0:3] = self.arm_ik.right_hand_pose(self.arm_ik.q0())[0]
-        self.kf_right = KalmanFilter3D(initial_state, initial_covariance, process_noise, measurement_noise)
+        self.kf_right = KalmanFilter3D(initial_state, initial_covariance, process_noise, measurement_noise,dt = 1)
         self.external_q0 = None
         # TO-DO(matthew): subscribe to joint states
         # update joint states
@@ -639,8 +639,8 @@ class IkRos:
         left_hand_pose = self.arm_ik.left_hand_pose(q_drake)
         right_hand_pose = self.arm_ik.right_hand_pose(q_drake)
         arm_hand_pose_msg = twoArmHandPose()
-        msg.header.frame_id = "torso"
-        msg.header.stamp = rospy.Time.now()
+        arm_hand_pose_msg.header.frame_id = "torso"
+        arm_hand_pose_msg.header.stamp = rospy.Time.now()
         arm_hand_pose_msg.left_pose.pos_xyz = left_hand_pose[0]
         r, p, y = left_hand_pose[1]
         arm_hand_pose_msg.left_pose.quat_xyzw = rpy_to_quaternion(r, p, y)
@@ -1129,7 +1129,7 @@ if __name__ == "__main__":
             shoulder_frame_names=shoulder_frame_names
             )
     solver_tol_default = 9.0e-3
-    iterations_limit_default = 500
+    iterations_limit_default = 100
     if robot_version == "13":
         solver_tol_default = 9.0e-6
         iterations_limit_default = 2000
