@@ -3,7 +3,10 @@
 ## 启动 Websocket 
 
 ### Websocket 服务器启动
-
+> 如果上位机为NX或AGX需要安装下面功能包。
+```bash
+sudo apt-get install ros-noetic-rosbridge-server
+```
 使用 Weboskcet SDK 需要在上位机先启动 Websocket 服务器：
 ```bash
 roslaunch rosbridge_server rosbridge_websocket.launch
