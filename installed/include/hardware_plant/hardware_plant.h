@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <set>
 #include <unordered_map>
 #include "kuavo_common/common/robot_state.h"
 #include "kuavo_common/common/sensor_data.h"
@@ -146,13 +147,43 @@ public:
     double lockRotorTimeWin_{0.0};
     double speedTimeWin_{0.0};
     std::vector<double_t> joint_velocity_limits_;
+    std::vector<double_t> joint_peak_velocity_limits_;
     std::vector<double_t> joint_lock_rotor_limits_;
-    std::vector<double_t> joint_peak_limits_;
+    std::vector<double_t> joint_peak_torque_limits_;
     std::vector<double_t> min_joint_position_limits;
     std::vector<double_t> max_joint_position_limits;
 
     std::unique_ptr<eef_controller::TouchDexhandContrller> dexhand_actuator;
     std::string gesture_filepath_;
+
+    std::mutex disable_motor_mtx_;
+    std::set<int> disableMotor_;
+
+    inline int getDisableMotorId()
+    {
+      std::lock_guard<std::mutex> lk(disable_motor_mtx_);
+      if (disableMotor_.empty())
+      {
+        return -1;
+      }
+      auto first_id = *disableMotor_.begin();
+      disableMotor_.erase(first_id);
+      return first_id;
+    }
+
+          // 禁用电机ID管理接口
+    bool addDisableMotorId(int id) 
+    {
+        std::lock_guard<std::mutex> lk(disable_motor_mtx_);
+        auto result = disableMotor_.insert(id);
+        return result.second; // true: 新插入，false: 已存在
+    }
+
+    size_t getDisableMotorSize() 
+    {
+        std::lock_guard<std::mutex> lk(disable_motor_mtx_);
+        return disableMotor_.size();
+    }
 
 private:
 
