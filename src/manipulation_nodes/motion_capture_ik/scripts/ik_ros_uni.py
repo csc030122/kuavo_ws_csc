@@ -140,6 +140,9 @@ class IkRos:
         self.__send_srv = send_srv
         self.__freeze_finger = False
         self.__button_y_last = False
+        self.__frozen_left_hand_position = [0 for i in range(6)]
+        self.__frozen_right_hand_position = [0 for i in range(6)]
+        self.__frozen_claw_pos = [0.0, 0.0]
         self.__arm_dof = num_arm_joints_var
         self.__single_arm_dof = self.__arm_dof//2
         self.trigger_reset_mode = False
@@ -910,40 +913,45 @@ class IkRos:
                 self.__button_y_last = joyStick_data.left_second_button_pressed
                 if self.__freeze_finger is True:
                     # print(f"\033[91mFinger is frozen.\033[0m")
-                    return
-                for i in range(6):
-                    idx = 6 if (control_finger_type == 0) else 2
-                    if i <= idx:
-                        left_hand_position[i] = int(100.0 * joyStick_data.left_trigger)
-                        right_hand_position[i] = int(100.0 * joyStick_data.right_trigger)
-                    else:
-                        left_hand_position[i] = int(100.0 * joyStick_data.left_grip)
-                        right_hand_position[i] = int(100.0 * joyStick_data.right_grip)
-                    left_hand_position[i] = limit_value(left_hand_position[i], 0, 100)
-                    right_hand_position[i] = limit_value(right_hand_position[i], 0, 100)
-                left_hand_position[1] = 100 if joyStick_data.left_first_button_touched else 0
-                right_hand_position[1] = 100 if joyStick_data.right_first_button_touched else 0
+                    # Use frozen values
+                    left_hand_position = self.__frozen_left_hand_position.copy()
+                    right_hand_position = self.__frozen_right_hand_position.copy()
+                else:
+                    # Calculate new values and store them for potential freezing
+                    for i in range(6):
+                        idx = 6 if (control_finger_type == 0) else 2
+                        if i <= idx:
+                            left_hand_position[i] = int(100.0 * joyStick_data.left_trigger)
+                            right_hand_position[i] = int(100.0 * joyStick_data.right_trigger)
+                        else:
+                            left_hand_position[i] = int(100.0 * joyStick_data.left_grip)
+                            right_hand_position[i] = int(100.0 * joyStick_data.right_grip)
+                        left_hand_position[i] = limit_value(left_hand_position[i], 0, 100)
+                        right_hand_position[i] = limit_value(right_hand_position[i], 0, 100)
+                    left_hand_position[1] = 100 if joyStick_data.left_first_button_touched else 0
+                    right_hand_position[1] = 100 if joyStick_data.right_first_button_touched else 0
+                    # Store current values for freezing
+                    self.__frozen_left_hand_position = left_hand_position.copy()
+                    self.__frozen_right_hand_position = right_hand_position.copy()
                 # print(f"left_hand_position[1]: {left_hand_position[1]}, right_hand_position[1]: {right_hand_position[1]}\n")
             elif hand_finger_data is not None:
-                left_qpos = hand_finger_data[0]
-                right_qpos = hand_finger_data[1]
-                for i in range(6):
-                    left_hand_position[i] = int(100.0 * left_qpos[i]/1.70)
-                    right_hand_position[i] = int(100.0 * right_qpos[i]/1.70)
-                    left_hand_position[i] = limit_value(left_hand_position[i], 0, 100)
-                    right_hand_position[i] = limit_value(right_hand_position[i], 0, 100)
+                if self.__freeze_finger is True:
+                    # Use frozen values
+                    left_hand_position = self.__frozen_left_hand_position.copy()
+                    right_hand_position = self.__frozen_right_hand_position.copy()
+                else:
+                    # Calculate new values and store them for potential freezing
+                    left_qpos = hand_finger_data[0]
+                    right_qpos = hand_finger_data[1]
+                    for i in range(6):
+                        left_hand_position[i] = int(100.0 * left_qpos[i]/1.70)
+                        right_hand_position[i] = int(100.0 * right_qpos[i]/1.70)
+                        left_hand_position[i] = limit_value(left_hand_position[i], 0, 100)
+                        right_hand_position[i] = limit_value(right_hand_position[i], 0, 100)
+                    # Store current values for freezing
+                    self.__frozen_left_hand_position = left_hand_position.copy()
+                    self.__frozen_right_hand_position = right_hand_position.copy()
             
-            robot_hand_position.left_hand_position = left_hand_position
-            robot_hand_position.right_hand_position = right_hand_position
-            self.control_robot_hand_position_pub.publish(robot_hand_position)
-        elif self.end_effector_type == JODELL:
-            if hand_finger_data is not None:
-                left_qpos = hand_finger_data[0]
-                right_qpos = hand_finger_data[1]
-                left_hand_position[0] = limit_value(int(255.0 * left_qpos[2] / 1.70), 0, 255)
-                right_hand_position[0] = limit_value(int(255.0 * right_qpos[2] / 1.70), 0, 255)
-            else:
-                return
             robot_hand_position.left_hand_position = left_hand_position
             robot_hand_position.right_hand_position = right_hand_position
             self.control_robot_hand_position_pub.publish(robot_hand_position)
@@ -955,20 +963,33 @@ class IkRos:
                 self.__button_y_last = joyStick_data.left_second_button_pressed
                 if self.__freeze_finger is True:
                     # print(f"\033[91mFinger is frozen.\033[0m")
-                    return
-                pos = [0.0] * 2
-                pos[0] = int(100.0 * joyStick_data.left_trigger)
-                pos[1] = int(100.0 * joyStick_data.right_trigger)
-                pos[0] = limit_value(pos[0], 0, 100)
-                pos[1] = limit_value(pos[1], 0, 100)
-                self.pub_leju_claw_command(pos)
+                    # Use frozen values
+                    self.pub_leju_claw_command(self.__frozen_claw_pos)
+                else:
+                    # Calculate new values and store them for potential freezing
+                    pos = [0.0] * 2
+                    pos[0] = int(100.0 * joyStick_data.left_trigger)
+                    pos[1] = int(100.0 * joyStick_data.right_trigger)
+                    pos[0] = limit_value(pos[0], 0, 100)
+                    pos[1] = limit_value(pos[1], 0, 100)
+                    # Store current values for freezing
+                    self.__frozen_claw_pos = pos.copy()
+                    self.pub_leju_claw_command(pos)
             elif hand_finger_data is not None:
-                left_qpos = hand_finger_data[0]
-                right_qpos = hand_finger_data[1]
-                left_claw_pos = limit_value(int(100.0 * left_qpos[2] / 1.70), 0, 100)
-                right_claw_pos = limit_value(int(100.0 * right_qpos[2] / 1.70), 0, 100)
-                self.pub_leju_claw_command([left_claw_pos, right_claw_pos])
-                # print(f"left_claw_pos: {left_claw_pos}, right_claw_pos: {right_claw_pos}")
+                if self.__freeze_finger is True:
+                    # Use frozen values
+                    self.pub_leju_claw_command(self.__frozen_claw_pos)
+                else:
+                    # Calculate new values and store them for potential freezing
+                    left_qpos = hand_finger_data[0]
+                    right_qpos = hand_finger_data[1]
+                    left_claw_pos = limit_value(int(100.0 * left_qpos[2] / 1.70), 0, 100)
+                    right_claw_pos = limit_value(int(100.0 * right_qpos[2] / 1.70), 0, 100)
+                    pos = [left_claw_pos, right_claw_pos]
+                    # Store current values for freezing
+                    self.__frozen_claw_pos = pos.copy()
+                    self.pub_leju_claw_command(pos)
+                    # print(f"left_claw_pos: {left_claw_pos}, right_claw_pos: {right_claw_pos}")
             else:
                 return
 

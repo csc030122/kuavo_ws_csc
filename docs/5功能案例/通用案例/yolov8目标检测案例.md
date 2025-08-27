@@ -127,7 +127,7 @@ echo 'export LD_PRELOAD=/usr/lib/aarch64-linux-gnu/libgomp.so.1:$LD_PRELOAD' >> 
     ```
     - not found -> 安装 torch
     - 显示版本 -> 根据后续文档判断是否是可使用的torch，若不是则需要根据后续文档卸载安装
-- 确定 Orin NX 版本：
+- 确定 Jetson NX/AGX 上位机 版本：
     ```bash
     dpkg-query --show nvidia-l4t-core
     ```
@@ -145,7 +145,7 @@ echo 'export LD_PRELOAD=/usr/lib/aarch64-linux-gnu/libgomp.so.1:$LD_PRELOAD' >> 
 
 #### 2. 安装 PyTorch 2.0.0（JetPack 5.1.4 / CUDA 11.4）
 
-- 下载 whl 文件（可通过 SSH 传输到 Jetson NX）：
+- 下载 whl 文件（可通过 SSH 传输到 Jetson NX/AGX 上位机）：
     ```bash
     wget https://nvidia.box.com/shared/static/i8pukc49h3lhak4kkn67tg9j4goqm0m7.whl \
          -O torch-2.0.0+nv23.05-cp38-cp38-linux_aarch64.whl
