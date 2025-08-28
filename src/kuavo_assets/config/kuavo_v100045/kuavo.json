@@ -41,12 +41,14 @@
     "locked_rotor_protection":2,
     "speed_protection":0.1,
     "joint_kp": [220, 100, 224, 224, 58, 58, 220, 100, 224, 224, 58, 58, 586, 586],
-    "joint_kd": [2979, 5376, 10794, 10794, 3136, 3136, 2979, 5376, 10794, 10794, 3136, 3136, 3800, 3800],
+    "joint_kd": [2979, 5376, 10794, 10794, 3136, 3136, 2979, 5376, 10794, 10794, 3136, 3136, 4100, 4100],
     "MOTORS_TYPE":[
         "PA100_18", "PA100", "PA100", "PA100_18", "CK", "CK",
         "PA100_18", "PA100", "PA100", "PA100_18", "CK", "CK",
         "PA100", "ruiwo", "ruiwo", "ruiwo", "ruiwo", "ruiwo", "ruiwo",
         "PA100", "ruiwo", "ruiwo", "ruiwo", "ruiwo", "ruiwo", "ruiwo", "ruiwo", "ruiwo"],
+    "ruiwo_kp": [30, 30, 40, 38, 40, 35, 30, 30, 40, 38, 40, 35, 4, 10],
+    "ruiwo_kd": [2, 4, 4, 5, 5, 5, 2, 4, 4, 5, 5, 5, 3, 3],
     "EndEffectorType": ["qiangnao", "qiangnao"],
     "min_joint_position_limits":[
         -40, -60, -140, -8, -100, -100,
@@ -137,6 +139,7 @@
     "lower_arm_length": 0.426,
     "shoulder_width": 0.2927,
     "eef_z_offset": -0.0,
+    "hand_ref_length": 0.193,
     "base_height_offset": 0.4245,
     "base_chest_offset_x": -0.0,
 

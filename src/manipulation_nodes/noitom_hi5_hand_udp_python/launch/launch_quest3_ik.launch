@@ -11,10 +11,11 @@
     <arg name="enable_head_control" default="true"/>
     <arg name="hand_reference_mode" default="thumb_index"/> <!-- fingertips, middle_finger, thumb_index -->
     <arg name="use_arm_collision" default="false"/>
+    <arg name="use_two_stage_ik" default="true"/>
 
     
     <!-- motion_capture_ik -->
-    <node pkg="motion_capture_ik" type="ik_ros_uni.py" name="ik_ros_uni" args=" --version $(arg version) --ctrl_arm_idx $(arg ctrl_arm_idx) --ik_type_idx $(arg ik_type_idx) --control_torso=$(arg control_torso) --control_finger_type=$(arg control_finger_type) --predict_gesture=$(arg predict_gesture) --ee_type=$(arg ee_type) --hand_reference_mode=$(arg hand_reference_mode)" output="screen">
+    <node pkg="motion_capture_ik" type="ik_ros_uni.py" name="ik_ros_uni" args=" --version $(arg version) --ctrl_arm_idx $(arg ctrl_arm_idx) --ik_type_idx $(arg ik_type_idx) --control_torso=$(arg control_torso) --control_finger_type=$(arg control_finger_type) --predict_gesture=$(arg predict_gesture) --ee_type=$(arg ee_type) --hand_reference_mode=$(arg hand_reference_mode) --use_two_stage_ik=$(arg use_two_stage_ik)" output="screen">
         <param name="use_arm_collision" value="$(arg use_arm_collision)"/>
     </node>
 

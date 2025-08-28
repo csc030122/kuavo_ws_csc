@@ -47,6 +47,8 @@
         "PA100_18", "PA100", "PA100", "PA100", "CK", "CK",
         "PA100", "ruiwo", "ruiwo", "ruiwo", "ruiwo", "ruiwo", "ruiwo",
         "PA100", "ruiwo", "ruiwo", "ruiwo", "ruiwo", "ruiwo", "ruiwo", "ruiwo", "ruiwo"],
+    "ruiwo_kp": [30, 20, 20, 10, 10, 10, 30, 20, 20, 10, 10, 10, 4, 10],
+    "ruiwo_kd": [2, 4, 4, 2, 2, 2, 2, 4, 4, 2, 2, 2, 3, 3],
     "EndEffectorType": ["qiangnao", "qiangnao"],
     "min_joint_position_limits":[
         -180, -180, -180, -180, -80, -80,
@@ -142,6 +144,7 @@
     "lower_arm_length": 0.36229,
     "shoulder_width": 0.15,
     "eef_z_offset": -0.0,
+    "hand_ref_length": 0.193,
     "base_height_offset": 0.23,
     "base_chest_offset_x": -0.0,
 

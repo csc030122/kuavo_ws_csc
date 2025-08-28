@@ -16,7 +16,7 @@ import time
 import tf
 from std_msgs.msg import Float32MultiArray
 from tf.transformations import quaternion_from_matrix, quaternion_matrix
-from geometry_msgs.msg import TransformStamped
+from geometry_msgs.msg import TransformStamped,Twist
 from tf2_msgs.msg import TFMessage
 from constanst import gesture_corresponding_hand_position
 # to dev
@@ -149,8 +149,9 @@ class Quest3ArmInfoTransformer:
         self.shoulder_angle_puber = rospy.Publisher('/quest3_debug/shoulder_angle', Float32MultiArray, queue_size=10)
         self.chest_axis_puber = rospy.Publisher('/quest3_debug/chest_axis', Float32MultiArray, queue_size=10)
         self.head_body_pose_puber = rospy.Publisher('/kuavo_head_body_orientation_data', headBodyPose, queue_size=10)
-        self.head_body_pose_control_puber = rospy.Publisher('/kuavo_head_body_orientation', headBodyPose, queue_size=10)
-        
+        self.head_body_pose_control_puber = rospy.Publisher('/kuavo_head_body_orientation', headBodyPose, queue_size=10)    
+
+
         self.left_joystick = None
         self.right_joystick = None
         if eef_visual_stl_files is not None:
@@ -723,9 +724,19 @@ class Quest3ArmInfoTransformer:
 
     def compute_hand_pose(self, side):
         chest_pose = self.pose_info_list[bone_name_to_index["Chest"]]
+        #打印chest对应的index
+        # print("Chest index: ✅", bone_name_to_index["Chest"])
         elbow_pose = self.pose_info_list[bone_name_to_index[side + "ArmLower"]]
+        #打印elbow对应的index
+        # print(f"{side} ArmLower index: ✅", bone_name_to_index[side + "ArmLower"])
         shoulder_pose = self.pose_info_list[bone_name_to_index[side + "ArmUpper"]]
+        #打印shoulder对应的index
+        # print(f"{side} ArmUpper index: ✅", bone_name_to_index[side + "ArmUpper"])
         hand_pose = self.pose_info_list[bone_name_to_index[side + "HandPalm"]]
+        #打印hand对应的index
+        # print(f"{side} HandPalm index: ✅", bone_name_to_index[side + "HandPalm"])
+        #打印hand对应的位置
+        # print(f"{side} HandPalm y position: ✅", hand_pose.position.y)
 
         vr_quat = [hand_pose.orientation.x, hand_pose.orientation.y, hand_pose.orientation.z, hand_pose.orientation.w]
         hand_quat_in_w = vr_quat2robot_quat(vr_quat, side, 15*np.pi/180.0 if not self.is_hand_tracking else 0.0) # [x, y, z, w]
@@ -781,16 +792,40 @@ class Quest3ArmInfoTransformer:
         shoulder_pos[1] -= chest_pose.position.y
         shoulder_pos[2] -= chest_pose.position.z
         shoulder_pos = axis_angle_to_matrix(self.chest_axis_agl).T @ shoulder_pos
-        shoulder_pos[0] += bias_chest_to_base_link[0]
-        shoulder_pos[2] += bias_chest_to_base_link[2]
+        shoulder_pos[0] = bias_chest_to_base_link[0]
+        shoulder_pos[2] = bias_chest_to_base_link[2]
+
+        # print(f"{side} HandPalm y position: ✅", hand_pos[1])
+        y_distance = abs(hand_pos[1])
+        # print(f"{side} HandPalm y distance from chest: ✅ {y_distance:.2f} m")
+        # 判断是处理哪只手
+        if side == "Left" and hand_pos[1]< 0:
+            overchest_b = True
+            # print(f"Left hand over chest: ✅ {overchest_b}")
+        elif side == "Right" and hand_pos[1] > 0:
+            overchest_b = True
+            # print(f"Right hand over chest: ✅ {overchest_b}")
+        else:
+            overchest_b = False   
         
 
         human_shoulder_pos = list(shoulder_pos[:])
+       
+        if(y_distance <= self.shoulder_width - 0.05) and (not overchest_b):
+            adapt_width_gamma = 1*(self.shoulder_width - 0.05 - y_distance)
+        elif(y_distance <= self.shoulder_width - 0.05) and overchest_b:
+            adapt_width_gamma = 1*(self.shoulder_width - 0.05 + y_distance)
+        elif(y_distance > self.shoulder_width - 0.05) and overchest_b:
+            adapt_width_gamma = 1*(self.shoulder_width - 0.05 + y_distance)
+        else:
+            adapt_width_gamma = 0.0
+        
+        adapt_width_gamma = min(adapt_width_gamma, 0.3)  # 限制最大适应宽度为0.1m
 
         if (side == "Right"):
-            shoulder_pos[1] = -self.shoulder_width
+            shoulder_pos[1] = -self.shoulder_width+adapt_width_gamma
         elif (side == "Left"):
-            shoulder_pos[1] = self.shoulder_width
+            shoulder_pos[1] = self.shoulder_width-adapt_width_gamma
         # human_hand_pos = hand_pos[:].copy()
         # human_elbow_pos = elbow_pos[:].copy()
         # human_hand_pos = hand_pos[:].copy()
@@ -1019,7 +1054,7 @@ class Quest3ArmInfoTransformer:
         # deal right hand thumb
         msg.position[vj_n + 24 + 1] *= -1
         self.joint_state_puber.publish(msg)
-       
+
     def pub_head_body_pose_msg(self, head_body_pose: HeadBodyPose):
         msg = headBodyPose()
         msg.head_pitch = head_body_pose.head_pitch

@@ -48,7 +48,7 @@ class KalmanFilter3D:
         """
         y = measurement - self.H @ self.state
         S = self.H @ self.covariance @ self.H.T + self.measurement_noise
-        K = self.covariance @ self.H.T @ np.linalg.inv(S)
+        K = self.covariance @ self.H.T @ scipy.linalg.inv(S)
         self.state = self.state + K @ y
         self.covariance = (np.eye(6) - K @ self.H) @ self.covariance
 

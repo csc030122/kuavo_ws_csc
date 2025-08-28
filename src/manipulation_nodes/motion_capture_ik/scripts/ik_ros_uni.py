@@ -5,7 +5,7 @@ import signal
 import rospy
 import argparse
 import argparse
-from std_msgs.msg import Float32, Float32MultiArray, Int32
+from std_msgs.msg import Float32, Float32MultiArray, Int32, Bool
 from sensor_msgs.msg import JointState
 from handcontrollerdemorosnode.msg import armPoseWithTimeStamp
 from kuavo_msgs.msg import robotHandPosition
@@ -108,11 +108,13 @@ QIANGNAO = "qiangnao"
 JODELL = "jodell"
 LEJUCLAW = "lejuclaw"
 QIANGNAO_TOUCH = "qiangnao_touch"
+REVO2 = "revo2"
+
 control_finger_type = 0
 control_torso = 0
 
 class IkRos:
-    def __init__(self, ik, ctrl_arm_idx=ArmIdx.LEFT, q_limit=None, publish_err=True, use_original_pose=False, end_effector_type="", send_srv=True, predict_gesture=False, hand_reference_mode="thumb_index"):
+    def __init__(self, ik, ctrl_arm_idx=ArmIdx.LEFT, q_limit=None, publish_err=True, use_original_pose=False, end_effector_type="", send_srv=True, predict_gesture=False, hand_reference_mode="thumb_index", use_two_stage_ik=False):
         self.__start_time = None
         self.__timestamp = None
         self.__ctrl_arm_idx = ctrl_arm_idx
@@ -146,6 +148,19 @@ class IkRos:
         self.__arm_dof = num_arm_joints_var
         self.__single_arm_dof = self.__arm_dof//2
         self.trigger_reset_mode = False
+        
+        # 添加两阶段IK控制参数
+        self.__use_two_stage_ik = use_two_stage_ik  # 从构造函数参数获取
+        
+        # 允许通过ROS参数覆盖
+        if rospy.has_param('~use_two_stage_ik'):
+            self.__use_two_stage_ik = rospy.get_param('~use_two_stage_ik')
+            rospy.loginfo(f"[IkRos] 通过ROS参数覆盖两阶段IK模式: {self.__use_two_stage_ik}")
+        
+        if self.__use_two_stage_ik:
+            rospy.loginfo("[IkRos] 启用两阶段IK模式")
+        else:
+            rospy.loginfo("[IkRos] 使用标准IK模式")
 
         # 检查是否是半身模式
         self.only_half_up_body = False
@@ -157,6 +172,9 @@ class IkRos:
         self.arm_mode_service = rospy.Service('/quest3/set_arm_mode_changing', Trigger, self.set_arm_mode_changing_callback)
 
         # self.hand_pub_timer = rospy.Timer(rospy.Duration(0.001), self.hand_finger_data_process)
+
+        # 添加两阶段IK控制服务
+        self.set_two_stage_ik_service = rospy.Service('/quest3/set_two_stage_ik', SetBool, self.set_two_stage_ik_callback)
 
 
         model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
@@ -172,6 +190,12 @@ class IkRos:
         initial_state[0:3] = self.arm_ik.right_hand_pose(self.arm_ik.q0())[0]
         self.kf_right = KalmanFilter3D(initial_state, initial_covariance, process_noise, measurement_noise,dt = 1)
         self.external_q0 = None
+        
+        # 设置ArmIk实例的两阶段IK模式
+        if hasattr(self.arm_ik, 'set_use_two_stage_ik'):
+            self.arm_ik.set_use_two_stage_ik(self.__use_two_stage_ik)
+            rospy.loginfo(f"[IkRos] ArmIk实例两阶段IK模式设置为: {self.__use_two_stage_ik}")
+        
         # TO-DO(matthew): subscribe to joint states
         # update joint states
         self.joint_sub = rospy.Subscriber(
@@ -195,6 +219,12 @@ class IkRos:
         self.sensor_data_raw_sub = rospy.Subscriber(
             "/sensors_data_raw", sensorsData, self.sensor_data_raw_callback, queue_size=1
         )
+        
+        # 订阅停止机器人信号
+        self.stop_robot_sub = rospy.Subscriber(
+            "/stop_robot", Bool, self.stop_robot_callback, queue_size=1
+        )
+        
         self.arm_mode_changing = False
         # 检测到碰撞后，由外部控制手臂
         self.collision_check_control = False
@@ -243,7 +273,8 @@ class IkRos:
                 QIANGNAO: QIANGNAO,
                 JODELL: JODELL,
                 LEJUCLAW: LEJUCLAW,
-                QIANGNAO_TOUCH:QIANGNAO_TOUCH
+                QIANGNAO_TOUCH:QIANGNAO_TOUCH,
+                REVO2: REVO2
             }
             if end_effector_type in end_effector_mapping:
                 self.end_effector_type = end_effector_mapping[end_effector_type]
@@ -905,7 +936,7 @@ class IkRos:
         right_hand_position = [0 for i in range(6)]
         robot_hand_position = robotHandPosition()
         robot_hand_position.header.stamp = rospy.Time.now()
-        if self.end_effector_type == QIANGNAO or self.end_effector_type == QIANGNAO_TOUCH:
+        if self.end_effector_type == QIANGNAO or self.end_effector_type == QIANGNAO_TOUCH or self.end_effector_type == REVO2:
             if joyStick_data is not None:
                 if joyStick_data.left_second_button_pressed and self.__button_y_last is False:
                     print(f"\033[91mButton Y is pressed.\033[0m")
@@ -1009,6 +1040,13 @@ class IkRos:
     def sensor_data_raw_callback(self, msg):
         self.sensor_data_raw = msg
 
+    def stop_robot_callback(self, msg):
+        """停止机器人信号回调函数"""
+        if msg.data:  # 当收到True信号时退出程序
+            rospy.loginfo("[IkRos] 收到停止机器人信号，正在退出程序...")
+            self.stop_event.set()  # 设置停止事件
+            rospy.signal_shutdown("Received stop signal")  # 触发ROS节点关闭
+
     def set_arm_mode_changing_callback(self, req):
         """服务回调函数，设置arm_mode_changing为True"""
 
@@ -1033,6 +1071,22 @@ class IkRos:
         response = TriggerResponse()
         response.success = True
         response.message = "Arm mode changing set to True"
+        return response
+    
+    def set_two_stage_ik_callback(self, req):
+        """服务回调函数，设置两阶段IK模式"""
+        self.__use_two_stage_ik = req.data
+        
+        # 设置ArmIk实例的两阶段IK模式
+        if hasattr(self.arm_ik, 'set_use_two_stage_ik'):
+            self.arm_ik.set_use_two_stage_ik(self.__use_two_stage_ik)
+            rospy.loginfo(f"[IkRos] 两阶段IK模式设置为: {self.__use_two_stage_ik}")
+        else:
+            rospy.logwarn("[IkRos] ArmIk实例不支持两阶段IK模式")
+        
+        response = SetBoolResponse()
+        response.success = True
+        response.message = f"Two-stage IK mode set to {self.__use_two_stage_ik}"
         return response
     
     def collision_control_complete(self, req):
@@ -1069,18 +1123,9 @@ if __name__ == "__main__":
     parser.add_argument("--predict_gesture", type=str2bool, default=False, help="Use Neural Network to predict hand gesture, True or False.")
     parser.add_argument("--eef_z_bias", type=float, default=-0.0, help="End effector z-axis bias distance.")
     parser.add_argument("--hand_reference_mode", type=str, default="thumb_index", help="Hand reference mode: fingertips, middle_finger, or thumb_index.")
+    parser.add_argument("--use_two_stage_ik", type=str2bool, default=False, help="Use two-stage IK solver for better wrist control.")
     args, unknown = parser.parse_known_args()
-    # ee_type
-    end_effector_type=""
-    try:
-        if rospy.has_param("/end_effector_type"):
-            end_effector_type = rospy.get_param("/end_effector_type")
-            print(f"\033[92mend_effector_type from rosparm: {end_effector_type}\033[0m")
-        else:
-            print(f"\033[92mend_effector_type from args: {end_effector_type}\033[0m")
-            end_effector_type = args.end_effector_type
-    except Exception as e:
-        print(e)
+    
     ctrl_arm_idx = ArmIdx(args.ctrl_arm_idx)
     ik_type_idx = IkTypeIdx(args.ik_type_idx)
     send_srv = args.send_srv
@@ -1088,10 +1133,12 @@ if __name__ == "__main__":
     control_torso = args.control_torso
     predict_gesture = args.predict_gesture
     hand_reference_mode = args.hand_reference_mode
+    use_two_stage_ik = args.use_two_stage_ik
 
     print(f"\033[92mControl {ctrl_arm_idx.name()} arms.\033[0m")
     print(f"\033[92mIk type: {ik_type_idx.name()}\033[0m")
     print(f"\033[92mControl_torso: {control_torso}\033[0m")
+    print(f"\033[92mUse two-stage IK: {use_two_stage_ik}\033[0m")
     
     current_pkg_path = get_package_path("motion_capture_ik")
     kuavo_assests_path = get_package_path("kuavo_assets")
@@ -1115,6 +1162,23 @@ if __name__ == "__main__":
     num_arm_joints_var = model_config["NUM_ARM_JOINT"]
     eef_z_bias = model_config.get("eef_z_offset", 0.0)
     base_chest_offset_x = model_config.get("base_chest_offset_x", 0.0)
+    hand_ref_length = model_config.get("hand_ref_length", 0.193)
+    if use_two_stage_ik and robot_version != "13": # 使用两阶段IK时，需要减去手腕参考长度
+        lower_arm_length -= hand_ref_length 
+        print(f"using two-stage IK, adjust lower_arm_length: {lower_arm_length} m")
+    
+    # ee_type
+    end_effector_type=""
+    try:
+        if rospy.has_param("/end_effector_type"):
+            end_effector_type = rospy.get_param("/end_effector_type")
+            print(f"\033[92mend_effector_type from rosparm: {end_effector_type}\033[0m")
+        else:
+            end_effector_type = model_config.get("EndEffectorType", ["qiangnao", "qiangnao"])[0]
+            print(f"\033[92mend_effector_type from model_config: {end_effector_type}\033[0m")
+    except Exception as e:
+        print(e)
+        
     print(f"num_arm_joints_var: {num_arm_joints_var}")
     print(f"upper_arm_length: {upper_arm_length}, lower_arm_length: {lower_arm_length}")
 
@@ -1176,6 +1240,8 @@ if __name__ == "__main__":
     upper_arm_length = arm_ik.get_two_frame_dis(shoulder_frame_names[0], end_frames_name[3])
     lower_arm_length = arm_ik.get_two_frame_dis(end_frames_name[3], end_frames_name[1])
     shoulder_width_vec = arm_ik.get_two_frame_dis_vec(shoulder_frame_names[0], shoulder_frame_names[1])
+    
+    
     # shoulder_width = shoulder_width_vec[1]/2
     print(f"upper_arm_length: {upper_arm_length:.3f} cm, lower_arm_length: {lower_arm_length:.3f} cm")
     print(f"shoulder_width: {shoulder_width_vec[1]/2} m")
@@ -1189,4 +1255,4 @@ if __name__ == "__main__":
     # print(f"\033[92mLeft Arm Length: {arm_length_left:.3f} m, Right Arm Length:{arm_length_right:.3f} m.\033[0m")
     print("*"*10 + "IK ARM INFO END" + "*"*10 + "\n")
 
-    ik_ros = IkRos(arm_ik, ctrl_arm_idx=ctrl_arm_idx, q_limit=q_limit, end_effector_type=end_effector_type, send_srv=send_srv, predict_gesture=predict_gesture, hand_reference_mode=hand_reference_mode)
+    ik_ros = IkRos(arm_ik, ctrl_arm_idx=ctrl_arm_idx, q_limit=q_limit, end_effector_type=end_effector_type, send_srv=send_srv, predict_gesture=predict_gesture, hand_reference_mode=hand_reference_mode, use_two_stage_ik=use_two_stage_ik)
