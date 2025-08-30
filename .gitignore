@@ -18,3 +18,4 @@ new-docs
 **/build
 .aider*
 src/manipulation_nodes/planarmwebsocketservice/models/*.pt
+.claude/
