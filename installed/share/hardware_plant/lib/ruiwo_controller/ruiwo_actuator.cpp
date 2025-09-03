@@ -152,13 +152,18 @@ int RuiWoActuator::initialize()
     pSetZeroMethod = PyObject_GetAttrString(ActuatorInstance, "set_as_zero");
     pChangEncoderMethod = PyObject_GetAttrString(ActuatorInstance, "change_encoder_zero_round");
     pSaveZerosMethod = PyObject_GetAttrString(ActuatorInstance, "save_zero_position");
+    pAdjustZeroMethod = PyObject_GetAttrString(ActuatorInstance, "adjust_zero_position");
+    pGetZeroPointsMethod = PyObject_GetAttrString(ActuatorInstance, "get_motor_zero_points");
     pSetTeachPendantModeMethod = PyObject_GetAttrString(ActuatorInstance, "set_teach_pendant_mode");
+    pSetJointGainsMethod = PyObject_GetAttrString(ActuatorInstance, "set_joint_gains");
+    pGetJointGainsMethod = PyObject_GetAttrString(ActuatorInstance, "get_joint_gains");
     pJoint_online_list = PyObject_GetAttrString(ActuatorInstance, "joint_online_list");
 
     // 检查获取方法是否成功
     if (!pEnableMethod || !pCloseMethod || !pDisableMethod || !pSetPositionMethod || !pSetTorqueMethod || !pSetVelocityMethod ||
         !pGetPositionMethod || !pGetTorqueMethod|| !pGetVelocityMethod || !pGetJointStateMethod || !RuiWo_pJoinMethod ||
-        !pCheckStateMethod || !pSetZeroMethod || !pChangEncoderMethod || !pSaveZerosMethod || !pSetTeachPendantModeMethod || !pJoint_online_list)
+        !pCheckStateMethod || !pSetZeroMethod || !pChangEncoderMethod || !pSaveZerosMethod || !pAdjustZeroMethod || !pGetZeroPointsMethod ||
+        !pSetTeachPendantModeMethod || !pSetJointGainsMethod || !pGetJointGainsMethod || !pJoint_online_list)
     {
         PyErr_Print();
         Py_DECREF(ActuatorInstance); // 释放已获取的对象
@@ -193,6 +198,60 @@ void RuiWoActuator::changeEncoderZeroRound(int index, double direction)
         PyErr_Print();
     }
     PyGILState_Release(gstate);
+}
+
+void RuiWoActuator::adjustZeroPosition(int index, double offset)
+{
+    gstate = PyGILState_Ensure();
+    if (pAdjustZeroMethod)
+    {   
+        PyObject *args = Py_BuildValue("(id)", index, offset);
+        PyObject_CallObject(pAdjustZeroMethod, args);
+        Py_DECREF(args);
+    }
+    else
+    {
+        PyErr_Print();
+    }   
+    PyGILState_Release(gstate);
+}
+
+std::vector<double> RuiWoActuator::getMotorZeroPoints()
+{
+    gstate = PyGILState_Ensure();
+    PyObject *result = PyObject_CallObject(pGetZeroPointsMethod, nullptr);
+    if (!result)
+    {
+        PyErr_Print();
+        PyGILState_Release(gstate);
+        return std::vector<double>();
+    }
+    std::vector<double> zero_points;
+    PyObject *py_zero_points = PyObject_CallObject(pGetZeroPointsMethod, nullptr);
+    if (!py_zero_points)
+    {
+        PyErr_Print();
+        Py_DECREF(py_zero_points);
+        PyGILState_Release(gstate);
+        return std::vector<double>();
+    }
+    
+    for (int i = 0; i < PyList_Size(py_zero_points); i++)
+    {
+        PyObject *py_zero_point = PyList_GetItem(py_zero_points, i);
+        if (py_zero_point)
+        {
+            double zero_point = PyFloat_AsDouble(py_zero_point);
+            zero_points.push_back(zero_point);
+        }
+        else
+        {
+            PyErr_Print();
+        }
+    }
+
+    PyGILState_Release(gstate);
+    return zero_points;
 }
 
 void RuiWoActuator::saveAsZeroPosition()
@@ -296,8 +355,12 @@ void RuiWoActuator::close()
         Py_XDECREF(pSetZeroMethod);
         Py_XDECREF(pChangEncoderMethod);
         Py_XDECREF(pSaveZerosMethod);
-        Py_XDECREF(pSetTeachPendantModeMethod);
-        Py_XDECREF(pJoint_online_list);
+        Py_XDECREF(pAdjustZeroMethod);
+            Py_XDECREF(pGetZeroPointsMethod);
+    Py_XDECREF(pSetTeachPendantModeMethod);
+    Py_XDECREF(pSetJointGainsMethod);
+    Py_XDECREF(pGetJointGainsMethod);
+    Py_XDECREF(pJoint_online_list);
     }
     else
     {
@@ -321,6 +384,146 @@ void RuiWoActuator::set_teach_pendant_mode(int mode_){
         PyErr_Print();
     }
 
+}
+
+void RuiWoActuator::set_joint_gains(const std::vector<int> &joint_indices, const std::vector<double> &kp_pos, const std::vector<double> &kd_pos)
+{
+    gstate = PyGILState_Ensure();
+    if (pSetJointGainsMethod)
+    {
+        // 创建joint_indices列表
+        PyObject *pyIndices = PyList_New(joint_indices.size());
+        for (size_t i = 0; i < joint_indices.size(); ++i)
+        {
+            PyList_SetItem(pyIndices, i, PyLong_FromLong(joint_indices[i]));
+        }
+
+        // 创建kp_pos列表，如果为空则传递None
+        PyObject *pyKpPos = Py_None;
+        if (!kp_pos.empty())
+        {
+            pyKpPos = PyList_New(kp_pos.size());
+            for (size_t i = 0; i < kp_pos.size(); ++i)
+            {
+                PyList_SetItem(pyKpPos, i, PyFloat_FromDouble(kp_pos[i]));
+            }
+        }
+        else
+        {
+            Py_INCREF(Py_None);
+        }
+
+        // 创建kd_pos列表，如果为空则传递None
+        PyObject *pyKdPos = Py_None;
+        if (!kd_pos.empty())
+        {
+            pyKdPos = PyList_New(kd_pos.size());
+            for (size_t i = 0; i < kd_pos.size(); ++i)
+            {
+                PyList_SetItem(pyKdPos, i, PyFloat_FromDouble(kd_pos[i]));
+            }
+        }
+        else
+        {
+            Py_INCREF(Py_None);
+        }
+
+        // 构建参数元组并调用Python方法
+        PyObject *args = PyTuple_Pack(3, pyIndices, pyKpPos, pyKdPos);
+        PyObject_CallObject(pSetJointGainsMethod, args);
+
+        // 清理引用
+        Py_DECREF(args);
+        Py_DECREF(pyIndices);
+        Py_DECREF(pyKpPos);
+        Py_DECREF(pyKdPos);
+    }
+    else
+    {
+        PyErr_Print();
+    }
+    PyGILState_Release(gstate);
+}
+
+std::vector<std::vector<double>> RuiWoActuator::get_joint_gains(const std::vector<int> &joint_indices)
+{
+    std::vector<std::vector<double>> gains_result;
+    gstate = PyGILState_Ensure();
+    
+    if (pGetJointGainsMethod)
+    {
+        // 创建joint_indices列表，如果为空则传递None
+        PyObject *pyIndices = Py_None;
+        if (!joint_indices.empty())
+        {
+            pyIndices = PyList_New(joint_indices.size());
+            for (size_t i = 0; i < joint_indices.size(); ++i)
+            {
+                PyList_SetItem(pyIndices, i, PyLong_FromLong(joint_indices[i]));
+            }
+        }
+        else
+        {
+            Py_INCREF(Py_None);
+        }
+
+        // 调用Python方法
+        PyObject *args = PyTuple_Pack(1, pyIndices);
+        PyObject *result = PyObject_CallObject(pGetJointGainsMethod, args);
+
+        if (result && PyDict_Check(result))
+        {
+            // 获取kp_pos和kd_pos列表
+            PyObject *kp_list = PyDict_GetItemString(result, "kp_pos");
+            PyObject *kd_list = PyDict_GetItemString(result, "kd_pos");
+
+            if (kp_list && PyList_Check(kp_list) && kd_list && PyList_Check(kd_list))
+            {
+                std::vector<double> kp_values, kd_values;
+                
+                // 提取kp_pos值
+                Py_ssize_t kp_size = PyList_Size(kp_list);
+                for (Py_ssize_t i = 0; i < kp_size; ++i)
+                {
+                    PyObject *item = PyList_GetItem(kp_list, i);
+                    kp_values.push_back(PyFloat_AsDouble(item));
+                }
+
+                // 提取kd_pos值
+                Py_ssize_t kd_size = PyList_Size(kd_list);
+                for (Py_ssize_t i = 0; i < kd_size; ++i)
+                {
+                    PyObject *item = PyList_GetItem(kd_list, i);
+                    kd_values.push_back(PyFloat_AsDouble(item));
+                }
+
+                gains_result.push_back(kp_values);
+                gains_result.push_back(kd_values);
+            }
+            else
+            {
+                std::cerr << "Error: get_joint_gains result format incorrect!" << std::endl;
+                PyErr_Print();
+            }
+        }
+        else
+        {
+            std::cerr << "Error: get_joint_gains result is null or not a dict!" << std::endl;
+            PyErr_Print();
+        }
+
+        // 清理引用
+        Py_DECREF(args);
+        Py_DECREF(pyIndices);
+        Py_XDECREF(result);
+    }
+    else
+    {
+        PyErr_Print();
+    }
+    
+    PyGILState_Release(gstate);
+    return gains_result;
 }
 
 bool RuiWoActuator::check_motor_list_state()

@@ -2,7 +2,7 @@
 #include <std_srvs/Trigger.h>
 #include <string>
 #include <vector>
-#include "kuavo_msgs/questJoySticks.h"
+#include "kuavo_msgs/JoySticks.h"
 #include <string>
 
 #include <ros/init.h>
@@ -11,6 +11,7 @@
 #include <std_msgs/Float32.h>
 #include <std_msgs/Int32.h>
 #include <geometry_msgs/Twist.h>
+#include <std_msgs/Float64MultiArray.h>
 
 #include <ocs2_core/Types.h>
 #include <ocs2_core/misc/LoadData.h>
@@ -20,10 +21,12 @@
 #include <humanoid_interface/gait/ModeSequenceTemplate.h>
 #include "humanoid_interface_ros/gait/ModeSequenceTemplateRos.h"
 #include "std_srvs/Trigger.h"
+#include <std_srvs/SetBool.h>
 #include <std_msgs/Bool.h>
 #include "humanoid_interface_drake/humanoid_interface_drake.h"
 
 #include <kuavo_msgs/changeArmCtrlMode.h>
+#include <kuavo_msgs/headBodyPose.h>
 
 namespace ocs2
 {
@@ -49,7 +52,11 @@ namespace ocs2
             last_height_change_time_(ros::Time(0)),
             update_interval_(0.1),
             last_update_time_(ros::Time::now()),
-            targetPoseCommand_(nodeHandle, robotName) 
+            targetPoseCommand_(nodeHandle, robotName),
+            torso_control_enabled_(false),
+            torso_yaw_zero_(0.0),
+            body_height_zero_(0.0),
+            torso_control_start_time_(ros::Time(0))
         {
             cmdVel_.linear.x = 0;
             cmdVel_.linear.y = 0;
@@ -69,9 +76,10 @@ namespace ocs2
                 nodeHandle.getParam("/robot_version", rb_version_int);
                 rb_version = RobotVersion::create(rb_version_int);
             }
-
+            
             auto drake_interface_ = HighlyDynamic::HumanoidInterfaceDrake::getInstancePtr(rb_version, true, 2e-3);
-           
+            auto kuavo_settings = drake_interface_->getKuavoSettings();
+            waist_dof_ = kuavo_settings.hardware_settings.num_waist_joints;
             default_joint_state_ = drake_interface_->getDefaultJointState();
             com_height_ = drake_interface_->getIntialHeight();
             only_half_up_body_ = drake_interface_->getKuavoSettings().running_settings.only_half_up_body;
@@ -100,8 +108,8 @@ namespace ocs2
                 gait_map_.insert({gaitName, humanoid::loadModeSequenceTemplate(gaitCommandFile, gaitName, verbose)});
             }
 
-            mode_sequence_template_publisher_ = nodeHandle.advertise<ocs2_msgs::mode_schedule>(robotName + "_mpc_mode_schedule", 10, true);
-            mode_scale_publisher_ = nodeHandle.advertise<std_msgs::Float32>(robotName + "_mpc_mode_scale", 10, true);
+            mode_sequence_template_publisher_ = nodeHandle_.advertise<ocs2_msgs::mode_schedule>(robotName + "_mpc_mode_schedule", 10, true);
+            mode_scale_publisher_ = nodeHandle_.advertise<std_msgs::Float32>(robotName + "_mpc_mode_scale", 10, true);
 
             joystick_sub_ = nodeHandle_.subscribe("/quest_joystick_data", 1, &QuestControlFSM::joystickCallback, this);
             observation_sub_ = nodeHandle_.subscribe(robotName + "_mpc_observation", 10, &QuestControlFSM::observationCallback, this);
@@ -113,10 +121,21 @@ namespace ocs2
             change_arm_mode_service_VR_client_ = nodeHandle_.serviceClient<kuavo_msgs::changeArmCtrlMode>("/change_arm_ctrl_mode");
             
             get_arm_mode_service_client_ = nodeHandle_.serviceClient<kuavo_msgs::changeArmCtrlMode>("/humanoid_get_arm_ctrl_mode");
+            
+            // 添加 enable_wbc_arm_trajectory_control 服务客户端
+            enable_wbc_arm_trajectory_control_client_ = nodeHandle_.serviceClient<kuavo_msgs::changeArmCtrlMode>("/enable_wbc_arm_trajectory_control");
+            
+            // 腰部控制相关的订阅者和发布者
+            head_body_pose_sub_ = nodeHandle_.subscribe("/kuavo_head_body_orientation_data", 1, &QuestControlFSM::headBodyPoseCallback, this);
+            waist_motion_pub_ = nodeHandle_.advertise<std_msgs::Float64MultiArray>("/robot_waist_motion_data", 1);
+            cmd_pose_pub_ = nodeHandle_.advertise<geometry_msgs::Twist>("/cmd_pose", 1);
             command_height_ = 0.0;
             command_add_height_pre_ = 0.0;
 
             arm_mode_pub_ = nodeHandle_.advertise<std_msgs::Int32>("/quest3/triger_arm_mode", 1);
+
+            // 添加arm_collision_control服务
+            arm_collision_control_service_ = nodeHandle_.advertiseService("/quest3/set_arm_collision_control", &QuestControlFSM::armCollisionControlCallback, this);
         }
 
         void run()
@@ -209,6 +228,22 @@ namespace ocs2
             }
         }
 
+        void callEnableWbcArmTrajectorySrv(int32_t enable)
+        {
+            kuavo_msgs::changeArmCtrlMode srv;
+            srv.request.control_mode = enable;
+
+            // 调用服务
+            if (enable_wbc_arm_trajectory_control_client_.call(srv))
+            {
+                ROS_INFO("EnableWbcArmTrajectorySrv call successful, enabled: %s", enable ? "true" : "false");
+            }
+            else
+            {
+                ROS_ERROR("Failed to call EnableWbcArmTrajectorySrv");
+            }
+        }
+
         void callTerminateSrv()
         {
         std::cout << "tigger callTerminateSrv" << std::endl;
@@ -221,8 +256,20 @@ namespace ocs2
         }
         }
 
+        bool armCollisionControlCallback(std_srvs::SetBool::Request& req, std_srvs::SetBool::Response& res) {
+            arm_collision_control_ = req.data;
+            res.success = true;
+            if (req.data) {
+                callSetArmModeSrv(0);
+                current_arm_mode_ = 0;
+            }
+            res.message = "Arm collision control set to " + std::string(req.data ? "true" : "false");
+            ROS_INFO("Arm collision control set to %s", req.data ? "true" : "false");
+            return true;
+        }
+
     private:
-        void joystickCallback(const kuavo_msgs::questJoySticks::ConstPtr& msg) 
+        void joystickCallback(const kuavo_msgs::JoySticks::ConstPtr& msg) 
         {
             joystick_data_ = *msg;
             updateState();
@@ -234,6 +281,44 @@ namespace ocs2
         {
         observation_ = ros_msg_conversions::readObservationMsg(*observation_msg);
         get_observation_ = true;
+        }
+
+        void headBodyPoseCallback(const kuavo_msgs::headBodyPose::ConstPtr& msg)
+        {
+            current_head_body_pose_ = *msg;
+            current_head_body_pose_.body_pitch = std::max(3*M_PI/180.0, std::min(current_head_body_pose_.body_pitch, 15*M_PI/180.0));
+
+            // 在腰部控制模式下且没有XY按键摇杆控制时，发布VR腰部控制指令
+            if (torso_control_enabled_)
+            {
+                // 腰部yaw控制（如果支持腰部自由度）
+                if (waist_dof_ > 0)
+                {
+                    // 计算相对于零点的腰部位置
+                    double current_yaw = current_head_body_pose_.body_yaw;
+                    double relative_yaw = current_yaw - torso_yaw_zero_;
+                    
+                    // 发布腰部控制指令
+                    controlWaist(relative_yaw * 180.0 / M_PI); // 转换为角度
+                }
+                
+                // 高度控制
+                // 根据msg中的pose高度发布高度指令（使用相对高度）
+                double current_height = current_head_body_pose_.body_height;
+                double relative_height = current_height - body_height_zero_;  // 计算相对于零点的高度
+                //std::cout << "相对高度: " << relative_height << std::endl;
+                //限制相对高度在[-0.4,0.1]之间
+                relative_height = std::max(-0.35, std::min(relative_height, 0.1));
+                geometry_msgs::Twist cmd_pose;
+                cmd_pose.linear.x = 0.0;  // 基于当前位置的 x 方向值 (m)
+                cmd_pose.linear.y = 0.0;  // 基于当前位置的 y 方向值 (m)
+                cmd_pose.linear.z = relative_height;  // 相对高度
+                cmd_pose.angular.z = 0.0;  // # 基于当前位置旋转（偏航）的角度，单位为弧度 (radian)
+                cmd_pose.angular.y = current_head_body_pose_.body_pitch;  // pitch
+
+                cmd_pose_pub_.publish(cmd_pose);
+                // 根据msg的pose值设置base的高度参考，通过/cmd_pose发布
+            }
         }
 
         void updateState()
@@ -256,6 +341,25 @@ namespace ocs2
                   callTerminateSrv();
                   return;
             }
+            if (joystick_data_.left_trigger > 0.5)
+            {
+                if (!joystick_data_prev_.left_first_button_pressed && joystick_data_.left_first_button_pressed)
+                {
+                    // 使能 WBC 手臂轨迹控制
+                    callEnableWbcArmTrajectorySrv(1);
+                    return;
+                }
+            }
+            if (joystick_data_.left_grip > 0.5)
+            {
+                if (!joystick_data_prev_.left_first_button_pressed && joystick_data_.left_first_button_pressed)
+                {
+                    // 禁用 WBC 手臂轨迹控制
+                    callEnableWbcArmTrajectorySrv(0);
+                    return;
+                }
+            }
+
             if (joystick_data_.left_first_button_pressed) // 左边第一个按钮按下了，切换模式
             {
                 if (!joystick_data_prev_.right_second_button_pressed && joystick_data_.right_second_button_pressed) // 关闭手臂控制、自动摆手
@@ -265,7 +369,12 @@ namespace ocs2
                 }
                 else if (!joystick_data_prev_.right_first_button_pressed && joystick_data_.right_first_button_pressed) // 启用手臂控制
                 {
-                    current_arm_mode_ = (current_arm_mode_!=1) ? 1 : 2;
+                    // 如果手臂碰撞控制中，手臂正在回归，回归完成会切换到手臂 KEEP 模式，此时再按 XA 继续手臂跟踪 
+                    if (arm_collision_control_) {
+                        current_arm_mode_ = 2;
+                        arm_collision_control_ = false;
+                    }
+                    else current_arm_mode_ = (current_arm_mode_!=1) ? 1 : 2;
                     std::cout << "[QuestControlFSM] change arm mode to :" << current_arm_mode_ << std::endl;
                     if (only_half_up_body_) {
                         callVRSetArmModeSrv(current_arm_mode_);
@@ -275,6 +384,39 @@ namespace ocs2
                     }
                 }
 
+                return;
+            }
+            
+            
+            // 腰部控制逻辑
+            if (joystick_data_.left_trigger > 0.5)
+            {
+                if (!joystick_data_prev_.left_second_button_pressed && joystick_data_.left_second_button_pressed) // 左边第二个按钮按下，切换腰部控制模式
+                {
+                    if (!torso_control_enabled_)
+                    {
+                        // 启用腰部控制模式
+                        torso_control_enabled_ = true;
+                        torso_yaw_zero_ = current_head_body_pose_.body_yaw; // 记录当前腰部位置作为零点
+                        body_height_zero_ = current_head_body_pose_.body_height; // 记录当前高度作为零点
+                        torso_control_start_time_ = ros::Time::now();
+                        std::cout << "腰部控制模式已启用，腰部零点: " << torso_yaw_zero_ 
+                                << "，高度零点: " << body_height_zero_ << std::endl;
+                    }
+                    else
+                    {
+                        // 关闭腰部控制模式
+                        torso_control_enabled_ = false;
+                        std::cout << "腰部控制模式已关闭" << std::endl;
+                    }
+                    return;
+                }
+            }
+            
+            // 接触时实时腰部控制：当手只放在左边第二个按钮时，右边摇杆变为腰部控制指令
+            if ((joystick_data_.left_second_button_touched && !joystick_data_.left_first_button_touched) && !torso_control_enabled_)
+            {
+                updateTorsoControl();
                 return;
             }
             
@@ -310,6 +452,36 @@ namespace ocs2
 
             executeStateActions();
             joystick_data_prev_ = joystick_data_;
+        }
+
+        void updateTorsoControl()
+        {
+            if (waist_dof_ == 0) return;
+            // 使用右边摇杆控制腰部
+            const float deadzone = 0.1f;
+            float right_x = joystick_data_.right_x;
+            float right_y = joystick_data_.right_y;
+            
+            // 应用死区
+            if (std::abs(right_x) < deadzone) right_x = 0.0f;
+            if (std::abs(right_y) < deadzone) right_y = 0.0f;
+            
+            // 控制腰部yaw（左右转动）
+            float yaw_sensitivity = 110.0f; // 灵敏度，与遥控器节点保持一致
+            float target_yaw = -1 * right_x * yaw_sensitivity;
+            std::cout << "controling torso_yaw: " << target_yaw << std::endl;
+            controlWaist(target_yaw);
+        }
+
+        void controlWaist(double waist_yaw)
+        {
+            double max_angle = 110.0;
+            waist_yaw = std::max(-max_angle, std::min(waist_yaw, max_angle));
+            std_msgs::Float64MultiArray msg;
+            msg.data.resize(1);
+            msg.data[0] =  -waist_yaw;
+            std::cout << "waist_yaw" << waist_yaw <<std::endl;
+            waist_motion_pub_.publish(msg);
         }
 
         void publish_zero_spd()
@@ -365,7 +537,7 @@ namespace ocs2
             vel_control_pub_.publish(cmdVel_);
         }
 
-        void checkGaitSwitchCommand(const kuavo_msgs::questJoySticks &joy_msg)
+        void checkGaitSwitchCommand(const kuavo_msgs::JoySticks &joy_msg)
         {
             // 检查是否有gait切换指令
             if (!joystick_data_prev_.right_first_button_pressed && joy_msg.right_first_button_pressed)
@@ -714,6 +886,13 @@ namespace ocs2
         ros::ServiceClient change_arm_mode_service_client_;
         ros::ServiceClient change_arm_mode_service_VR_client_;
         ros::ServiceClient get_arm_mode_service_client_;
+        ros::ServiceClient enable_wbc_arm_trajectory_control_client_;
+        ros::ServiceServer arm_collision_control_service_;
+
+        // 腰部控制相关的订阅者和发布者
+        ros::Subscriber head_body_pose_sub_;
+        ros::Publisher waist_motion_pub_;
+        ros::Publisher cmd_pose_pub_;  // 用于发布高度和位置控制指令
 
         int current_arm_mode_{2};
 
@@ -723,8 +902,8 @@ namespace ocs2
 
         ros::Subscriber joystick_sub_;
         std::string state_;
-        kuavo_msgs::questJoySticks joystick_data_;
-        kuavo_msgs::questJoySticks joystick_data_prev_;
+        kuavo_msgs::JoySticks joystick_data_;
+        kuavo_msgs::JoySticks joystick_data_prev_;
         bool mode_changed_;
         ros::Duration update_interval_;
         ros::Time last_update_time_;
@@ -743,6 +922,17 @@ namespace ocs2
 
         bool last_cmd_close_to_zero_{true};
         bool only_half_up_body_{false};
+
+        // 腰部控制相关变量
+        bool torso_control_enabled_;
+        int waist_dof_{0};
+        double torso_yaw_zero_;
+        double body_height_zero_;  // 记录进入控制模式时的高度零点
+        ros::Time torso_control_start_time_;
+
+        kuavo_msgs::headBodyPose current_head_body_pose_;
+        // 手臂碰撞控制，当前是否处于发生碰撞，手臂回归控制中
+        bool arm_collision_control_{false};
 
         ros::Publisher arm_mode_pub_;
     };

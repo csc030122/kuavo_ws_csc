@@ -108,6 +108,8 @@ namespace HighlyDynamic
         bool only_half_up_body = false;
         std::vector<int32_t> joint_kp;
         std::vector<int32_t> joint_kd;
+        std::vector<int32_t> ruiwo_kp;
+        std::vector<int32_t> ruiwo_kd;
     };
 
     struct HardwareSettings
@@ -119,6 +121,7 @@ namespace HighlyDynamic
         double peak_timeWin;
         double speed_timeWin;
         double lock_rotor_timeWin;
+        uint8_t num_waist_joints = 0;
         Eigen::VectorXd imu_in_torso;
         std::vector<std::string> motors_type;
         std::vector<uint8_t> joint_ids;

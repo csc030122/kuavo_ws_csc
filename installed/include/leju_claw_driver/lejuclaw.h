@@ -76,21 +76,22 @@ public:
     void set_claw_kpkd(int kp, int kd);
     float lowPassFilter(float input, float prevOutput, float alpha);
     void clear_all_torque();
+    bool get_vr_mode() const { return is_vr_control_mode; }
 
 private:
     // 控制参数常量
-    static constexpr float DEFAULT_KP = 7.00f;                     // 比例增益系数，用于位置控制
-    static constexpr float DEFAULT_KD = 2.50f;                     // 微分增益系数，用于阻尼控制
+    static constexpr float DEFAULT_KP = 90.00f;                    // 比例增益系数，用于位置控制
+    static constexpr float DEFAULT_KD = 18.00f;                    // 微分增益系数，用于阻尼控制
     static constexpr float DEFAULT_ALPHA = 0.20f;                  // 低通滤波器系数，用于信号平滑
-    static constexpr float DEFAULT_MAX_CURRENT = 1.60f;            // 最大电流限制，单位 A
-    static constexpr float DEFAULT_MIN_ERROR = 0.10f;              // 最小误差阈值，用于判断到位精度
+    static constexpr float DEFAULT_MAX_CURRENT = 2.50f;            // 最大电流限制，单位 A
+    static constexpr float DEFAULT_MIN_ERROR = 0.05f;              // 最小误差阈值，用于判断到位精度
     static constexpr float DEFAULT_DT = 0.002f;                    // 控制周期，单位 s
     // 卡死检测参数
     static constexpr float STUCK_DETECTION_DELAY_MS = 50.0f;       // 卡死检测延迟时间，单位 ms
     static constexpr float STUCK_DETECTION_TIME_MS = 50.0f;        // 卡死检测持续时间，单位 ms
     static constexpr float STUCK_POSITION_THRESHOLD = 0.002f;      // 卡死位置阈值，单位 rad
     static constexpr float IMPACT_CURRENT = 3.0f;                  // 冲击电流阈值，单位 A
-    static constexpr float IMPACT_DURATION_MS = 200.0f;            // 冲击持续时间，单位 ms
+    static constexpr float IMPACT_DURATION_MS = 100.0f;            // 冲击持续时间，单位 ms
     static constexpr float IMPACT_INTERVAL_MS = 800.0f;            // 冲击间隔时间，单位 ms
     static constexpr float LIMIT_RANGE_PERCENT = 5.0f;             // 限位范围百分比，在此范围内才执行3A反冲，单位 %
     // 稳定检测参数（用于若未到达目标位置，但处于稳定状态，为 ros 服务反馈已到达位置）
@@ -98,7 +99,7 @@ private:
     static constexpr float STABLE_VELOCITY_THRESHOLD = 0.1f;       // 稳定速度阈值，单位 rad/s
     static constexpr float STABLE_DETECTION_TIME_MS = 50.0f;       // 稳定检测时间，单位 ms
     // VR控制检测参数
-    static constexpr int VR_CONTROL_TIMEOUT_MS = 50;              // VR控制模式下的超时时间，单位 ms
+    static constexpr int VR_CONTROL_TIMEOUT_MS = 10;                // VR控制模式下的超时时间，单位 ms
     
     // 初始化寻找零点参数
     static constexpr float ZERO_CONTROL_KP = 0.0f;                  // 零点控制比例增益，零点寻找时使用
@@ -124,7 +125,7 @@ private:
     static constexpr int CLOSE_MAX_ATTEMPTS = 10;                   // 关爪最大尝试次数，达到次数后认为到达关爪限位
     // 初始化后速度指令参数
     static constexpr float AFTER_INIT_VELOCITY = 65.0f;             // 初始化后发送的速度值，单位 rad/s
-    static constexpr int AFTER_INIT_VELOCITY_DURATION_MS = 50;      // 初始化后速度指令持续时间，单位 ms
+    static constexpr int AFTER_INIT_VELOCITY_DURATION_MS = 30;      // 初始化后速度指令持续时间，单位 ms
     static constexpr int AFTER_INIT_STABLE_WAIT_MS = 1000;          // 初始化后等待系统稳定的时间，单位 ms
     
     std::vector<float> create_zero_vector(size_t size);

@@ -175,7 +175,24 @@ public:
     std::vector<std::vector<float>> get_joint_state();
 
     MotorStateDataVec get_motor_state();
-    std::vector<std::vector<float>> get_joint_origin_state();    
+    std::vector<std::vector<float>> get_joint_origin_state();
+
+    /**
+     * @brief 设置指定关节的kp_pos和kd_pos参数
+     * 
+     * @param joint_indices 关节索引列表 (0-based)
+     * @param kp_pos kp_pos值列表，如果为空则不修改
+     * @param kd_pos kd_pos值列表，如果为空则不修改
+     */
+    void set_joint_gains(const std::vector<int> &joint_indices, const std::vector<double> &kp_pos, const std::vector<double> &kd_pos);
+
+    /**
+     * @brief 获取指定关节的kp_pos和kd_pos参数
+     * 
+     * @param joint_indices 关节索引列表，如果为空则返回所有关节
+     * @return std::vector<std::vector<double>> 第一个vector是kp_pos，第二个是kd_pos
+     */
+    std::vector<std::vector<double>> get_joint_gains(const std::vector<int> &joint_indices = {});    
 
 private:
     void control_thread();
@@ -191,30 +208,38 @@ private:
     void set_joint_state(int index, const std::vector<float> &state);
 
     /**
-     * @brief Sends positions to the specified motor indices.
+     * @brief Sends positions to the specified motor indices, with dynamic kp/kd parameters.
      * 
      * @param index The indices of the motors to send positions to.
      * @param pos The positions to send to the motors.
      * @param torque The torques to send to the motors.
      * @param velocity The velocities to send to the motors.
+     * @param current_kp The kp parameters for each motor, if nullptr uses default kp.
+     * @param current_kd The kd parameters for each motor, if nullptr uses default kd.
      */
     void send_positions(const std::vector<int> &index, 
         const std::vector<float> &pos, 
         const std::vector<float> &torque, 
-        const std::vector<float> &velocity);
+        const std::vector<float> &velocity, 
+        const std::vector<float> *current_kp = nullptr, 
+        const std::vector<float> *current_kd = nullptr);
     
     /**
-     * @brief Sends positions to the specified motor indices without waiting for a response.
+     * @brief Sends positions to the specified motor indices without waiting for a response, with dynamic kp/kd parameters.
      * 
      * @param index The indices of the motors to send positions to.
      * @param pos The positions to send to the motors.
      * @param torque The torques to send to the motors.
      * @param velocity The velocities to send to the motors.
+     * @param current_kp The kp parameters for each motor, if nullptr uses default kp.
+     * @param current_kd The kd parameters for each motor, if nullptr uses default kd.
      */
     void send_positions_No_response(const std::vector<int> &index, 
         const std::vector<float> &pos, 
         const std::vector<float> &torque, 
-        const std::vector<float> &velocity);
+        const std::vector<float> &velocity, 
+        const std::vector<float> *current_kp = nullptr, 
+        const std::vector<float> *current_kd = nullptr);
 
 private:
     // 关节ID
