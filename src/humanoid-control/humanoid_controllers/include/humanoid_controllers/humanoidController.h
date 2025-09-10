@@ -364,6 +364,7 @@ namespace humanoid_controller
     size_t armNumReal_ = 0;
     size_t actuatedDofNumReal_ = 12;// 实物的自由度
     ArmControlMode mpcArmControlMode_ = ArmControlMode::AUTO_SWING; // KEEP = 0, AUTO_SWING = 1, EXTERN_CONTROL = 2
+    ArmControlMode mpcArmControlMode_desired_ = ArmControlMode::AUTO_SWING; // KEEP = 0, AUTO_SWING = 1, EXTERN_CONTROL = 2
     int armDofMPC_ = 7; // 单手臂的自由度，会从配置文件中重新计算
     int armDofReal_ = 7; // 实际单手臂的自由度
     int armDofDiff_ = 0; // 单手臂的自由度差
