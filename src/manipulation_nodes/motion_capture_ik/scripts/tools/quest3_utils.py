@@ -1067,8 +1067,8 @@ class Quest3ArmInfoTransformer:
         msg.body_y = 0.0
         # msg.body_height = max(-0.4, min(head_body_pose.body_height + 0.3, 0.2))
         msg.body_height = head_body_pose.body_height
-        self.head_body_pose_puber.publish(msg)
+        # self.head_body_pose_puber.publish(msg)
         # 打印发送body pose的信息
         # print(f"✅Publish head and body pose: {msg.body_yaw}, {msg.body_pitch}, {msg.body_height}")  
         if self.control_torso:
-            self.head_body_pose_control_puber.publish(msg)
+            self.head_body_pose_puber.publish(msg)

@@ -1118,7 +1118,7 @@ if __name__ == "__main__":
     parser.add_argument("--ee_type", "--end_effector_type", dest="end_effector_type", type=str, default="", help="End effector type, jodell , qiangnao or lejuclaw.")
     parser.add_argument("--send_srv", type=int, default=1, help="Send arm control service, True or False.")
     parser.add_argument("--control_finger_type", type=int, default=0, help="0: control all fingers by upper-gripper. 1: control thumb and index fingers by upper-gripper, control other fingers by lower-gripper.")
-    parser.add_argument("--control_torso", type=int, default=0, help="0: do NOT control, 1: control torso.")
+    parser.add_argument("--control_torso", type=str2bool, default=0, help="0: do NOT control, 1: control torso.")
     parser.add_argument("--predict_gesture", type=str2bool, default=False, help="Use Neural Network to predict hand gesture, True or False.")
     parser.add_argument("--eef_z_bias", type=float, default=-0.0, help="End effector z-axis bias distance.")
     parser.add_argument("--hand_reference_mode", type=str, default="thumb_index", help="Hand reference mode: fingertips, middle_finger, or thumb_index.")
