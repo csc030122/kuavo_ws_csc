@@ -389,7 +389,7 @@ namespace ocs2
             
             
             // 腰部控制逻辑
-            if (joystick_data_.left_trigger > 0.5)
+            if (joystick_data_.right_first_button_touched)
             {
                 if (!joystick_data_prev_.left_second_button_pressed && joystick_data_.left_second_button_pressed) // 左边第二个按钮按下，切换腰部控制模式
                 {

@@ -19,3 +19,7 @@ new-docs
 .aider*
 src/manipulation_nodes/planarmwebsocketservice/models/*.pt
 .claude/
+bag/*
+src/Livox-SDK2
+src/legged_control
+src/legged_perceptive
