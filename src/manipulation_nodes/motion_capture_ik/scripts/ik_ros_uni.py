@@ -467,7 +467,7 @@ class IkRos:
             self.hand_finger_data_process(0)
             # print(f"q_now: {q_now}")
             is_runing_last = is_runing
-            is_runing = self.quest3_arm_info_transformer.is_runing if self.__as_mc_ik else True
+            is_runing = True
             self.__current_pose, self.__current_pose_right = self.get_two_arm_pose(q_last)
             self.pub_solved_arm_eef_pose(q_last, self.__current_pose, self.__current_pose_right)
             if self.trigger_reset_mode:
@@ -931,6 +931,8 @@ class IkRos:
 
 
     def pub_robot_end_hand(self, joyStick_data=None, hand_finger_data = None):
+        if hand_finger_data is None or hand_finger_data[0] is None or hand_finger_data[1] is None:
+            return
         global control_finger_type
         left_hand_position = [0 for i in range(6)]
         right_hand_position = [0 for i in range(6)]
