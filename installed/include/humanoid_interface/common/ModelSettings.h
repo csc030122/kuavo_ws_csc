@@ -54,8 +54,9 @@ struct ModelSettings {
 
   int mpcArmsDof = 14;
   int mpcLegsDof = 12;
-  int modelDof = 26;
-  int mpcWaistDof = 0;
+  int mpcWaistDof = 1;
+  int modelDof = 27;
+
 
 
   scalar_t phaseTransitionStanceTime = 0.4;
