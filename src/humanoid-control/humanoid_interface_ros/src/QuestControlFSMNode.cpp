@@ -463,7 +463,7 @@ namespace ocs2
                 double relative_height = current_height - body_height_zero_;  // 计算相对于零点的高度
                 //std::cout << "相对高度: " << relative_height << std::endl;
                 //限制相对高度在[-0.4,0.1]之间
-                relative_height = std::max(-0.35, std::min(relative_height, 0.1));
+                relative_height = std::max(-0.25, std::min(relative_height, 0.1));
                 geometry_msgs::Twist cmd_pose;
                 cmd_pose.linear.x = 0.0;  // 基于当前位置的 x 方向值 (m)
                 cmd_pose.linear.y = 0.0;  // 基于当前位置的 y 方向值 (m)
