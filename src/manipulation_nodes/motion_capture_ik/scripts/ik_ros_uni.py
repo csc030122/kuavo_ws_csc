@@ -167,6 +167,16 @@ class IkRos:
         if rospy.has_param('/only_half_up_body'):
             self.only_half_up_body = rospy.get_param('/only_half_up_body')
 
+        if rospy.has_param('/robot_type'):
+            self.robot_type = rospy.get_param('/robot_type')
+            if self.robot_type == 1:
+                self.only_half_up_body = False
+                print("[IkRos] 机器人类型为轮臂")
+            else:
+                print("[IkRos] 机器人类型为双足")
+                if self.only_half_up_body:
+                     print("✅采用用半身模式")
+
         self.use_arm_collision = rospy.get_param('~use_arm_collision', False)
         # 添加服务
         self.arm_mode_service = rospy.Service('/quest3/set_arm_mode_changing', Trigger, self.set_arm_mode_changing_callback)
@@ -273,6 +283,12 @@ class IkRos:
             "leju_claw_command", lejuClawCommand, queue_size=10
         )
         
+        if self.robot_type == 1:
+            # 添加发布/mm/two_arm_hand_pose_cmd话题的发布器
+            self.pub_mm_two_arm_hand_pose_cmd = rospy.Publisher(
+                "/mm/two_arm_hand_pose_cmd", twoArmHandPoseCmd, queue_size=10
+            )
+        
         # 添加可视化marker发布器
         self.ik_visualization_pub = rospy.Publisher(
             "/ik_visualization_markers", MarkerArray, queue_size=10
@@ -309,6 +325,14 @@ class IkRos:
         
         # 订阅手臂模式topic
         self.arm_mode_sub = rospy.Subscriber('/quest3/triger_arm_mode', Int32, self.arm_mode_callback)
+        
+        # 订阅手臂控制模式变化话题，用于检测退出复位模式
+        self.arm_control_mode_sub = rospy.Subscriber(
+            "/humanoid/mpc/arm_control_mode",
+            Float64MultiArray,
+            self.arm_control_mode_callback
+        )
+        self.__need_reset_ik_guess = False  # 标志是否需要重置IK初始猜测
 
         self.run()
         self.ik_thread.join()
@@ -487,6 +511,22 @@ class IkRos:
         arm_q_filtered = [0.0] * self.__arm_dof
         is_runing = False
         while not rospy.is_shutdown():
+            # 检测是否需要重置IK初始猜测（模式切换时）
+            if self.__need_reset_ik_guess:
+                # 重置q_last和arm_ik内部的last_solution
+                # 将q_last设置为全0，避免内翻
+                q0_ref = self.arm_ik.q0() if self.external_q0 is None else self.external_q0
+                q_last = np.zeros(len(q0_ref))
+                pre_q_first = q_last.copy()
+                q_now = q_last.copy()
+                # 重置IK求解器内部的last_solution为默认初始状态
+                if hasattr(self.arm_ik, 'reset_last_solution'):
+                    self.arm_ik.reset_last_solution(self.arm_ik.q0())
+                
+                # 重置arm_q_filtered为当前q_last的手臂部分
+                arm_q_filtered = q_last[-self.__arm_dof:].copy()
+                
+                self.__need_reset_ik_guess = False
             self.hand_finger_data_process(0)
             # print(f"q_now: {q_now}")
             is_runing_last = is_runing
@@ -610,8 +650,6 @@ class IkRos:
                 # q0_tmp_msg.data = q0_tmp * 180.0 / np.pi  # 转换为角度
                 # self.pub_q0_tmp.publish(q0_tmp_msg)
                 
-                # print(f"l_hand_pose: {l_hand_pose}, l_elbow_pos: {l_elbow_pos}")
-                # print(f"r_hand_pose: {r_hand_pose}, r_elbow_pos: {r_elbow_pos}")
                 
                 q_now = arm_ik.computeIK(
                     q0_tmp, l_hand_pose, r_hand_pose, l_hand_RPY, r_hand_RPY, l_elbow_pos, r_elbow_pos, left_shoulder_rpy_in_robot, right_shoulder_rpy_in_robot
@@ -624,8 +662,10 @@ class IkRos:
                     msg = Float32MultiArray()
                     msg.data = q_now[-self.__arm_dof:] * 180.0 / np.pi
                     self.pub_origin_joint.publish(msg)
+                    
                     arm_q_filtered = self.limit_angle(q_now[-self.__arm_dof:])
                     arm_q_filtered = self.limit_angle_by_velocity(q_last[-self.__arm_dof:], arm_q_filtered, vel_limit=720.0)
+                    
                     msg.data = arm_q_filtered * 180.0 / np.pi
                     self.pub_filtered_joint.publish(msg)
                     self.publish_joint_states(q_now=arm_q_filtered, q_last=q_last)
@@ -673,13 +713,17 @@ class IkRos:
         msg.name = ["arm_joint_" + str(i) for i in range(1, self.__arm_dof+1)]
         msg.header.stamp = rospy.Time.now()
         
-        if self.only_half_up_body and self.optimized_state is None:
+        if self.only_half_up_body and self.optimized_state is None and self.sensor_data_raw is None:
             print(f"[ik_ros_uni]: optimized_state is None")
             return
 
         if self.only_half_up_body and self.arm_mode_changing:
             # 获取当前关节角度（从MPC优化后的状态中提取手臂部分，索引24:38）
-            arm_current_state = np.array(self.optimized_state[24:38]).copy()
+            arm_current_state = None
+            if self.optimized_state is not None:
+                arm_current_state = np.array(self.optimized_state[24:38]).copy()
+            else:
+                arm_current_state = np.array(self.sensor_data_raw.joint_data.joint_q[-16:-2]).copy()
             
             # 计算状态差
             delta_state = np.array(arm_agl_limited) - np.array(arm_current_state)
@@ -737,6 +781,23 @@ class IkRos:
         left_finger_joints = self.quest3_arm_info_transformer.get_finger_joints("Left")
         right_finger_joints = self.quest3_arm_info_transformer.get_finger_joints("Right")
         self.hand_finger_data = [left_finger_joints, right_finger_joints]
+        
+        # 发布/mm/two_arm_hand_pose_cmd话题 - 直接使用获取到的pose数据
+        if self.robot_type == 1 and self.quest3_arm_info_transformer.is_runing and self.__target_pose is not None and self.__target_pose_right is not None:
+            eef_pose_msg = twoArmHandPoseCmd()
+            eef_pose_msg.frame = 3
+            # self.__target_pose 是 (hand_pos, hand_quat) 元组
+            eef_pose_msg.hand_poses.left_pose.pos_xyz = self.__target_pose[0]  # hand_pos [x, y, z]
+            eef_pose_msg.hand_poses.left_pose.quat_xyzw = self.__target_pose[1]  # hand_quat [x, y, z, w]
+            eef_pose_msg.hand_poses.left_pose.elbow_pos_xyz = self.__left_elbow_pos if self.__left_elbow_pos is not None else [0.0, 0.0, 0.0]
+
+            # self.__target_pose_right 是 (hand_pos, hand_quat) 元组
+            eef_pose_msg.hand_poses.right_pose.pos_xyz = self.__target_pose_right[0]  # hand_pos [x, y, z]
+            eef_pose_msg.hand_poses.right_pose.quat_xyzw = self.__target_pose_right[1]  # hand_quat [x, y, z, w]
+            eef_pose_msg.hand_poses.right_pose.elbow_pos_xyz = self.__right_elbow_pos if self.__right_elbow_pos is not None else [0.0, 0.0, 0.0]
+            
+            self.pub_mm_two_arm_hand_pose_cmd.publish(eef_pose_msg)
+        
         # self.pub_robot_end_hand(left_finger_joints, right_finger_joints)
 
     def two_arm_hand_pose_target_callback(self, msg_ori):
@@ -1004,6 +1065,15 @@ class IkRos:
                         right_hand_position[i] = limit_value(right_hand_position[i], 0, 100)
                     left_hand_position[1] = 100 if joyStick_data.left_first_button_touched else 0
                     right_hand_position[1] = 100 if joyStick_data.right_first_button_touched else 0
+
+                    if joyStick_data.left_first_button_touched and joyStick_data.right_first_button_pressed:
+                        for i in range(0, 6):
+                            left_hand_position[i] = 100 
+                        left_hand_position[2] = 0
+                    if joyStick_data.left_first_button_touched and joyStick_data.right_second_button_pressed:
+                        for i in range(0, 6):
+                            right_hand_position[i] = 100 
+                        right_hand_position[2] = 0
                     # Store current values for freezing
                     self.__frozen_left_hand_position = left_hand_position.copy()
                     self.__frozen_right_hand_position = right_hand_position.copy()
@@ -1114,6 +1184,17 @@ class IkRos:
                 self.hold_arm_timer = None
                 self.frozen_arm_state = None
                 print(f"\033[93m[IK]Half body mode: Stopped holding arm position.\033[0m")
+    
+    def arm_control_mode_callback(self, msg):
+        """监听手臂控制模式变化，检测切换模式时重置IK初始猜测"""
+        if len(msg.data) >= 2:
+            current_mode = int(msg.data[0])  # 当前模式
+            new_mode = int(msg.data[1])      # 新模式
+            
+            # 检测模式切换：当data[0] != data[1]时表示正在切换，重置IK初始猜测
+            if current_mode != new_mode:
+                self.__need_reset_ik_guess = True
+                
             
     def sensor_data_raw_callback(self, msg):
         self.sensor_data_raw = msg
@@ -1164,11 +1245,16 @@ class IkRos:
         if self.only_half_up_body:
             # 发送当前手臂的关节状态到kuavo_arm_traj来清空mpc节点话题接收队列
             # 防止半身手臂切换时刻mpc执行旧的kuavo_arm_tarj
-            if self.optimized_state is None:
-                print(f"[ik_ros_uni]: optimized_state is None")
+            if self.optimized_state is None and self.sensor_data_raw is None:
+                print(f"[ik_ros_uni]: optimized_state and sensor_data_raw are None")
+                return
             else:
                 rate = rospy.Rate(1 / self.controller_dt)
-                arm_current_state = np.array(self.optimized_state[24:38]).copy()
+                arm_current_state = None
+                if self.optimized_state is not None:
+                    arm_current_state = np.array(self.optimized_state[24:38]).copy()
+                else:
+                    arm_current_state = np.array(self.sensor_data_raw.joint_data.joint_q[-16:-2]).copy()
                 msg = JointState()
                 msg.name = ["arm_joint_" + str(i) for i in range(1, 15)]
                 msg.header.stamp = rospy.Time.now()
@@ -1252,6 +1338,10 @@ if __name__ == "__main__":
     current_pkg_path = get_package_path("motion_capture_ik")
     kuavo_assests_path = get_package_path("kuavo_assets")
     robot_version = os.environ.get('ROBOT_VERSION', '40')
+
+    # Handle version 15 special case: use version 14 assets
+    if robot_version == '15':
+        robot_version = '14'
 
     model_file = kuavo_assests_path + f"/models/biped_s{robot_version}/urdf/drake/biped_v3_arm.urdf"
     model_config_file = kuavo_assests_path + f"/config/kuavo_v{robot_version}/kuavo.json"
