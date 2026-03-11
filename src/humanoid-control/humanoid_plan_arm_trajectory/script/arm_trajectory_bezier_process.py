@@ -1181,6 +1181,27 @@ class ArmTrajectoryBezierDemo:
     def handle_execute_action(self, req):
         action_name = req.action_name
 
+        # 检查是否有动作正在执行
+        if self.arm_flag or self.running_action:
+            rospy.logwarn(f"Action '{action_name}' rejected: Another action is already executing")
+            return ExecuteArmActionResponse(
+                success=False,
+                message=f"另一个动作正在执行中，请等待当前动作完成后再试"
+            )
+
+        # 清理旧动作的定时器，防止旧定时器在新动作执行时触发
+        if hasattr(self, '_timer') and self._timer:
+            rospy.loginfo(f"Stopping old timer before executing: {action_name}")
+            self._timer.shutdown()
+            self._timer = None
+
+        # 停止旧动作的执行线程
+        if self.arm_flag:
+            rospy.loginfo(f"Stopping old action thread before executing: {action_name}")
+            self.interrupt_flag = True
+            rospy.sleep(0.05)  # 给旧线程一点时间退出
+            self.interrupt_flag = False
+
         file_path = f"{self.action_files_path}/{action_name}.tact"
         data = self.load_json_file(file_path)
         if not data:
