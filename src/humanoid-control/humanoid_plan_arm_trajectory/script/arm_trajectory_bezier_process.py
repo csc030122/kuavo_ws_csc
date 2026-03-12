@@ -919,6 +919,10 @@ class ArmTrajectoryBezierDemo:
                 self.waist_state.data.data = [0]
                 self.control_waist_pub.publish(self.waist_state)
 
+            # OCS2/MPC 复位完成，发布 state=2
+            rospy.loginfo("[RESET_COMPLETE] OCS2/MPC reset finished, publishing action state=2")
+            self.publish_action_state(2)
+
     def create_action_data(self, finish_time, is_rl=False):
         # 根据是否有腰部关节确定TACT长度
         if self.robot_class == KUAVO:
