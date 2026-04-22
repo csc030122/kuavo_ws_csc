@@ -1,7 +1,5 @@
 ---
-
 title: "Kuavo 5-W G12手柄操作"
-
 ---
 
 ## Kuavo 5-W G12手柄操作
@@ -66,8 +64,8 @@ sudo systemctl restart urobot.service
 
 ![img.png](img/bogan1.png)
 
-<p>2、同时长按C加D键，机器人双臂放下，表明关闭控制成功。</p>
+2、同时长按C加D键，机器人双臂放下，表明关闭控制成功。
 
-<img src="img/CD.png" alt="按键" width="500" /><br />
+![img](img/CD.png)
 
-<img src="img/fangshou.png" alt="关闭" width="500" />
+![img](img/fangshou.png)
