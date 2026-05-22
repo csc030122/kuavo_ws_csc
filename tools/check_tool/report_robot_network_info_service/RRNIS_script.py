@@ -14,6 +14,41 @@ def get_ip_by_interface(interface_name):
     return None  # 如果没有找到该接口的IP地址，则返回None
 
 
+def wait_for_ip_address(interface_name, max_retries=30, retry_interval=2):
+    """
+    等待网络接口获取IP地址
+    :param interface_name: 网络接口名称
+    :param max_retries: 最大重试次数
+    :param retry_interval: 每次重试的间隔（秒）
+    :return: IP地址，如果超时则返回None
+    """
+    for attempt in range(max_retries):
+        ip_address = get_ip_by_interface(interface_name)
+        if ip_address and ip_address != "127.0.0.1":
+            print(f"成功获取IP地址: {ip_address} (尝试 {attempt + 1}/{max_retries})")
+            return ip_address
+        
+        # 检查接口是否存在且已启动
+        try:
+            net_if_stats = psutil.net_if_stats()
+            if interface_name in net_if_stats:
+                iface_stats = net_if_stats[interface_name]
+                if not iface_stats.isup:
+                    print(f"接口 {interface_name} 尚未启动，等待中... (尝试 {attempt + 1}/{max_retries})")
+                else:
+                    print(f"接口 {interface_name} 已启动，但尚未获取IP地址，等待中... (尝试 {attempt + 1}/{max_retries})")
+            else:
+                print(f"接口 {interface_name} 不存在，等待中... (尝试 {attempt + 1}/{max_retries})")
+        except Exception as e:
+            print(f"检查接口状态时出错: {e}")
+        
+        if attempt < max_retries - 1:  # 最后一次尝试不需要等待
+            time.sleep(retry_interval)
+    
+    print(f"警告: 在 {max_retries * retry_interval} 秒内未能获取到IP地址")
+    return None
+
+
 def get_ip():
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -26,16 +61,30 @@ def get_ip():
     return ip_address
 
 
-def get_wifi():
-    try:
-        result = (
-            os.popen("nmcli -t -f active,ssid dev wifi | egrep '^yes' | cut -d\: -f2")
-            .read()
-            .strip()
-        )
-        return result if result else "Unknown"
-    except Exception as e:
-        return f"Error: {e}"
+def get_wifi(max_retries=15, retry_interval=2):
+    """
+    获取WiFi SSID，带重试机制
+    :param max_retries: 最大重试次数
+    :param retry_interval: 每次重试的间隔（秒）
+    :return: WiFi SSID，如果未连接则返回"Unknown"
+    """
+    for attempt in range(max_retries):
+        try:
+            result = (
+                os.popen("nmcli -t -f active,ssid dev wifi | egrep '^yes' | cut -d\: -f2")
+                .read()
+                .strip()
+            )
+            if result:
+                return result
+        except Exception as e:
+            if attempt == max_retries - 1:  # 最后一次尝试
+                return f"Error: {e}"
+        
+        if attempt < max_retries - 1:  # 最后一次尝试不需要等待
+            time.sleep(retry_interval)
+    
+    return "Unknown"
 
 def check_file():
     file_path = "/home/lab/.config/lejuconfig/ec_master.key"
@@ -54,45 +103,83 @@ def check_file():
 
 
 
+def build_message(platform, content):
+    """根据平台构造不同格式的消息体"""
+    if platform == "feishu":
+        return {
+            "msg_type": "text",
+            "content": {
+                "text": content
+            },
+        }
+    else:
+        return {
+            "msgtype": "text",
+            "text": {
+                "content": content
+            },
+        }
+
+
+def send_with_retry(webhook_url, data, platform_name, max_tries=5):
+    """发送消息到指定webhook，失败时重试"""
+    print(f"正在向{platform_name}群发送通知...")
+    response = requests.post(webhook_url, json=data)
+    if response.status_code == 200:
+        print(f"{platform_name} 发送成功。")
+        return
+    print(f"{platform_name} 发送失败，状态码: {response.status_code}")
+    for i in range(max_tries):
+        print(f"{platform_name} 10秒后重试，剩余 {max_tries - i} 次...")
+        time.sleep(10)
+        response = requests.post(webhook_url, json=data)
+        if response.status_code == 200:
+            print(f"{platform_name} 发送成功。")
+            return
+        print(f"{platform_name} 发送失败，状态码: {response.status_code}")
+
+
 def report_info():
-    webhook_url = os.environ.get("WEBHOOK_URL")
+    wecom_webhook_url = os.environ.get("WECOM_WEBHOOK_URL") or os.environ.get("WEBHOOK_URL")
+    feishu_webhook_url = os.environ.get("FEISHU_WEBHOOK_URL")
     robot_serial_number = os.environ.get("ROBOT_SERIAL_NUMBER")
     ec_master_MAC = os.environ.get("EC_MASTER_MAC")
 
     # 检测以wl开头的接口获取IP地址
     interface_name = os.popen("ls /sys/class/net/ | grep '^wl' | head -1").read().strip() or "wlp3s0"
-    ip_address = get_ip_by_interface(interface_name)
-    # ip_address = get_ip()
-    wifi_ssid = get_wifi()
+
+    # 等待WiFi接口获取IP地址（最多等待60秒，每2秒检查一次）
+    print(f"正在等待接口 {interface_name} 获取IP地址...")
+    ip_address = wait_for_ip_address(interface_name, max_retries=30, retry_interval=2)
+
+    # 如果WiFi接口没有获取到IP，尝试使用备用方法
+    if not ip_address or ip_address == "127.0.0.1":
+        print("WiFi接口未获取到IP，尝试使用备用方法获取IP地址...")
+        ip_address = get_ip()
+        if ip_address == "127.0.0.1":
+            ip_address = None
+
+    # 获取WiFi SSID（带重试机制）
+    print("正在获取WiFi SSID...")
+    wifi_ssid = get_wifi(max_retries=15, retry_interval=2)
     license_check = check_file()
 
-    if not webhook_url or not robot_serial_number:
-        print("Missing required environment variables.")
+    if not robot_serial_number:
+        print("Missing required environment variable: ROBOT_SERIAL_NUMBER")
         return
 
-    data = {
-        "msgtype": "text",
-        "text": {
-            "content": f"机器人上线啦！ \n机器人编号: {robot_serial_number}\n机器人license: {ec_master_MAC}  {license_check}\n机器人连接的WIFI: {wifi_ssid}\n机器人的IP: {ip_address}"
-        },
-    }
+    content = f"机器人上线啦！ \n机器人编号: {robot_serial_number}\n机器人license: {ec_master_MAC}  {license_check}\n机器人连接的WIFI: {wifi_ssid}\n机器人的IP: {ip_address}"
 
-    response = requests.post(webhook_url, json=data)
-    max_tries = 5
-    if response.status_code == 200:
-        print("Report sent successfully.")
+    # 同时向企业微信和飞书播报
+    if wecom_webhook_url:
+        send_with_retry(wecom_webhook_url, build_message("wecom", content), "企业微信")
     else:
-        print(f"Failed to send report. Status code: {response.status_code}")
-        while max_tries > 0:
-            print(f"Retrying in 10 seconds. {max_tries} tries left.")
-            time.sleep(10)
-            response = requests.post(webhook_url, json=data)
-            if response.status_code == 200:
-                print("Report sent successfully.")
-                break
-            else:
-                print(f"Failed to send report. Status code: {response.status_code}")
-                max_tries -= 1
+        print("未配置企业微信 webhook，跳过。")
+
+    if feishu_webhook_url:
+        send_with_retry(feishu_webhook_url, build_message("feishu", content), "飞书")
+    else:
+        print("未配置飞书 webhook，跳过。")
 
 
 if __name__ == "__main__":
