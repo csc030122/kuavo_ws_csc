@@ -1,5 +1,5 @@
 #!/bin/bash
-xhost +
+xhost +local:
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PARENT_DIR="$(dirname "$SCRIPT_DIR")"
@@ -56,7 +56,7 @@ else
             echo "Downloading Docker image from ${IMAGE_TARBALL_URL}..."
             if wget -O "${DOWNLOAD_PATH}" "${IMAGE_TARBALL_URL}"; then
                 echo "Download successful. Loading image into Docker..."
-                if sudo docker load -i "${DOWNLOAD_PATH}"; then
+                if docker load -i "${DOWNLOAD_PATH}"; then
                     echo "Docker image loaded successfully."
                     # Clean up the downloaded tarball
                     rm -f "${DOWNLOAD_PATH}"
