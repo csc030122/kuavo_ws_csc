@@ -1,0 +1,809 @@
+<mujoco model="lab static scene with box">
+  <include file="../robots/biped_s63_Dhand_fixed.xml" />
+
+  <compiler angle="radian" />
+  <statistic center="0 0 0.5" extent="4.2" />
+  <visual>
+    <headlight diffuse="0.65 0.65 0.65" ambient="0.35 0.35 0.35" specular="0.1 0.1 0.1" />
+    <rgba haze="0.15 0.20 0.25 1" />
+    <global azimuth="135" elevation="-65" />
+  </visual>
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.65 0.75 0.85" rgb2="0.05 0.06 0.07" width="512" height="3072" />
+    <texture type="2d" name="floor_grid" builtin="checker" mark="edge" rgb1="0.46 0.46 0.44" rgb2="0.38 0.38 0.36" markrgb="0.30 0.30 0.29" width="512" height="512" />
+    <material name="floor_mat" texture="floor_grid" texuniform="true" texrepeat="10 7" rgba="0.68 0.68 0.65 1" specular="0.08" shininess="0.12" reflectance="0.04" />
+    <material name="wall_mat" rgba="0.88 0.86 0.78 1" specular="0.18" shininess="0.35" />
+    <material name="rack_area_mat" rgba="0.55 0.78 0.95 0.45" specular="0.1" shininess="0.2" />
+    <material name="storage_area_mat" rgba="0.62 0.82 0.50 0.45" specular="0.1" shininess="0.2" />
+    <material name="door_mat" rgba="0.45 0.45 0.45 1" specular="0.2" shininess="0.3" />
+    <material name="rack_metal" rgba="0.72 0.72 0.70 1" specular="0.9" shininess="0.95" reflectance="0.22" />
+    <material name="plastic_pallet" rgba="0.1 0.4 0.8 1" specular="0.5" shininess="0.6" />
+    <texture type="2d" name="tag_floor_09_tex" file="../../textures/apriltag_36h11/floor/floor_april_36h11_09.png" />
+    <texture type="2d" name="tag_floor_10_tex" file="../../textures/apriltag_36h11/floor/floor_april_36h11_10.png" />
+    <texture type="2d" name="tag_floor_11_tex" file="../../textures/apriltag_36h11/floor/floor_april_36h11_11.png" />
+    <texture type="2d" name="tag_floor_12_tex" file="../../textures/apriltag_36h11/floor/floor_april_36h11_12.png" />
+    <texture type="2d" name="tag_floor_13_tex" file="../../textures/apriltag_36h11/floor/floor_april_36h11_13.png" />
+    <texture type="2d" name="tag_floor_14_tex" file="../../textures/apriltag_36h11/floor/floor_april_36h11_14.png" />
+    <texture type="2d" name="tag_floor_15_tex" file="../../textures/apriltag_36h11/floor/floor_april_36h11_15.png" />
+    <texture type="2d" name="tag_floor_16_tex" file="../../textures/apriltag_36h11/floor/floor_april_36h11_16.png" />
+    <texture type="2d" name="tag_floor_17_tex" file="../../textures/apriltag_36h11/floor/floor_april_36h11_17.png" />
+    <texture type="2d" name="tag_floor_18_tex" file="../../textures/apriltag_36h11/floor/floor_april_36h11_18.png" />
+    <texture type="2d" name="tag_rack_01_tex" file="../../textures/apriltag_36h11/rack/rack_april_36h11_01.png" />
+    <texture type="2d" name="tag_rack_02_tex" file="../../textures/apriltag_36h11/rack/rack_april_36h11_02.png" />
+    <texture type="2d" name="tag_rack_03_tex" file="../../textures/apriltag_36h11/rack/rack_april_36h11_03.png" />
+    <texture type="2d" name="tag_rack_04_tex" file="../../textures/apriltag_36h11/rack/rack_april_36h11_04.png" />
+    <material name="tag_floor_09_mat" texture="tag_floor_09_tex" texuniform="false" texrepeat="1 1" rgba="1 1 1 1" specular="0" shininess="0" />
+    <material name="tag_floor_10_mat" texture="tag_floor_10_tex" texuniform="false" texrepeat="1 1" rgba="1 1 1 1" specular="0" shininess="0" />
+    <material name="tag_floor_11_mat" texture="tag_floor_11_tex" texuniform="false" texrepeat="1 1" rgba="1 1 1 1" specular="0" shininess="0" />
+    <material name="tag_floor_12_mat" texture="tag_floor_12_tex" texuniform="false" texrepeat="1 1" rgba="1 1 1 1" specular="0" shininess="0" />
+    <material name="tag_floor_13_mat" texture="tag_floor_13_tex" texuniform="false" texrepeat="1 1" rgba="1 1 1 1" specular="0" shininess="0" />
+    <material name="tag_floor_14_mat" texture="tag_floor_14_tex" texuniform="false" texrepeat="1 1" rgba="1 1 1 1" specular="0" shininess="0" />
+    <material name="tag_floor_15_mat" texture="tag_floor_15_tex" texuniform="false" texrepeat="1 1" rgba="1 1 1 1" specular="0" shininess="0" />
+    <material name="tag_floor_16_mat" texture="tag_floor_16_tex" texuniform="false" texrepeat="1 1" rgba="1 1 1 1" specular="0" shininess="0" />
+    <material name="tag_floor_17_mat" texture="tag_floor_17_tex" texuniform="false" texrepeat="1 1" rgba="1 1 1 1" specular="0" shininess="0" />
+    <material name="tag_floor_18_mat" texture="tag_floor_18_tex" texuniform="false" texrepeat="1 1" rgba="1 1 1 1" specular="0" shininess="0" />
+    <material name="tag_rack_01_mat" texture="tag_rack_01_tex" texuniform="false" texrepeat="1 1" rgba="1 1 1 1" specular="0" shininess="0" />
+    <material name="tag_rack_02_mat" texture="tag_rack_02_tex" texuniform="false" texrepeat="1 1" rgba="1 1 1 1" specular="0" shininess="0" />
+    <material name="tag_rack_03_mat" texture="tag_rack_03_tex" texuniform="false" texrepeat="1 1" rgba="1 1 1 1" specular="0" shininess="0" />
+    <material name="tag_rack_04_mat" texture="tag_rack_04_tex" texuniform="false" texrepeat="1 1" rgba="1 1 1 1" specular="0" shininess="0" />
+  </asset>
+  <worldbody>
+    <light pos="0 0 5" dir="0 0 -1" directional="true" />
+    <geom name="lab_floor" type="box" pos="0.754 1.35 -0.01" size="3.0 2.0 0.01" material="floor_mat" contype="1" conaffinity="1" friction="2.0 0.3 0.01" />
+    <geom name="region2_floor" type="box" pos="0.754 -2.25 -0.012" size="3.0 1.6 0.01" material="floor_mat" contype="1" conaffinity="1" friction="2.0 0.3 0.01" />
+    <geom name="floor_tag_09_base_target_yneg_0p4" type="box" pos="-0.25 -0.4 0.003" size="0.044 0.044 0.002" material="tag_floor_09_mat" contype="0" conaffinity="0" />
+    <geom name="floor_tag_10_base_target" type="box" pos="-0.25 0 0.003" size="0.044 0.044 0.002" material="tag_floor_10_mat" contype="0" conaffinity="0" />
+    <geom name="floor_tag_11_base_target_ypos_0p4" type="box" pos="-0.25 0.4 0.003" size="0.044 0.044 0.002" material="tag_floor_11_mat" contype="0" conaffinity="0" />
+    <geom name="floor_tag_12_base_target_ypos_0p8" type="box" pos="-0.25 0.8 0.003" size="0.044 0.044 0.002" material="tag_floor_12_mat" contype="0" conaffinity="0" />
+    <geom name="floor_tag_13_base_target_ypos_1p2" type="box" pos="-0.25 1.2 0.003" size="0.044 0.044 0.002" material="tag_floor_13_mat" contype="0" conaffinity="0" />
+    <geom name="floor_tag_14_base_target_ypos_1p6" type="box" pos="-0.25 1.6 0.003" size="0.044 0.044 0.002" material="tag_floor_14_mat" contype="0" conaffinity="0" />
+    <geom name="floor_tag_15_base_target_ypos_2p0" type="box" pos="-0.25 2.0 0.003" size="0.044 0.044 0.002" material="tag_floor_15_mat" contype="0" conaffinity="0" />
+    <geom name="floor_tag_16_box_ypos_0p4" type="box" pos="1.6 0.4 0.003" size="0.044 0.044 0.002" material="tag_floor_16_mat" contype="0" conaffinity="0" />
+    <geom name="floor_tag_17_box_center" type="box" pos="1.6 0 0.003" size="0.044 0.044 0.002" material="tag_floor_17_mat" contype="0" conaffinity="0" />
+    <geom name="floor_tag_18_box_yneg_0p4" type="box" pos="1.6 -0.4 0.003" size="0.044 0.044 0.002" material="tag_floor_18_mat" contype="0" conaffinity="0" />
+    <body name="lab_walls" pos="0.754 1.35 0">
+      <geom name="wall_top" type="box" pos="0 2.04 1.0" size="3.04 0.04 1.0" material="wall_mat" contype="1" conaffinity="1" />
+      <geom name="wall_left" type="box" pos="-3.04 0 1.0" size="0.04 2.0 1.0" material="wall_mat" contype="1" conaffinity="1" />
+      <geom name="wall_right_top" type="box" pos="3.04 1.8 1.0" size="0.04 0.20 1.0" material="wall_mat" contype="1" conaffinity="1" />
+      <geom name="wall_right_bottom" type="box" pos="3.04 -1.8 1.0" size="0.04 0.20 1.0" material="wall_mat" contype="1" conaffinity="1" />
+      <geom name="region2_wall_left" type="box" pos="-3.04 -3.6 1.0" size="0.04 1.6 1.0" material="wall_mat" contype="1" conaffinity="1" />
+      <geom name="region2_wall_bottom" type="box" pos="0 -5.24 1.0" size="3.04 0.04 1.0" material="wall_mat" contype="1" conaffinity="1" />
+      <geom name="region2_wall_right" type="box" pos="3.04 -3.6 1.0" size="0.04 1.6 1.0" material="wall_mat" contype="1" conaffinity="1" />
+    </body>
+    <body name="door_hint" pos="3.754 2.7 0.02">
+      <geom name="door_leaf_hint" type="box" pos="-0.35 0 0" size="0.35 0.01 0.01" material="door_mat" contype="0" conaffinity="0" />
+      <geom name="door_swing_hint" type="cylinder" pos="-0.35 -0.35 0" size="0.006 0.01" material="door_mat" contype="0" conaffinity="0" />
+    </body>
+    <body name="positive_y_wall_table" pos="0.754 2.80 0.97">
+      <geom name="positive_y_wall_tabletop" type="box" size="0.75 0.5 0.03" pos="0 0 0" rgba="0.52 0.38 0.24 1" contype="2" conaffinity="1" friction="2.0 0.2 0.01" />
+      <geom type="box" size="0.035 0.035 0.47" pos="0.65 0.40 -0.50" rgba="0.36 0.25 0.16 1" contype="2" conaffinity="1" friction="2.0 0.2 0.01" />
+      <geom type="box" size="0.035 0.035 0.47" pos="-0.65 0.40 -0.50" rgba="0.36 0.25 0.16 1" contype="2" conaffinity="1" friction="2.0 0.2 0.01" />
+      <geom type="box" size="0.035 0.035 0.47" pos="0.65 -0.40 -0.50" rgba="0.36 0.25 0.16 1" contype="2" conaffinity="1" friction="2.0 0.2 0.01" />
+      <geom type="box" size="0.035 0.035 0.47" pos="-0.65 -0.40 -0.50" rgba="0.36 0.25 0.16 1" contype="2" conaffinity="1" friction="2.0 0.2 0.01" />
+    </body>
+    <body name="rack2_flow_rack" pos="-1.496 1.325 0" quat="0 0 0 1">
+      <geom name="rack2_rack_post_xp_yp" type="cylinder" size="0.01 0.80" pos="0.74 0.665 0.8" material="rack_metal" contype="1" conaffinity="1" friction="1.2 0.2 0.01" />
+      <geom name="rack2_rack_post_xp_yn" type="cylinder" size="0.01 0.80" pos="0.74 -0.665 0.8" material="rack_metal" contype="1" conaffinity="1" friction="1.2 0.2 0.01" />
+      <geom name="rack2_rack_post_xn_yp_lower" type="cylinder" size="0.01 0.25" pos="-0.74 0.665 0.25" material="rack_metal" contype="1" conaffinity="1" friction="1.2 0.2 0.01" />
+      <geom name="rack2_rack_post_xn_yp_upper" type="cylinder" size="0.01 0.648548" pos="-0.396322 0.665 1.05" quat="0.961262 0 0.275637 0" material="rack_metal" contype="1" conaffinity="1" friction="1.2 0.2 0.01" />
+      <geom name="rack2_rack_post_xn_yn_lower" type="cylinder" size="0.01 0.25" pos="-0.74 -0.665 0.25" material="rack_metal" contype="1" conaffinity="1" friction="1.2 0.2 0.01" />
+      <geom name="rack2_rack_post_xn_yn_upper" type="cylinder" size="0.01 0.648548" pos="-0.396322 -0.665 1.05" quat="0.961262 0 0.275637 0" material="rack_metal" contype="1" conaffinity="1" friction="1.2 0.2 0.01" />
+      <geom name="rack2_rack_mid_edge_yp" type="cylinder" size="0.01 0.74" pos="0 0.665 0.145" quat="0.707107 0 0.707107 0" material="rack_metal" contype="1" conaffinity="1" friction="1.2 0.2 0.01" />
+      <geom name="rack2_rack_mid_edge_yn" type="cylinder" size="0.01 0.74" pos="0 -0.665 0.145" quat="0.707107 0 0.707107 0" material="rack_metal" contype="1" conaffinity="1" friction="1.2 0.2 0.01" />
+      <geom name="rack2_rack_vertical_edge_yp" type="cylinder" size="0.01 0.7225" pos="0.135 0.665 0.8675" material="rack_metal" contype="1" conaffinity="1" friction="1.2 0.2 0.01" />
+      <geom name="rack2_rack_vertical_edge_yn" type="cylinder" size="0.01 0.7225" pos="0.135 -0.665 0.8675" material="rack_metal" contype="1" conaffinity="1" friction="1.2 0.2 0.01" />
+      <geom name="rack2_rack_top_edge_yp" type="cylinder" size="0.01 0.396322" pos="0.343678 0.665 1.59" quat="0.707107 0 0.707107 0" material="rack_metal" contype="1" conaffinity="1" friction="1.2 0.2 0.01" />
+      <geom name="rack2_rack_top_edge_yn" type="cylinder" size="0.01 0.396322" pos="0.343678 -0.665 1.59" quat="0.707107 0 0.707107 0" material="rack_metal" contype="1" conaffinity="1" friction="1.2 0.2 0.01" />
+      <geom name="rack2_rack_lane_level1" type="box" size="0.741807 0.675 0.015" pos="0 0 0.1" quat="0.999391 0 0.034899 0" material="rack_metal" contype="1" conaffinity="1" friction="0.01 0.01 0.01" />
+      <geom name="rack2_rack_baffle_level1" type="box" size="0.025 0.675 0.01" pos="0.730723 0 0.058928" quat="0.731354 0 -0.681998 0" material="rack_metal" contype="1" conaffinity="1" friction="1.8 0.2 0.01" />
+      <geom name="rack2_rack_lane_level2_left" type="box" size="0.414204 0.675 0.015" pos="-0.309384 0 0.59699" quat="0.997084 0 -0.076314 0" material="rack_metal" contype="1" conaffinity="1" friction="0.01 0.01 0.01" />
+      <geom name="rack2_rack_lane_level2_right" type="box" size="0.320195 0.675 0.015" pos="0.42 0 0.671175" quat="0.999848 0 -0.017452 0" material="rack_metal" contype="1" conaffinity="1" friction="0.01 0.01 0.01" />
+      <geom name="rack2_rack_baffle_level2" type="box" size="0.025 0.675 0.01" pos="-0.692159 0 0.55831" quat="0.758987 0 0.651105 0" material="rack_metal" contype="1" conaffinity="1" friction="1.8 0.2 0.01" />
+      <geom name="rack2_rack_lane_level3_left" type="box" size="0.298626 0.675 0.015" pos="-0.193139 0 0.963019" quat="0.995396 0 -0.095846 0" material="rack_metal" contype="1" conaffinity="1" friction="0.01 0.01 0.01" />
+      <geom name="rack2_rack_lane_level3_right" type="box" size="0.321326 0.675 0.015" pos="0.42 0 1.049119" quat="0.998971 0 -0.045363 0" material="rack_metal" contype="1" conaffinity="1" friction="0.01 0.01 0.01" />
+      <geom name="rack2_rack_baffle_level3" type="box" size="0.025 0.675 0.01" pos="-0.450829 0 0.933303" quat="0.771625 0 0.636078 0" material="rack_metal" contype="1" conaffinity="1" friction="1.8 0.2 0.01" />
+      <geom name="rack2_rack_lane_level4_left" type="box" size="0.172605 0.675 0.015" pos="-0.066724 0 1.355326" quat="0.991445 0 -0.130526 0" material="rack_metal" contype="1" conaffinity="1" friction="0.01 0.01 0.01" />
+      <geom name="rack2_rack_lane_level4_right" type="box" size="0.322677 0.675 0.015" pos="0.42 0 1.441573" quat="0.997916 0 -0.064532 0" material="rack_metal" contype="1" conaffinity="1" friction="0.01 0.01 0.01" />
+      <geom name="rack2_rack_baffle_level4" type="box" size="0.025 0.675 0.01" pos="-0.219305 0 1.335148" quat="0.793353 0 0.608761 0" material="rack_metal" contype="1" conaffinity="1" friction="1.8 0.2 0.01" />
+    </body>
+    <body name="rack2_box_level2_yneg" pos="-1.076 0.915 0.705" quat="0.707107 0 0 0.707107">
+      <freejoint name="rack2_box_level2_yneg_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="rack2_box_level2_yneg_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="rack2_box_level2_yneg_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level2_yneg_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level2_yneg_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level2_yneg_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level2_yneg_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="rack2_box_level2_yneg_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="rack2_box_level2_yneg_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="rack2_box_level2_yneg_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="rack2_box_level2_y0" pos="-1.076 1.325 0.705" quat="0.707107 0 0 0.707107">
+      <freejoint name="rack2_box_level2_y0_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="rack2_box_level2_y0_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="rack2_box_level2_y0_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level2_y0_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level2_y0_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level2_y0_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level2_y0_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="rack2_box_level2_y0_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="rack2_box_level2_y0_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="rack2_box_level2_y0_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="rack2_box_level2_ypos" pos="-1.076 1.735 0.705" quat="0.707107 0 0 0.707107">
+      <freejoint name="rack2_box_level2_ypos_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="rack2_box_level2_ypos_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="rack2_box_level2_ypos_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level2_ypos_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level2_ypos_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level2_ypos_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level2_ypos_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="rack2_box_level2_ypos_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="rack2_box_level2_ypos_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="rack2_box_level2_ypos_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="rack2_box_level3_yneg" pos="-1.276 0.915 1.085" quat="0.707107 0 0 0.707107">
+      <freejoint name="rack2_box_level3_yneg_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="rack2_box_level3_yneg_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="rack2_box_level3_yneg_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level3_yneg_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level3_yneg_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level3_yneg_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level3_yneg_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="rack2_box_level3_yneg_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="rack2_box_level3_yneg_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="rack2_box_level3_yneg_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="rack2_box_level3_y0" pos="-1.276 1.325 1.085" quat="0.707107 0 0 0.707107">
+      <freejoint name="rack2_box_level3_y0_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="rack2_box_level3_y0_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="rack2_box_level3_y0_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level3_y0_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level3_y0_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level3_y0_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level3_y0_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="rack2_box_level3_y0_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="rack2_box_level3_y0_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="rack2_box_level3_y0_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="rack2_box_level3_ypos" pos="-1.276 1.735 1.085" quat="0.707107 0 0 0.707107">
+      <freejoint name="rack2_box_level3_ypos_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="rack2_box_level3_ypos_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="rack2_box_level3_ypos_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level3_ypos_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level3_ypos_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level3_ypos_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level3_ypos_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="rack2_box_level3_ypos_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="rack2_box_level3_ypos_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="rack2_box_level3_ypos_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="rack2_box_level4_yneg" pos="-1.476 0.915 1.475" quat="0.707107 0 0 0.707107">
+      <freejoint name="rack2_box_level4_yneg_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="rack2_box_level4_yneg_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="rack2_box_level4_yneg_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level4_yneg_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level4_yneg_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level4_yneg_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level4_yneg_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="rack2_box_level4_yneg_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="rack2_box_level4_yneg_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="rack2_box_level4_yneg_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="rack2_box_level4_y0" pos="-1.476 1.325 1.475" quat="0.707107 0 0 0.707107">
+      <freejoint name="rack2_box_level4_y0_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="rack2_box_level4_y0_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="rack2_box_level4_y0_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level4_y0_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level4_y0_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level4_y0_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level4_y0_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="rack2_box_level4_y0_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="rack2_box_level4_y0_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="rack2_box_level4_y0_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="rack2_box_level4_ypos" pos="-1.476 1.735 1.475" quat="0.707107 0 0 0.707107">
+      <freejoint name="rack2_box_level4_ypos_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="rack2_box_level4_ypos_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="rack2_box_level4_ypos_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level4_ypos_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level4_ypos_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level4_ypos_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="rack2_box_level4_ypos_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="rack2_box_level4_ypos_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="rack2_box_level4_ypos_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="rack2_box_level4_ypos_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="rack3_flow_rack" pos="-1.496 0 0">
+      <geom name="rack3_rack_post_xp_yp" type="cylinder" size="0.01 0.80" pos="0.74 0.665 0.8" material="rack_metal" contype="1" conaffinity="1" friction="1.2 0.2 0.01" />
+      <geom name="rack3_rack_post_xp_yn" type="cylinder" size="0.01 0.80" pos="0.74 -0.665 0.8" material="rack_metal" contype="1" conaffinity="1" friction="1.2 0.2 0.01" />
+      <geom name="rack3_rack_post_xn_yp_lower" type="cylinder" size="0.01 0.25" pos="-0.74 0.665 0.25" material="rack_metal" contype="1" conaffinity="1" friction="1.2 0.2 0.01" />
+      <geom name="rack3_rack_post_xn_yp_upper" type="cylinder" size="0.01 0.648548" pos="-0.396322 0.665 1.05" quat="0.961262 0 0.275637 0" material="rack_metal" contype="1" conaffinity="1" friction="1.2 0.2 0.01" />
+      <geom name="rack3_rack_post_xn_yn_lower" type="cylinder" size="0.01 0.25" pos="-0.74 -0.665 0.25" material="rack_metal" contype="1" conaffinity="1" friction="1.2 0.2 0.01" />
+      <geom name="rack3_rack_post_xn_yn_upper" type="cylinder" size="0.01 0.648548" pos="-0.396322 -0.665 1.05" quat="0.961262 0 0.275637 0" material="rack_metal" contype="1" conaffinity="1" friction="1.2 0.2 0.01" />
+      <geom name="rack3_rack_mid_edge_yp" type="cylinder" size="0.01 0.74" pos="0 0.665 0.145" quat="0.707107 0 0.707107 0" material="rack_metal" contype="1" conaffinity="1" friction="1.2 0.2 0.01" />
+      <geom name="rack3_rack_mid_edge_yn" type="cylinder" size="0.01 0.74" pos="0 -0.665 0.145" quat="0.707107 0 0.707107 0" material="rack_metal" contype="1" conaffinity="1" friction="1.2 0.2 0.01" />
+      <geom name="rack3_rack_vertical_edge_yp" type="cylinder" size="0.01 0.7225" pos="0.135 0.665 0.8675" material="rack_metal" contype="1" conaffinity="1" friction="1.2 0.2 0.01" />
+      <geom name="rack3_rack_vertical_edge_yn" type="cylinder" size="0.01 0.7225" pos="0.135 -0.665 0.8675" material="rack_metal" contype="1" conaffinity="1" friction="1.2 0.2 0.01" />
+      <geom name="rack3_rack_top_edge_yp" type="cylinder" size="0.01 0.396322" pos="0.343678 0.665 1.59" quat="0.707107 0 0.707107 0" material="rack_metal" contype="1" conaffinity="1" friction="1.2 0.2 0.01" />
+      <geom name="rack3_rack_top_edge_yn" type="cylinder" size="0.01 0.396322" pos="0.343678 -0.665 1.59" quat="0.707107 0 0.707107 0" material="rack_metal" contype="1" conaffinity="1" friction="1.2 0.2 0.01" />
+      <geom name="rack3_rack_lane_level1" type="box" size="0.741807 0.675 0.015" pos="0 0 0.1" quat="0.999391 0 0.034899 0" material="rack_metal" contype="1" conaffinity="1" friction="0.01 0.01 0.01" />
+      <geom name="rack3_tag_01_lane_level1_xpos_end" type="box" size="0.020 0.020 0.002" pos="0.74 0 0.065" quat="0.707107 0 0.707107 0" material="tag_rack_01_mat" contype="0" conaffinity="0" />
+      <geom name="rack3_rack_baffle_level1" type="box" size="0.025 0.675 0.01" pos="0.730723 0 0.058928" quat="0.731354 0 -0.681998 0" material="rack_metal" contype="1" conaffinity="1" friction="1.8 0.2 0.01" />
+      <geom name="rack3_rack_lane_level2_left" type="box" size="0.414204 0.675 0.015" pos="-0.309384 0 0.59699" quat="0.997084 0 -0.076314 0" material="rack_metal" contype="1" conaffinity="1" friction="0.01 0.01 0.01" />
+      <geom name="rack3_rack_lane_level2_right" type="box" size="0.320195 0.675 0.015" pos="0.42 0 0.671175" quat="0.999848 0 -0.017452 0" material="rack_metal" contype="1" conaffinity="1" friction="0.01 0.01 0.01" />
+      <geom name="rack3_tag_02_lane_level2_xpos_end" type="box" size="0.020 0.020 0.002" pos="0.74 0 0.686175" quat="0.707107 0 0.707107 0" material="tag_rack_02_mat" contype="0" conaffinity="0" />
+      <geom name="rack3_rack_baffle_level2" type="box" size="0.025 0.675 0.01" pos="-0.692159 0 0.55831" quat="0.758987 0 0.651105 0" material="rack_metal" contype="1" conaffinity="1" friction="1.8 0.2 0.01" />
+      <geom name="rack3_rack_lane_level3_left" type="box" size="0.298626 0.675 0.015" pos="-0.193139 0 0.963019" quat="0.995396 0 -0.095846 0" material="rack_metal" contype="1" conaffinity="1" friction="0.01 0.01 0.01" />
+      <geom name="rack3_rack_lane_level3_right" type="box" size="0.321326 0.675 0.015" pos="0.42 0 1.049119" quat="0.998971 0 -0.045363 0" material="rack_metal" contype="1" conaffinity="1" friction="0.01 0.01 0.01" />
+      <geom name="rack3_tag_03_lane_level3_xpos_end" type="box" size="0.020 0.020 0.002" pos="0.74 0 1.074119" quat="0.707107 0 0.707107 0" material="tag_rack_03_mat" contype="0" conaffinity="0" />
+      <geom name="rack3_rack_baffle_level3" type="box" size="0.025 0.675 0.01" pos="-0.450829 0 0.933303" quat="0.771625 0 0.636078 0" material="rack_metal" contype="1" conaffinity="1" friction="1.8 0.2 0.01" />
+      <geom name="rack3_rack_lane_level4_left" type="box" size="0.172605 0.675 0.015" pos="-0.066724 0 1.355326" quat="0.991445 0 -0.130526 0" material="rack_metal" contype="1" conaffinity="1" friction="0.01 0.01 0.01" />
+      <geom name="rack3_rack_lane_level4_right" type="box" size="0.322677 0.675 0.015" pos="0.42 0 1.441573" quat="0.997916 0 -0.064532 0" material="rack_metal" contype="1" conaffinity="1" friction="0.01 0.01 0.01" />
+      <geom name="rack3_tag_04_lane_level4_xpos_end" type="box" size="0.020 0.020 0.002" pos="0.74 0 1.476573" quat="0.707107 0 0.707107 0" material="tag_rack_04_mat" contype="0" conaffinity="0" />
+      <geom name="rack3_rack_baffle_level4" type="box" size="0.025 0.675 0.01" pos="-0.219305 0 1.335148" quat="0.793353 0 0.608761 0" material="rack_metal" contype="1" conaffinity="1" friction="1.8 0.2 0.01" />
+    </body>
+    <body name="box_storage_pallet" pos="2.454 0.000 0">
+      <geom name="pallet_top_board" type="box" size="0.5 0.6 0.02" pos="0 0 0.13" material="plastic_pallet" contype="2" conaffinity="1" friction="0.8 0.05 0.0001" />
+      <geom name="pallet_leg_FL" type="box" size="0.05 0.05 0.055" pos="-0.45 -0.55 0.055" material="plastic_pallet" contype="2" conaffinity="1" />
+      <geom name="pallet_leg_ML" type="box" size="0.05 0.05 0.055" pos="-0.45 0 0.055" material="plastic_pallet" contype="2" conaffinity="1" />
+      <geom name="pallet_leg_BL" type="box" size="0.05 0.05 0.055" pos="-0.45 0.55 0.055" material="plastic_pallet" contype="2" conaffinity="1" />
+      <geom name="pallet_leg_FC" type="box" size="0.05 0.05 0.055" pos="0 -0.55 0.055" material="plastic_pallet" contype="2" conaffinity="1" />
+      <geom name="pallet_leg_MC" type="box" size="0.05 0.05 0.055" pos="0 0 0.055" material="plastic_pallet" contype="2" conaffinity="1" />
+      <geom name="pallet_leg_BC" type="box" size="0.05 0.05 0.055" pos="0 0.55 0.055" material="plastic_pallet" contype="2" conaffinity="1" />
+      <geom name="pallet_leg_FR" type="box" size="0.05 0.05 0.055" pos="0.45 -0.55 0.055" material="plastic_pallet" contype="2" conaffinity="1" />
+      <geom name="pallet_leg_MR" type="box" size="0.05 0.05 0.055" pos="0.45 0 0.055" material="plastic_pallet" contype="2" conaffinity="1" />
+      <geom name="pallet_leg_BR" type="box" size="0.05 0.05 0.055" pos="0.45 0.55 0.055" material="plastic_pallet" contype="2" conaffinity="1" />
+    </body>
+    <body name="pallet_box_L1_X1_Y1" pos="2.154 -0.400 0.150">
+      <freejoint name="pallet_box_L1_X1_Y1_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L1_X1_Y1_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L1_X1_Y1_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X1_Y1_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X1_Y1_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X1_Y1_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X1_Y1_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L1_X1_Y1_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L1_X1_Y1_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L1_X1_Y1_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L1_X1_Y2" pos="2.154 0.000 0.150">
+      <freejoint name="pallet_box_L1_X1_Y2_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L1_X1_Y2_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L1_X1_Y2_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X1_Y2_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X1_Y2_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X1_Y2_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X1_Y2_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L1_X1_Y2_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L1_X1_Y2_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L1_X1_Y2_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L1_X1_Y3" pos="2.154 0.400 0.150">
+      <freejoint name="pallet_box_L1_X1_Y3_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L1_X1_Y3_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L1_X1_Y3_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X1_Y3_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X1_Y3_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X1_Y3_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X1_Y3_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L1_X1_Y3_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L1_X1_Y3_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L1_X1_Y3_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L1_X2_Y1" pos="2.454 -0.400 0.150">
+      <freejoint name="pallet_box_L1_X2_Y1_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L1_X2_Y1_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L1_X2_Y1_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X2_Y1_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X2_Y1_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X2_Y1_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X2_Y1_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L1_X2_Y1_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L1_X2_Y1_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L1_X2_Y1_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L1_X2_Y2" pos="2.454 0.000 0.150">
+      <freejoint name="pallet_box_L1_X2_Y2_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L1_X2_Y2_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L1_X2_Y2_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X2_Y2_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X2_Y2_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X2_Y2_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X2_Y2_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L1_X2_Y2_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L1_X2_Y2_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L1_X2_Y2_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L1_X2_Y3" pos="2.454 0.400 0.150">
+      <freejoint name="pallet_box_L1_X2_Y3_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L1_X2_Y3_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L1_X2_Y3_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X2_Y3_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X2_Y3_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X2_Y3_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X2_Y3_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L1_X2_Y3_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L1_X2_Y3_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L1_X2_Y3_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L1_X3_Y1" pos="2.754 -0.400 0.150">
+      <freejoint name="pallet_box_L1_X3_Y1_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L1_X3_Y1_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L1_X3_Y1_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X3_Y1_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X3_Y1_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X3_Y1_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X3_Y1_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L1_X3_Y1_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L1_X3_Y1_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L1_X3_Y1_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L1_X3_Y2" pos="2.754 0.000 0.150">
+      <freejoint name="pallet_box_L1_X3_Y2_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L1_X3_Y2_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L1_X3_Y2_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X3_Y2_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X3_Y2_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X3_Y2_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X3_Y2_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L1_X3_Y2_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L1_X3_Y2_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L1_X3_Y2_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L1_X3_Y3" pos="2.754 0.400 0.150">
+      <freejoint name="pallet_box_L1_X3_Y3_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L1_X3_Y3_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L1_X3_Y3_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X3_Y3_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X3_Y3_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X3_Y3_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L1_X3_Y3_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L1_X3_Y3_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L1_X3_Y3_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L1_X3_Y3_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L2_X1_Y1" pos="2.154 -0.400 0.360">
+      <freejoint name="pallet_box_L2_X1_Y1_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L2_X1_Y1_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L2_X1_Y1_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X1_Y1_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X1_Y1_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X1_Y1_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X1_Y1_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L2_X1_Y1_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L2_X1_Y1_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L2_X1_Y1_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L2_X1_Y2" pos="2.154 0.000 0.360">
+      <freejoint name="pallet_box_L2_X1_Y2_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L2_X1_Y2_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L2_X1_Y2_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X1_Y2_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X1_Y2_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X1_Y2_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X1_Y2_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L2_X1_Y2_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L2_X1_Y2_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L2_X1_Y2_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L2_X1_Y3" pos="2.154 0.400 0.360">
+      <freejoint name="pallet_box_L2_X1_Y3_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L2_X1_Y3_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L2_X1_Y3_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X1_Y3_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X1_Y3_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X1_Y3_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X1_Y3_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L2_X1_Y3_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L2_X1_Y3_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L2_X1_Y3_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L2_X2_Y1" pos="2.454 -0.400 0.360">
+      <freejoint name="pallet_box_L2_X2_Y1_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L2_X2_Y1_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L2_X2_Y1_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X2_Y1_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X2_Y1_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X2_Y1_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X2_Y1_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L2_X2_Y1_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L2_X2_Y1_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L2_X2_Y1_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L2_X2_Y2" pos="2.454 0.000 0.360">
+      <freejoint name="pallet_box_L2_X2_Y2_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L2_X2_Y2_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L2_X2_Y2_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X2_Y2_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X2_Y2_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X2_Y2_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X2_Y2_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L2_X2_Y2_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L2_X2_Y2_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L2_X2_Y2_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L2_X2_Y3" pos="2.454 0.400 0.360">
+      <freejoint name="pallet_box_L2_X2_Y3_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L2_X2_Y3_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L2_X2_Y3_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X2_Y3_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X2_Y3_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X2_Y3_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X2_Y3_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L2_X2_Y3_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L2_X2_Y3_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L2_X2_Y3_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L2_X3_Y1" pos="2.754 -0.400 0.360">
+      <freejoint name="pallet_box_L2_X3_Y1_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L2_X3_Y1_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L2_X3_Y1_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X3_Y1_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X3_Y1_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X3_Y1_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X3_Y1_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L2_X3_Y1_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L2_X3_Y1_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L2_X3_Y1_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L2_X3_Y2" pos="2.754 0.000 0.360">
+      <freejoint name="pallet_box_L2_X3_Y2_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L2_X3_Y2_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L2_X3_Y2_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X3_Y2_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X3_Y2_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X3_Y2_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X3_Y2_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L2_X3_Y2_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L2_X3_Y2_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L2_X3_Y2_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L2_X3_Y3" pos="2.754 0.400 0.360">
+      <freejoint name="pallet_box_L2_X3_Y3_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L2_X3_Y3_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L2_X3_Y3_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X3_Y3_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X3_Y3_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X3_Y3_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L2_X3_Y3_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L2_X3_Y3_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L2_X3_Y3_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L2_X3_Y3_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L3_X1_Y1" pos="2.154 -0.400 0.570">
+      <freejoint name="pallet_box_L3_X1_Y1_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L3_X1_Y1_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L3_X1_Y1_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X1_Y1_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X1_Y1_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X1_Y1_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X1_Y1_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L3_X1_Y1_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L3_X1_Y1_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L3_X1_Y1_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L3_X1_Y2" pos="2.154 0.000 0.570">
+      <freejoint name="pallet_box_L3_X1_Y2_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L3_X1_Y2_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L3_X1_Y2_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X1_Y2_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X1_Y2_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X1_Y2_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X1_Y2_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L3_X1_Y2_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L3_X1_Y2_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L3_X1_Y2_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L3_X1_Y3" pos="2.154 0.400 0.570">
+      <freejoint name="pallet_box_L3_X1_Y3_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L3_X1_Y3_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L3_X1_Y3_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X1_Y3_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X1_Y3_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X1_Y3_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X1_Y3_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L3_X1_Y3_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L3_X1_Y3_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L3_X1_Y3_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L3_X2_Y1" pos="2.454 -0.400 0.570">
+      <freejoint name="pallet_box_L3_X2_Y1_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L3_X2_Y1_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L3_X2_Y1_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X2_Y1_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X2_Y1_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X2_Y1_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X2_Y1_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L3_X2_Y1_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L3_X2_Y1_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L3_X2_Y1_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L3_X2_Y2" pos="2.454 0.000 0.570">
+      <freejoint name="pallet_box_L3_X2_Y2_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L3_X2_Y2_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L3_X2_Y2_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X2_Y2_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X2_Y2_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X2_Y2_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X2_Y2_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L3_X2_Y2_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L3_X2_Y2_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L3_X2_Y2_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L3_X2_Y3" pos="2.454 0.400 0.570">
+      <freejoint name="pallet_box_L3_X2_Y3_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L3_X2_Y3_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L3_X2_Y3_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X2_Y3_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X2_Y3_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X2_Y3_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X2_Y3_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L3_X2_Y3_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L3_X2_Y3_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L3_X2_Y3_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L3_X3_Y1" pos="2.754 -0.400 0.570">
+      <freejoint name="pallet_box_L3_X3_Y1_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L3_X3_Y1_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L3_X3_Y1_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X3_Y1_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X3_Y1_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X3_Y1_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X3_Y1_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L3_X3_Y1_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L3_X3_Y1_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L3_X3_Y1_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L3_X3_Y2" pos="2.754 0.000 0.570">
+      <freejoint name="pallet_box_L3_X3_Y2_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L3_X3_Y2_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L3_X3_Y2_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X3_Y2_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X3_Y2_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X3_Y2_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X3_Y2_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L3_X3_Y2_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L3_X3_Y2_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L3_X3_Y2_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L3_X3_Y3" pos="2.754 0.400 0.570">
+      <freejoint name="pallet_box_L3_X3_Y3_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L3_X3_Y3_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L3_X3_Y3_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X3_Y3_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X3_Y3_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X3_Y3_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L3_X3_Y3_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L3_X3_Y3_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L3_X3_Y3_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L3_X3_Y3_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L4_X1_Y1" pos="2.154 -0.400 0.780">
+      <freejoint name="pallet_box_L4_X1_Y1_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L4_X1_Y1_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L4_X1_Y1_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X1_Y1_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X1_Y1_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X1_Y1_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X1_Y1_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L4_X1_Y1_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L4_X1_Y1_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L4_X1_Y1_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L4_X1_Y2" pos="2.154 0.000 0.780">
+      <freejoint name="pallet_box_L4_X1_Y2_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L4_X1_Y2_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L4_X1_Y2_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X1_Y2_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X1_Y2_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X1_Y2_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X1_Y2_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L4_X1_Y2_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L4_X1_Y2_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L4_X1_Y2_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L4_X1_Y3" pos="2.154 0.400 0.780">
+      <freejoint name="pallet_box_L4_X1_Y3_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L4_X1_Y3_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L4_X1_Y3_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X1_Y3_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X1_Y3_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X1_Y3_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X1_Y3_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L4_X1_Y3_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L4_X1_Y3_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L4_X1_Y3_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L4_X2_Y1" pos="2.454 -0.400 0.780">
+      <freejoint name="pallet_box_L4_X2_Y1_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L4_X2_Y1_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L4_X2_Y1_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X2_Y1_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X2_Y1_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X2_Y1_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X2_Y1_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L4_X2_Y1_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L4_X2_Y1_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L4_X2_Y1_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="lab_target_box" pos="2.454 0.000 0.780">
+      <freejoint name="lab_target_box_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="lab_box_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="lab_box_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="lab_box_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="lab_box_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="lab_box_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="lab_box_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="lab_box_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="lab_box_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="lab_box_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L4_X2_Y3" pos="2.454 0.400 0.780">
+      <freejoint name="pallet_box_L4_X2_Y3_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L4_X2_Y3_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L4_X2_Y3_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X2_Y3_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X2_Y3_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X2_Y3_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X2_Y3_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L4_X2_Y3_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L4_X2_Y3_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L4_X2_Y3_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L4_X3_Y1" pos="2.754 -0.400 0.780">
+      <freejoint name="pallet_box_L4_X3_Y1_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L4_X3_Y1_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L4_X3_Y1_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X3_Y1_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X3_Y1_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X3_Y1_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X3_Y1_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L4_X3_Y1_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L4_X3_Y1_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L4_X3_Y1_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L4_X3_Y2" pos="2.754 0.000 0.780">
+      <freejoint name="pallet_box_L4_X3_Y2_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L4_X3_Y2_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L4_X3_Y2_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X3_Y2_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X3_Y2_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X3_Y2_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X3_Y2_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L4_X3_Y2_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L4_X3_Y2_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L4_X3_Y2_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+    <body name="pallet_box_L4_X3_Y3" pos="2.754 0.400 0.780">
+      <freejoint name="pallet_box_L4_X3_Y3_freejoint" />
+      <inertial pos="0 0 0.06" mass="5.0" diaginertia="0.06 0.12 0.15" />
+      <geom name="pallet_box_L4_X3_Y3_base" type="box" size="0.176 0.1355 0.005" pos="0 0 0.005" rgba="0.35 0.35 0.38 1" contype="5" conaffinity="7" friction="1.5 0.2 0.01" solref="0.005 1" />
+      <geom name="pallet_box_L4_X3_Y3_wall_x1" type="box" size="0.0015 0.1325 0.1" pos="0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X3_Y3_wall_x2" type="box" size="0.0015 0.1325 0.1" pos="-0.1745 0 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.0 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X3_Y3_wall_y1" type="box" size="0.173 0.0015 0.1" pos="0 0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X3_Y3_wall_y2" type="box" size="0.173 0.0015 0.1" pos="0 -0.134 0.105" rgba="0.55 0.55 0.58 1" contype="5" conaffinity="7" friction="2.5 0.2 0.02" solref="0.005 1" />
+      <geom name="pallet_box_L4_X3_Y3_flange_x1" type="box" size="0.012 0.15 0.01" pos="0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L4_X3_Y3_flange_x2" type="box" size="0.012 0.15 0.01" pos="-0.188 0 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L4_X3_Y3_flange_y1" type="box" size="0.2 0.00725 0.01" pos="0 0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+      <geom name="pallet_box_L4_X3_Y3_flange_y2" type="box" size="0.2 0.00725 0.01" pos="0 -0.14275 0.195" rgba="0.28 0.28 0.30 1" contype="5" conaffinity="7" friction="3.0 0.2 0.02" solref="0.003 1" />
+    </body>
+  </worldbody>
+  <contact>
+    <pair geom1="rack2_rack_lane_level2_left" geom2="rack2_box_level2_yneg_base" friction="0.01 0.01 0.001 0.0001 0.0001" />
+    <pair geom1="rack2_rack_lane_level2_right" geom2="rack2_box_level2_yneg_base" friction="0.01 0.01 0.001 0.0001 0.0001" />
+    <pair geom1="rack2_rack_lane_level2_left" geom2="rack2_box_level2_y0_base" friction="0.01 0.01 0.001 0.0001 0.0001" />
+    <pair geom1="rack2_rack_lane_level2_right" geom2="rack2_box_level2_y0_base" friction="0.01 0.01 0.001 0.0001 0.0001" />
+    <pair geom1="rack2_rack_lane_level2_left" geom2="rack2_box_level2_ypos_base" friction="0.01 0.01 0.001 0.0001 0.0001" />
+    <pair geom1="rack2_rack_lane_level2_right" geom2="rack2_box_level2_ypos_base" friction="0.01 0.01 0.001 0.0001 0.0001" />
+    <pair geom1="rack2_rack_lane_level3_left" geom2="rack2_box_level3_yneg_base" friction="0.01 0.01 0.001 0.0001 0.0001" />
+    <pair geom1="rack2_rack_lane_level3_right" geom2="rack2_box_level3_yneg_base" friction="0.01 0.01 0.001 0.0001 0.0001" />
+    <pair geom1="rack2_rack_lane_level3_left" geom2="rack2_box_level3_y0_base" friction="0.01 0.01 0.001 0.0001 0.0001" />
+    <pair geom1="rack2_rack_lane_level3_right" geom2="rack2_box_level3_y0_base" friction="0.01 0.01 0.001 0.0001 0.0001" />
+    <pair geom1="rack2_rack_lane_level3_left" geom2="rack2_box_level3_ypos_base" friction="0.01 0.01 0.001 0.0001 0.0001" />
+    <pair geom1="rack2_rack_lane_level3_right" geom2="rack2_box_level3_ypos_base" friction="0.01 0.01 0.001 0.0001 0.0001" />
+    <pair geom1="rack2_rack_lane_level4_left" geom2="rack2_box_level4_yneg_base" friction="0.01 0.01 0.001 0.0001 0.0001" />
+    <pair geom1="rack2_rack_lane_level4_right" geom2="rack2_box_level4_yneg_base" friction="0.01 0.01 0.001 0.0001 0.0001" />
+    <pair geom1="rack2_rack_lane_level4_left" geom2="rack2_box_level4_y0_base" friction="0.01 0.01 0.001 0.0001 0.0001" />
+    <pair geom1="rack2_rack_lane_level4_right" geom2="rack2_box_level4_y0_base" friction="0.01 0.01 0.001 0.0001 0.0001" />
+    <pair geom1="rack2_rack_lane_level4_left" geom2="rack2_box_level4_ypos_base" friction="0.01 0.01 0.001 0.0001 0.0001" />
+    <pair geom1="rack2_rack_lane_level4_right" geom2="rack2_box_level4_ypos_base" friction="0.01 0.01 0.001 0.0001 0.0001" />
+  </contact>
+  <keyframe>
+    <key name="home"
+      qpos="
+    1.5 0 0 1 0 0 0
+    0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0
+    0 0 0 0 0 0 0
+    -1.076 0.915 0.705 0.707107 0 0 0.707107
+    -1.076 1.325 0.705 0.707107 0 0 0.707107
+    -1.076 1.735 0.705 0.707107 0 0 0.707107
+    -1.276 0.915 1.085 0.707107 0 0 0.707107
+    -1.276 1.325 1.085 0.707107 0 0 0.707107
+    -1.276 1.735 1.085 0.707107 0 0 0.707107
+    -1.476 0.915 1.475 0.707107 0 0 0.707107
+    -1.476 1.325 1.475 0.707107 0 0 0.707107
+    -1.476 1.735 1.475 0.707107 0 0 0.707107    2.154 -0.400 0.150 0.707 0 0 0.707
+    2.154 0.000 0.150 0.707 0 0 0.707
+    2.154 0.400 0.150 0.707 0 0 0.707
+    2.454 -0.400 0.150 0.707 0 0 0.707
+    2.454 0.000 0.150 0.707 0 0 0.707
+    2.454 0.400 0.150 0.707 0 0 0.707
+    2.754 -0.400 0.150 0.707 0 0 0.707
+    2.754 0.000 0.150 0.707 0 0 0.707
+    2.754 0.400 0.150 0.707 0 0 0.707
+    2.154 -0.400 0.360 0.707 0 0 0.707
+    2.154 0.000 0.360 0.707 0 0 0.707
+    2.154 0.400 0.360 0.707 0 0 0.707
+    2.454 -0.400 0.360 0.707 0 0 0.707
+    2.454 0.000 0.360 0.707 0 0 0.707
+    2.454 0.400 0.360 0.707 0 0 0.707
+    2.754 -0.400 0.360 0.707 0 0 0.707
+    2.754 0.000 0.360 0.707 0 0 0.707
+    2.754 0.400 0.360 0.707 0 0 0.707
+    2.154 -0.400 0.570 0.707 0 0 0.707
+    2.154 0.000 0.570 0.707 0 0 0.707
+    2.154 0.400 0.570 0.707 0 0 0.707
+    2.454 -0.400 0.570 0.707 0 0 0.707
+    2.454 0.000 0.570 0.707 0 0 0.707
+    2.454 0.400 0.570 0.707 0 0 0.707
+    2.754 -0.400 0.570 0.707 0 0 0.707
+    2.754 0.000 0.570 0.707 0 0 0.707
+    2.754 0.400 0.570 0.707 0 0 0.707
+    2.154 -0.400 0.780 0.707 0 0 0.707
+    2.154 0.000 0.780 0.707 0 0 0.707
+    2.154 0.400 0.780 0.707 0 0 0.707
+    2.454 -0.400 0.780 0.707 0 0 0.707
+    2.454 0.000 0.780 0.707 0 0 0.707
+    2.454 0.400 0.780 0.707 0 0 0.707
+    2.754 -0.400 0.780 0.707 0 0 0.707
+    2.754 0.000 0.780 0.707 0 0 0.707
+    2.754 0.400 0.780 0.707 0 0 0.707
+    "/>
+  </keyframe>
+</mujoco>
