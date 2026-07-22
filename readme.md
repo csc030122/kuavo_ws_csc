@@ -66,7 +66,7 @@ wget https://kuavo.lejurobot.com/kuavo_research_editiion/docker_images/kuavo_ope
 
 - 执行以下命令导入容器镜像：
 ```bash
-docker load -i kuavo_opensource_mpc_wbc_img_v1.3.0.tar.gz
+sudo docker load -i kuavo_opensource_mpc_wbc_img_v1.3.0.tar.gzc
 ```
 - 执行`./docker/run.sh`进入容器后，默认在仓库的映射目录`/root/kuavo_ws`，执行以下命令开始编译：
 
