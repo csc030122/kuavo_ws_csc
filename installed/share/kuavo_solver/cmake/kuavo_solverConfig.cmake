@@ -154,7 +154,11 @@ foreach(library ${libraries})
     set(lib_path "")
     set(lib "${library}-NOTFOUND")
     # since the path where the library is found is returned we have to iterate over the paths manually
+<<<<<<< HEAD
     foreach(path /home/gitlab-runner/builds/ag16SrJsJ/0/highlydynamic/kuavo-ros-control/installed/lib;/home/gitlab-runner/builds/ag16SrJsJ/0/highlydynamic/kuavo-ros-control/installed/lib;/opt/ros/noetic/lib)
+=======
+    foreach(path /home/gitlab-runner/builds/ag16SrJsJ/0/highlydynamic/kuavo-ros-control/installed/lib;/opt/ros/noetic/lib)
+>>>>>>> 586aa9b79bd923c2e4bba2040a265d21d1d32958
       find_library(lib ${library}
         PATHS ${path}
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
