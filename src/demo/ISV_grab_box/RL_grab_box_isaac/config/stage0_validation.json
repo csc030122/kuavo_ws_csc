@@ -1,0 +1,265 @@
+{
+  "scene": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/RL_grab_box_isaac/scenes/kuavo_grasp_stage0.usd",
+  "result": "PASS",
+  "active_dof_count": 13,
+  "active_dof_names_in_physx_order": [
+    "zarm_r1_joint",
+    "zarm_r2_joint",
+    "zarm_r3_joint",
+    "zarm_r4_joint",
+    "zarm_r5_joint",
+    "zarm_r6_joint",
+    "zarm_r7_joint",
+    "r_thumbCMC",
+    "r_indexMCP",
+    "r_middleMCP",
+    "r_thumbMCP",
+    "r_indexPIP",
+    "r_middlePIP"
+  ],
+  "table_top_z": 1.0,
+  "support_top_z": 1.01,
+  "lighting": {
+    "dome_path": "/World/EnvironmentLight",
+    "dome_intensity": 850.0
+  },
+  "layout": {
+    "robot_forward_axis": "+X",
+    "table_centerline_y": 0.0,
+    "table_near_edge_x": 0.39999999999999997,
+    "support_xy_offset_from_table_center": 0.0,
+    "object_spawn_xy_offset_from_table_center": 0.0
+  },
+  "joint_motion": {
+    "zarm_r1_joint": {
+      "command_delta": 0.08,
+      "measured_delta": 0.07315754890441895,
+      "max_other_joint_delta": 0.011027667671442032,
+      "pass": true
+    },
+    "zarm_r2_joint": {
+      "command_delta": 0.08,
+      "measured_delta": 0.07945650815963745,
+      "max_other_joint_delta": 0.002541661262512207,
+      "pass": true
+    },
+    "zarm_r3_joint": {
+      "command_delta": 0.08,
+      "measured_delta": 0.07387793064117432,
+      "max_other_joint_delta": 0.007610537111759186,
+      "pass": true
+    },
+    "zarm_r4_joint": {
+      "command_delta": 0.08,
+      "measured_delta": 0.08056390285491943,
+      "max_other_joint_delta": 0.0027627944946289062,
+      "pass": true
+    },
+    "zarm_r5_joint": {
+      "command_delta": 0.08,
+      "measured_delta": 0.07956469058990479,
+      "max_other_joint_delta": 0.0025550127029418945,
+      "pass": true
+    },
+    "zarm_r6_joint": {
+      "command_delta": 0.08,
+      "measured_delta": 0.08017218112945557,
+      "max_other_joint_delta": 0.002529740333557129,
+      "pass": true
+    },
+    "zarm_r7_joint": {
+      "command_delta": 0.08,
+      "measured_delta": 0.07975766062736511,
+      "max_other_joint_delta": 0.002557039260864258,
+      "pass": true
+    },
+    "r_thumbCMC": {
+      "command_delta": 0.15,
+      "measured_delta": 0.14997638761997223,
+      "max_other_joint_delta": 0.0025273561477661133,
+      "pass": true
+    },
+    "r_thumbMCP": {
+      "command_delta": 0.15,
+      "measured_delta": 0.1499638855457306,
+      "max_other_joint_delta": 0.0025283098220825195,
+      "pass": true
+    },
+    "r_indexMCP": {
+      "command_delta": 0.15,
+      "measured_delta": 0.14997296035289764,
+      "max_other_joint_delta": 0.002526998519897461,
+      "pass": true
+    },
+    "r_indexPIP": {
+      "command_delta": 0.15,
+      "measured_delta": 0.149969220161438,
+      "max_other_joint_delta": 0.0025271177291870117,
+      "pass": true
+    },
+    "r_middleMCP": {
+      "command_delta": 0.15,
+      "measured_delta": 0.14997422695159912,
+      "max_other_joint_delta": 0.002526998519897461,
+      "pass": true
+    },
+    "r_middlePIP": {
+      "command_delta": 0.15,
+      "measured_delta": 0.14996924996376038,
+      "max_other_joint_delta": 0.0025271177291870117,
+      "pass": true
+    }
+  },
+  "robot_root_world_pose": {
+    "position": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "orientation_wxyz": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "position_drift": 0.0
+  },
+  "right_arm_base_world_pose": {
+    "position": [
+      0.11075,
+      -0.253,
+      1.19601
+    ],
+    "orientation_wxyz": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "table": {
+    "center_position": [
+      0.72,
+      0.0,
+      0.95
+    ],
+    "orientation": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "size": [
+      0.64,
+      0.7,
+      0.1
+    ],
+    "top_z": 1.0
+  },
+  "temporary_support": {
+    "center_position": [
+      0.72,
+      0.0,
+      1.005
+    ],
+    "orientation": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "size": [
+      0.28,
+      0.28,
+      0.01
+    ],
+    "top_z": 1.01
+  },
+  "right_palm_initial_world_pose": {
+    "position": [
+      0.47937148809432983,
+      -0.14983606338500988,
+      1.1225355863571167
+    ],
+    "orientation_wxyz": [
+      0.11280898793818836,
+      0.4306174101188287,
+      0.8585740764712465,
+      -0.25434884225107185
+    ]
+  },
+  "right_palm_final_world_pose": {
+    "position": [
+      0.47935593128204346,
+      -0.14979501068592074,
+      1.122480034828186
+    ],
+    "orientation_wxyz": [
+      0.11272994855540236,
+      0.4305378640579638,
+      0.8586115988958626,
+      -0.254391879887297
+    ]
+  },
+  "palm_attachment_drift": 5.1756211600914556e-08,
+  "object": {
+    "spawn_position": [
+      0.72,
+      0.0,
+      1.04712893
+    ],
+    "spawn_orientation_wxyz": [
+      0.7698796987533568,
+      -0.049319768991672466,
+      0.6181990950465354,
+      0.15060773126799776
+    ],
+    "settled_position": [
+      0.7200040817260742,
+      -1.6577541828155518e-07,
+      1.0271283388137817
+    ],
+    "settled_orientation_wxyz": [
+      0.7698766589164734,
+      -0.04932180068623808,
+      0.6182035234807731,
+      0.1506044275200183
+    ],
+    "gravity_drop": 0.02000059118621822,
+    "linear_speed": 0.0,
+    "angular_speed": 0.0,
+    "settled_baseline_position_error": 6.154602287091215e-05,
+    "settled_baseline_orientation_error_rad": 0.003744347239371618,
+    "palm_distance": 0.2990685102225203,
+    "arm_base_to_settled_object_pose": {
+      "position": [
+        0.6092540817260742,
+        0.2529998342245817,
+        -0.16888166118621828
+      ],
+      "orientation_wxyz": [
+        0.7698766589164734,
+        -0.04932180068623808,
+        0.6182035234807731,
+        0.1506044275200183
+      ]
+    }
+  },
+  "finger_collider_count": 6,
+  "ring_little_fixed": true,
+  "final_joint_positions": {
+    "zarm_r1_joint": -1.0334839820861816,
+    "zarm_r2_joint": -0.6169236898422241,
+    "zarm_r3_joint": 1.0375627279281616,
+    "zarm_r4_joint": -2.0276222229003906,
+    "zarm_r5_joint": 0.5618516206741333,
+    "zarm_r6_joint": 0.8846268653869629,
+    "zarm_r7_joint": 0.44787004590034485,
+    "r_thumbCMC": 0.050064969807863235,
+    "r_indexMCP": 0.050030097365379333,
+    "r_middleMCP": 0.05003735423088074,
+    "r_thumbMCP": 0.05000438541173935,
+    "r_indexPIP": 0.05000916123390198,
+    "r_middlePIP": 0.050009455531835556
+  }
+}

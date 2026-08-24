@@ -1,0 +1,774 @@
+#usda 1.0
+(
+    customLayerData = {
+        string creator = "MuJoCo USD Converter v0.2.0"
+    }
+    defaultPrim = "kuavo_s63_dexhand_rl"
+    doc = """Generated from Composed Stage of root layer /tmp/tmpfbsae6es/kuavo_s63_dexhand_rl.usdc
+
+
+Generated from Composed Stage of root layer /tmp/mjcf_import_kuavo_s63_dexhand_rl_dx9140k1/usdex_kuavo_s63_dexhand_rl/kuavo_s63_dexhand_rl.usdc
+
+
+Generated from Composed Stage of root layer /tmp/mjcf_import_kuavo_s63_dexhand_rl_dx9140k1/temp_kuavo_s63_dexhand_rl/kuavo_s63_dexhand_rl.usd
+"""
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+over "kuavo_s63_dexhand_rl" (
+    prepend apiSchemas = ["IsaacRobotAPI"]
+)
+{
+    prepend rel isaac:physics:robotJoints = [
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_hand_tripod/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_palm/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_thumb_prox/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_Index_prox/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_middle_prox/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_ring_prox/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_little_prox/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_hand_tripod/l_hand_camera_link/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_thumb_prox/l_thumb_dist/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_Index_prox/l_index_dist/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_middle_prox/l_middle_dist/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_ring_prox/l_ring_dist/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_little_prox/l_little_dist/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r1_joint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zhead_1_link/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r2_joint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r3_joint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r4_joint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r5_joint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r6_joint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/zarm_r7_joint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_hand_tripod/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_palm/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_thumb_prox/r_thumbCMC>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_index_prox/r_indexMCP>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_middle_prox/r_middleMCP>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_ring_prox/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_little_prox/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_hand_tripod/r_hand_camera_link/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_thumb_prox/r_thumb_dist/r_thumbMCP>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_index_prox/r_index_dist/r_indexPIP>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_middle_prox/r_middle_dist/r_middlePIP>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_ring_prox/r_ring_dist/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_little_prox/r_little_dist/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zhead_1_link/zhead_2_link/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zhead_1_link/zhead_2_link/head_camera_link/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/base_camera_link/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/LF_wheel_yaw/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/RF_wheel_yaw/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/LB_wheel_yaw/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/RB_wheel_yaw/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/LF_wheel_yaw/LF_wheel_pitch/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/RF_wheel_yaw/RF_wheel_pitch/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/LB_wheel_yaw/LB_wheel_pitch/PhysicsFixedJoint>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/RB_wheel_yaw/RB_wheel_pitch/PhysicsFixedJoint>,
+    ]
+    prepend rel isaac:physics:robotLinks = [
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_hand_tripod>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_hand_tripod/l_hand_camera_link>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_palm>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_thumb_prox>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_thumb_prox/l_thumb_dist>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_Index_prox>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_Index_prox/l_index_dist>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_middle_prox>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_middle_prox/l_middle_dist>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_ring_prox>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_ring_prox/l_ring_dist>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_little_prox>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_little_prox/l_little_dist>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link/zarm_l2_link>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_l1_link>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_hand_tripod>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_hand_tripod/r_hand_camera_link>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_palm>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_thumb_prox>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_thumb_prox/r_thumb_dist>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_index_prox>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_index_prox/r_index_dist>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_middle_prox>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_middle_prox/r_middle_dist>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_ring_prox>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_ring_prox/r_ring_dist>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_little_prox>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_little_prox/r_little_dist>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zhead_1_link>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zhead_1_link/zhead_2_link>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link/waist_yaw_link/zhead_1_link/zhead_2_link/head_camera_link>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link/waist_pitch_link>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1/leg_link>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/knee_link_1>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/base_camera_link>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/LF_wheel_yaw>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/LF_wheel_yaw/LF_wheel_pitch>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/RF_wheel_yaw>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/RF_wheel_yaw/RF_wheel_pitch>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/LB_wheel_yaw>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/LB_wheel_yaw/LB_wheel_pitch>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/RB_wheel_yaw>,
+        </kuavo_s63_dexhand_rl/Geometry/base_link/RB_wheel_yaw/RB_wheel_pitch>,
+    ]
+    token isaac:robotType = "Manipulator"
+
+    over "Geometry"
+    {
+        over "base_link" (
+            prepend apiSchemas = ["IsaacLinkAPI"]
+        )
+        {
+            over "base_camera_link" (
+                prepend apiSchemas = ["IsaacLinkAPI"]
+            )
+            {
+                over "PhysicsFixedJoint" (
+                    prepend apiSchemas = ["IsaacJointAPI"]
+                )
+                {
+                }
+            }
+
+            over "LF_wheel_yaw" (
+                prepend apiSchemas = ["IsaacLinkAPI"]
+            )
+            {
+                over "LF_wheel_pitch" (
+                    prepend apiSchemas = ["IsaacLinkAPI"]
+                )
+                {
+                    over "PhysicsFixedJoint" (
+                        prepend apiSchemas = ["IsaacJointAPI"]
+                    )
+                    {
+                    }
+                }
+
+                over "PhysicsFixedJoint" (
+                    prepend apiSchemas = ["IsaacJointAPI"]
+                )
+                {
+                }
+            }
+
+            over "RF_wheel_yaw" (
+                prepend apiSchemas = ["IsaacLinkAPI"]
+            )
+            {
+                over "RF_wheel_pitch" (
+                    prepend apiSchemas = ["IsaacLinkAPI"]
+                )
+                {
+                    over "PhysicsFixedJoint" (
+                        prepend apiSchemas = ["IsaacJointAPI"]
+                    )
+                    {
+                    }
+                }
+
+                over "PhysicsFixedJoint" (
+                    prepend apiSchemas = ["IsaacJointAPI"]
+                )
+                {
+                }
+            }
+
+            over "LB_wheel_yaw" (
+                prepend apiSchemas = ["IsaacLinkAPI"]
+            )
+            {
+                over "LB_wheel_pitch" (
+                    prepend apiSchemas = ["IsaacLinkAPI"]
+                )
+                {
+                    over "PhysicsFixedJoint" (
+                        prepend apiSchemas = ["IsaacJointAPI"]
+                    )
+                    {
+                    }
+                }
+
+                over "PhysicsFixedJoint" (
+                    prepend apiSchemas = ["IsaacJointAPI"]
+                )
+                {
+                }
+            }
+
+            over "RB_wheel_yaw" (
+                prepend apiSchemas = ["IsaacLinkAPI"]
+            )
+            {
+                over "RB_wheel_pitch" (
+                    prepend apiSchemas = ["IsaacLinkAPI"]
+                )
+                {
+                    over "PhysicsFixedJoint" (
+                        prepend apiSchemas = ["IsaacJointAPI"]
+                    )
+                    {
+                    }
+                }
+
+                over "PhysicsFixedJoint" (
+                    prepend apiSchemas = ["IsaacJointAPI"]
+                )
+                {
+                }
+            }
+
+            over "knee_link_1" (
+                prepend apiSchemas = ["IsaacLinkAPI"]
+            )
+            {
+                over "leg_link" (
+                    prepend apiSchemas = ["IsaacLinkAPI"]
+                )
+                {
+                    over "waist_pitch_link" (
+                        prepend apiSchemas = ["IsaacLinkAPI"]
+                    )
+                    {
+                        over "waist_yaw_link" (
+                            prepend apiSchemas = ["IsaacLinkAPI"]
+                        )
+                        {
+                            over "zarm_l1_link" (
+                                prepend apiSchemas = ["IsaacLinkAPI"]
+                            )
+                            {
+                                over "zarm_l2_link" (
+                                    prepend apiSchemas = ["IsaacLinkAPI"]
+                                )
+                                {
+                                    over "zarm_l3_link" (
+                                        prepend apiSchemas = ["IsaacLinkAPI"]
+                                    )
+                                    {
+                                        over "zarm_l4_link" (
+                                            prepend apiSchemas = ["IsaacLinkAPI"]
+                                        )
+                                        {
+                                            over "zarm_l5_link" (
+                                                prepend apiSchemas = ["IsaacLinkAPI"]
+                                            )
+                                            {
+                                                over "zarm_l6_link" (
+                                                    prepend apiSchemas = ["IsaacLinkAPI"]
+                                                )
+                                                {
+                                                    over "zarm_l7_link" (
+                                                        prepend apiSchemas = ["IsaacLinkAPI"]
+                                                    )
+                                                    {
+                                                        over "l_hand_tripod" (
+                                                            prepend apiSchemas = ["IsaacLinkAPI"]
+                                                        )
+                                                        {
+                                                            over "l_hand_camera_link" (
+                                                                prepend apiSchemas = ["IsaacLinkAPI"]
+                                                            )
+                                                            {
+                                                                over "PhysicsFixedJoint" (
+                                                                    prepend apiSchemas = ["IsaacJointAPI"]
+                                                                )
+                                                                {
+                                                                }
+                                                            }
+
+                                                            over "PhysicsFixedJoint" (
+                                                                prepend apiSchemas = ["IsaacJointAPI"]
+                                                            )
+                                                            {
+                                                            }
+                                                        }
+
+                                                        over "l_palm" (
+                                                            prepend apiSchemas = ["IsaacLinkAPI"]
+                                                        )
+                                                        {
+                                                            over "PhysicsFixedJoint" (
+                                                                prepend apiSchemas = ["IsaacJointAPI"]
+                                                            )
+                                                            {
+                                                            }
+                                                        }
+
+                                                        over "l_thumb_prox" (
+                                                            prepend apiSchemas = ["IsaacLinkAPI"]
+                                                        )
+                                                        {
+                                                            over "l_thumb_dist" (
+                                                                prepend apiSchemas = ["IsaacLinkAPI"]
+                                                            )
+                                                            {
+                                                                over "PhysicsFixedJoint" (
+                                                                    prepend apiSchemas = ["IsaacJointAPI"]
+                                                                )
+                                                                {
+                                                                }
+                                                            }
+
+                                                            over "PhysicsFixedJoint" (
+                                                                prepend apiSchemas = ["IsaacJointAPI"]
+                                                            )
+                                                            {
+                                                            }
+                                                        }
+
+                                                        over "l_Index_prox" (
+                                                            prepend apiSchemas = ["IsaacLinkAPI"]
+                                                        )
+                                                        {
+                                                            over "l_index_dist" (
+                                                                prepend apiSchemas = ["IsaacLinkAPI"]
+                                                            )
+                                                            {
+                                                                over "PhysicsFixedJoint" (
+                                                                    prepend apiSchemas = ["IsaacJointAPI"]
+                                                                )
+                                                                {
+                                                                }
+                                                            }
+
+                                                            over "PhysicsFixedJoint" (
+                                                                prepend apiSchemas = ["IsaacJointAPI"]
+                                                            )
+                                                            {
+                                                            }
+                                                        }
+
+                                                        over "l_middle_prox" (
+                                                            prepend apiSchemas = ["IsaacLinkAPI"]
+                                                        )
+                                                        {
+                                                            over "l_middle_dist" (
+                                                                prepend apiSchemas = ["IsaacLinkAPI"]
+                                                            )
+                                                            {
+                                                                over "PhysicsFixedJoint" (
+                                                                    prepend apiSchemas = ["IsaacJointAPI"]
+                                                                )
+                                                                {
+                                                                }
+                                                            }
+
+                                                            over "PhysicsFixedJoint" (
+                                                                prepend apiSchemas = ["IsaacJointAPI"]
+                                                            )
+                                                            {
+                                                            }
+                                                        }
+
+                                                        over "l_ring_prox" (
+                                                            prepend apiSchemas = ["IsaacLinkAPI"]
+                                                        )
+                                                        {
+                                                            over "l_ring_dist" (
+                                                                prepend apiSchemas = ["IsaacLinkAPI"]
+                                                            )
+                                                            {
+                                                                over "PhysicsFixedJoint" (
+                                                                    prepend apiSchemas = ["IsaacJointAPI"]
+                                                                )
+                                                                {
+                                                                }
+                                                            }
+
+                                                            over "PhysicsFixedJoint" (
+                                                                prepend apiSchemas = ["IsaacJointAPI"]
+                                                            )
+                                                            {
+                                                            }
+                                                        }
+
+                                                        over "l_little_prox" (
+                                                            prepend apiSchemas = ["IsaacLinkAPI"]
+                                                        )
+                                                        {
+                                                            over "l_little_dist" (
+                                                                prepend apiSchemas = ["IsaacLinkAPI"]
+                                                            )
+                                                            {
+                                                                over "PhysicsFixedJoint" (
+                                                                    prepend apiSchemas = ["IsaacJointAPI"]
+                                                                )
+                                                                {
+                                                                }
+                                                            }
+
+                                                            over "PhysicsFixedJoint" (
+                                                                prepend apiSchemas = ["IsaacJointAPI"]
+                                                            )
+                                                            {
+                                                            }
+                                                        }
+
+                                                        over "PhysicsFixedJoint" (
+                                                            prepend apiSchemas = ["IsaacJointAPI"]
+                                                        )
+                                                        {
+                                                        }
+                                                    }
+
+                                                    over "PhysicsFixedJoint" (
+                                                        prepend apiSchemas = ["IsaacJointAPI"]
+                                                    )
+                                                    {
+                                                    }
+                                                }
+
+                                                over "PhysicsFixedJoint" (
+                                                    prepend apiSchemas = ["IsaacJointAPI"]
+                                                )
+                                                {
+                                                }
+                                            }
+
+                                            over "PhysicsFixedJoint" (
+                                                prepend apiSchemas = ["IsaacJointAPI"]
+                                            )
+                                            {
+                                            }
+                                        }
+
+                                        over "PhysicsFixedJoint" (
+                                            prepend apiSchemas = ["IsaacJointAPI"]
+                                        )
+                                        {
+                                        }
+                                    }
+
+                                    over "PhysicsFixedJoint" (
+                                        prepend apiSchemas = ["IsaacJointAPI"]
+                                    )
+                                    {
+                                    }
+                                }
+
+                                over "PhysicsFixedJoint" (
+                                    prepend apiSchemas = ["IsaacJointAPI"]
+                                )
+                                {
+                                }
+                            }
+
+                            over "zarm_r1_link" (
+                                prepend apiSchemas = ["IsaacLinkAPI"]
+                            )
+                            {
+                                over "zarm_r2_link" (
+                                    prepend apiSchemas = ["IsaacLinkAPI"]
+                                )
+                                {
+                                    over "zarm_r3_link" (
+                                        prepend apiSchemas = ["IsaacLinkAPI"]
+                                    )
+                                    {
+                                        over "zarm_r4_link" (
+                                            prepend apiSchemas = ["IsaacLinkAPI"]
+                                        )
+                                        {
+                                            over "zarm_r5_link" (
+                                                prepend apiSchemas = ["IsaacLinkAPI"]
+                                            )
+                                            {
+                                                over "zarm_r6_link" (
+                                                    prepend apiSchemas = ["IsaacLinkAPI"]
+                                                )
+                                                {
+                                                    over "zarm_r7_link" (
+                                                        prepend apiSchemas = ["IsaacLinkAPI"]
+                                                    )
+                                                    {
+                                                        over "r_hand_tripod" (
+                                                            prepend apiSchemas = ["IsaacLinkAPI"]
+                                                        )
+                                                        {
+                                                            over "r_hand_camera_link" (
+                                                                prepend apiSchemas = ["IsaacLinkAPI"]
+                                                            )
+                                                            {
+                                                                over "PhysicsFixedJoint" (
+                                                                    prepend apiSchemas = ["IsaacJointAPI"]
+                                                                )
+                                                                {
+                                                                }
+                                                            }
+
+                                                            over "PhysicsFixedJoint" (
+                                                                prepend apiSchemas = ["IsaacJointAPI"]
+                                                            )
+                                                            {
+                                                            }
+                                                        }
+
+                                                        over "r_palm" (
+                                                            prepend apiSchemas = ["IsaacLinkAPI"]
+                                                        )
+                                                        {
+                                                            over "PhysicsFixedJoint" (
+                                                                prepend apiSchemas = ["IsaacJointAPI"]
+                                                            )
+                                                            {
+                                                            }
+                                                        }
+
+                                                        over "r_thumb_prox" (
+                                                            prepend apiSchemas = ["IsaacLinkAPI"]
+                                                        )
+                                                        {
+                                                            over "r_thumb_dist" (
+                                                                prepend apiSchemas = ["IsaacLinkAPI"]
+                                                            )
+                                                            {
+                                                                over "r_thumbMCP" (
+                                                                    prepend apiSchemas = ["IsaacJointAPI"]
+                                                                )
+                                                                {
+                                                                }
+                                                            }
+
+                                                            over "r_thumbCMC" (
+                                                                prepend apiSchemas = ["IsaacJointAPI"]
+                                                            )
+                                                            {
+                                                            }
+                                                        }
+
+                                                        over "r_index_prox" (
+                                                            prepend apiSchemas = ["IsaacLinkAPI"]
+                                                        )
+                                                        {
+                                                            over "r_index_dist" (
+                                                                prepend apiSchemas = ["IsaacLinkAPI"]
+                                                            )
+                                                            {
+                                                                over "r_indexPIP" (
+                                                                    prepend apiSchemas = ["IsaacJointAPI"]
+                                                                )
+                                                                {
+                                                                }
+                                                            }
+
+                                                            over "r_indexMCP" (
+                                                                prepend apiSchemas = ["IsaacJointAPI"]
+                                                            )
+                                                            {
+                                                            }
+                                                        }
+
+                                                        over "r_middle_prox" (
+                                                            prepend apiSchemas = ["IsaacLinkAPI"]
+                                                        )
+                                                        {
+                                                            over "r_middle_dist" (
+                                                                prepend apiSchemas = ["IsaacLinkAPI"]
+                                                            )
+                                                            {
+                                                                over "r_middlePIP" (
+                                                                    prepend apiSchemas = ["IsaacJointAPI"]
+                                                                )
+                                                                {
+                                                                }
+                                                            }
+
+                                                            over "r_middleMCP" (
+                                                                prepend apiSchemas = ["IsaacJointAPI"]
+                                                            )
+                                                            {
+                                                            }
+                                                        }
+
+                                                        over "r_ring_prox" (
+                                                            prepend apiSchemas = ["IsaacLinkAPI"]
+                                                        )
+                                                        {
+                                                            over "r_ring_dist" (
+                                                                prepend apiSchemas = ["IsaacLinkAPI"]
+                                                            )
+                                                            {
+                                                                over "PhysicsFixedJoint" (
+                                                                    prepend apiSchemas = ["IsaacJointAPI"]
+                                                                )
+                                                                {
+                                                                }
+                                                            }
+
+                                                            over "PhysicsFixedJoint" (
+                                                                prepend apiSchemas = ["IsaacJointAPI"]
+                                                            )
+                                                            {
+                                                            }
+                                                        }
+
+                                                        over "r_little_prox" (
+                                                            prepend apiSchemas = ["IsaacLinkAPI"]
+                                                        )
+                                                        {
+                                                            over "r_little_dist" (
+                                                                prepend apiSchemas = ["IsaacLinkAPI"]
+                                                            )
+                                                            {
+                                                                over "PhysicsFixedJoint" (
+                                                                    prepend apiSchemas = ["IsaacJointAPI"]
+                                                                )
+                                                                {
+                                                                }
+                                                            }
+
+                                                            over "PhysicsFixedJoint" (
+                                                                prepend apiSchemas = ["IsaacJointAPI"]
+                                                            )
+                                                            {
+                                                            }
+                                                        }
+
+                                                        over "zarm_r7_joint" (
+                                                            prepend apiSchemas = ["IsaacJointAPI"]
+                                                        )
+                                                        {
+                                                        }
+                                                    }
+
+                                                    over "zarm_r6_joint" (
+                                                        prepend apiSchemas = ["IsaacJointAPI"]
+                                                    )
+                                                    {
+                                                    }
+                                                }
+
+                                                over "zarm_r5_joint" (
+                                                    prepend apiSchemas = ["IsaacJointAPI"]
+                                                )
+                                                {
+                                                }
+                                            }
+
+                                            over "zarm_r4_joint" (
+                                                prepend apiSchemas = ["IsaacJointAPI"]
+                                            )
+                                            {
+                                            }
+                                        }
+
+                                        over "zarm_r3_joint" (
+                                            prepend apiSchemas = ["IsaacJointAPI"]
+                                        )
+                                        {
+                                        }
+                                    }
+
+                                    over "zarm_r2_joint" (
+                                        prepend apiSchemas = ["IsaacJointAPI"]
+                                    )
+                                    {
+                                    }
+                                }
+
+                                over "zarm_r1_joint" (
+                                    prepend apiSchemas = ["IsaacJointAPI"]
+                                )
+                                {
+                                }
+                            }
+
+                            over "zhead_1_link" (
+                                prepend apiSchemas = ["IsaacLinkAPI"]
+                            )
+                            {
+                                over "zhead_2_link" (
+                                    prepend apiSchemas = ["IsaacLinkAPI"]
+                                )
+                                {
+                                    over "head_camera_link" (
+                                        prepend apiSchemas = ["IsaacLinkAPI"]
+                                    )
+                                    {
+                                        over "PhysicsFixedJoint" (
+                                            prepend apiSchemas = ["IsaacJointAPI"]
+                                        )
+                                        {
+                                        }
+                                    }
+
+                                    over "PhysicsFixedJoint" (
+                                        prepend apiSchemas = ["IsaacJointAPI"]
+                                    )
+                                    {
+                                    }
+                                }
+
+                                over "PhysicsFixedJoint" (
+                                    prepend apiSchemas = ["IsaacJointAPI"]
+                                )
+                                {
+                                }
+                            }
+
+                            over "PhysicsFixedJoint" (
+                                prepend apiSchemas = ["IsaacJointAPI"]
+                            )
+                            {
+                            }
+                        }
+
+                        over "PhysicsFixedJoint" (
+                            prepend apiSchemas = ["IsaacJointAPI"]
+                        )
+                        {
+                        }
+                    }
+
+                    over "PhysicsFixedJoint" (
+                        prepend apiSchemas = ["IsaacJointAPI"]
+                    )
+                    {
+                    }
+                }
+
+                over "PhysicsFixedJoint" (
+                    prepend apiSchemas = ["IsaacJointAPI"]
+                )
+                {
+                }
+            }
+
+            over "PhysicsFixedJoint" (
+                prepend apiSchemas = ["IsaacJointAPI"]
+            )
+            {
+            }
+        }
+    }
+}
+

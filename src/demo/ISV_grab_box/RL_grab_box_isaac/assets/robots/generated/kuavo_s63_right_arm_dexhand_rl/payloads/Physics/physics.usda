@@ -1,0 +1,576 @@
+#usda 1.0
+(
+    customLayerData = {
+        string creator = "MuJoCo USD Converter v0.2.0"
+    }
+    defaultPrim = "kuavo_s63_right_arm_dexhand_rl"
+    doc = """Generated from Composed Stage of root layer /tmp/tmp4_5kyxe6/kuavo_s63_right_arm_dexhand_rl.usdc
+
+
+Generated from Composed Stage of root layer /tmp/mjcf_import_kuavo_s63_right_arm_dexhand_rl_6kpze3l4/usdex_kuavo_s63_right_arm_dexhand_rl/kuavo_s63_right_arm_dexhand_rl.usdc
+
+
+Generated from Composed Stage of root layer /tmp/mjcf_import_kuavo_s63_right_arm_dexhand_rl_6kpze3l4/temp_kuavo_s63_right_arm_dexhand_rl/kuavo_s63_right_arm_dexhand_rl.usd
+"""
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+over "kuavo_s63_right_arm_dexhand_rl"
+{
+    over "Geometry" (
+        prepend apiSchemas = ["PhysicsArticulationRootAPI", "NewtonArticulationRootAPI"]
+    )
+    {
+        bool newton:selfCollisionEnabled = 0
+
+        over "arm_base" (
+            prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+        )
+        {
+            point3f physics:centerOfMass = (0, 0, 0)
+            float3 physics:diagonalInertia = (0.000001, 0.000001, 0.000001)
+            float physics:mass = 0.001
+            quatf physics:principalAxes = (1, 0, 0, 0)
+
+            over "zarm_r1_link" (
+                prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+            )
+            {
+                point3f physics:centerOfMass = (0.00140078, 0.010235, -0.00030514)
+                float3 physics:diagonalInertia = (0.00147543, 0.00144282, 0.000964459)
+                float physics:mass = 1.01296
+                quatf physics:principalAxes = (0.7049, 0.708449, 0.034, 0.00774269)
+
+                over "zarm_r2_link" (
+                    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+                )
+                {
+                    point3f physics:centerOfMass = (-0.00070214, 0.00000601, -0.0462779)
+                    float3 physics:diagonalInertia = (0.00128467, 0.000885488, 0.000770102)
+                    float physics:mass = 0.437889
+                    quatf physics:principalAxes = (0.7034816, 0.070600964, 0.070804365, 0.70364463)
+
+                    over "zarm_r3_link" (
+                        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+                    )
+                    {
+                        point3f physics:centerOfMass = (0.00964741, -0.00319323, -0.229195)
+                        float3 physics:diagonalInertia = (0.00743246, 0.00738062, 0.00181201)
+                        float physics:mass = 1.83545
+                        quatf physics:principalAxes = (0.9385514, -0.052281123, -0.059591025, 0.33591214)
+
+                        over "zarm_r4_link" (
+                            prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+                        )
+                        {
+                            point3f physics:centerOfMass = (-0.0182629, -0.00208235, -0.0669584)
+                            float3 physics:diagonalInertia = (0.00157685, 0.00134433, 0.00068768)
+                            float physics:mass = 0.657704
+                            quatf physics:principalAxes = (0.9960821, 0.041027904, 0.07830381, 0.0023593602)
+
+                            over "zarm_r5_link" (
+                                prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+                            )
+                            {
+                                point3f physics:centerOfMass = (-0.00889277, -0.00001406, -0.0568964)
+                                float3 physics:diagonalInertia = (0.00105528, 0.000734737, 0.000564267)
+                                float physics:mass = 0.678784
+                                quatf physics:principalAxes = (0.6908811, 0.14938001, 0.14713101, 0.69189703)
+
+                                over "zarm_r6_link" (
+                                    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+                                )
+                                {
+                                    point3f physics:centerOfMass = (-0.0017411, -0.00664955, -0.0143008)
+                                    float3 physics:diagonalInertia = (0.000316031, 0.000292605, 0.000195864)
+                                    float physics:mass = 0.512305
+                                    quatf physics:principalAxes = (-0.19237103, 0.70183504, -0.26307803, 0.63341206)
+
+                                    over "zarm_r7_link" (
+                                        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+                                    )
+                                    {
+                                        point3f physics:centerOfMass = (0, -0.00870239, -0.0837024)
+                                        float3 physics:diagonalInertia = (0.00131998, 0.00111231, 0.000374213)
+                                        float physics:mass = 0.737924
+                                        quatf physics:principalAxes = (0.70710677, 0.00014710095, -0.00014710095, 0.70710677)
+
+                                        over "Sphere" (
+                                            prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsMassAPI"]
+                                        )
+                                        {
+                                            float newton:contactGap = 0
+                                            float physics:density = 1000
+                                        }
+
+                                        over "r_hand_tripod" (
+                                            prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+                                        )
+                                        {
+                                            point3f physics:centerOfMass = (0.06534315, 0.00833186, -0.062527515)
+                                            float3 physics:diagonalInertia = (0.000015985, 0.000098755, 0.000097576)
+                                            float physics:mass = 0.03426688
+                                            quatf physics:principalAxes = (1, 0, 0, 0)
+
+                                            over "r_hand_camera_link" (
+                                                prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+                                            )
+                                            {
+                                                point3f physics:centerOfMass = (0, 0, 0.011463192)
+                                                float3 physics:diagonalInertia = (0.0000069, 0.000006868, 0.000010425)
+                                                float physics:mass = 0.03814544
+                                                quatf physics:principalAxes = (1, 0, 0, 0)
+
+                                                def PhysicsFixedJoint "PhysicsFixedJoint"
+                                                {
+                                                    custom rel physics:body0
+                                                    prepend rel physics:body0 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_hand_tripod>
+                                                    custom rel physics:body1
+                                                    prepend rel physics:body1 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_hand_tripod/r_hand_camera_link>
+                                                    point3f physics:localPos0 = (0.11540559, 0.015431236, -0.10772413)
+                                                    point3f physics:localPos1 = (0, 0, 0)
+                                                    quatf physics:localRot0 = (0.30362958, -0.23292544, 0.5625214, 0.7328878)
+                                                    quatf physics:localRot1 = (1, 0, 0, 0)
+                                                }
+                                            }
+
+                                            def PhysicsFixedJoint "PhysicsFixedJoint"
+                                            {
+                                                custom rel physics:body0
+                                                prepend rel physics:body0 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link>
+                                                custom rel physics:body1
+                                                prepend rel physics:body1 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_hand_tripod>
+                                                point3f physics:localPos0 = (0, 0, 0)
+                                                point3f physics:localPos1 = (0, 0, 0)
+                                                quatf physics:localRot0 = (0.7071068, 0, 0, -0.7071067)
+                                                quatf physics:localRot1 = (1, 0, 0, 0)
+                                            }
+                                        }
+
+                                        over "r_palm" (
+                                            prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+                                        )
+                                        {
+                                            point3f physics:centerOfMass = (-0.00099373, 0.040537, -0.0022835)
+                                            float3 physics:diagonalInertia = (0.0010405, 0.0013244, 0.00053219)
+                                            float physics:mass = 0.427
+                                            quatf physics:principalAxes = (1, 0, 0, 0)
+
+                                            def PhysicsFixedJoint "PhysicsFixedJoint"
+                                            {
+                                                custom rel physics:body0
+                                                prepend rel physics:body0 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link>
+                                                custom rel physics:body1
+                                                prepend rel physics:body1 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_palm>
+                                                point3f physics:localPos0 = (0, 0, -0.07)
+                                                point3f physics:localPos1 = (0, 0, 0)
+                                                quatf physics:localRot0 = (0.7073882, -0.70682526, 0, 0)
+                                                quatf physics:localRot1 = (1, 0, 0, 0)
+                                            }
+                                        }
+
+                                        over "r_thumb_prox" (
+                                            prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+                                        )
+                                        {
+                                            point3f physics:centerOfMass = (0.0062041, -7.9383e-8, 0.0015306)
+                                            float3 physics:diagonalInertia = (0.00009, 0.00007, 0.00005)
+                                            float physics:mass = 0.005
+                                            quatf physics:principalAxes = (0.48635727, 0.5132803, 0.5132803, 0.48635727)
+
+                                            over "r_thumb_dist" (
+                                                prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+                                            )
+                                            {
+                                                point3f physics:centerOfMass = (0.0083564, 0.037204, -3.5884e-7)
+                                                float3 physics:diagonalInertia = (0.00009, 0.00007, 0.00005)
+                                                float physics:mass = 0.04
+                                                quatf physics:principalAxes = (0.7070481, 0.7069811, 0.0114675015, 0.011360402)
+
+                                                def PhysicsRevoluteJoint "r_thumbMCP" (
+                                                    prepend apiSchemas = ["PhysicsDriveAPI:angular", "PhysicsJointStateAPI:angular"]
+                                                )
+                                                {
+                                                    uniform token physics:axis = "Z"
+                                                    custom rel physics:body0
+                                                    prepend rel physics:body0 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_thumb_prox>
+                                                    custom rel physics:body1
+                                                    prepend rel physics:body1 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_thumb_prox/r_thumb_dist>
+                                                    point3f physics:localPos0 = (0.013647, 0, -1.7347235e-18)
+                                                    point3f physics:localPos1 = (0, 0, 0)
+                                                    quatf physics:localRot0 = (0.8785323, -0.10382402, 0.22265504, -0.4096661)
+                                                    quatf physics:localRot1 = (1, 0, 0, 0)
+                                                    float physics:lowerLimit = 0
+                                                    float physics:upperLimit = 49.999737
+                                                }
+                                            }
+
+                                            def PhysicsRevoluteJoint "r_thumbCMC" (
+                                                prepend apiSchemas = ["PhysicsDriveAPI:angular", "PhysicsJointStateAPI:angular"]
+                                            )
+                                            {
+                                                uniform token physics:axis = "Y"
+                                                custom rel physics:body0
+                                                prepend rel physics:body0 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link>
+                                                custom rel physics:body1
+                                                prepend rel physics:body1 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_thumb_prox>
+                                                point3f physics:localPos0 = (0.0245, 0.0216473, -0.0941828)
+                                                point3f physics:localPos1 = (0, 0, 0)
+                                                quatf physics:localRot0 = (-0.6851639, -0.68570906, -0.17364499, -0.17378399)
+                                                quatf physics:localRot1 = (0, -1, 0, 0)
+                                                float physics:lowerLimit = 0
+                                                float physics:upperLimit = 90.00021
+                                            }
+                                        }
+
+                                        over "r_index_prox" (
+                                            prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+                                        )
+                                        {
+                                            point3f physics:centerOfMass = (-5.571e-7, 0.016609, 0.00045746)
+                                            float3 physics:diagonalInertia = (0.00009, 0.00007, 0.00005)
+                                            float physics:mass = 0.008
+                                            quatf physics:principalAxes = (0.51854175, 0.48074377, -0.48067877, 0.5186018)
+
+                                            over "r_index_dist" (
+                                                prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+                                            )
+                                            {
+                                                point3f physics:centerOfMass = (0.0000059401, 0.025449, 0.003278)
+                                                float3 physics:diagonalInertia = (0.00009, 0.00007, 0.00005)
+                                                float physics:mass = 0.011
+                                                quatf physics:principalAxes = (0.4649878, 0.5330228, -0.5333808, 0.46387282)
+
+                                                def PhysicsRevoluteJoint "r_indexPIP" (
+                                                    prepend apiSchemas = ["PhysicsDriveAPI:angular", "PhysicsJointStateAPI:angular"]
+                                                )
+                                                {
+                                                    uniform token physics:axis = "X"
+                                                    custom rel physics:body0
+                                                    prepend rel physics:body0 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_index_prox>
+                                                    custom rel physics:body1
+                                                    prepend rel physics:body1 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_index_prox/r_index_dist>
+                                                    point3f physics:localPos0 = (4.3368087e-18, 0.035, -2.7755576e-17)
+                                                    point3f physics:localPos1 = (0, 0, 0)
+                                                    quatf physics:localRot0 = (-0.995322, -0.09661334, 2.3418767e-17, 1.7347235e-18)
+                                                    quatf physics:localRot1 = (1, 0, 0, 0)
+                                                    float physics:lowerLimit = 0
+                                                    float physics:upperLimit = 71.61973
+                                                }
+                                            }
+
+                                            def PhysicsRevoluteJoint "r_indexMCP" (
+                                                prepend apiSchemas = ["PhysicsDriveAPI:angular", "PhysicsJointStateAPI:angular"]
+                                            )
+                                            {
+                                                uniform token physics:axis = "X"
+                                                custom rel physics:body0
+                                                prepend rel physics:body0 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link>
+                                                custom rel physics:body1
+                                                prepend rel physics:body1 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_index_prox>
+                                                point3f physics:localPos0 = (0.029003, -0.00387854, -0.158234)
+                                                point3f physics:localPos1 = (0, 0, 0)
+                                                quatf physics:localRot0 = (-0.6707932, 0.7409771, 0.030715505, -0.006779991)
+                                                quatf physics:localRot1 = (1, 0, 0, 0)
+                                                float physics:lowerLimit = 0
+                                                float physics:upperLimit = 75.000175
+                                            }
+                                        }
+
+                                        over "r_middle_prox" (
+                                            prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+                                        )
+                                        {
+                                            point3f physics:centerOfMass = (2.3779e-7, 0.020205, 0.00053993)
+                                            float3 physics:diagonalInertia = (0.00009, 0.00007, 0.00005)
+                                            float physics:mass = 0.011
+                                            quatf physics:principalAxes = (0.5139299, 0.48558187, -0.48565587, 0.5140279)
+
+                                            over "r_middle_dist" (
+                                                prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+                                            )
+                                            {
+                                                point3f physics:centerOfMass = (0.0000059404, 0.025449, 0.003278)
+                                                float3 physics:diagonalInertia = (0.00009, 0.00007, 0.00005)
+                                                float physics:mass = 0.011
+                                                quatf physics:principalAxes = (0.464985, 0.533021, -0.533384, 0.463874)
+
+                                                def PhysicsRevoluteJoint "r_middlePIP" (
+                                                    prepend apiSchemas = ["PhysicsDriveAPI:angular", "PhysicsJointStateAPI:angular"]
+                                                )
+                                                {
+                                                    uniform token physics:axis = "X"
+                                                    custom rel physics:body0
+                                                    prepend rel physics:body0 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_middle_prox>
+                                                    custom rel physics:body1
+                                                    prepend rel physics:body1 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_middle_prox/r_middle_dist>
+                                                    point3f physics:localPos0 = (0, 0.042, 6.938894e-18)
+                                                    point3f physics:localPos1 = (0, 0, 0)
+                                                    quatf physics:localRot0 = (-0.9957908, -0.09165546, 0, -0)
+                                                    quatf physics:localRot1 = (1, 0, 0, 0)
+                                                    float physics:lowerLimit = 0
+                                                    float physics:upperLimit = 71.61973
+                                                }
+                                            }
+
+                                            def PhysicsRevoluteJoint "r_middleMCP" (
+                                                prepend apiSchemas = ["PhysicsDriveAPI:angular", "PhysicsJointStateAPI:angular"]
+                                            )
+                                            {
+                                                uniform token physics:axis = "X"
+                                                custom rel physics:body0
+                                                prepend rel physics:body0 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link>
+                                                custom rel physics:body1
+                                                prepend rel physics:body1 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_middle_prox>
+                                                point3f physics:localPos0 = (0.008, -0.00813059, -0.161942)
+                                                point3f physics:localPos1 = (0, 0, 0)
+                                                quatf physics:localRot0 = (-0.68228984, 0.7310818, 0, 0)
+                                                quatf physics:localRot1 = (1, 0, 0, 0)
+                                                float physics:lowerLimit = 0
+                                                float physics:upperLimit = 75.000175
+                                            }
+                                        }
+
+                                        over "r_ring_prox" (
+                                            prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+                                        )
+                                        {
+                                            point3f physics:centerOfMass = (2.4507e-7, 0.020236, 0.00042373)
+                                            float3 physics:diagonalInertia = (0.00009, 0.00007, 0.00005)
+                                            float physics:mass = 0.011
+                                            quatf physics:principalAxes = (0.51445156, 0.48502466, -0.4851077, 0.51454955)
+
+                                            over "r_ring_dist" (
+                                                prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+                                            )
+                                            {
+                                                point3f physics:centerOfMass = (5.5799e-7, 0.020388, 0.0029077)
+                                                float3 physics:diagonalInertia = (0.00009, 0.00007, 0.00005)
+                                                float physics:mass = 0.008
+                                                quatf physics:principalAxes = (0.46149278, 0.53551275, -0.5357848, 0.46171978)
+
+                                                def PhysicsFixedJoint "PhysicsFixedJoint"
+                                                {
+                                                    custom rel physics:body0
+                                                    prepend rel physics:body0 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_ring_prox>
+                                                    custom rel physics:body1
+                                                    prepend rel physics:body1 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_ring_prox/r_ring_dist>
+                                                    point3f physics:localPos0 = (-3.469447e-18, 0.042, 0)
+                                                    point3f physics:localPos1 = (0, 0, 0)
+                                                    quatf physics:localRot0 = (-0.9965645, -0.082820185, -1.02348685e-16, -3.7296555e-17)
+                                                    quatf physics:localRot1 = (1, 0, 0, 0)
+                                                }
+                                            }
+
+                                            def PhysicsFixedJoint "PhysicsFixedJoint"
+                                            {
+                                                custom rel physics:body0
+                                                prepend rel physics:body0 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link>
+                                                custom rel physics:body1
+                                                prepend rel physics:body1 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_ring_prox>
+                                                point3f physics:localPos0 = (-0.013103, -0.00800697, -0.159953)
+                                                point3f physics:localPos1 = (0, 0, 0)
+                                                quatf physics:localRot0 = (-0.67823374, 0.7341727, -0.030645587, 0.0070895073)
+                                                quatf physics:localRot1 = (1, 0, 0, 0)
+                                            }
+                                        }
+
+                                        over "r_little_prox" (
+                                            prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+                                        )
+                                        {
+                                            point3f physics:centerOfMass = (-5.4618e-7, 0.016662, 0.00040738)
+                                            float3 physics:diagonalInertia = (0.00009, 0.00007, 0.00005)
+                                            float physics:mass = 0.008
+                                            quatf physics:principalAxes = (0.5192071, 0.4800251, -0.4799621, 0.5192651)
+
+                                            over "r_little_dist" (
+                                                prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+                                            )
+                                            {
+                                                point3f physics:centerOfMass = (0.00001062, 0.017869, 0.0020864)
+                                                float3 physics:diagonalInertia = (0.00009, 0.00007, 0.00005)
+                                                float physics:mass = 0.008
+                                                quatf physics:principalAxes = (0.46875188, 0.5296989, -0.5307199, 0.46693388)
+
+                                                def PhysicsFixedJoint "PhysicsFixedJoint"
+                                                {
+                                                    custom rel physics:body0
+                                                    prepend rel physics:body0 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_little_prox>
+                                                    custom rel physics:body1
+                                                    prepend rel physics:body1 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_little_prox/r_little_dist>
+                                                    point3f physics:localPos0 = (5.2041704e-18, 0.035, 0)
+                                                    point3f physics:localPos1 = (0, 0, 0)
+                                                    quatf physics:localRot0 = (-0.9936156, -0.112818375, -7.372575e-18, -6.505213e-18)
+                                                    quatf physics:localRot1 = (1, 0, 0, 0)
+                                                }
+                                            }
+
+                                            def PhysicsFixedJoint "PhysicsFixedJoint"
+                                            {
+                                                custom rel physics:body0
+                                                prepend rel physics:body0 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link>
+                                                custom rel physics:body1
+                                                prepend rel physics:body1 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_little_prox>
+                                                point3f physics:localPos0 = (-0.033731, -0.00356722, -0.15373)
+                                                point3f physics:localPos1 = (0, 0, 0)
+                                                quatf physics:localRot0 = (-0.67181516, 0.7394341, -0.043293606, -0.005217161)
+                                                quatf physics:localRot1 = (1, 0, 0, 0)
+                                            }
+                                        }
+
+                                        def PhysicsRevoluteJoint "zarm_r7_joint" (
+                                            prepend apiSchemas = ["PhysicsDriveAPI:angular", "PhysicsJointStateAPI:angular"]
+                                        )
+                                        {
+                                            uniform token physics:axis = "Y"
+                                            custom rel physics:body0
+                                            prepend rel physics:body0 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link>
+                                            custom rel physics:body1
+                                            prepend rel physics:body1 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link>
+                                            point3f physics:localPos0 = (0, 0, -0.021)
+                                            point3f physics:localPos1 = (0, 0, 0)
+                                            quatf physics:localRot0 = (1, 0, 0, 0)
+                                            quatf physics:localRot1 = (1, 0, 0, 0)
+                                            float physics:lowerLimit = -40.000015
+                                            float physics:upperLimit = 40.000015
+                                        }
+                                    }
+
+                                    def PhysicsRevoluteJoint "zarm_r6_joint" (
+                                        prepend apiSchemas = ["PhysicsDriveAPI:angular", "PhysicsJointStateAPI:angular"]
+                                    )
+                                    {
+                                        uniform token physics:axis = "X"
+                                        custom rel physics:body0
+                                        prepend rel physics:body0 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link>
+                                        custom rel physics:body1
+                                        prepend rel physics:body1 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link>
+                                        point3f physics:localPos0 = (0, 0, -0.114)
+                                        point3f physics:localPos1 = (0, 0, 0)
+                                        quatf physics:localRot0 = (1, 0, 0, 0)
+                                        quatf physics:localRot1 = (1, 0, 0, 0)
+                                        float physics:lowerLimit = -40.000015
+                                        float physics:upperLimit = 75.000175
+                                    }
+                                }
+
+                                def PhysicsRevoluteJoint "zarm_r5_joint" (
+                                    prepend apiSchemas = ["PhysicsDriveAPI:angular", "PhysicsJointStateAPI:angular"]
+                                )
+                                {
+                                    uniform token physics:axis = "Z"
+                                    custom rel physics:body0
+                                    prepend rel physics:body0 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link>
+                                    custom rel physics:body1
+                                    prepend rel physics:body1 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link>
+                                    point3f physics:localPos0 = (-0.02, 0, -0.1195)
+                                    point3f physics:localPos1 = (0, 0, 0)
+                                    quatf physics:localRot0 = (1, 0, 0, 0)
+                                    quatf physics:localRot1 = (1, 0, 0, 0)
+                                    float physics:lowerLimit = -90.00021
+                                    float physics:upperLimit = 90.00021
+                                }
+                            }
+
+                            def PhysicsRevoluteJoint "zarm_r4_joint" (
+                                prepend apiSchemas = ["PhysicsDriveAPI:angular", "PhysicsJointStateAPI:angular"]
+                            )
+                            {
+                                uniform token physics:axis = "Y"
+                                custom rel physics:body0
+                                prepend rel physics:body0 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link>
+                                custom rel physics:body1
+                                prepend rel physics:body1 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link>
+                                point3f physics:localPos0 = (0.02, 0, -0.2837)
+                                point3f physics:localPos1 = (0, 0, 0)
+                                quatf physics:localRot0 = (1, 0, 0, 0)
+                                quatf physics:localRot1 = (1, 0, 0, 0)
+                                float physics:lowerLimit = -149.99977
+                                float physics:upperLimit = 0
+                            }
+                        }
+
+                        def PhysicsRevoluteJoint "zarm_r3_joint" (
+                            prepend apiSchemas = ["PhysicsDriveAPI:angular", "PhysicsJointStateAPI:angular"]
+                        )
+                        {
+                            uniform token physics:axis = "Z"
+                            custom rel physics:body0
+                            prepend rel physics:body0 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link>
+                            custom rel physics:body1
+                            prepend rel physics:body1 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link>
+                            point3f physics:localPos0 = (0, 0, 0)
+                            point3f physics:localPos1 = (0, 0, 0)
+                            quatf physics:localRot0 = (1, 0, 0, 0)
+                            quatf physics:localRot1 = (1, 0, 0, 0)
+                            float physics:lowerLimit = -85.00001
+                            float physics:upperLimit = 85.00001
+                        }
+                    }
+
+                    def PhysicsRevoluteJoint "zarm_r2_joint" (
+                        prepend apiSchemas = ["PhysicsDriveAPI:angular", "PhysicsJointStateAPI:angular"]
+                    )
+                    {
+                        uniform token physics:axis = "X"
+                        custom rel physics:body0
+                        prepend rel physics:body0 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link>
+                        custom rel physics:body1
+                        prepend rel physics:body1 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link>
+                        point3f physics:localPos0 = (0, 0, 0)
+                        point3f physics:localPos1 = (0, 0, 0)
+                        quatf physics:localRot0 = (1, 0, 0, 0)
+                        quatf physics:localRot1 = (1, 0, 0, 0)
+                        float physics:lowerLimit = -200.00009
+                        float physics:upperLimit = 20.000008
+                    }
+                }
+
+                def PhysicsRevoluteJoint "zarm_r1_joint" (
+                    prepend apiSchemas = ["PhysicsDriveAPI:angular", "PhysicsJointStateAPI:angular"]
+                )
+                {
+                    uniform token physics:axis = "Y"
+                    custom rel physics:body0
+                    prepend rel physics:body0 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base>
+                    custom rel physics:body1
+                    prepend rel physics:body1 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link>
+                    point3f physics:localPos0 = (0, 0, 0)
+                    point3f physics:localPos1 = (0, 0, 0)
+                    quatf physics:localRot0 = (1, 0, 0, 0)
+                    quatf physics:localRot1 = (1, 0, 0, 0)
+                    float physics:lowerLimit = -179.99985
+                    float physics:upperLimit = 90.00021
+                }
+            }
+
+            def PhysicsFixedJoint "PhysicsFixedJoint"
+            {
+                custom rel physics:body0
+                prepend rel physics:body0 = </kuavo_s63_right_arm_dexhand_rl>
+                custom rel physics:body1
+                prepend rel physics:body1 = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base>
+                point3f physics:localPos0 = (0, 0, 0)
+                point3f physics:localPos1 = (0, 0, 0)
+                quatf physics:localRot0 = (1, 0, 0, 0)
+                quatf physics:localRot1 = (1, 0, 0, 0)
+            }
+        }
+    }
+
+    over "Physics"
+    {
+        over "PhysicsMaterial" (
+            prepend apiSchemas = ["PhysicsMaterialAPI", "NewtonMaterialAPI"]
+        )
+        {
+            float newton:rollingFriction = 0.0001
+            float newton:torsionalFriction = 0.005
+            float physics:dynamicFriction = 1
+        }
+    }
+}
+

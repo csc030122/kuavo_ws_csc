@@ -1,0 +1,1611 @@
+#usda 1.0
+(
+    customLayerData = {
+        string creator = "MuJoCo USD Converter v0.2.0"
+    }
+    doc = """Generated from Composed Stage of root layer /tmp/tmpfbsae6es/kuavo_s63_dexhand_rl.usdc
+
+
+Generated from Composed Stage of root layer /tmp/mjcf_import_kuavo_s63_dexhand_rl_dx9140k1/usdex_kuavo_s63_dexhand_rl/kuavo_s63_dexhand_rl.usdc
+
+
+Generated from Composed Stage of root layer /tmp/mjcf_import_kuavo_s63_dexhand_rl_dx9140k1/temp_kuavo_s63_dexhand_rl/kuavo_s63_dexhand_rl.usd
+"""
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Scope "Instances"
+{
+    def Xform "base_link" (
+        prepend references = @./geometries.usd@</Geometries/base_link>
+    )
+    {
+        over "base_link" (
+            apiSchemas = ["MjcImageableAPI"]
+        )
+        {
+            int mjc:group = 1
+        }
+    }
+
+    def Xform "wheel_left_front" (
+        prepend references = @./geometries.usd@</Geometries/wheel_left_front>
+    )
+    {
+        over "wheel_left_front" (
+            apiSchemas = ["MjcImageableAPI"]
+        )
+        {
+            int mjc:group = 1
+        }
+    }
+
+    def Xform "wheel_right_front" (
+        prepend references = @./geometries.usd@</Geometries/wheel_right_front>
+    )
+    {
+        over "wheel_right_front" (
+            apiSchemas = ["MjcImageableAPI"]
+        )
+        {
+            int mjc:group = 1
+        }
+    }
+
+    def Xform "wheel_left_behind" (
+        prepend references = @./geometries.usd@</Geometries/wheel_left_behind>
+    )
+    {
+        over "wheel_left_behind" (
+            apiSchemas = ["MjcImageableAPI"]
+        )
+        {
+            int mjc:group = 1
+        }
+    }
+
+    def Xform "wheel_right_behind" (
+        prepend references = @./geometries.usd@</Geometries/wheel_right_behind>
+    )
+    {
+        over "wheel_right_behind" (
+            apiSchemas = ["MjcImageableAPI"]
+        )
+        {
+            int mjc:group = 1
+        }
+    }
+
+    def Xform "knee_link" (
+        prepend references = @./geometries.usd@</Geometries/knee_link>
+    )
+    {
+        over "knee_link" (
+            apiSchemas = ["MjcImageableAPI"]
+        )
+        {
+            int mjc:group = 1
+        }
+    }
+
+    def Xform "head_camera_depth" (
+        prepend references = @./geometries.usd@</Geometries/head_camera_depth>
+    )
+    {
+        over "head_camera_depth" (
+            apiSchemas = ["MjcImageableAPI"]
+        )
+        {
+            int mjc:group = 1
+        }
+    }
+
+    def Xform "head_camera_depth_1" (
+        prepend references = @./geometries.usd@</Geometries/head_camera_depth>
+    )
+    {
+        over "head_camera_depth" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+        }
+    }
+
+    def Xform "leg_Link" (
+        prepend references = @./geometries.usd@</Geometries/leg_Link>
+    )
+    {
+        over "leg_Link" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+        }
+    }
+
+    def Xform "waist_pitch_Link" (
+        prepend references = @./geometries.usd@</Geometries/waist_pitch_Link>
+    )
+    {
+        over "waist_pitch_Link" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+        }
+    }
+
+    def Xform "waist_yaw_Link" (
+        prepend references = @./geometries.usd@</Geometries/waist_yaw_Link>
+    )
+    {
+        over "waist_yaw_Link" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+        }
+    }
+
+    def Xform "torso" (
+        prepend references = @./geometries.usd@</Geometries/torso>
+    )
+    {
+        over "torso" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+        }
+    }
+
+    def Xform "l_arm_pitch" (
+        prepend references = @./geometries.usd@</Geometries/l_arm_pitch>
+    )
+    {
+        over "l_arm_pitch" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+        }
+    }
+
+    def Xform "l_arm_roll" (
+        prepend references = @./geometries.usd@</Geometries/l_arm_roll>
+    )
+    {
+        over "l_arm_roll" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+        }
+    }
+
+    def Xform "l_arm_yaw" (
+        prepend references = @./geometries.usd@</Geometries/l_arm_yaw>
+    )
+    {
+        over "l_arm_yaw" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+        }
+    }
+
+    def Xform "l_forearm" (
+        prepend references = @./geometries.usd@</Geometries/l_forearm>
+    )
+    {
+        over "l_forearm" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+        }
+    }
+
+    def Xform "l_hand_yaw" (
+        prepend references = @./geometries.usd@</Geometries/l_hand_yaw>
+    )
+    {
+        over "l_hand_yaw" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+        }
+    }
+
+    def Xform "l_hand_roll" (
+        prepend references = @./geometries.usd@</Geometries/l_hand_roll>
+    )
+    {
+        over "l_hand_roll" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+        }
+    }
+
+    def Xform "s49_l_hand_pitch" (
+        prepend references = @./geometries.usd@</Geometries/s49_l_hand_pitch>
+    )
+    {
+        over "s49_l_hand_pitch" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+        }
+    }
+
+    def Xform "l_hand_tripod" (
+        prepend references = @./geometries.usd@</Geometries/l_hand_tripod>
+    )
+    {
+        over "l_hand_tripod" (
+            apiSchemas = ["MjcImageableAPI"]
+        )
+        {
+            int mjc:group = 1
+        }
+    }
+
+    def Xform "l_hand_camera" (
+        prepend references = @./geometries.usd@</Geometries/l_hand_camera>
+    )
+    {
+        over "l_hand_camera" (
+            apiSchemas = ["MjcImageableAPI"]
+        )
+        {
+            int mjc:group = 1
+        }
+    }
+
+    def Xform "l_palm" (
+        prepend references = @./geometries.usd@</Geometries/l_palm>
+    )
+    {
+        over "l_palm" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+        }
+    }
+
+    def Xform "l_thumb_prox" (
+        prepend references = @./geometries.usd@</Geometries/l_thumb_prox>
+    )
+    {
+        over "l_thumb_prox" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            bool physics:collisionEnabled = 0
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "l_thumb_prox_1" (
+        prepend references = @./geometries.usd@</Geometries/l_thumb_prox>
+    )
+    {
+        over "l_thumb_prox" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "l_thumb_dist" (
+        prepend references = @./geometries.usd@</Geometries/l_thumb_dist>
+    )
+    {
+        over "l_thumb_dist" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            bool physics:collisionEnabled = 0
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "l_thumb_dist_1" (
+        prepend references = @./geometries.usd@</Geometries/l_thumb_dist>
+    )
+    {
+        over "l_thumb_dist" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "l_Index_prox" (
+        prepend references = @./geometries.usd@</Geometries/l_Index_prox>
+    )
+    {
+        over "l_Index_prox" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            bool physics:collisionEnabled = 0
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "l_Index_prox_1" (
+        prepend references = @./geometries.usd@</Geometries/l_Index_prox>
+    )
+    {
+        over "l_Index_prox" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "l_index_dist" (
+        prepend references = @./geometries.usd@</Geometries/l_index_dist>
+    )
+    {
+        over "l_index_dist" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            bool physics:collisionEnabled = 0
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "l_index_dist_1" (
+        prepend references = @./geometries.usd@</Geometries/l_index_dist>
+    )
+    {
+        over "l_index_dist" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "l_middle_prox" (
+        prepend references = @./geometries.usd@</Geometries/l_middle_prox>
+    )
+    {
+        over "l_middle_prox" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            bool physics:collisionEnabled = 0
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "l_middle_prox_1" (
+        prepend references = @./geometries.usd@</Geometries/l_middle_prox>
+    )
+    {
+        over "l_middle_prox" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "l_middle_dist" (
+        prepend references = @./geometries.usd@</Geometries/l_middle_dist>
+    )
+    {
+        over "l_middle_dist" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            bool physics:collisionEnabled = 0
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "l_middle_dist_1" (
+        prepend references = @./geometries.usd@</Geometries/l_middle_dist>
+    )
+    {
+        over "l_middle_dist" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "l_ring_prox" (
+        prepend references = @./geometries.usd@</Geometries/l_ring_prox>
+    )
+    {
+        over "l_ring_prox" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            bool physics:collisionEnabled = 0
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "l_ring_prox_1" (
+        prepend references = @./geometries.usd@</Geometries/l_ring_prox>
+    )
+    {
+        over "l_ring_prox" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "l_ring_dist" (
+        prepend references = @./geometries.usd@</Geometries/l_ring_dist>
+    )
+    {
+        over "l_ring_dist" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            bool physics:collisionEnabled = 0
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "l_ring_dist_1" (
+        prepend references = @./geometries.usd@</Geometries/l_ring_dist>
+    )
+    {
+        over "l_ring_dist" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "l_little_prox" (
+        prepend references = @./geometries.usd@</Geometries/l_little_prox>
+    )
+    {
+        over "l_little_prox" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            bool physics:collisionEnabled = 0
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "l_little_prox_1" (
+        prepend references = @./geometries.usd@</Geometries/l_little_prox>
+    )
+    {
+        over "l_little_prox" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "l_little_dist" (
+        prepend references = @./geometries.usd@</Geometries/l_little_dist>
+    )
+    {
+        over "l_little_dist" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            bool physics:collisionEnabled = 0
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "l_little_dist_1" (
+        prepend references = @./geometries.usd@</Geometries/l_little_dist>
+    )
+    {
+        over "l_little_dist" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "r_arm_pitch" (
+        prepend references = @./geometries.usd@</Geometries/r_arm_pitch>
+    )
+    {
+        over "r_arm_pitch" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+        }
+    }
+
+    def Xform "r_arm_roll" (
+        prepend references = @./geometries.usd@</Geometries/r_arm_roll>
+    )
+    {
+        over "r_arm_roll" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+        }
+    }
+
+    def Xform "r_arm_yaw" (
+        prepend references = @./geometries.usd@</Geometries/r_arm_yaw>
+    )
+    {
+        over "r_arm_yaw" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+        }
+    }
+
+    def Xform "r_forearm" (
+        prepend references = @./geometries.usd@</Geometries/r_forearm>
+    )
+    {
+        over "r_forearm" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+        }
+    }
+
+    def Xform "r_hand_yaw" (
+        prepend references = @./geometries.usd@</Geometries/r_hand_yaw>
+    )
+    {
+        over "r_hand_yaw" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+        }
+    }
+
+    def Xform "r_hand_roll" (
+        prepend references = @./geometries.usd@</Geometries/r_hand_roll>
+    )
+    {
+        over "r_hand_roll" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+        }
+    }
+
+    def Xform "s49_r_hand_pitch" (
+        prepend references = @./geometries.usd@</Geometries/s49_r_hand_pitch>
+    )
+    {
+        over "s49_r_hand_pitch" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+        }
+    }
+
+    def Xform "r_hand_tripod" (
+        prepend references = @./geometries.usd@</Geometries/r_hand_tripod>
+    )
+    {
+        over "r_hand_tripod" (
+            apiSchemas = ["MjcImageableAPI"]
+        )
+        {
+            int mjc:group = 1
+        }
+    }
+
+    def Xform "r_palm" (
+        prepend references = @./geometries.usd@</Geometries/r_palm>
+    )
+    {
+        over "r_palm" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+        }
+    }
+
+    def Xform "r_thumb_prox" (
+        prepend references = @./geometries.usd@</Geometries/r_thumb_prox>
+    )
+    {
+        over "r_thumb_prox" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            bool physics:collisionEnabled = 0
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "r_thumb_prox_1" (
+        prepend references = @./geometries.usd@</Geometries/r_thumb_prox>
+    )
+    {
+        over "r_thumb_prox" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "r_thumb_dist" (
+        prepend references = @./geometries.usd@</Geometries/r_thumb_dist>
+    )
+    {
+        over "r_thumb_dist" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            bool physics:collisionEnabled = 0
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "r_thumb_dist_1" (
+        prepend references = @./geometries.usd@</Geometries/r_thumb_dist>
+    )
+    {
+        over "r_thumb_dist" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "r_index_prox" (
+        prepend references = @./geometries.usd@</Geometries/r_index_prox>
+    )
+    {
+        over "r_index_prox" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            bool physics:collisionEnabled = 0
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "r_index_prox_1" (
+        prepend references = @./geometries.usd@</Geometries/r_index_prox>
+    )
+    {
+        over "r_index_prox" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "r_index_dist" (
+        prepend references = @./geometries.usd@</Geometries/r_index_dist>
+    )
+    {
+        over "r_index_dist" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            bool physics:collisionEnabled = 0
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "r_index_dist_1" (
+        prepend references = @./geometries.usd@</Geometries/r_index_dist>
+    )
+    {
+        over "r_index_dist" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "r_middle_prox" (
+        prepend references = @./geometries.usd@</Geometries/r_middle_prox>
+    )
+    {
+        over "r_middle_prox" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            bool physics:collisionEnabled = 0
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "r_middle_prox_1" (
+        prepend references = @./geometries.usd@</Geometries/r_middle_prox>
+    )
+    {
+        over "r_middle_prox" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "r_middle_dist" (
+        prepend references = @./geometries.usd@</Geometries/r_middle_dist>
+    )
+    {
+        over "r_middle_dist" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            bool physics:collisionEnabled = 0
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "r_middle_dist_1" (
+        prepend references = @./geometries.usd@</Geometries/r_middle_dist>
+    )
+    {
+        over "r_middle_dist" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "r_ring_prox" (
+        prepend references = @./geometries.usd@</Geometries/r_ring_prox>
+    )
+    {
+        over "r_ring_prox" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            bool physics:collisionEnabled = 0
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "r_ring_prox_1" (
+        prepend references = @./geometries.usd@</Geometries/r_ring_prox>
+    )
+    {
+        over "r_ring_prox" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "r_ring_dist" (
+        prepend references = @./geometries.usd@</Geometries/r_ring_dist>
+    )
+    {
+        over "r_ring_dist" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            bool physics:collisionEnabled = 0
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "r_ring_dist_1" (
+        prepend references = @./geometries.usd@</Geometries/r_ring_dist>
+    )
+    {
+        over "r_ring_dist" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "r_little_prox" (
+        prepend references = @./geometries.usd@</Geometries/r_little_prox>
+    )
+    {
+        over "r_little_prox" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            bool physics:collisionEnabled = 0
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "r_little_prox_1" (
+        prepend references = @./geometries.usd@</Geometries/r_little_prox>
+    )
+    {
+        over "r_little_prox" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "r_little_dist" (
+        prepend references = @./geometries.usd@</Geometries/r_little_dist>
+    )
+    {
+        over "r_little_dist" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            bool physics:collisionEnabled = 0
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "r_little_dist_1" (
+        prepend references = @./geometries.usd@</Geometries/r_little_dist>
+    )
+    {
+        over "r_little_dist" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+            float physics:density = 1000
+        }
+    }
+
+    def Xform "head_yaw" (
+        prepend references = @./geometries.usd@</Geometries/head_yaw>
+    )
+    {
+        over "head_yaw" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+        }
+    }
+
+    def Xform "head_radar" (
+        prepend references = @./geometries.usd@</Geometries/head_radar>
+    )
+    {
+        over "head_radar" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+        }
+    }
+
+    def Xform "head_pitch" (
+        prepend references = @./geometries.usd@</Geometries/head_pitch>
+    )
+    {
+        over "head_pitch" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+        }
+    }
+
+    def Xform "head_camera_base" (
+        prepend references = @./geometries.usd@</Geometries/head_camera_base>
+    )
+    {
+        over "head_camera_base" (
+            apiSchemas = ["PhysicsCollisionAPI", "NewtonCollisionAPI", "MjcCollisionAPI", "PhysicsMeshCollisionAPI", "NewtonMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            custom rel material:binding:physics
+            prepend rel material:binding:physics = </kuavo_s63_dexhand_rl/Physics/PhysicsMaterial_1>
+            int mjc:group = 1
+            float newton:contactGap = 0 (
+                limits = {
+                    dictionary hard = {
+                        double minimum = 0
+                    }
+                }
+            )
+            token physics:approximation = "convexHull"
+        }
+    }
+}
+

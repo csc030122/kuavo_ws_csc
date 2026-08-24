@@ -1,0 +1,217 @@
+{
+  "schema_version": 1,
+  "units": {
+    "length": "m",
+    "angle": "rad",
+    "quaternion": "wxyz"
+  },
+  "active_joint_names": [
+    "zarm_r1_joint",
+    "zarm_r2_joint",
+    "zarm_r3_joint",
+    "zarm_r4_joint",
+    "zarm_r5_joint",
+    "zarm_r6_joint",
+    "zarm_r7_joint",
+    "r_thumbCMC",
+    "r_thumbMCP",
+    "r_indexMCP",
+    "r_indexPIP",
+    "r_middleMCP",
+    "r_middlePIP"
+  ],
+  "arm_base_reference": "/World/Robot/ArmBaseReference (fixed parent frame of zarm_r1_joint)",
+  "robot_root_world_pose": {
+    "position": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "orientation": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "right_arm_base_world_pose": {
+    "position": [
+      0.11075,
+      -0.253,
+      1.19601
+    ],
+    "orientation": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "table": {
+    "center_position": [
+      0.72,
+      0.0,
+      0.95
+    ],
+    "orientation": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "size": [
+      0.64,
+      0.7,
+      0.1
+    ],
+    "top_z": 1.0
+  },
+  "temporary_support": {
+    "center_position": [
+      0.72,
+      0.0,
+      1.005
+    ],
+    "orientation": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "size": [
+      0.28,
+      0.28,
+      0.01
+    ],
+    "top_z": 1.01
+  },
+  "object_spawn_world_pose": {
+    "position": [
+      0.72,
+      0.0,
+      1.04712893
+    ],
+    "orientation": [
+      0.7698797,
+      -0.04931977,
+      0.6181991,
+      0.15060773
+    ],
+    "free_fall_gap": 0.02
+  },
+  "object_nominal_settled_world_pose": {
+    "position": [
+      0.7200040817260742,
+      -1.6577541828155518e-07,
+      1.0271283388137817
+    ],
+    "orientation": [
+      0.7698766589164734,
+      -0.04932180068623808,
+      0.6182035234807731,
+      0.1506044275200183
+    ],
+    "note": "Natural settled orientation recentered on the front table; this is the grasp-training baseline."
+  },
+  "arm_base_to_object_nominal": {
+    "position": [
+      0.6092540817260742,
+      0.2529998342245817,
+      -0.16888166118621828
+    ],
+    "orientation": [
+      0.7698766589164734,
+      -0.04932180068623808,
+      0.6182035234807731,
+      0.1506044275200183
+    ]
+  },
+  "right_palm_initial_world_pose": {
+    "position": [
+      0.47986943,
+      -0.15008352,
+      1.12618281
+    ],
+    "orientation": [
+      0.11631499,
+      0.43230485,
+      0.85826107,
+      -0.25094079
+    ],
+    "approach_axis_toward_object": [
+      0.8004372,
+      0.50028247,
+      -0.33017835
+    ]
+  },
+  "arm_base_to_right_palm": {
+    "position": [
+      0.36911942999999997,
+      0.10291648,
+      -0.06982719000000004
+    ],
+    "orientation": [
+      0.11631499,
+      0.43230485,
+      0.85826107,
+      -0.25094079
+    ]
+  },
+  "right_arm_initial_joint_positions": {
+    "zarm_r1_joint": -1.04022829,
+    "zarm_r2_joint": -0.61722983,
+    "zarm_r3_joint": 1.03403416,
+    "zarm_r4_joint": -2.02895911,
+    "zarm_r5_joint": 0.56224872,
+    "zarm_r6_joint": 0.88393094,
+    "zarm_r7_joint": 0.448132
+  },
+  "right_hand_initial_joint_positions": {
+    "r_thumbCMC": 0.05,
+    "r_thumbMCP": 0.05,
+    "r_indexMCP": 0.05,
+    "r_indexPIP": 0.05,
+    "r_middleMCP": 0.05,
+    "r_middlePIP": 0.05
+  },
+  "right_hand_joint_limits_rad": {
+    "r_thumbCMC": [
+      0.0,
+      1.5708
+    ],
+    "r_thumbMCP": [
+      0.0,
+      0.87266
+    ],
+    "r_indexMCP": [
+      0.0,
+      1.309
+    ],
+    "r_indexPIP": [
+      0.0,
+      1.25
+    ],
+    "r_middleMCP": [
+      0.0,
+      1.309
+    ],
+    "r_middlePIP": [
+      0.0,
+      1.25
+    ]
+  },
+  "object": {
+    "half_extents": [
+      0.02188873291015625,
+      0.03621935844421387,
+      0.033456265926361084
+    ],
+    "mass": 0.18,
+    "collision": "convexDecomposition",
+    "mass_status": "engineering estimate; measure before sim-to-real"
+  },
+  "control": {
+    "arm_gain_source": "src/kuavo_assets/config/kuavo_v63/kuavo.json ruiwo_kp/ruiwo_kd",
+    "finger_gain_status": "Isaac stage-0 smoke-test gains; S49 MJCF has position actuators but no servo kp"
+  }
+}

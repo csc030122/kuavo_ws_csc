@@ -1,0 +1,534 @@
+#usda 1.0
+(
+    customLayerData = {
+        string creator = "MuJoCo USD Converter v0.2.0"
+    }
+    defaultPrim = "kuavo_s63_right_arm_dexhand_rl"
+    doc = """Generated from Composed Stage of root layer /tmp/tmp4_5kyxe6/kuavo_s63_right_arm_dexhand_rl.usdc
+
+
+Generated from Composed Stage of root layer /tmp/mjcf_import_kuavo_s63_right_arm_dexhand_rl_6kpze3l4/usdex_kuavo_s63_right_arm_dexhand_rl/kuavo_s63_right_arm_dexhand_rl.usdc
+
+
+Generated from Composed Stage of root layer /tmp/mjcf_import_kuavo_s63_right_arm_dexhand_rl_6kpze3l4/temp_kuavo_s63_right_arm_dexhand_rl/kuavo_s63_right_arm_dexhand_rl.usd
+"""
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    subLayers = [
+        @./physics.usda@
+    ]
+    upAxis = "Z"
+)
+
+over "kuavo_s63_right_arm_dexhand_rl"
+{
+    over "Geometry"
+    {
+        over "arm_base"
+        {
+            over "zarm_r1_link"
+            {
+                over "zarm_r2_link"
+                {
+                    over "zarm_r3_link"
+                    {
+                        over "zarm_r4_link"
+                        {
+                            over "zarm_r5_link"
+                            {
+                                over "zarm_r6_link"
+                                {
+                                    over "zarm_r7_link"
+                                    {
+                                        over "Sphere" (
+                                            prepend apiSchemas = ["MjcCollisionAPI"]
+                                        )
+                                        {
+                                        }
+
+                                        over "r_arm_ft_frame" (
+                                            prepend apiSchemas = ["MjcSiteAPI"]
+                                        )
+                                        {
+                                            uniform int mjc:group = 1
+                                        }
+
+                                        over "r_palm"
+                                        {
+                                            over "r_dhand_approach_site" (
+                                                prepend apiSchemas = ["MjcSiteAPI"]
+                                            )
+                                            {
+                                                uniform int mjc:group = 1
+                                            }
+
+                                            over "PhysicsFixedJoint"
+                                            {
+                                            }
+
+                                            over "r_palm"
+                                            {
+                                            }
+                                        }
+
+                                        over "r_thumb_prox"
+                                        {
+                                            over "r_thumb_dist"
+                                            {
+                                                over "r_thumbMCP" (
+                                                    delete apiSchemas = ["PhysicsDriveAPI:angular", "PhysicsJointStateAPI:angular"]
+                                                    prepend apiSchemas = ["MjcJointAPI"]
+                                                )
+                                                {
+                                                    uniform double mjc:damping = 1
+                                                }
+
+                                                over "r_thumb_dist"
+                                                {
+                                                }
+
+                                                over "r_thumb_dist_1"
+                                                {
+                                                }
+                                            }
+
+                                            over "r_thumbCMC" (
+                                                delete apiSchemas = ["PhysicsDriveAPI:angular", "PhysicsJointStateAPI:angular"]
+                                                prepend apiSchemas = ["MjcJointAPI"]
+                                            )
+                                            {
+                                                uniform double mjc:damping = 1
+                                            }
+
+                                            over "r_thumb_prox"
+                                            {
+                                            }
+
+                                            over "r_thumb_prox_1"
+                                            {
+                                            }
+                                        }
+
+                                        over "r_index_prox"
+                                        {
+                                            over "r_index_dist"
+                                            {
+                                                over "r_indexPIP" (
+                                                    delete apiSchemas = ["PhysicsDriveAPI:angular", "PhysicsJointStateAPI:angular"]
+                                                    prepend apiSchemas = ["MjcJointAPI"]
+                                                )
+                                                {
+                                                    uniform double mjc:damping = 1
+                                                }
+
+                                                over "r_index_dist"
+                                                {
+                                                }
+
+                                                over "r_index_dist_1"
+                                                {
+                                                }
+                                            }
+
+                                            over "r_indexMCP" (
+                                                delete apiSchemas = ["PhysicsDriveAPI:angular", "PhysicsJointStateAPI:angular"]
+                                                prepend apiSchemas = ["MjcJointAPI"]
+                                            )
+                                            {
+                                                uniform double mjc:damping = 1
+                                            }
+
+                                            over "r_index_prox"
+                                            {
+                                            }
+
+                                            over "r_index_prox_1"
+                                            {
+                                            }
+                                        }
+
+                                        over "r_middle_prox"
+                                        {
+                                            over "r_middle_dist"
+                                            {
+                                                over "r_middlePIP" (
+                                                    delete apiSchemas = ["PhysicsDriveAPI:angular", "PhysicsJointStateAPI:angular"]
+                                                    prepend apiSchemas = ["MjcJointAPI"]
+                                                )
+                                                {
+                                                    uniform double mjc:damping = 1
+                                                }
+
+                                                over "r_middle_dist"
+                                                {
+                                                }
+
+                                                over "r_middle_dist_1"
+                                                {
+                                                }
+                                            }
+
+                                            over "r_middleMCP" (
+                                                delete apiSchemas = ["PhysicsDriveAPI:angular", "PhysicsJointStateAPI:angular"]
+                                                prepend apiSchemas = ["MjcJointAPI"]
+                                            )
+                                            {
+                                                uniform double mjc:damping = 1
+                                            }
+
+                                            over "r_middle_prox"
+                                            {
+                                            }
+
+                                            over "r_middle_prox_1"
+                                            {
+                                            }
+                                        }
+
+                                        over "zarm_r7_joint" (
+                                            delete apiSchemas = ["PhysicsDriveAPI:angular", "PhysicsJointStateAPI:angular"]
+                                            prepend apiSchemas = ["MjcJointAPI"]
+                                        )
+                                        {
+                                            uniform double mjc:actuatorfrcrange:max = 14.1
+                                            uniform double mjc:actuatorfrcrange:min = -14.1
+                                            uniform double mjc:armature = 0.05
+                                            uniform double mjc:damping = 0.02
+                                            uniform double mjc:frictionloss = 0.02
+                                            uniform int mjc:group = 2
+                                        }
+
+                                        over "r_hand_tripod"
+                                        {
+                                            over "r_hand_camera_link"
+                                            {
+                                                over "PhysicsFixedJoint"
+                                                {
+                                                }
+
+                                                over "r_hand_camera"
+                                                {
+                                                }
+                                            }
+
+                                            over "PhysicsFixedJoint"
+                                            {
+                                            }
+
+                                            over "r_hand_tripod"
+                                            {
+                                            }
+                                        }
+
+                                        over "r_ring_prox"
+                                        {
+                                            over "r_ring_dist"
+                                            {
+                                                over "PhysicsFixedJoint"
+                                                {
+                                                }
+
+                                                over "r_ring_dist"
+                                                {
+                                                }
+
+                                                over "r_ring_dist_1"
+                                                {
+                                                }
+                                            }
+
+                                            over "PhysicsFixedJoint"
+                                            {
+                                            }
+
+                                            over "r_ring_prox"
+                                            {
+                                            }
+
+                                            over "r_ring_prox_1"
+                                            {
+                                            }
+                                        }
+
+                                        over "r_little_prox"
+                                        {
+                                            over "r_little_dist"
+                                            {
+                                                over "PhysicsFixedJoint"
+                                                {
+                                                }
+
+                                                over "r_little_dist"
+                                                {
+                                                }
+
+                                                over "r_little_dist_1"
+                                                {
+                                                }
+                                            }
+
+                                            over "PhysicsFixedJoint"
+                                            {
+                                            }
+
+                                            over "r_little_prox"
+                                            {
+                                            }
+
+                                            over "r_little_prox_1"
+                                            {
+                                            }
+                                        }
+
+                                        over "s49_r_hand_pitch"
+                                        {
+                                        }
+                                    }
+
+                                    over "zarm_r6_joint" (
+                                        delete apiSchemas = ["PhysicsDriveAPI:angular", "PhysicsJointStateAPI:angular"]
+                                        prepend apiSchemas = ["MjcJointAPI"]
+                                    )
+                                    {
+                                        uniform double mjc:actuatorfrcrange:max = 14.1
+                                        uniform double mjc:actuatorfrcrange:min = -14.1
+                                        uniform double mjc:armature = 0.05
+                                        uniform double mjc:damping = 0.02
+                                        uniform double mjc:frictionloss = 0.02
+                                        uniform int mjc:group = 2
+                                    }
+
+                                    over "r_hand_roll"
+                                    {
+                                    }
+                                }
+
+                                over "zarm_r5_joint" (
+                                    delete apiSchemas = ["PhysicsDriveAPI:angular", "PhysicsJointStateAPI:angular"]
+                                    prepend apiSchemas = ["MjcJointAPI"]
+                                )
+                                {
+                                    uniform double mjc:actuatorfrcrange:max = 14.1
+                                    uniform double mjc:actuatorfrcrange:min = -14.1
+                                    uniform double mjc:armature = 0.05
+                                    uniform double mjc:damping = 0.02
+                                    uniform double mjc:frictionloss = 0.02
+                                    uniform int mjc:group = 2
+                                }
+
+                                over "r_hand_yaw"
+                                {
+                                }
+                            }
+
+                            over "zarm_r4_joint" (
+                                delete apiSchemas = ["PhysicsDriveAPI:angular", "PhysicsJointStateAPI:angular"]
+                                prepend apiSchemas = ["MjcJointAPI"]
+                            )
+                            {
+                                uniform double mjc:actuatorfrcrange:max = 75
+                                uniform double mjc:actuatorfrcrange:min = -75
+                                uniform double mjc:armature = 0.05
+                                uniform double mjc:damping = 0.02
+                                uniform double mjc:frictionloss = 0.02
+                                uniform int mjc:group = 2
+                            }
+
+                            over "r_forearm"
+                            {
+                            }
+                        }
+
+                        over "zarm_r3_joint" (
+                            delete apiSchemas = ["PhysicsDriveAPI:angular", "PhysicsJointStateAPI:angular"]
+                            prepend apiSchemas = ["MjcJointAPI"]
+                        )
+                        {
+                            uniform double mjc:actuatorfrcrange:max = 57
+                            uniform double mjc:actuatorfrcrange:min = -57
+                            uniform double mjc:armature = 0.05
+                            uniform double mjc:damping = 0.02
+                            uniform double mjc:frictionloss = 0.02
+                            uniform int mjc:group = 2
+                        }
+
+                        over "r_arm_yaw"
+                        {
+                        }
+                    }
+
+                    over "zarm_r2_joint" (
+                        delete apiSchemas = ["PhysicsDriveAPI:angular", "PhysicsJointStateAPI:angular"]
+                        prepend apiSchemas = ["MjcJointAPI"]
+                    )
+                    {
+                        uniform double mjc:actuatorfrcrange:max = 75
+                        uniform double mjc:actuatorfrcrange:min = -75
+                        uniform double mjc:armature = 0.05
+                        uniform double mjc:damping = 0.02
+                        uniform double mjc:frictionloss = 0.02
+                        uniform int mjc:group = 2
+                    }
+
+                    over "r_arm_roll"
+                    {
+                    }
+                }
+
+                over "zarm_r1_joint" (
+                    delete apiSchemas = ["PhysicsDriveAPI:angular", "PhysicsJointStateAPI:angular"]
+                    prepend apiSchemas = ["MjcJointAPI"]
+                )
+                {
+                    uniform double mjc:actuatorfrcrange:max = 85
+                    uniform double mjc:actuatorfrcrange:min = -85
+                    uniform double mjc:armature = 0.05
+                    uniform double mjc:damping = 0.02
+                    uniform double mjc:frictionloss = 0.02
+                    uniform int mjc:group = 2
+                }
+
+                over "r_arm_pitch"
+                {
+                }
+            }
+
+            over "PhysicsFixedJoint"
+            {
+            }
+        }
+    }
+
+    over "Physics"
+    {
+        over "PhysicsMaterial" (
+            prepend apiSchemas = ["MjcMaterialAPI"]
+        )
+        {
+        }
+
+        def MjcActuator "zarm_r1_joint_position"
+        {
+            uniform double[] mjc:biasPrm = [0, -270, 0, 0, 0, 0, 0, 0, 0, 0]
+            uniform token mjc:biasType = "affine"
+            uniform double[] mjc:gainPrm = [270, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            custom rel mjc:target
+            prepend rel mjc:target = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r1_joint>
+        }
+
+        def MjcActuator "zarm_r2_joint_position"
+        {
+            uniform double[] mjc:biasPrm = [0, -210, 0, 0, 0, 0, 0, 0, 0, 0]
+            uniform token mjc:biasType = "affine"
+            uniform double[] mjc:gainPrm = [210, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            custom rel mjc:target
+            prepend rel mjc:target = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r2_joint>
+        }
+
+        def MjcActuator "zarm_r3_joint_position"
+        {
+            uniform double[] mjc:biasPrm = [0, -256, 0, 0, 0, 0, 0, 0, 0, 0]
+            uniform token mjc:biasType = "affine"
+            uniform double[] mjc:gainPrm = [256, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            custom rel mjc:target
+            prepend rel mjc:target = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r3_joint>
+        }
+
+        def MjcActuator "zarm_r4_joint_position"
+        {
+            uniform double[] mjc:biasPrm = [0, -180, 0, 0, 0, 0, 0, 0, 0, 0]
+            uniform token mjc:biasType = "affine"
+            uniform double[] mjc:gainPrm = [180, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            custom rel mjc:target
+            prepend rel mjc:target = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r4_joint>
+        }
+
+        def MjcActuator "zarm_r5_joint_position"
+        {
+            uniform double[] mjc:biasPrm = [0, -120, 0, 0, 0, 0, 0, 0, 0, 0]
+            uniform token mjc:biasType = "affine"
+            uniform double[] mjc:gainPrm = [120, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            custom rel mjc:target
+            prepend rel mjc:target = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r5_joint>
+        }
+
+        def MjcActuator "zarm_r6_joint_position"
+        {
+            uniform double[] mjc:biasPrm = [0, -120, 0, 0, 0, 0, 0, 0, 0, 0]
+            uniform token mjc:biasType = "affine"
+            uniform double[] mjc:gainPrm = [120, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            custom rel mjc:target
+            prepend rel mjc:target = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r6_joint>
+        }
+
+        def MjcActuator "zarm_r7_joint_position"
+        {
+            uniform double[] mjc:biasPrm = [0, -120, 0, 0, 0, 0, 0, 0, 0, 0]
+            uniform token mjc:biasType = "affine"
+            uniform double[] mjc:gainPrm = [120, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            custom rel mjc:target
+            prepend rel mjc:target = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/zarm_r7_joint>
+        }
+
+        def MjcActuator "r_thumbCMC_position"
+        {
+            uniform double[] mjc:biasPrm = [0, -1, 0, 0, 0, 0, 0, 0, 0, 0]
+            uniform token mjc:biasType = "affine"
+            uniform token mjc:ctrlLimited = "true"
+            uniform double mjc:ctrlRange:max = 1.5708
+            custom rel mjc:target
+            prepend rel mjc:target = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_thumb_prox/r_thumbCMC>
+        }
+
+        def MjcActuator "r_thumbMCP_position"
+        {
+            uniform double[] mjc:biasPrm = [0, -1, 0, 0, 0, 0, 0, 0, 0, 0]
+            uniform token mjc:biasType = "affine"
+            uniform token mjc:ctrlLimited = "true"
+            uniform double mjc:ctrlRange:max = 0.87266
+            custom rel mjc:target
+            prepend rel mjc:target = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_thumb_prox/r_thumb_dist/r_thumbMCP>
+        }
+
+        def MjcActuator "r_indexMCP_position"
+        {
+            uniform double[] mjc:biasPrm = [0, -1, 0, 0, 0, 0, 0, 0, 0, 0]
+            uniform token mjc:biasType = "affine"
+            uniform token mjc:ctrlLimited = "true"
+            uniform double mjc:ctrlRange:max = 1.309
+            custom rel mjc:target
+            prepend rel mjc:target = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_index_prox/r_indexMCP>
+        }
+
+        def MjcActuator "r_indexPIP_position"
+        {
+            uniform double[] mjc:biasPrm = [0, -1, 0, 0, 0, 0, 0, 0, 0, 0]
+            uniform token mjc:biasType = "affine"
+            uniform token mjc:ctrlLimited = "true"
+            uniform double mjc:ctrlRange:max = 1.25
+            custom rel mjc:target
+            prepend rel mjc:target = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_index_prox/r_index_dist/r_indexPIP>
+        }
+
+        def MjcActuator "r_middleMCP_position"
+        {
+            uniform double[] mjc:biasPrm = [0, -1, 0, 0, 0, 0, 0, 0, 0, 0]
+            uniform token mjc:biasType = "affine"
+            uniform token mjc:ctrlLimited = "true"
+            uniform double mjc:ctrlRange:max = 1.309
+            custom rel mjc:target
+            prepend rel mjc:target = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_middle_prox/r_middleMCP>
+        }
+
+        def MjcActuator "r_middlePIP_position"
+        {
+            uniform double[] mjc:biasPrm = [0, -1, 0, 0, 0, 0, 0, 0, 0, 0]
+            uniform token mjc:biasType = "affine"
+            uniform token mjc:ctrlLimited = "true"
+            uniform double mjc:ctrlRange:max = 1.25
+            custom rel mjc:target
+            prepend rel mjc:target = </kuavo_s63_right_arm_dexhand_rl/Geometry/arm_base/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_middle_prox/r_middle_dist/r_middlePIP>
+        }
+    }
+}
+

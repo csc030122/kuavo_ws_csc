@@ -1,0 +1,279 @@
+{
+  "scene": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/RL_grab_box_isaac/scenes/kuavo_grasp_arm_only.usd",
+  "result": "PASS",
+  "active_dof_count": 13,
+  "active_dof_names_in_physx_order": [
+    "zarm_r1_joint",
+    "zarm_r2_joint",
+    "zarm_r3_joint",
+    "zarm_r4_joint",
+    "zarm_r5_joint",
+    "zarm_r6_joint",
+    "zarm_r7_joint",
+    "r_thumbCMC",
+    "r_indexMCP",
+    "r_middleMCP",
+    "r_thumbMCP",
+    "r_indexPIP",
+    "r_middlePIP"
+  ],
+  "table_top_z": -0.19601000000000002,
+  "support_top_z": -0.18601,
+  "lighting": {
+    "dome_path": "/World/EnvironmentLight",
+    "dome_intensity": 850.0
+  },
+  "layout": {
+    "robot_forward_axis": "+X",
+    "table_centerline_y": 0.253,
+    "table_near_edge_x": 0.28924999999999995,
+    "support_xy_offset_from_table_center": 0.0,
+    "object_spawn_xy_offset_from_table_center": 0.0
+  },
+  "joint_motion": {
+    "zarm_r1_joint": {
+      "command_delta": 0.08,
+      "measured_delta": 0.0731307864189148,
+      "max_other_joint_delta": 0.010920800268650055,
+      "pass": true
+    },
+    "zarm_r2_joint": {
+      "command_delta": 0.08,
+      "measured_delta": 0.07945650815963745,
+      "max_other_joint_delta": 0.002541661262512207,
+      "pass": true
+    },
+    "zarm_r3_joint": {
+      "command_delta": 0.08,
+      "measured_delta": 0.07388162612915039,
+      "max_other_joint_delta": 0.00760989636182785,
+      "pass": true
+    },
+    "zarm_r4_joint": {
+      "command_delta": 0.08,
+      "measured_delta": 0.08056390285491943,
+      "max_other_joint_delta": 0.0027627944946289062,
+      "pass": true
+    },
+    "zarm_r5_joint": {
+      "command_delta": 0.08,
+      "measured_delta": 0.07956469058990479,
+      "max_other_joint_delta": 0.0025550127029418945,
+      "pass": true
+    },
+    "zarm_r6_joint": {
+      "command_delta": 0.08,
+      "measured_delta": 0.08017218112945557,
+      "max_other_joint_delta": 0.002529740333557129,
+      "pass": true
+    },
+    "zarm_r7_joint": {
+      "command_delta": 0.08,
+      "measured_delta": 0.07975766062736511,
+      "max_other_joint_delta": 0.002557039260864258,
+      "pass": true
+    },
+    "r_thumbCMC": {
+      "command_delta": 0.15,
+      "measured_delta": 0.14997625350952148,
+      "max_other_joint_delta": 0.0025273561477661133,
+      "pass": true
+    },
+    "r_thumbMCP": {
+      "command_delta": 0.15,
+      "measured_delta": 0.14996376633644104,
+      "max_other_joint_delta": 0.0025283098220825195,
+      "pass": true
+    },
+    "r_indexMCP": {
+      "command_delta": 0.15,
+      "measured_delta": 0.14997296035289764,
+      "max_other_joint_delta": 0.002526998519897461,
+      "pass": true
+    },
+    "r_indexPIP": {
+      "command_delta": 0.15,
+      "measured_delta": 0.149969220161438,
+      "max_other_joint_delta": 0.0025271177291870117,
+      "pass": true
+    },
+    "r_middleMCP": {
+      "command_delta": 0.15,
+      "measured_delta": 0.14997422695159912,
+      "max_other_joint_delta": 0.002526998519897461,
+      "pass": true
+    },
+    "r_middlePIP": {
+      "command_delta": 0.15,
+      "measured_delta": 0.14996926486492157,
+      "max_other_joint_delta": 0.0025271177291870117,
+      "pass": true
+    }
+  },
+  "pip_joint_limits": {
+    "r_indexPIP": {
+      "lower_rad": 0.0,
+      "upper_rad": 1.2500000645252762,
+      "lower_deg": 0.0,
+      "upper_deg": 71.6197280883789
+    },
+    "r_middlePIP": {
+      "lower_rad": 0.0,
+      "upper_rad": 1.2500000645252762,
+      "lower_deg": 0.0,
+      "upper_deg": 71.6197280883789
+    }
+  },
+  "robot_root_world_pose": {
+    "position": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "orientation_wxyz": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "position_drift": 0.0
+  },
+  "right_arm_base_world_pose": {
+    "position": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "orientation_wxyz": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "table": {
+    "center_position": [
+      0.60925,
+      0.253,
+      -0.24601000000000006
+    ],
+    "orientation": [
+      1,
+      0,
+      0,
+      0
+    ],
+    "size": [
+      0.64,
+      0.7,
+      0.1
+    ],
+    "top_z": -0.19601000000000002
+  },
+  "temporary_support": {
+    "center_position": [
+      0.60925,
+      0.253,
+      -0.19101000000000012
+    ],
+    "orientation": [
+      1,
+      0,
+      0,
+      0
+    ],
+    "size": [
+      0.28,
+      0.28,
+      0.01
+    ],
+    "top_z": -0.18601
+  },
+  "right_palm_initial_world_pose": {
+    "position": [
+      0.3686215877532959,
+      0.10316382348537448,
+      -0.07347403466701509
+    ],
+    "orientation_wxyz": [
+      0.11280929107650771,
+      0.43061764164980754,
+      0.8585738815315654,
+      -0.25434897385009264
+    ]
+  },
+  "right_palm_final_world_pose": {
+    "position": [
+      0.3686060011386872,
+      0.1032049506902695,
+      -0.07352967560291293
+    ],
+    "orientation_wxyz": [
+      0.11273005070138963,
+      0.43053804286097863,
+      0.8586114401707007,
+      -0.2543920677346209
+    ]
+  },
+  "palm_attachment_drift": 3.143069811603693e-08,
+  "object": {
+    "spawn_position": [
+      0.60925,
+      0.253,
+      -0.14888107000000006
+    ],
+    "spawn_orientation_wxyz": [
+      0.9490681886672974,
+      -0.29321109794890343,
+      -0.07567815365522251,
+      0.08700369163840316
+    ],
+    "settled_position": [
+      0.6105805039405823,
+      0.2528553903102875,
+      -0.16413183510303497
+    ],
+    "settled_orientation_wxyz": [
+      0.9519889950752258,
+      -0.2871457951370857,
+      -0.046092119340648254,
+      0.09560210314339268
+    ],
+    "gravity_drop": 0.015250765103034913,
+    "linear_speed": 0.0,
+    "angular_speed": 0.0,
+    "settled_baseline_position_error": 0.0,
+    "settled_baseline_orientation_error_rad": 0.0,
+    "palm_distance": 0.29858945961097577,
+    "arm_base_to_settled_object_pose": {
+      "position": [
+        0.6105805039405823,
+        0.2528553903102875,
+        -0.16413183510303497
+      ],
+      "orientation_wxyz": [
+        0.9519889950752258,
+        -0.2871457951370857,
+        -0.046092119340648254,
+        0.09560210314339268
+      ]
+    }
+  },
+  "finger_collider_count": 6,
+  "ring_little_fixed": true,
+  "final_joint_positions": {
+    "zarm_r1_joint": -1.0334839820861816,
+    "zarm_r2_joint": -0.6169236898422241,
+    "zarm_r3_joint": 1.0375627279281616,
+    "zarm_r4_joint": -2.0276222229003906,
+    "zarm_r5_joint": 0.5618516206741333,
+    "zarm_r6_joint": 0.8846268653869629,
+    "zarm_r7_joint": 0.44787004590034485,
+    "r_thumbCMC": 0.05006483197212219,
+    "r_indexMCP": 0.05003008991479874,
+    "r_middleMCP": 0.05003738030791283,
+    "r_thumbMCP": 0.05000399798154831,
+    "r_indexPIP": 0.05000916123390198,
+    "r_middlePIP": 0.05000946670770645
+  }
+}

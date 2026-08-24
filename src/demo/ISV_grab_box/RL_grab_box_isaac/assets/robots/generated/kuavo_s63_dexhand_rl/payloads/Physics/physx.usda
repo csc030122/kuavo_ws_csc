@@ -1,0 +1,174 @@
+#usda 1.0
+(
+    customLayerData = {
+        string creator = "MuJoCo USD Converter v0.2.0"
+    }
+    defaultPrim = "kuavo_s63_dexhand_rl"
+    doc = """Generated from Composed Stage of root layer /tmp/tmpfbsae6es/kuavo_s63_dexhand_rl.usdc
+
+
+Generated from Composed Stage of root layer /tmp/mjcf_import_kuavo_s63_dexhand_rl_dx9140k1/usdex_kuavo_s63_dexhand_rl/kuavo_s63_dexhand_rl.usdc
+
+
+Generated from Composed Stage of root layer /tmp/mjcf_import_kuavo_s63_dexhand_rl_dx9140k1/temp_kuavo_s63_dexhand_rl/kuavo_s63_dexhand_rl.usd
+"""
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    subLayers = [
+        @./physics.usda@
+    ]
+    upAxis = "Z"
+)
+
+over "kuavo_s63_dexhand_rl"
+{
+    over "Geometry"
+    {
+        over "base_link"
+        {
+            over "knee_link_1"
+            {
+                over "leg_link"
+                {
+                    over "waist_pitch_link"
+                    {
+                        over "waist_yaw_link"
+                        {
+                            over "zarm_r1_link"
+                            {
+                                over "zarm_r2_link"
+                                {
+                                    over "zarm_r3_link"
+                                    {
+                                        over "zarm_r4_link"
+                                        {
+                                            over "zarm_r5_link"
+                                            {
+                                                over "zarm_r6_link"
+                                                {
+                                                    over "zarm_r7_link"
+                                                    {
+                                                        over "r_thumb_prox"
+                                                        {
+                                                            over "r_thumb_dist"
+                                                            {
+                                                                over "r_thumbMCP" (
+                                                                    prepend apiSchemas = ["PhysxJointAPI"]
+                                                                )
+                                                                {
+                                                                }
+                                                            }
+
+                                                            over "r_thumbCMC" (
+                                                                prepend apiSchemas = ["PhysxJointAPI"]
+                                                            )
+                                                            {
+                                                            }
+                                                        }
+
+                                                        over "r_index_prox"
+                                                        {
+                                                            over "r_index_dist"
+                                                            {
+                                                                over "r_indexPIP" (
+                                                                    prepend apiSchemas = ["PhysxJointAPI"]
+                                                                )
+                                                                {
+                                                                }
+                                                            }
+
+                                                            over "r_indexMCP" (
+                                                                prepend apiSchemas = ["PhysxJointAPI"]
+                                                            )
+                                                            {
+                                                            }
+                                                        }
+
+                                                        over "r_middle_prox"
+                                                        {
+                                                            over "r_middle_dist"
+                                                            {
+                                                                over "r_middlePIP" (
+                                                                    prepend apiSchemas = ["PhysxJointAPI"]
+                                                                )
+                                                                {
+                                                                }
+                                                            }
+
+                                                            over "r_middleMCP" (
+                                                                prepend apiSchemas = ["PhysxJointAPI"]
+                                                            )
+                                                            {
+                                                            }
+                                                        }
+
+                                                        over "zarm_r7_joint" (
+                                                            prepend apiSchemas = ["PhysxJointAPI"]
+                                                        )
+                                                        {
+                                                            float physxJoint:armature = 0.05
+                                                            float physxJoint:jointFriction = 0.02
+                                                        }
+                                                    }
+
+                                                    over "zarm_r6_joint" (
+                                                        prepend apiSchemas = ["PhysxJointAPI"]
+                                                    )
+                                                    {
+                                                        float physxJoint:armature = 0.05
+                                                        float physxJoint:jointFriction = 0.02
+                                                    }
+                                                }
+
+                                                over "zarm_r5_joint" (
+                                                    prepend apiSchemas = ["PhysxJointAPI"]
+                                                )
+                                                {
+                                                    float physxJoint:armature = 0.05
+                                                    float physxJoint:jointFriction = 0.02
+                                                }
+                                            }
+
+                                            over "zarm_r4_joint" (
+                                                prepend apiSchemas = ["PhysxJointAPI"]
+                                            )
+                                            {
+                                                float physxJoint:armature = 0.05
+                                                float physxJoint:jointFriction = 0.02
+                                            }
+                                        }
+
+                                        over "zarm_r3_joint" (
+                                            prepend apiSchemas = ["PhysxJointAPI"]
+                                        )
+                                        {
+                                            float physxJoint:armature = 0.05
+                                            float physxJoint:jointFriction = 0.02
+                                        }
+                                    }
+
+                                    over "zarm_r2_joint" (
+                                        prepend apiSchemas = ["PhysxJointAPI"]
+                                    )
+                                    {
+                                        float physxJoint:armature = 0.05
+                                        float physxJoint:jointFriction = 0.02
+                                    }
+                                }
+
+                                over "zarm_r1_joint" (
+                                    prepend apiSchemas = ["PhysxJointAPI"]
+                                )
+                                {
+                                    float physxJoint:armature = 0.05
+                                    float physxJoint:jointFriction = 0.02
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
