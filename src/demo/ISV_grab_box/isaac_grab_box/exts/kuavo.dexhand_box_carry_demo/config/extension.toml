@@ -1,0 +1,16 @@
+[package]
+version = "0.1.0"
+category = "Robotics"
+title = "Kuavo Dexhand Box Carry Demo"
+description = "Physically grip, lift, retreat, turn, and place grab_box using two fixed dexterous hands."
+authors = ["Kuavo Demo"]
+writeTarget.kit = true
+
+[dependencies]
+"isaacsim.core.experimental.prims" = {}
+"isaacsim.core.simulation_manager" = {}
+"omni.kit.uiapp" = {}
+"omni.physics.physx" = {}
+
+[[python.module]]
+name = "kuavo.dexhand_box_carry_demo"
