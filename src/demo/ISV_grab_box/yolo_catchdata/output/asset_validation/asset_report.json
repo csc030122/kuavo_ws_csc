@@ -1,0 +1,904 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-09-02T09:22:38.556830+00:00",
+  "read_only": true,
+  "config": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/configs/assets.yaml",
+  "scene": {
+    "path": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/yolo_scene/lab_yolo_grab_data.usd",
+    "sha256": "59f2ef9b335bfd1187842494ed861f5eead1539cc29939fdf6bcac310b5356b5",
+    "file_size_bytes": 27654445,
+    "default_prim": "/World",
+    "meters_per_unit": 1.0,
+    "up_axis": "Z",
+    "root_xform_ops": [],
+    "bounds_units": {
+      "min": [
+        -4.129572584675484,
+        -4.019999999552965,
+        -0.20883244009910265
+      ],
+      "max": [
+        4.849933667423464,
+        4.019999999552965,
+        3.1
+      ],
+      "center": [
+        0.36018054137399025,
+        0.0,
+        1.4455837799504487
+      ],
+      "size": [
+        8.979506252098947,
+        8.03999999910593,
+        3.3088324400991027
+      ]
+    },
+    "bounds_m": {
+      "min": [
+        -4.129572584675484,
+        -4.019999999552965,
+        -0.20883244009910265
+      ],
+      "max": [
+        4.849933667423464,
+        4.019999999552965,
+        3.1
+      ],
+      "center": [
+        0.36018054137399025,
+        0.0,
+        1.4455837799504487
+      ],
+      "size": [
+        8.979506252098947,
+        8.03999999910593,
+        3.3088324400991027
+      ]
+    },
+    "mesh_count": 62,
+    "mesh_paths": [
+      "/World/Environment/Geometry/rack2/rack2_tag_04_lane_level4_xpos_end/AprilTagVisual",
+      "/World/Environment/Geometry/rack2/rack2_tag_01_lane_level1_xpos_end/AprilTagVisual",
+      "/World/Environment/Geometry/rack2/rack2_tag_02_lane_level2_xpos_end/AprilTagVisual",
+      "/World/Environment/Geometry/rack2/rack2_tag_03_lane_level3_xpos_end/AprilTagVisual",
+      "/World/Environment/Geometry/FloorTagVisuals/tag_09",
+      "/World/Environment/Geometry/FloorTagVisuals/tag_10",
+      "/World/Environment/Geometry/FloorTagVisuals/tag_11",
+      "/World/Environment/Geometry/FloorTagVisuals/tag_12",
+      "/World/Environment/Geometry/FloorTagVisuals/tag_13",
+      "/World/Environment/Geometry/FloorTagVisuals/tag_14",
+      "/World/Environment/Geometry/FloorTagVisuals/tag_15",
+      "/World/Environment/Geometry/FloorTagVisuals/tag_16",
+      "/World/Environment/Geometry/FloorTagVisuals/tag_17",
+      "/World/Environment/Geometry/FloorTagVisuals/tag_18",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/s49_l_hand_pitch/s49_l_hand_pitch",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_hand_tripod/l_hand_camera_link/l_hand_camera/l_hand_camera",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_hand_tripod/l_hand_tripod/l_hand_tripod",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_palm/l_palm/l_palm",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_thumb_prox/l_thumb_dist/l_thumb_dist/l_thumb_dist",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_thumb_prox/l_thumb_dist/l_thumb_dist_1/l_thumb_dist",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_thumb_prox/l_thumb_prox/l_thumb_prox",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_thumb_prox/l_thumb_prox_1/l_thumb_prox",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_Index_prox/l_index_dist/l_index_dist/l_index_dist",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_Index_prox/l_index_dist/l_index_dist_1/l_index_dist",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_Index_prox/l_Index_prox/l_Index_prox",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_Index_prox/l_Index_prox_1/l_Index_prox",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_middle_prox/l_middle_dist/l_middle_dist/l_middle_dist",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_middle_prox/l_middle_dist/l_middle_dist_1/l_middle_dist",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_middle_prox/l_middle_prox/l_middle_prox",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_middle_prox/l_middle_prox_1/l_middle_prox",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_ring_prox/l_ring_dist/l_ring_dist/l_ring_dist",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_ring_prox/l_ring_dist/l_ring_dist_1/l_ring_dist",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_ring_prox/l_ring_prox/l_ring_prox",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_ring_prox/l_ring_prox_1/l_ring_prox",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_little_prox/l_little_dist/l_little_dist/l_little_dist",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_little_prox/l_little_dist/l_little_dist_1/l_little_dist",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_little_prox/l_little_prox/l_little_prox",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_l1_link/zarm_l2_link/zarm_l3_link/zarm_l4_link/zarm_l5_link/zarm_l6_link/zarm_l7_link/l_little_prox/l_little_prox_1/l_little_prox",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/s49_r_hand_pitch/s49_r_hand_pitch",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_hand_tripod/r_hand_camera_link/r_hand_camera/l_hand_camera",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_hand_tripod/r_hand_tripod/r_hand_tripod",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_palm/r_palm/r_palm",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_thumb_prox/r_thumb_dist/r_thumb_dist/r_thumb_dist",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_thumb_prox/r_thumb_dist/r_thumb_dist_1/r_thumb_dist",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_thumb_prox/r_thumb_prox/r_thumb_prox",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_thumb_prox/r_thumb_prox_1/r_thumb_prox",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_index_prox/r_index_dist/r_index_dist/r_index_dist",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_index_prox/r_index_dist/r_index_dist_1/r_index_dist",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_index_prox/r_index_prox/r_index_prox",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_index_prox/r_index_prox_1/r_index_prox",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_middle_prox/r_middle_dist/r_middle_dist/r_middle_dist",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_middle_prox/r_middle_dist/r_middle_dist_1/r_middle_dist",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_middle_prox/r_middle_prox/r_middle_prox",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_middle_prox/r_middle_prox_1/r_middle_prox",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_ring_prox/r_ring_dist/r_ring_dist/r_ring_dist",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_ring_prox/r_ring_dist/r_ring_dist_1/r_ring_dist",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_ring_prox/r_ring_prox/r_ring_prox",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_ring_prox/r_ring_prox_1/r_ring_prox",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_little_prox/r_little_dist/r_little_dist/r_little_dist",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_little_prox/r_little_dist/r_little_dist_1/r_little_dist",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_little_prox/r_little_prox/r_little_prox",
+      "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_little_prox/r_little_prox_1/r_little_prox"
+    ],
+    "canonical_metadata": {
+      "kuavo:canonicalFrameVersion": null,
+      "kuavo:canonicalOrigin": null,
+      "kuavo:canonicalExpectedCenterUnits": null,
+      "kuavo:canonicalExpectedSizeUnits": null
+    }
+  },
+  "table_box": {
+    "asset": {
+      "path": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/yolo_scene/box(2).usd",
+      "sha256": "34cbeacdf5f003f726f1fae5735d7e2cfd678d44a2d4f3c915b1c8e10b30838c",
+      "file_size_bytes": 55386592,
+      "default_prim": "/World",
+      "meters_per_unit": 0.01,
+      "up_axis": "Y",
+      "root_xform_ops": [
+        "xformOp:translate",
+        "xformOp:orient",
+        "xformOp:scale"
+      ],
+      "bounds_units": {
+        "min": [
+          294.7522888183594,
+          1620.96875,
+          -292.127685546875
+        ],
+        "max": [
+          783.9290771484375,
+          2096.88671875,
+          114.24118041992188
+        ],
+        "center": [
+          539.3406829833984,
+          1858.927734375,
+          -88.94325256347656
+        ],
+        "size": [
+          489.1767883300781,
+          475.91796875,
+          406.3688659667969
+        ]
+      },
+      "bounds_m": {
+        "min": [
+          2.947522888183594,
+          16.2096875,
+          -2.9212768554687503
+        ],
+        "max": [
+          7.839290771484375,
+          20.9688671875,
+          1.1424118041992188
+        ],
+        "center": [
+          5.393406829833984,
+          18.589277343750002,
+          -0.8894325256347656
+        ],
+        "size": [
+          4.891767883300782,
+          4.7591796875000005,
+          4.063688659667969
+        ]
+      },
+      "mesh_count": 1,
+      "mesh_paths": [
+        "/World/node_/mesh_"
+      ],
+      "canonical_metadata": {
+        "kuavo:canonicalFrameVersion": null,
+        "kuavo:canonicalOrigin": null,
+        "kuavo:canonicalExpectedCenterUnits": null,
+        "kuavo:canonicalExpectedSizeUnits": null
+      }
+    },
+    "scene_prim": {
+      "path": "/World/Environment/Geometry/box/table_box",
+      "name": "table_box",
+      "type_name": "Xform",
+      "world_transform": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          1.6,
+          -0.26,
+          1.0,
+          1.0
+        ]
+      ],
+      "world_bounds_m": {
+        "min": [
+          1.2975000000558794,
+          -0.46249999994412067,
+          0.9950000005960464
+        ],
+        "max": [
+          1.9024999999441208,
+          -0.05750000005587935,
+          1.2149999994039538
+        ],
+        "size": [
+          0.6049999998882414,
+          0.4049999998882413,
+          0.21999999880790733
+        ]
+      }
+    },
+    "configured_center_world_m": [
+      1.6,
+      -0.26,
+      1.0
+    ],
+    "configured_outer_bounds_world_m": {
+      "min": [
+        1.2975,
+        -0.4625,
+        0.995
+      ],
+      "max": [
+        1.9025,
+        -0.0575,
+        1.215
+      ]
+    },
+    "configured_inner_bounds_world_m": {
+      "min_xy": [
+        1.3325,
+        -0.4275
+      ],
+      "max_xy": [
+        1.8675,
+        -0.0925
+      ]
+    },
+    "configured_inner_size_xy_m": [
+      0.5349999999999999,
+      0.33499999999999996
+    ],
+    "configured_floor_z_m": 1.0075,
+    "wall_clearance_m": 0.01,
+    "scene_name_candidates": [
+      "/World/Environment/Geometry/box/table_box",
+      "/World/Environment/Geometry/box/table_box_01",
+      "/World/Environment/Geometry/box/table_box_02",
+      "/World/Environment/Geometry/box/table_box_03"
+    ]
+  },
+  "sampling_frame": {
+    "rotation_world_from_sampling": [
+      [
+        0.0,
+        -1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "x_axis_world": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "y_axis_world": [
+      -1.0,
+      0.0,
+      0.0
+    ],
+    "z_axis_world": [
+      0.0,
+      0.0,
+      1.0
+    ]
+  },
+  "assets": [
+    {
+      "path": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/yolo_scene/left.usd",
+      "sha256": "7b75ab76df2309341a78fbf6246109c33210ad6a6c742d9dbd5ca7f1083839cf",
+      "file_size_bytes": 2538626,
+      "default_prim": "/left",
+      "meters_per_unit": 0.001,
+      "up_axis": "Z",
+      "root_xform_ops": [],
+      "bounds_units": {
+        "min": [
+          -187.58570861816406,
+          -170.22274780273438,
+          -20.13821029663086
+        ],
+        "max": [
+          238.50364685058594,
+          49.54361343383789,
+          49.67886734008789
+        ],
+        "center": [
+          25.458969116210938,
+          -60.33956718444824,
+          14.770328521728516
+        ],
+        "size": [
+          426.08935546875,
+          219.76636123657227,
+          69.81707763671875
+        ]
+      },
+      "bounds_m": {
+        "min": [
+          -0.18758570861816407,
+          -0.1702227478027344,
+          -0.02013821029663086
+        ],
+        "max": [
+          0.23850364685058595,
+          0.04954361343383789,
+          0.04967886734008789
+        ],
+        "center": [
+          0.025458969116210938,
+          -0.060339567184448245,
+          0.014770328521728516
+        ],
+        "size": [
+          0.42608935546875,
+          0.21976636123657228,
+          0.06981707763671875
+        ]
+      },
+      "mesh_count": 1,
+      "mesh_paths": [
+        "/left/Mesh"
+      ],
+      "canonical_metadata": {
+        "kuavo:canonicalFrameVersion": "canonical_v2_user_adjusted",
+        "kuavo:canonicalOrigin": "user_authored_child_frame",
+        "kuavo:canonicalExpectedCenterUnits": [
+          25.458967334005536,
+          -60.33956477694994,
+          14.77032906141865
+        ],
+        "kuavo:canonicalExpectedSizeUnits": [
+          426.08935546875,
+          219.766357421875,
+          69.81707763671875
+        ]
+      },
+      "class_id": 0,
+      "class_name": "left",
+      "sampling_center_canonical_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "asset_from_canonical": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "reference_scale_for_scene": 0.001,
+      "fits_table_box_default_footprint": true,
+      "nominal_table_placement": {
+        "translation_world_m": [
+          1.574541030883789,
+          -0.19966043281555176,
+          1.0276382102966308
+        ],
+        "aabb_world_m": {
+          "min": [
+            1.386955322265625,
+            -0.3698831806182862,
+            1.0075
+          ],
+          "max": [
+            1.813044677734375,
+            -0.15011681938171387,
+            1.0773170776367187
+          ]
+        },
+        "clearance_m": {
+          "x_min": 0.054455322265624995,
+          "x_max": 0.054455322265624995,
+          "y_min": 0.05761681938171381,
+          "y_max": 0.05761681938171387,
+          "floor_error": 0.0
+        },
+        "no_static_penetration": true,
+        "note": "Static AABB check; physics settle is intentionally deferred."
+      },
+      "status": "pass",
+      "runtime_reference_check": {
+        "instance_prim_path": "/World/left",
+        "size_m": [
+          0.42608935546874993,
+          0.21976636123657223,
+          0.06981707763671874
+        ],
+        "matches_source_physical_size": true
+      }
+    },
+    {
+      "path": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/yolo_scene/right.usd",
+      "sha256": "38e80a0dfbfb5826798267c21bbb0ac59532bf692809c1a73b32fb1cb56fbc82",
+      "file_size_bytes": 1551110,
+      "default_prim": "/right",
+      "meters_per_unit": 0.001,
+      "up_axis": "Z",
+      "root_xform_ops": [],
+      "bounds_units": {
+        "min": [
+          -239.68023681640625,
+          -124.2206039428711,
+          -55.84694290161133
+        ],
+        "max": [
+          199.7595977783203,
+          57.177024841308594,
+          68.85284423828125
+        ],
+        "center": [
+          -19.96031951904297,
+          -33.52178955078125,
+          6.502950668334961
+        ],
+        "size": [
+          439.43983459472656,
+          181.3976287841797,
+          124.69978713989258
+        ]
+      },
+      "bounds_m": {
+        "min": [
+          -0.23968023681640627,
+          -0.1242206039428711,
+          -0.05584694290161133
+        ],
+        "max": [
+          0.1997595977783203,
+          0.05717702484130859,
+          0.06885284423828125
+        ],
+        "center": [
+          -0.01996031951904297,
+          -0.03352178955078125,
+          0.006502950668334961
+        ],
+        "size": [
+          0.4394398345947266,
+          0.1813976287841797,
+          0.12469978713989258
+        ]
+      },
+      "mesh_count": 1,
+      "mesh_paths": [
+        "/right/Mesh"
+      ],
+      "canonical_metadata": {
+        "kuavo:canonicalFrameVersion": "canonical_v2_user_adjusted",
+        "kuavo:canonicalOrigin": "user_authored_child_frame",
+        "kuavo:canonicalExpectedCenterUnits": [
+          -19.960316864317534,
+          -33.52178805900869,
+          6.502950211694365
+        ],
+        "kuavo:canonicalExpectedSizeUnits": [
+          439.4398280609023,
+          181.39762586063932,
+          124.69978788012685
+        ]
+      },
+      "class_id": 1,
+      "class_name": "right",
+      "sampling_center_canonical_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "asset_from_canonical": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "reference_scale_for_scene": 0.001,
+      "fits_table_box_default_footprint": true,
+      "nominal_table_placement": {
+        "translation_world_m": [
+          1.619960319519043,
+          -0.22647821044921876,
+          1.0633469429016114
+        ],
+        "aabb_world_m": {
+          "min": [
+            1.3802800827026367,
+            -0.35069881439208983,
+            1.0075
+          ],
+          "max": [
+            1.8197199172973635,
+            -0.16930118560791016,
+            1.1321997871398926
+          ]
+        },
+        "clearance_m": {
+          "x_min": 0.04778008270263667,
+          "x_max": 0.04778008270263645,
+          "y_min": 0.07680118560791016,
+          "y_max": 0.07680118560791016,
+          "floor_error": 0.0
+        },
+        "no_static_penetration": true,
+        "note": "Static AABB check; physics settle is intentionally deferred."
+      },
+      "status": "pass",
+      "runtime_reference_check": {
+        "instance_prim_path": "/World/right",
+        "size_m": [
+          0.4394398345947265,
+          0.18139762878417967,
+          0.12469978713989256
+        ],
+        "matches_source_physical_size": true
+      }
+    },
+    {
+      "path": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/yolo_scene/hose.usd",
+      "sha256": "65a6293bde39741951201542aa94ef117ceae0d4c5a765d666cf3190e528b1b2",
+      "file_size_bytes": 3121745,
+      "default_prim": "/hose",
+      "meters_per_unit": 0.001,
+      "up_axis": "Z",
+      "root_xform_ops": [],
+      "bounds_units": {
+        "min": [
+          -163.08868408203125,
+          -31.935213088989258,
+          -37.35249328613281
+        ],
+        "max": [
+          162.0905303955078,
+          131.9352264404297,
+          37.35249328613281
+        ],
+        "center": [
+          -0.49907684326171875,
+          50.000006675720215,
+          0.0
+        ],
+        "size": [
+          325.17921447753906,
+          163.87043952941895,
+          74.70498657226562
+        ]
+      },
+      "bounds_m": {
+        "min": [
+          -0.16308868408203125,
+          -0.03193521308898926,
+          -0.03735249328613281
+        ],
+        "max": [
+          0.1620905303955078,
+          0.13193522644042968,
+          0.03735249328613281
+        ],
+        "center": [
+          -0.0004990768432617188,
+          0.050000006675720216,
+          0.0
+        ],
+        "size": [
+          0.32517921447753906,
+          0.16387043952941896,
+          0.07470498657226562
+        ]
+      },
+      "mesh_count": 1,
+      "mesh_paths": [
+        "/hose/Mesh"
+      ],
+      "canonical_metadata": {
+        "kuavo:canonicalFrameVersion": "canonical_v2_user_adjusted",
+        "kuavo:canonicalOrigin": "user_authored_child_frame",
+        "kuavo:canonicalExpectedCenterUnits": [
+          -0.4990787109425696,
+          50.000004594434685,
+          0.0
+        ],
+        "kuavo:canonicalExpectedSizeUnits": [
+          325.1792207160206,
+          163.8704353242887,
+          74.70498657226562
+        ]
+      },
+      "class_id": 2,
+      "class_name": "hose",
+      "sampling_center_canonical_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "asset_from_canonical": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "reference_scale_for_scene": 0.001,
+      "fits_table_box_default_footprint": true,
+      "nominal_table_placement": {
+        "translation_world_m": [
+          1.6004990768432619,
+          -0.31000000667572025,
+          1.044852493286133
+        ],
+        "aabb_world_m": {
+          "min": [
+            1.4374103927612305,
+            -0.34193521976470953,
+            1.0075
+          ],
+          "max": [
+            1.7625896072387697,
+            -0.17806478023529057,
+            1.0822049865722658
+          ]
+        },
+        "clearance_m": {
+          "x_min": 0.10491039276123049,
+          "x_max": 0.10491039276123026,
+          "y_min": 0.08556478023529046,
+          "y_max": 0.08556478023529057,
+          "floor_error": 0.0
+        },
+        "no_static_penetration": true,
+        "note": "Static AABB check; physics settle is intentionally deferred."
+      },
+      "status": "pass",
+      "runtime_reference_check": {
+        "instance_prim_path": "/World/hose",
+        "size_m": [
+          0.325179214477539,
+          0.1638704395294189,
+          0.07470498657226561
+        ],
+        "matches_source_physical_size": true
+      }
+    },
+    {
+      "path": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/yolo_scene/outhandle.usd",
+      "sha256": "44da93f2a2ddf05fb9d304fb2b9380cd05dd71ea24a9ce496553b66b85b9efdc",
+      "file_size_bytes": 1701636,
+      "default_prim": "/outhandle",
+      "meters_per_unit": 0.001,
+      "up_axis": "Z",
+      "root_xform_ops": [],
+      "bounds_units": {
+        "min": [
+          -34.04261779785156,
+          -20.42955207824707,
+          -7.081341743469238
+        ],
+        "max": [
+          35.62934112548828,
+          21.487497329711914,
+          35.8598518371582
+        ],
+        "center": [
+          0.7933616638183594,
+          0.5289726257324219,
+          14.389255046844482
+        ],
+        "size": [
+          69.67195892333984,
+          41.917049407958984,
+          42.94119358062744
+        ]
+      },
+      "bounds_m": {
+        "min": [
+          -0.03404261779785156,
+          -0.020429552078247072,
+          -0.007081341743469238
+        ],
+        "max": [
+          0.03562934112548828,
+          0.021487497329711915,
+          0.0358598518371582
+        ],
+        "center": [
+          0.0007933616638183594,
+          0.0005289726257324219,
+          0.014389255046844483
+        ],
+        "size": [
+          0.06967195892333984,
+          0.041917049407958984,
+          0.042941193580627444
+        ]
+      },
+      "mesh_count": 1,
+      "mesh_paths": [
+        "/outhandle/Mesh"
+      ],
+      "canonical_metadata": {
+        "kuavo:canonicalFrameVersion": "canonical_v2_user_adjusted",
+        "kuavo:canonicalOrigin": "user_authored_child_frame",
+        "kuavo:canonicalExpectedCenterUnits": [
+          0.7933624302843967,
+          0.5289724707078083,
+          14.389255470544125
+        ],
+        "kuavo:canonicalExpectedSizeUnits": [
+          69.67195665137757,
+          41.91704899764943,
+          42.941194266739366
+        ]
+      },
+      "class_id": 3,
+      "class_name": "outhandle",
+      "sampling_center_canonical_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "asset_from_canonical": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "reference_scale_for_scene": 0.001,
+      "fits_table_box_default_footprint": true,
+      "nominal_table_placement": {
+        "translation_world_m": [
+          1.5992066383361818,
+          -0.26052897262573244,
+          1.0145813417434693
+        ],
+        "aabb_world_m": {
+          "min": [
+            1.5651640205383304,
+            -0.28095852470397953,
+            1.0075
+          ],
+          "max": [
+            1.63483597946167,
+            -0.23904147529602052,
+            1.0504411935806275
+          ]
+        },
+        "clearance_m": {
+          "x_min": 0.23266402053833035,
+          "x_max": 0.2326640205383299,
+          "y_min": 0.14654147529602046,
+          "y_max": 0.14654147529602052,
+          "floor_error": 0.0
+        },
+        "no_static_penetration": true,
+        "note": "Static AABB check; physics settle is intentionally deferred."
+      },
+      "status": "pass",
+      "runtime_reference_check": {
+        "instance_prim_path": "/World/outhandle",
+        "size_m": [
+          0.06967195892333983,
+          0.041917049407958984,
+          0.04294119358062743
+        ],
+        "matches_source_physical_size": true
+      }
+    }
+  ],
+  "issues": [],
+  "status": "pass",
+  "preview_files": [
+    "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/output/asset_validation/preview/canonical_frames_and_bounds.png",
+    "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/output/asset_validation/preview/table_box_static_placement.png"
+  ]
+}

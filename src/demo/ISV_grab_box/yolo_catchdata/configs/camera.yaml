@@ -1,0 +1,40 @@
+schema_version: 1
+
+camera:
+  name: right_wrist_d405
+  model: Intel RealSense D405
+  prim_path: /World/SyntheticData/Cameras/right_wrist_d405
+  resolution: [1280, 720]
+  intrinsics:
+    # D405 公开规格的标称视场角，仅用于合成数据链路验证。
+    # 真机采集前必须用目标设备的标定结果替换。
+    source: nominal_d405_fov_pending_real_calibration
+    horizontal_fov_degrees: 84.0
+    vertical_fov_degrees: 58.0
+    principal_point: image_center
+  distortion:
+    model: pending_real_calibration
+    coefficients: []
+  clipping_range_m: [0.07, 1.0]
+  phase2_validation:
+    class_name: hose
+    radius_m: 0.55
+    elevation_degrees: 55.0
+    azimuth_degrees: 0.0
+    renderer: RaytracedLighting
+    warmup_frames: 8
+    rt_subframes: 8
+    min_mask_pixels: 1000
+    min_valid_depth_ratio: 0.95
+    min_mask_inside_projected_bbox_ratio: 0.95
+  depth:
+    annotator: distance_to_image_plane
+    representation: z_depth
+    dtype: float32
+    unit: meter
+    invalid_values: [0.0, .nan]
+  optical_frame:
+    convention: opencv
+    x: image_right
+    y: image_down
+    z: camera_forward

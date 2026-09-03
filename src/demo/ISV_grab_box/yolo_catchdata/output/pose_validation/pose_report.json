@@ -1,0 +1,447 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-09-02T09:26:10.618126+00:00",
+  "status": "pass",
+  "environment": {
+    "renderer": "RaytracedLighting",
+    "gpu": {
+      "available": true,
+      "gpus": [
+        {
+          "name": "NVIDIA GeForce RTX 5060 Laptop GPU",
+          "driver_version": "595.84",
+          "memory_total_mib": 8151
+        }
+      ]
+    }
+  },
+  "scene": {
+    "path": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/yolo_scene/lab_yolo_grab_data.usd",
+    "meters_per_unit": 1.0
+  },
+  "camera": {
+    "name": "right_wrist_d405",
+    "prim_path": "/World/SyntheticData/Cameras/right_wrist_d405",
+    "resolution": [
+      1280,
+      720
+    ],
+    "intrinsics_source": "nominal_d405_fov_pending_real_calibration",
+    "horizontal_fov_degrees": 84.0,
+    "vertical_fov_degrees": 58.0,
+    "intrinsics": {
+      "fx": 710.7920094906834,
+      "fy": 649.4571918977125,
+      "cx": 639.5,
+      "cy": 359.5,
+      "K": [
+        [
+          710.7920094906834,
+          0.0,
+          639.5
+        ],
+        [
+          0.0,
+          649.4571918977125,
+          359.5
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ]
+    },
+    "position_world_m": [
+      1.6004990768432619,
+      0.005467033317355152,
+      1.4953861176450784
+    ],
+    "world_from_camera_usd": [
+      [
+        -1.0,
+        0.0,
+        0.0,
+        1.6004990768432619
+      ],
+      [
+        0.0,
+        -0.8191520442889918,
+        0.5735764363510462,
+        0.005467033317355152
+      ],
+      [
+        0.0,
+        0.5735764363510462,
+        0.8191520442889918,
+        1.4953861176450784
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "annotator_parameters": {
+      "cameraAperture": [
+        18.008081436157227,
+        11.086180686950684
+      ],
+      "cameraApertureOffset": [
+        0.0,
+        0.0
+      ],
+      "cameraFisheyeLensP": [],
+      "cameraFisheyeLensS": [],
+      "cameraFisheyeMaxFOV": 0.0,
+      "cameraFisheyeNominalHeight": 0,
+      "cameraFisheyeNominalWidth": 0,
+      "cameraFisheyeOpticalCentre": [
+        0.0,
+        0.0
+      ],
+      "cameraFisheyePolynomial": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "cameraFocalLength": 10.0,
+      "cameraFocusDistance": 0.0,
+      "cameraFStop": 0.0,
+      "cameraModel": "pinhole",
+      "cameraNearFar": [
+        0.07000000029802322,
+        1.0
+      ],
+      "cameraOpenCVFx": 0.0,
+      "cameraOpenCVFy": 0.0,
+      "cameraProjection": [
+        1.1106124514886995,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.9744221359799101,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.07526881754887643,
+        -1.0,
+        0.0,
+        0.0,
+        0.07526881754887643,
+        0.0
+      ],
+      "cameraViewTransform": [
+        -1.0,
+        0.0,
+        0.0,
+        -0.0,
+        0.0,
+        -0.8191520442889918,
+        0.5735764363510462,
+        0.0,
+        0.0,
+        0.5735764363510462,
+        0.8191520442889918,
+        -0.0,
+        1.600499076843262,
+        -0.8532399088095829,
+        -1.2280843567579258,
+        1.0
+      ],
+      "metersPerSceneUnit": 1.0,
+      "renderProductResolution": [
+        1280,
+        720
+      ]
+    }
+  },
+  "object": {
+    "class_name": "hose",
+    "asset_path": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/yolo_scene/hose.usd",
+    "asset_prim_path": "/World/SyntheticData/Phase2Target/Asset",
+    "world_from_asset": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        1.6004990768432619
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -0.31000000667572025
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        1.044852493286133
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "asset_from_object": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "world_from_object": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        1.6004990768432619
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -0.31000000667572025
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        1.044852493286133
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "camera_from_object": [
+      [
+        -1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.8191520442889918,
+        -0.5735764363510462,
+        5.551115123125783e-17
+      ],
+      [
+        0.0,
+        -0.5735764363510462,
+        -0.8191520442889918,
+        0.55
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "sampling_center_world_m": [
+      1.6004990768432619,
+      -0.31000000667572025,
+      1.044852493286133
+    ]
+  },
+  "metrics": {
+    "target_instance_ids": [
+      2
+    ],
+    "mask_pixels": 30927,
+    "valid_depth_ratio": 1.0,
+    "mask_bbox_xyxy": [
+      421,
+      316,
+      876,
+      528
+    ],
+    "projected_asset_aabb_xyxy": [
+      379.85279753742265,
+      302.02775781640554,
+      900.7461102562722,
+      526.0689404879638
+    ],
+    "mask_inside_projected_bbox_ratio": 1.0,
+    "mask_projected_bbox_iou": 0.8133949277019329,
+    "instance_info": {
+      "idToLabels": {
+        "0": "BACKGROUND",
+        "1": "UNLABELLED",
+        "2": "/World/SyntheticData/Phase2Target/Asset"
+      },
+      "idToSemantics": {
+        "0": {
+          "class": "BACKGROUND"
+        },
+        "1": {
+          "class": "UNLABELLED"
+        },
+        "2": {
+          "class": "hose"
+        }
+      }
+    }
+  },
+  "checks": [
+    {
+      "code": "front_one_meter",
+      "passed": true,
+      "actual": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "expected": "正前方 1 米时 t=[0, 0, 1]"
+    },
+    {
+      "code": "image_right_positive_x",
+      "passed": true,
+      "actual": [
+        0.1,
+        0.0,
+        1.0
+      ],
+      "expected": "图像右侧 x>0"
+    },
+    {
+      "code": "image_down_positive_y",
+      "passed": true,
+      "actual": [
+        0.0,
+        0.1,
+        1.0
+      ],
+      "expected": "图像下侧 y>0"
+    },
+    {
+      "code": "nvidia_gpu_available",
+      "passed": true,
+      "actual": {
+        "available": true,
+        "gpus": [
+          {
+            "name": "NVIDIA GeForce RTX 5060 Laptop GPU",
+            "driver_version": "595.84",
+            "memory_total_mib": 8151
+          }
+        ]
+      },
+      "expected": "检测到可用 NVIDIA GPU"
+    },
+    {
+      "code": "rgb_shape",
+      "passed": true,
+      "actual": [
+        720,
+        1280,
+        4
+      ],
+      "expected": "前两维为 [720, 1280]"
+    },
+    {
+      "code": "mask_shape",
+      "passed": true,
+      "actual": [
+        720,
+        1280
+      ],
+      "expected": "尺寸为 [720, 1280]"
+    },
+    {
+      "code": "depth_shape",
+      "passed": true,
+      "actual": [
+        720,
+        1280
+      ],
+      "expected": "尺寸为 [720, 1280]"
+    },
+    {
+      "code": "camera_intrinsics_authoring",
+      "passed": true,
+      "actual": {
+        "fx": 710.7919877738743,
+        "fy": 649.4572119390921
+      },
+      "expected": "USD Camera 的 fx/fy 与配置计算值误差不超过 1e-3 像素"
+    },
+    {
+      "code": "target_instance_found",
+      "passed": true,
+      "actual": [
+        2
+      ],
+      "expected": "实例语义包含 hose"
+    },
+    {
+      "code": "mask_pixels",
+      "passed": true,
+      "actual": 30927,
+      "expected": ">= 1000"
+    },
+    {
+      "code": "valid_depth_ratio",
+      "passed": true,
+      "actual": 1.0,
+      "expected": ">= 0.95"
+    },
+    {
+      "code": "mask_inside_projected_bbox",
+      "passed": true,
+      "actual": 1.0,
+      "expected": ">= 0.95"
+    },
+    {
+      "code": "look_at_pose",
+      "passed": true,
+      "actual": [
+        0.0,
+        5.551115123125783e-17,
+        0.55
+      ],
+      "expected": "目标中心位于相机前方且在光轴上"
+    }
+  ],
+  "issues": [],
+  "outputs": {
+    "rgb": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/output/pose_validation/preview/rgb.png",
+    "mask": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/output/pose_validation/preview/mask.png",
+    "depth_preview": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/output/pose_validation/preview/depth.png",
+    "projection_overlay": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/output/pose_validation/preview/projection_overlay.png",
+    "depth_npy": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/output/pose_validation/sample/depth.npy",
+    "pose_json": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/output/pose_validation/sample/pose.json"
+  }
+}

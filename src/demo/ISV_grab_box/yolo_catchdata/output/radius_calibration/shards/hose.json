@@ -1,0 +1,5974 @@
+{
+  "schema_version": 1,
+  "artifact_kind": "radius_calibration_shard",
+  "generated_at_utc": "2026-09-02T14:27:53.048374+00:00",
+  "status": "pass",
+  "definition": {
+    "r": "camera_optical_center_to_object_sampling_center_m",
+    "s": "s_pre_occlusion",
+    "s_pre_occlusion": "full_unoccluded_instance_mask_bbox_width_over_image_width",
+    "truncation_ratio": "fraction_of_projected_cad_aabb_area_outside_image",
+    "external_occluders_hidden": true,
+    "isolated_calibration_stage": true,
+    "stable_pose_source": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/configs/stable_poses.json",
+    "stable_pose_is_physics_settled_in_real_table_box": true,
+    "visual_geometry_simplified": false,
+    "collision_approximation_used_only_for_settling": "convexDecomposition"
+  },
+  "environment": {
+    "renderer": "RaytracedLighting",
+    "gpu": {
+      "available": true,
+      "gpus": [
+        {
+          "name": "NVIDIA GeForce RTX 5060 Laptop GPU",
+          "driver_version": "595.84",
+          "memory_total_mib": 8151
+        }
+      ]
+    },
+    "texture_assets": {
+      "all_present": true,
+      "files": [
+        {
+          "path": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/isaac_sim/materials/epoxy_floor/epoxy_light_gray_albedo.png",
+          "exists": true,
+          "size_bytes": 905675
+        },
+        {
+          "path": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/isaac_sim/materials/epoxy_floor/epoxy_light_gray_normal.png",
+          "exists": true,
+          "size_bytes": 148442
+        },
+        {
+          "path": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/isaac_sim/materials/epoxy_floor/epoxy_light_gray_roughness.png",
+          "exists": true,
+          "size_bytes": 1197299
+        },
+        {
+          "path": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/isaac_sim/materials/epoxy_floor/epoxy_orange_peel_detail_normal.png",
+          "exists": true,
+          "size_bytes": 1838921
+        }
+      ]
+    }
+  },
+  "camera": {
+    "name": "right_wrist_d405",
+    "resolution": [
+      1280,
+      720
+    ],
+    "intrinsics_source": "nominal_d405_fov_pending_real_calibration",
+    "intrinsics": {
+      "fx": 710.7920094906834,
+      "fy": 649.4571918977125,
+      "cx": 639.5,
+      "cy": 359.5,
+      "K": [
+        [
+          710.7920094906834,
+          0.0,
+          639.5
+        ],
+        [
+          0.0,
+          649.4571918977125,
+          359.5
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ]
+    },
+    "clipping_range_m": [
+      0.07,
+      1.0
+    ]
+  },
+  "source_scene_path_for_later_collection": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/yolo_scene/lab_yolo_grab_data.usd",
+  "stable_pose_path": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/configs/stable_poses.json",
+  "object_pose_id": "physics_drop_table_box_v1",
+  "radii_m": [
+    0.95,
+    0.9,
+    0.85,
+    0.8,
+    0.75,
+    0.7,
+    0.65,
+    0.6,
+    0.55,
+    0.5,
+    0.45,
+    0.4,
+    0.35,
+    0.3,
+    0.25,
+    0.2,
+    0.15,
+    0.12,
+    0.1,
+    0.09,
+    0.08
+  ],
+  "representative_viewpoints": [
+    {
+      "id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0
+    },
+    {
+      "id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0
+    },
+    {
+      "id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0
+    }
+  ],
+  "quality_thresholds": {
+    "min_mask_pixels": 200,
+    "min_valid_depth_ratio": 0.95,
+    "max_truncation_ratio": 0.02
+  },
+  "scale_bins": {
+    "far": [
+      0.1,
+      0.2
+    ],
+    "mid": [
+      0.2,
+      0.35
+    ],
+    "near": [
+      0.35,
+      0.55
+    ],
+    "pre_grasp": [
+      0.55,
+      0.75
+    ]
+  },
+  "classes": {
+    "hose": {
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "asset_path": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/yolo_scene/hose.usd",
+      "sampling_center_world_m": [
+        1.6030306816101074,
+        -0.313773512840271,
+        1.0305571556091309
+      ],
+      "record_count": 63,
+      "usable_record_count": 33,
+      "observed_usable_radius_range_m": [
+        0.35,
+        0.9
+      ],
+      "observed_usable_scale_range": [
+        0.178125,
+        0.63984375
+      ],
+      "aggregate_scale_bins": {
+        "far": {
+          "scale_range": [
+            0.1,
+            0.2
+          ],
+          "target_scale": 0.15000000000000002,
+          "representative_viewpoints": 3,
+          "viewpoints_reaching_target": 0,
+          "target_reachable": false,
+          "full_bin_reachable_in_all_viewpoints": false,
+          "r0_m": null,
+          "search_bounds_m": null
+        },
+        "mid": {
+          "scale_range": [
+            0.2,
+            0.35
+          ],
+          "target_scale": 0.275,
+          "representative_viewpoints": 3,
+          "viewpoints_reaching_target": 3,
+          "target_reachable": true,
+          "full_bin_reachable_in_all_viewpoints": false,
+          "r0_m": 0.7259259259259259,
+          "search_bounds_m": [
+            0.4,
+            0.9
+          ]
+        },
+        "near": {
+          "scale_range": [
+            0.35,
+            0.55
+          ],
+          "target_scale": 0.45,
+          "representative_viewpoints": 3,
+          "viewpoints_reaching_target": 2,
+          "target_reachable": true,
+          "full_bin_reachable_in_all_viewpoints": false,
+          "r0_m": 0.46859375,
+          "search_bounds_m": [
+            0.35,
+            0.65
+          ]
+        },
+        "pre_grasp": {
+          "scale_range": [
+            0.55,
+            0.75
+          ],
+          "target_scale": 0.65,
+          "representative_viewpoints": 3,
+          "viewpoints_reaching_target": 0,
+          "target_reachable": false,
+          "full_bin_reachable_in_all_viewpoints": false,
+          "r0_m": null,
+          "search_bounds_m": null
+        }
+      },
+      "viewpoints": {
+        "frontal_mid": {
+          "angles_deg": {
+            "theta": 0.0,
+            "phi": 50.0,
+            "psi": 0.0
+          },
+          "usable_record_count": 12,
+          "observed_usable_scale_range": [
+            0.2171875,
+            0.63984375
+          ],
+          "monotonic_violation_count": 0,
+          "scale_bins": {
+            "far": {
+              "scale_range": [
+                0.1,
+                0.2
+              ],
+              "target_scale": 0.15000000000000002,
+              "target_reachable": false,
+              "full_bin_reachable": false,
+              "r0_m": null,
+              "search_bounds_m": null,
+              "radius_at_scale_lower_m": null,
+              "radius_at_scale_upper_m": null,
+              "observed_usable_scale_range": [
+                0.2171875,
+                0.63984375
+              ]
+            },
+            "mid": {
+              "scale_range": [
+                0.2,
+                0.35
+              ],
+              "target_scale": 0.275,
+              "target_reachable": true,
+              "full_bin_reachable": false,
+              "r0_m": 0.7259259259259259,
+              "search_bounds_m": [
+                0.5,
+                0.8
+              ],
+              "radius_at_scale_lower_m": null,
+              "radius_at_scale_upper_m": 0.5844444444444444,
+              "observed_usable_scale_range": [
+                0.2171875,
+                0.63984375
+              ]
+            },
+            "near": {
+              "scale_range": [
+                0.35,
+                0.55
+              ],
+              "target_scale": 0.45,
+              "target_reachable": true,
+              "full_bin_reachable": true,
+              "r0_m": 0.47,
+              "search_bounds_m": [
+                0.35,
+                0.65
+              ],
+              "radius_at_scale_lower_m": 0.5844444444444444,
+              "radius_at_scale_upper_m": 0.396,
+              "observed_usable_scale_range": [
+                0.2171875,
+                0.63984375
+              ]
+            },
+            "pre_grasp": {
+              "scale_range": [
+                0.55,
+                0.75
+              ],
+              "target_scale": 0.65,
+              "target_reachable": false,
+              "full_bin_reachable": false,
+              "r0_m": null,
+              "search_bounds_m": null,
+              "radius_at_scale_lower_m": 0.396,
+              "radius_at_scale_upper_m": null,
+              "observed_usable_scale_range": [
+                0.2171875,
+                0.63984375
+              ]
+            }
+          },
+          "records": [
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.95,
+              "r_m": 0.95,
+              "s": 0.20546875,
+              "s_pre_occlusion": 0.20546875,
+              "mask_bbox_xyxy": [
+                516,
+                341,
+                778,
+                437
+              ],
+              "mask_pixels": 9801,
+              "valid_depth_pixels": 9801,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                505.2138455867288,
+                318.736965397247,
+                784.5674447320956,
+                452.210203841494
+              ],
+              "cad_corner_depth_range_m": [
+                0.8217471583962341,
+                1.002005639265656
+              ],
+              "camera_position_world_m": [
+                1.6030306816101074,
+                0.2968747163619414,
+                1.75829937657216
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.9,
+              "r_m": 0.9,
+              "s": 0.2171875,
+              "s_pre_occlusion": 0.2171875,
+              "mask_bbox_xyxy": [
+                509,
+                340,
+                786,
+                442
+              ],
+              "mask_pixels": 10989,
+              "valid_depth_pixels": 10989,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                496.5137063667587,
+                316.4816629394884,
+                793.8817610751773,
+                457.8630077561445
+              ],
+              "cad_corner_depth_range_m": [
+                0.7717471583962343,
+                0.9520056392656562
+              ],
+              "camera_position_world_m": [
+                1.6030306816101074,
+                0.26473533587761444,
+                1.7199971544162111
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.85,
+              "r_m": 0.85,
+              "s": 0.23125,
+              "s_pre_occlusion": 0.23125,
+              "mask_bbox_xyxy": [
+                501,
+                339,
+                796,
+                447
+              ],
+              "mask_pixels": 12388,
+              "valid_depth_pixels": 12388,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                486.60813957859386,
+                313.96218552814804,
+                804.4742282788477,
+                464.2499064662827
+              ],
+              "cad_corner_depth_range_m": [
+                0.7217471583962342,
+                0.902005639265656
+              ],
+              "camera_position_world_m": [
+                1.6030306816101074,
+                0.23259595539328748,
+                1.6816949322602621
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.8,
+              "r_m": 0.8,
+              "s": 0.246875,
+              "s_pre_occlusion": 0.246875,
+              "mask_bbox_xyxy": [
+                492,
+                338,
+                807,
+                453
+              ],
+              "mask_pixels": 14092,
+              "valid_depth_pixels": 14092,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                475.2279752927911,
+                311.12922934326974,
+                816.6273173958728,
+                471.52382846011216
+              ],
+              "cad_corner_depth_range_m": [
+                0.6717471583962341,
+                0.852005639265656
+              ],
+              "camera_position_world_m": [
+                1.6030306816101074,
+                0.20045657490896052,
+                1.6433927101043133
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.75,
+              "r_m": 0.75,
+              "s": 0.26484375,
+              "s_pre_occlusion": 0.26484375,
+              "mask_bbox_xyxy": [
+                482,
+                336,
+                820,
+                460
+              ],
+              "mask_pixels": 16131,
+              "valid_depth_pixels": 16131,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                462.01745856675257,
+                307.92040769168,
+                830.7133534323673,
+                479.8833499779405
+              ],
+              "cad_corner_depth_range_m": [
+                0.6217471583962344,
+                0.8020056392656563
+              ],
+              "camera_position_world_m": [
+                1.6030306816101074,
+                0.16831719442463355,
+                1.6050904879483645
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.7,
+              "r_m": 0.7,
+              "s": 0.2859375,
+              "s_pre_occlusion": 0.2859375,
+              "mask_bbox_xyxy": [
+                470,
+                335,
+                835,
+                468
+              ],
+              "mask_pixels": 18682,
+              "valid_depth_pixels": 18682,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                446.4963896093579,
+                304.2556032218756,
+                847.2333302422306,
+                489.59110025585585
+              ],
+              "cad_corner_depth_range_m": [
+                0.5717471583962344,
+                0.7520056392656562
+              ],
+              "camera_position_world_m": [
+                1.6030306816101074,
+                0.13617781394030654,
+                1.5667882657924155
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.65,
+              "r_m": 0.65,
+              "s": 0.31015625,
+              "s_pre_occlusion": 0.31015625,
+              "mask_bbox_xyxy": [
+                456,
+                333,
+                852,
+                477
+              ],
+              "mask_pixels": 21932,
+              "valid_depth_pixels": 21932,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                428.0004948752203,
+                300.03018719944765,
+                866.8777487347132,
+                501.0018531055
+              ],
+              "cad_corner_depth_range_m": [
+                0.5217471583962341,
+                0.702005639265656
+              ],
+              "camera_position_world_m": [
+                1.6030306816101074,
+                0.10403843345597963,
+                1.5284860436364665
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.6,
+              "r_m": 0.6,
+              "s": 0.3390625,
+              "s_pre_occlusion": 0.3390625,
+              "mask_bbox_xyxy": [
+                440,
+                330,
+                873,
+                488
+              ],
+              "mask_pixels": 26040,
+              "valid_depth_pixels": 26040,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                405.5838781176547,
+                295.10486928567883,
+                890.625579537021,
+                514.6068240113145
+              ],
+              "cad_corner_depth_range_m": [
+                0.4717471583962341,
+                0.652005639265656
+              ],
+              "camera_position_world_m": [
+                1.6030306816101074,
+                0.07189905297165261,
+                1.4901838214805176
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.55,
+              "r_m": 0.55,
+              "s": 0.37421875,
+              "s_pre_occlusion": 0.37421875,
+              "mask_bbox_xyxy": [
+                421,
+                328,
+                899,
+                502
+              ],
+              "mask_pixels": 31484,
+              "valid_depth_pixels": 31484,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                377.85208227439995,
+                289.2900479819879,
+                919.912473297673,
+                531.1062397255499
+              ],
+              "cad_corner_depth_range_m": [
+                0.4217471583962344,
+                0.6020056392656563
+              ],
+              "camera_position_world_m": [
+                1.6030306816101074,
+                0.039759672487325703,
+                1.4518815993245688
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.5,
+              "r_m": 0.5,
+              "s": 0.4171875,
+              "s_pre_occlusion": 0.4171875,
+              "mask_bbox_xyxy": [
+                398,
+                324,
+                931,
+                518
+              ],
+              "mask_pixels": 38823,
+              "valid_depth_pixels": 38823,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                342.66043227573095,
+                282.32084060099436,
+                956.9322126000843,
+                551.533738682316
+              ],
+              "cad_corner_depth_range_m": [
+                0.37174715839623423,
+                0.5520056392656562
+              ],
+              "camera_position_world_m": [
+                1.6030306816101074,
+                0.007620292002998685,
+                1.4135793771686198
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.45,
+              "r_m": 0.45,
+              "s": 0.471875,
+              "s_pre_occlusion": 0.471875,
+              "mask_bbox_xyxy": [
+                369,
+                320,
+                972,
+                539
+              ],
+              "mask_pixels": 49094,
+              "valid_depth_pixels": 49094,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                296.53110992151323,
+                273.81560287127314,
+                1005.2132666962654,
+                577.4816264385479
+              ],
+              "cad_corner_depth_range_m": [
+                0.3217471583962343,
+                0.5020056392656562
+              ],
+              "camera_position_world_m": [
+                1.6030306816101074,
+                -0.024519088481328277,
+                1.375277155012671
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.4,
+              "r_m": 0.4,
+              "s": 0.5421875,
+              "s_pre_occlusion": 0.5421875,
+              "mask_bbox_xyxy": [
+                333,
+                315,
+                1026,
+                566
+              ],
+              "mask_pixels": 64150,
+              "valid_depth_pixels": 64150,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                233.42669843427274,
+                263.2036245599542,
+                1070.8158898140753,
+                611.5372834629717
+              ],
+              "cad_corner_depth_range_m": [
+                0.2717471583962344,
+                0.45200563926565623
+              ],
+              "camera_position_world_m": [
+                1.6030306816101074,
+                -0.05665846896565524,
+                1.3369749328567222
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.35,
+              "r_m": 0.35,
+              "s": 0.63984375,
+              "s_pre_occlusion": 0.63984375,
+              "mask_bbox_xyxy": [
+                284,
+                309,
+                1102,
+                602
+              ],
+              "mask_pixels": 87535,
+              "valid_depth_pixels": 87535,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                141.8644650098139,
+                249.59150091020405,
+                1165.099296183162,
+                658.204403447842
+              ],
+              "cad_corner_depth_range_m": [
+                0.2217471583962342,
+                0.4020056392656561
+              ],
+              "camera_position_world_m": [
+                1.6030306816101074,
+                -0.08879784944998223,
+                1.2986727107007732
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.3,
+              "r_m": 0.3,
+              "s": 0.78046875,
+              "s_pre_occlusion": 0.78046875,
+              "mask_bbox_xyxy": [
+                218,
+                300,
+                1216,
+                654
+              ],
+              "mask_pixels": 127010,
+              "valid_depth_pixels": 127010,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.04140470328551138,
+              "projected_cad_aabb_xyxy_unclipped": [
+                -3.0099945262510346,
+                231.49751024843775,
+                1312.133467853537,
+                726.0802525956952
+              ],
+              "cad_corner_depth_range_m": [
+                0.1717471583962341,
+                0.352005639265656
+              ],
+              "camera_position_world_m": [
+                1.6030306816101074,
+                -0.12093722993430919,
+                1.2603704885448241
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation"
+              ]
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.25,
+              "r_m": 0.25,
+              "s": 0.90546875,
+              "s_pre_occlusion": 0.90546875,
+              "mask_bbox_xyxy": [
+                121,
+                288,
+                1279,
+                719
+              ],
+              "mask_pixels": 183751,
+              "valid_depth_pixels": 183751,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.4322032146757916,
+              "projected_cad_aabb_xyxy_unclipped": [
+                -266.88062731554373,
+                206.2719125308054,
+                1573.3833780530047,
+                833.8743078035709
+              ],
+              "cad_corner_depth_range_m": [
+                0.12174715839623412,
+                0.302005639265656
+              ],
+              "camera_position_world_m": [
+                1.6030306816101074,
+                -0.15307661041863616,
+                1.2220682663888753
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation"
+              ]
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.2,
+              "r_m": 0.2,
+              "s": 1.0,
+              "s_pre_occlusion": 1.0,
+              "mask_bbox_xyxy": [
+                0,
+                269,
+                1279,
+                719
+              ],
+              "mask_pixels": 234758,
+              "valid_depth_pixels": 234758,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.7338302259077504,
+              "projected_cad_aabb_xyxy_unclipped": [
+                -898.5297738294173,
+                168.66355507761452,
+                2166.447792305267,
+                1031.4688118409904
+              ],
+              "cad_corner_depth_range_m": [
+                0.07174715839623426,
+                0.2520056392656561
+              ],
+              "camera_position_world_m": [
+                1.6030306816101074,
+                -0.18521599090296312,
+                1.1837660442329265
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation"
+              ]
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.15,
+              "r_m": 0.15,
+              "s": 1.0,
+              "s_pre_occlusion": 1.0,
+              "mask_bbox_xyxy": [
+                0,
+                243,
+                1279,
+                671
+              ],
+              "mask_pixels": 294508,
+              "valid_depth_pixels": 294508,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.9625934658961799,
+              "projected_cad_aabb_xyxy_unclipped": [
+                -4434.692397484563,
+                106.58898324853402,
+                4823.513549264621,
+                2368.3110288920925
+              ],
+              "cad_corner_depth_range_m": [
+                0.02174715839623408,
+                0.20200563926565593
+              ],
+              "camera_position_world_m": [
+                1.6030306816101074,
+                -0.2173553713872901,
+                1.1454638220769775
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.12,
+              "r_m": 0.12,
+              "s": 1.0,
+              "s_pre_occlusion": 1.0,
+              "mask_bbox_xyxy": [
+                0,
+                223,
+                1279,
+                719
+              ],
+              "mask_pixels": 362560,
+              "valid_depth_pixels": 362560,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 1.0,
+              "projected_cad_aabb_xyxy_unclipped": null,
+              "cad_corner_depth_range_m": [
+                -0.00825284160376582,
+                0.17200563926565604
+              ],
+              "camera_position_world_m": [
+                1.6030306816101074,
+                -0.23663899967788626,
+                1.1224824887834082
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.1,
+              "r_m": 0.1,
+              "s": 1.0,
+              "s_pre_occlusion": 1.0,
+              "mask_bbox_xyxy": [
+                0,
+                197,
+                1279,
+                719
+              ],
+              "mask_pixels": 400995,
+              "valid_depth_pixels": 400995,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 1.0,
+              "projected_cad_aabb_xyxy_unclipped": null,
+              "cad_corner_depth_range_m": [
+                -0.02825284160376584,
+                0.152005639265656
+              ],
+              "camera_position_world_m": [
+                1.6030306816101074,
+                -0.24949475187161707,
+                1.1071615999210287
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.09,
+              "r_m": 0.09,
+              "s": 1.0,
+              "s_pre_occlusion": 1.0,
+              "mask_bbox_xyxy": [
+                0,
+                178,
+                1279,
+                719
+              ],
+              "mask_pixels": 426170,
+              "valid_depth_pixels": 426170,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 1.0,
+              "projected_cad_aabb_xyxy_unclipped": null,
+              "cad_corner_depth_range_m": [
+                -0.03825284160376588,
+                0.14200563926565601
+              ],
+              "camera_position_world_m": [
+                1.6030306816101074,
+                -0.2559226279684825,
+                1.0995011554898388
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.08,
+              "r_m": 0.08,
+              "s": 1.0,
+              "s_pre_occlusion": 1.0,
+              "mask_bbox_xyxy": [
+                0,
+                153,
+                1279,
+                719
+              ],
+              "mask_pixels": 452783,
+              "valid_depth_pixels": 452783,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 1.0,
+              "projected_cad_aabb_xyxy_unclipped": null,
+              "cad_corner_depth_range_m": [
+                -0.04825284160376567,
+                0.13200563926565614
+              ],
+              "camera_position_world_m": [
+                1.6030306816101074,
+                -0.2623505040653478,
+                1.0918407110586492
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            }
+          ]
+        },
+        "left_low_roll": {
+          "angles_deg": {
+            "theta": -40.0,
+            "phi": 35.0,
+            "psi": -20.0
+          },
+          "usable_record_count": 10,
+          "observed_usable_scale_range": [
+            0.2375,
+            0.5328125
+          ],
+          "monotonic_violation_count": 0,
+          "scale_bins": {
+            "far": {
+              "scale_range": [
+                0.1,
+                0.2
+              ],
+              "target_scale": 0.15000000000000002,
+              "target_reachable": false,
+              "full_bin_reachable": false,
+              "r0_m": null,
+              "search_bounds_m": null,
+              "radius_at_scale_lower_m": null,
+              "radius_at_scale_upper_m": null,
+              "observed_usable_scale_range": [
+                0.2375,
+                0.5328125
+              ]
+            },
+            "mid": {
+              "scale_range": [
+                0.2,
+                0.35
+              ],
+              "target_scale": 0.275,
+              "target_reachable": true,
+              "full_bin_reachable": false,
+              "r0_m": 0.7388888888888888,
+              "search_bounds_m": [
+                0.5,
+                0.8
+              ],
+              "radius_at_scale_lower_m": null,
+              "radius_at_scale_upper_m": 0.5883720930232558,
+              "observed_usable_scale_range": [
+                0.2375,
+                0.5328125
+              ]
+            },
+            "near": {
+              "scale_range": [
+                0.35,
+                0.55
+              ],
+              "target_scale": 0.45,
+              "target_reachable": true,
+              "full_bin_reachable": false,
+              "r0_m": 0.4671875,
+              "search_bounds_m": [
+                0.4,
+                0.65
+              ],
+              "radius_at_scale_lower_m": 0.5883720930232558,
+              "radius_at_scale_upper_m": null,
+              "observed_usable_scale_range": [
+                0.2375,
+                0.5328125
+              ]
+            },
+            "pre_grasp": {
+              "scale_range": [
+                0.55,
+                0.75
+              ],
+              "target_scale": 0.65,
+              "target_reachable": false,
+              "full_bin_reachable": false,
+              "r0_m": null,
+              "search_bounds_m": null,
+              "radius_at_scale_lower_m": null,
+              "radius_at_scale_upper_m": null,
+              "observed_usable_scale_range": [
+                0.2375,
+                0.5328125
+              ]
+            }
+          },
+          "records": [
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.95,
+              "r_m": 0.95,
+              "s": 0.21171875,
+              "s_pre_occlusion": 0.21171875,
+              "mask_bbox_xyxy": [
+                520,
+                344,
+                790,
+                412
+              ],
+              "mask_pixels": 9334,
+              "valid_depth_pixels": 9334,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                515.651936755613,
+                315.06399652834045,
+                801.3241820813623,
+                458.2691829168973
+              ],
+              "cad_corner_depth_range_m": [
+                0.7526373885836714,
+                1.079545305725879
+              ],
+              "camera_position_world_m": [
+                2.1032444269025525,
+                0.28235801517700543,
+                1.5754547701426245
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.9,
+              "r_m": 0.9,
+              "s": 0.2234375,
+              "s_pre_occlusion": 0.2234375,
+              "mask_bbox_xyxy": [
+                513,
+                343,
+                798,
+                415
+              ],
+              "mask_pixels": 10462,
+              "valid_depth_pixels": 10462,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                508.3704986937348,
+                312.8282886618627,
+                810.5005326671417,
+                464.9572061697787
+              ],
+              "cad_corner_depth_range_m": [
+                0.7026373885836716,
+                1.0295453057258792
+              ],
+              "camera_position_world_m": [
+                2.0769173876766343,
+                0.2509826715971488,
+                1.5467759483250725
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.85,
+              "r_m": 0.85,
+              "s": 0.2375,
+              "s_pre_occlusion": 0.2375,
+              "mask_bbox_xyxy": [
+                505,
+                342,
+                808,
+                418
+              ],
+              "mask_pixels": 11766,
+              "valid_depth_pixels": 11766,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                500.179377604387,
+                310.35569194934493,
+                820.7801470103961,
+                472.6167561756745
+              ],
+              "cad_corner_depth_range_m": [
+                0.6526373885836716,
+                0.9795453057258793
+              ],
+              "camera_position_world_m": [
+                2.050590348450716,
+                0.2196073280172922,
+                1.51809712650752
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.8,
+              "r_m": 0.8,
+              "s": 0.253125,
+              "s_pre_occlusion": 0.253125,
+              "mask_bbox_xyxy": [
+                495,
+                341,
+                818,
+                422
+              ],
+              "mask_pixels": 13321,
+              "valid_depth_pixels": 13321,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                490.8967427895128,
+                307.60645012506234,
+                832.3747173923298,
+                481.47610398029246
+              ],
+              "cad_corner_depth_range_m": [
+                0.6026373885836716,
+                0.9295453057258792
+              ],
+              "camera_position_world_m": [
+                2.024263309224798,
+                0.1882319844374355,
+                1.4894183046899676
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.75,
+              "r_m": 0.75,
+              "s": 0.2703125,
+              "s_pre_occlusion": 0.2703125,
+              "mask_bbox_xyxy": [
+                485,
+                340,
+                830,
+                426
+              ],
+              "mask_pixels": 15235,
+              "valid_depth_pixels": 15235,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                480.2888443234645,
+                304.5313835429701,
+                845.5537956035413,
+                491.84111061049447
+              ],
+              "cad_corner_depth_range_m": [
+                0.5526373885836713,
+                0.879545305725879
+              ],
+              "camera_position_world_m": [
+                1.9979362699988799,
+                0.15685664085757883,
+                1.4607394828724154
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.7,
+              "r_m": 0.7,
+              "s": 0.29140625,
+              "s_pre_occlusion": 0.29140625,
+              "mask_bbox_xyxy": [
+                472,
+                338,
+                844,
+                430
+              ],
+              "mask_pixels": 17583,
+              "valid_depth_pixels": 17583,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                468.0500575305938,
+                301.06892129241464,
+                860.6660103481569,
+                504.131254883724
+              ],
+              "cad_corner_depth_range_m": [
+                0.5026373885836712,
+                0.8295453057258789
+              ],
+              "camera_position_world_m": [
+                1.9716092307729616,
+                0.12548129727772223,
+                1.4320606610548632
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.65,
+              "r_m": 0.65,
+              "s": 0.31484375,
+              "s_pre_occlusion": 0.31484375,
+              "mask_bbox_xyxy": [
+                458,
+                337,
+                860,
+                436
+              ],
+              "mask_pixels": 20537,
+              "valid_depth_pixels": 20537,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                453.7729569607992,
+                297.1409362311883,
+                878.1703602522283,
+                518.9377911672009
+              ],
+              "cad_corner_depth_range_m": [
+                0.4526373885836714,
+                0.7795453057258791
+              ],
+              "camera_position_world_m": [
+                1.9452821915470435,
+                0.09410595369786556,
+                1.4033818392373107
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.6,
+              "r_m": 0.6,
+              "s": 0.3421875,
+              "s_pre_occlusion": 0.3421875,
+              "mask_bbox_xyxy": [
+                441,
+                335,
+                878,
+                442
+              ],
+              "mask_pixels": 24287,
+              "valid_depth_pixels": 24287,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                436.90208003350597,
+                292.6467790278324,
+                898.6836443356249,
+                537.1217045646459
+              ],
+              "cad_corner_depth_range_m": [
+                0.4026373885836714,
+                0.7295453057258791
+              ],
+              "camera_position_world_m": [
+                1.9189551523211252,
+                0.06273061011800884,
+                1.3747030174197585
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.55,
+              "r_m": 0.55,
+              "s": 0.37578125,
+              "s_pre_occlusion": 0.37578125,
+              "mask_bbox_xyxy": [
+                420,
+                333,
+                900,
+                450
+              ],
+              "mask_pixels": 29181,
+              "valid_depth_pixels": 29181,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                416.65997308424016,
+                287.4545320782977,
+                923.0546517739174,
+                559.9873259854949
+              ],
+              "cad_corner_depth_range_m": [
+                0.35263738858367155,
+                0.6795453057258792
+              ],
+              "camera_position_world_m": [
+                1.8926281130952072,
+                0.03135526653815224,
+                1.3460241956022063
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.5,
+              "r_m": 0.5,
+              "s": 0.4171875,
+              "s_pre_occlusion": 0.4171875,
+              "mask_bbox_xyxy": [
+                394,
+                330,
+                927,
+                458
+              ],
+              "mask_pixels": 35740,
+              "valid_depth_pixels": 35740,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                391.92398258976607,
+                281.3878445668914,
+                952.4845522207405,
+                589.6098597336712
+              ],
+              "cad_corner_depth_range_m": [
+                0.3026373885836713,
+                0.629545305725879
+              ],
+              "camera_position_world_m": [
+                1.866301073869289,
+                -2.0077041704424925e-05,
+                1.3173453737846539
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.45,
+              "r_m": 0.45,
+              "s": 0.4671875,
+              "s_pre_occlusion": 0.4671875,
+              "mask_bbox_xyxy": [
+                362,
+                327,
+                959,
+                469
+              ],
+              "mask_pixels": 44823,
+              "valid_depth_pixels": 44823,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                358.2313647056451,
+                274.2055045037954,
+                988.7309397337533,
+                629.5036084486268
+              ],
+              "cad_corner_depth_range_m": [
+                0.25263738858367146,
+                0.5795453057258791
+              ],
+              "camera_position_world_m": [
+                1.8399740346433708,
+                -0.03139542062156109,
+                1.2886665519671017
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.4,
+              "r_m": 0.4,
+              "s": 0.5328125,
+              "s_pre_occlusion": 0.5328125,
+              "mask_bbox_xyxy": [
+                319,
+                323,
+                1000,
+                483
+              ],
+              "mask_pixels": 57929,
+              "valid_depth_pixels": 57929,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                313.5388453595377,
+                265.56859957223503,
+                1034.4722273024277,
+                686.1310731249553
+              ],
+              "cad_corner_depth_range_m": [
+                0.20263738858367142,
+                0.5295453057258791
+              ],
+              "camera_position_world_m": [
+                1.8136469954174528,
+                -0.06277076420141775,
+                1.2599877301495492
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.35,
+              "r_m": 0.35,
+              "s": 0.61953125,
+              "s_pre_occlusion": 0.61953125,
+              "mask_bbox_xyxy": [
+                261,
+                317,
+                1053,
+                501
+              ],
+              "mask_pixels": 77877,
+              "valid_depth_pixels": 77877,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.103924224660357,
+              "projected_cad_aabb_xyxy_unclipped": [
+                251.96024875667882,
+                254.98547832348112,
+                1094.0015657882525,
+                772.8150352051429
+              ],
+              "cad_corner_depth_range_m": [
+                0.15263738858367137,
+                0.479545305725879
+              ],
+              "camera_position_world_m": [
+                1.7873199561915345,
+                -0.09414610778127439,
+                1.231308908331997
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation"
+              ]
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.3,
+              "r_m": 0.3,
+              "s": 0.74453125,
+              "s_pre_occlusion": 0.74453125,
+              "mask_bbox_xyxy": [
+                173,
+                310,
+                1125,
+                525
+              ],
+              "mask_pixels": 110545,
+              "valid_depth_pixels": 110545,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.29853868396106453,
+              "projected_cad_aabb_xyxy_unclipped": [
+                161.69652566345343,
+                241.71478016326472,
+                1174.659640394027,
+                922.1303767522617
+              ],
+              "cad_corner_depth_range_m": [
+                0.1026373885836714,
+                0.4295453057258791
+              ],
+              "camera_position_world_m": [
+                1.7609929169656164,
+                -0.12552145136113108,
+                1.2026300865144446
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation"
+              ]
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.25,
+              "r_m": 0.25,
+              "s": 0.94140625,
+              "s_pre_occlusion": 0.94140625,
+              "mask_bbox_xyxy": [
+                23,
+                301,
+                1227,
+                558
+              ],
+              "mask_pixels": 173794,
+              "valid_depth_pixels": 173794,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.5537661227670461,
+              "projected_cad_aabb_xyxy_unclipped": [
+                -104.98562091500423,
+                224.5838441727449,
+                1290.1222530086513,
+                1240.347968998302
+              ],
+              "cad_corner_depth_range_m": [
+                0.05263738858367131,
+                0.37954530572587897
+              ],
+              "camera_position_world_m": [
+                1.7346658777396982,
+                -0.1568967949409877,
+                1.1739512646968924
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.2,
+              "r_m": 0.2,
+              "s": 1.0,
+              "s_pre_occlusion": 1.0,
+              "mask_bbox_xyxy": [
+                0,
+                282,
+                1279,
+                608
+              ],
+              "mask_pixels": 234097,
+              "valid_depth_pixels": 234097,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.9969507153367982,
+              "projected_cad_aabb_xyxy_unclipped": [
+                -14219.05333024428,
+                201.62168159757923,
+                1469.1145741005143,
+                14034.373058562096
+              ],
+              "cad_corner_depth_range_m": [
+                0.0026373885836714003,
+                0.32954530572587903
+              ],
+              "camera_position_world_m": [
+                1.70833883851378,
+                -0.18827213852084437,
+                1.1452724428793402
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.15,
+              "r_m": 0.15,
+              "s": 1.0,
+              "s_pre_occlusion": 1.0,
+              "mask_bbox_xyxy": [
+                0,
+                253,
+                1279,
+                593
+              ],
+              "mask_pixels": 291156,
+              "valid_depth_pixels": 291156,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 1.0,
+              "projected_cad_aabb_xyxy_unclipped": null,
+              "cad_corner_depth_range_m": [
+                -0.0473626114163286,
+                0.279545305725879
+              ],
+              "camera_position_world_m": [
+                1.6820117992878618,
+                -0.21964748210070104,
+                1.1165936210617877
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.12,
+              "r_m": 0.12,
+              "s": 1.0,
+              "s_pre_occlusion": 1.0,
+              "mask_bbox_xyxy": [
+                0,
+                212,
+                1279,
+                608
+              ],
+              "mask_pixels": 353362,
+              "valid_depth_pixels": 353362,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 1.0,
+              "projected_cad_aabb_xyxy_unclipped": null,
+              "cad_corner_depth_range_m": [
+                -0.07736261141632872,
+                0.24954530572587885
+              ],
+              "camera_position_world_m": [
+                1.666215575752311,
+                -0.238472688248615,
+                1.0993863279712563
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.1,
+              "r_m": 0.1,
+              "s": 1.0,
+              "s_pre_occlusion": 1.0,
+              "mask_bbox_xyxy": [
+                0,
+                186,
+                1279,
+                661
+              ],
+              "mask_pixels": 421030,
+              "valid_depth_pixels": 421030,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 1.0,
+              "projected_cad_aabb_xyxy_unclipped": null,
+              "cad_corner_depth_range_m": [
+                -0.09736261141632846,
+                0.22954530572587922
+              ],
+              "camera_position_world_m": [
+                1.6556847600619438,
+                -0.25102282568055767,
+                1.0879147992442355
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.09,
+              "r_m": 0.09,
+              "s": 1.0,
+              "s_pre_occlusion": 1.0,
+              "mask_bbox_xyxy": [
+                0,
+                190,
+                1279,
+                699
+              ],
+              "mask_pixels": 448212,
+              "valid_depth_pixels": 448212,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 1.0,
+              "projected_cad_aabb_xyxy_unclipped": null,
+              "cad_corner_depth_range_m": [
+                -0.10736261141632863,
+                0.219545305725879
+              ],
+              "camera_position_world_m": [
+                1.65041935221676,
+                -0.257297894396529,
+                1.082179034880725
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.08,
+              "r_m": 0.08,
+              "s": 0.95,
+              "s_pre_occlusion": 0.95,
+              "mask_bbox_xyxy": [
+                64,
+                193,
+                1279,
+                719
+              ],
+              "mask_pixels": 449328,
+              "valid_depth_pixels": 449328,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 1.0,
+              "projected_cad_aabb_xyxy_unclipped": null,
+              "cad_corner_depth_range_m": [
+                -0.11736261141632875,
+                0.2095453057258792
+              ],
+              "camera_position_world_m": [
+                1.6451539443715766,
+                -0.26357296311250034,
+                1.0764432705172144
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            }
+          ]
+        },
+        "right_high_roll": {
+          "angles_deg": {
+            "theta": 40.0,
+            "phi": 65.0,
+            "psi": 20.0
+          },
+          "usable_record_count": 11,
+          "observed_usable_scale_range": [
+            0.178125,
+            0.4265625
+          ],
+          "monotonic_violation_count": 0,
+          "scale_bins": {
+            "far": {
+              "scale_range": [
+                0.1,
+                0.2
+              ],
+              "target_scale": 0.15000000000000002,
+              "target_reachable": false,
+              "full_bin_reachable": false,
+              "r0_m": null,
+              "search_bounds_m": null,
+              "radius_at_scale_lower_m": null,
+              "radius_at_scale_upper_m": 0.8033333333333333,
+              "observed_usable_scale_range": [
+                0.178125,
+                0.4265625
+              ]
+            },
+            "mid": {
+              "scale_range": [
+                0.2,
+                0.35
+              ],
+              "target_scale": 0.275,
+              "target_reachable": true,
+              "full_bin_reachable": true,
+              "r0_m": 0.5942857142857142,
+              "search_bounds_m": [
+                0.4,
+                0.9
+              ],
+              "radius_at_scale_lower_m": 0.8033333333333333,
+              "radius_at_scale_upper_m": 0.4778846153846154,
+              "observed_usable_scale_range": [
+                0.178125,
+                0.4265625
+              ]
+            },
+            "near": {
+              "scale_range": [
+                0.35,
+                0.55
+              ],
+              "target_scale": 0.45,
+              "target_reachable": false,
+              "full_bin_reachable": false,
+              "r0_m": null,
+              "search_bounds_m": null,
+              "radius_at_scale_lower_m": 0.4778846153846154,
+              "radius_at_scale_upper_m": null,
+              "observed_usable_scale_range": [
+                0.178125,
+                0.4265625
+              ]
+            },
+            "pre_grasp": {
+              "scale_range": [
+                0.55,
+                0.75
+              ],
+              "target_scale": 0.65,
+              "target_reachable": false,
+              "full_bin_reachable": false,
+              "r0_m": null,
+              "search_bounds_m": null,
+              "radius_at_scale_lower_m": null,
+              "radius_at_scale_upper_m": null,
+              "observed_usable_scale_range": [
+                0.178125,
+                0.4265625
+              ]
+            }
+          },
+          "records": [
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.95,
+              "r_m": 0.95,
+              "s": 0.16796875,
+              "s_pre_occlusion": 0.16796875,
+              "mask_bbox_xyxy": [
+                524,
+                311,
+                738,
+                483
+              ],
+              "mask_pixels": 9593,
+              "valid_depth_pixels": 9593,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                481.56078304698974,
+                305.37651603217967,
+                766.5295379873043,
+                480.5838687368182
+              ],
+              "cad_corner_depth_range_m": [
+                0.8099085856284659,
+                1.0409323414090863
+              ],
+              "camera_position_world_m": [
+                1.3449595884496324,
+                -0.006216360421559597,
+                1.8915495532939484
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.9,
+              "r_m": 0.9,
+              "s": 0.178125,
+              "s_pre_occlusion": 0.178125,
+              "mask_bbox_xyxy": [
+                517,
+                309,
+                744,
+                490
+              ],
+              "mask_pixels": 10735,
+              "valid_depth_pixels": 10735,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                472.25871171282404,
+                302.46369401860676,
+                774.0906589252968,
+                487.9509933887437
+              ],
+              "cad_corner_depth_range_m": [
+                0.7599085856284657,
+                0.9909323414090861
+              ],
+              "camera_position_world_m": [
+                1.3585422775633416,
+                -0.022403578969912852,
+                1.8462341639421158
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.85,
+              "r_m": 0.85,
+              "s": 0.1890625,
+              "s_pre_occlusion": 0.1890625,
+              "mask_bbox_xyxy": [
+                510,
+                306,
+                751,
+                499
+              ],
+              "mask_pixels": 12093,
+              "valid_depth_pixels": 12093,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                461.79234822617315,
+                299.2195139729766,
+                782.608862098929,
+                496.27267448833703
+              ],
+              "cad_corner_depth_range_m": [
+                0.7099085856284658,
+                0.9409323414090862
+              ],
+              "camera_position_world_m": [
+                1.3721249666770508,
+                -0.03859079751826611,
+                1.8009187745902833
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.8,
+              "r_m": 0.8,
+              "s": 0.20078125,
+              "s_pre_occlusion": 0.20078125,
+              "mask_bbox_xyxy": [
+                502,
+                303,
+                758,
+                509
+              ],
+              "mask_pixels": 13723,
+              "valid_depth_pixels": 13723,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                449.9285066061526,
+                295.58402371287247,
+                792.278145972539,
+                505.74728612592645
+              ],
+              "cad_corner_depth_range_m": [
+                0.6599085856284659,
+                0.8909323414090864
+              ],
+              "camera_position_world_m": [
+                1.38570765579076,
+                -0.054778016066619306,
+                1.7556033852384507
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.75,
+              "r_m": 0.75,
+              "s": 0.21484375,
+              "s_pre_occlusion": 0.21484375,
+              "mask_bbox_xyxy": [
+                493,
+                299,
+                767,
+                520
+              ],
+              "mask_pixels": 15711,
+              "valid_depth_pixels": 15711,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                436.3672758842487,
+                291.4818800705102,
+                803.3487389910351,
+                516.6322611841816
+              ],
+              "cad_corner_depth_range_m": [
+                0.6099085856284657,
+                0.8409323414090862
+              ],
+              "camera_position_world_m": [
+                1.3992903449044691,
+                -0.07096523461497256,
+                1.7102879958866182
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.7,
+              "r_m": 0.7,
+              "s": 0.23125,
+              "s_pre_occlusion": 0.23125,
+              "mask_bbox_xyxy": [
+                483,
+                295,
+                778,
+                533
+              ],
+              "mask_pixels": 18160,
+              "valid_depth_pixels": 18160,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                420.7163149852422,
+                286.81707118104714,
+                816.1490638018932,
+                529.2678369980581
+              ],
+              "cad_corner_depth_range_m": [
+                0.5599085856284658,
+                0.7909323414090863
+              ],
+              "camera_position_world_m": [
+                1.4128730340181783,
+                -0.08715245316332579,
+                1.6649726065347856
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.65,
+              "r_m": 0.65,
+              "s": 0.25,
+              "s_pre_occlusion": 0.25,
+              "mask_bbox_xyxy": [
+                471,
+                290,
+                790,
+                548
+              ],
+              "mask_pixels": 21230,
+              "valid_depth_pixels": 21230,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                402.4522724418191,
+                281.46530713113526,
+                831.1188693868825,
+                544.1132597124227
+              ],
+              "cad_corner_depth_range_m": [
+                0.5099085856284659,
+                0.7409323414090863
+              ],
+              "camera_position_world_m": [
+                1.4264557231318875,
+                -0.10333967171167902,
+                1.6196572171829533
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.6,
+              "r_m": 0.6,
+              "s": 0.271875,
+              "s_pre_occlusion": 0.271875,
+              "mask_bbox_xyxy": [
+                458,
+                285,
+                805,
+                566
+              ],
+              "mask_pixels": 25168,
+              "valid_depth_pixels": 25168,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                380.8611219311484,
+                275.26278166801563,
+                848.8607693236619,
+                561.8038043103727
+              ],
+              "cad_corner_depth_range_m": [
+                0.4599085856284658,
+                0.6909323414090863
+              ],
+              "camera_position_world_m": [
+                1.4400384122455967,
+                -0.11952689026003224,
+                1.5743418278311208
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.55,
+              "r_m": 0.55,
+              "s": 0.29921875,
+              "s_pre_occlusion": 0.29921875,
+              "mask_bbox_xyxy": [
+                441,
+                278,
+                823,
+                589
+              ],
+              "mask_pixels": 30338,
+              "valid_depth_pixels": 30338,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                354.9426235459077,
+                267.98911152111236,
+                870.2233329327175,
+                583.2440526913864
+              ],
+              "cad_corner_depth_range_m": [
+                0.4099085856284661,
+                0.6409323414090866
+              ],
+              "camera_position_world_m": [
+                1.453621101359306,
+                -0.13571410880838544,
+                1.5290264384792884
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.5,
+              "r_m": 0.5,
+              "s": 0.33203125,
+              "s_pre_occlusion": 0.33203125,
+              "mask_bbox_xyxy": [
+                422,
+                270,
+                846,
+                616
+              ],
+              "mask_pixels": 37313,
+              "valid_depth_pixels": 37313,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                323.2509431173999,
+                259.34060150121593,
+                896.4408271749269,
+                609.7675169616103
+              ],
+              "cad_corner_depth_range_m": [
+                0.35990858562846606,
+                0.5909323414090865
+              ],
+              "camera_position_world_m": [
+                1.4672037904730153,
+                -0.1519013273567387,
+                1.4837110491274559
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.45,
+              "r_m": 0.45,
+              "s": 0.37265625,
+              "s_pre_occlusion": 0.37265625,
+              "mask_bbox_xyxy": [
+                399,
+                261,
+                875,
+                652
+              ],
+              "mask_pixels": 47044,
+              "valid_depth_pixels": 47044,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                283.61542037126134,
+                248.88676735340349,
+                929.380447384215,
+                643.4250655840374
+              ],
+              "cad_corner_depth_range_m": [
+                0.30990858562846596,
+                0.5409323414090864
+              ],
+              "camera_position_world_m": [
+                1.4807864795867245,
+                -0.16808854590509192,
+                1.4383956597756233
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.4,
+              "r_m": 0.4,
+              "s": 0.4265625,
+              "s_pre_occlusion": 0.4265625,
+              "mask_bbox_xyxy": [
+                369,
+                250,
+                914,
+                701
+              ],
+              "mask_pixels": 61238,
+              "valid_depth_pixels": 61238,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                232.6212729051578,
+                235.99645896498768,
+                972.0076812830007,
+                687.5422489864961
+              ],
+              "cad_corner_depth_range_m": [
+                0.2599085856284659,
+                0.49093234140908637
+              ],
+              "camera_position_world_m": [
+                1.4943691687004337,
+                -0.18427576445344515,
+                1.3930802704237908
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.35,
+              "r_m": 0.35,
+              "s": 0.496875,
+              "s_pre_occlusion": 0.496875,
+              "mask_bbox_xyxy": [
+                332,
+                235,
+                967,
+                719
+              ],
+              "mask_pixels": 80677,
+              "valid_depth_pixels": 80677,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.05470003452868577,
+              "projected_cad_aabb_xyxy_unclipped": [
+                164.56917411306767,
+                219.70551451067868,
+                1029.3330543424242,
+                747.891808519882
+              ],
+              "cad_corner_depth_range_m": [
+                0.20990858562846573,
+                0.4409323414090862
+              ],
+              "camera_position_world_m": [
+                1.5079518578141429,
+                -0.20046298300179838,
+                1.3477648810719582
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation"
+              ]
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.3,
+              "r_m": 0.3,
+              "s": 0.58515625,
+              "s_pre_occlusion": 0.58515625,
+              "mask_bbox_xyxy": [
+                283,
+                217,
+                1031,
+                719
+              ],
+              "mask_pixels": 101170,
+              "valid_depth_pixels": 101170,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.20497307527457498,
+              "projected_cad_aabb_xyxy_unclipped": [
+                69.18104111843263,
+                198.4637549529673,
+                1110.5422186064188,
+                853.2041528669222
+              ],
+              "cad_corner_depth_range_m": [
+                0.15990858562846572,
+                0.3909323414090863
+              ],
+              "camera_position_world_m": [
+                1.521534546927852,
+                -0.21665020155015163,
+                1.3024494917201257
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation"
+              ]
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.25,
+              "r_m": 0.25,
+              "s": 0.71484375,
+              "s_pre_occlusion": 0.71484375,
+              "mask_bbox_xyxy": [
+                216,
+                191,
+                1130,
+                719
+              ],
+              "mask_pixels": 136381,
+              "valid_depth_pixels": 136381,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.44412462049632684,
+              "projected_cad_aabb_xyxy_unclipped": [
+                -74.1537186278041,
+                169.6099840212124,
+                1317.7086508107272,
+                1077.8017809975545
+              ],
+              "cad_corner_depth_range_m": [
+                0.10990858562846596,
+                0.34093234140908646
+              ],
+              "camera_position_world_m": [
+                1.5351172360415613,
+                -0.23283742009850483,
+                1.2571341023682934
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation"
+              ]
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.2,
+              "r_m": 0.2,
+              "s": 0.88125,
+              "s_pre_occlusion": 0.88125,
+              "mask_bbox_xyxy": [
+                117,
+                155,
+                1244,
+                719
+              ],
+              "mask_pixels": 186820,
+              "valid_depth_pixels": 186820,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.7780128010581748,
+              "projected_cad_aabb_xyxy_unclipped": [
+                -313.72086071097704,
+                128.15938279777833,
+                1883.7449239893087,
+                1677.2999776769416
+              ],
+              "cad_corner_depth_range_m": [
+                0.059908585628465766,
+                0.29093234140908636
+              ],
+              "camera_position_world_m": [
+                1.5486999251552704,
+                -0.2490246386468581,
+                1.2118187130164608
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.15,
+              "r_m": 0.15,
+              "s": 1.0,
+              "s_pre_occlusion": 1.0,
+              "mask_bbox_xyxy": [
+                0,
+                98,
+                1279,
+                719
+              ],
+              "mask_pixels": 260694,
+              "valid_depth_pixels": 260694,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.9886749933603398,
+              "projected_cad_aabb_xyxy_unclipped": [
+                -795.4058707338158,
+                63.55923811089542,
+                8162.365156198775,
+                8327.088489828995
+              ],
+              "cad_corner_depth_range_m": [
+                0.009908585628465829,
+                0.2409323414090862
+              ],
+              "camera_position_world_m": [
+                1.5622826142689799,
+                -0.2652118571952113,
+                1.1665033236646283
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.12,
+              "r_m": 0.12,
+              "s": 1.0,
+              "s_pre_occlusion": 1.0,
+              "mask_bbox_xyxy": [
+                0,
+                52,
+                1279,
+                719
+              ],
+              "mask_pixels": 297288,
+              "valid_depth_pixels": 297288,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 1.0,
+              "projected_cad_aabb_xyxy_unclipped": null,
+              "cad_corner_depth_range_m": [
+                -0.020091414371534173,
+                0.2109323414090862
+              ],
+              "camera_position_world_m": [
+                1.5704322277372054,
+                -0.2749241883242233,
+                1.1393140900535288
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.1,
+              "r_m": 0.1,
+              "s": 1.0,
+              "s_pre_occlusion": 1.0,
+              "mask_bbox_xyxy": [
+                0,
+                35,
+                1279,
+                719
+              ],
+              "mask_pixels": 327561,
+              "valid_depth_pixels": 327561,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 1.0,
+              "projected_cad_aabb_xyxy_unclipped": null,
+              "cad_corner_depth_range_m": [
+                -0.040091414371533796,
+                0.1909323414090864
+              ],
+              "camera_position_world_m": [
+                1.575865303382689,
+                -0.28139907574356454,
+                1.121187934312796
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.09,
+              "r_m": 0.09,
+              "s": 0.97578125,
+              "s_pre_occlusion": 0.97578125,
+              "mask_bbox_xyxy": [
+                0,
+                17,
+                1248,
+                719
+              ],
+              "mask_pixels": 345607,
+              "valid_depth_pixels": 345607,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 1.0,
+              "projected_cad_aabb_xyxy_unclipped": null,
+              "cad_corner_depth_range_m": [
+                -0.05009141437153413,
+                0.18093234140908618
+              ],
+              "camera_position_world_m": [
+                1.5785818412054309,
+                -0.2846365194532352,
+                1.1121248564424293
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "hose",
+              "class_id": 2,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.08,
+              "r_m": 0.08,
+              "s": 0.87109375,
+              "s_pre_occlusion": 0.87109375,
+              "mask_bbox_xyxy": [
+                0,
+                8,
+                1114,
+                719
+              ],
+              "mask_pixels": 367619,
+              "valid_depth_pixels": 367619,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 1.0,
+              "projected_cad_aabb_xyxy_unclipped": null,
+              "cad_corner_depth_range_m": [
+                -0.0600914143715339,
+                0.1709323414090864
+              ],
+              "camera_position_world_m": [
+                1.5812983790281727,
+                -0.2878739631629058,
+                1.103061778572063
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "records": [
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.95,
+      "r_m": 0.95,
+      "s": 0.20546875,
+      "s_pre_occlusion": 0.20546875,
+      "mask_bbox_xyxy": [
+        516,
+        341,
+        778,
+        437
+      ],
+      "mask_pixels": 9801,
+      "valid_depth_pixels": 9801,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        505.2138455867288,
+        318.736965397247,
+        784.5674447320956,
+        452.210203841494
+      ],
+      "cad_corner_depth_range_m": [
+        0.8217471583962341,
+        1.002005639265656
+      ],
+      "camera_position_world_m": [
+        1.6030306816101074,
+        0.2968747163619414,
+        1.75829937657216
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.9,
+      "r_m": 0.9,
+      "s": 0.2171875,
+      "s_pre_occlusion": 0.2171875,
+      "mask_bbox_xyxy": [
+        509,
+        340,
+        786,
+        442
+      ],
+      "mask_pixels": 10989,
+      "valid_depth_pixels": 10989,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        496.5137063667587,
+        316.4816629394884,
+        793.8817610751773,
+        457.8630077561445
+      ],
+      "cad_corner_depth_range_m": [
+        0.7717471583962343,
+        0.9520056392656562
+      ],
+      "camera_position_world_m": [
+        1.6030306816101074,
+        0.26473533587761444,
+        1.7199971544162111
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.85,
+      "r_m": 0.85,
+      "s": 0.23125,
+      "s_pre_occlusion": 0.23125,
+      "mask_bbox_xyxy": [
+        501,
+        339,
+        796,
+        447
+      ],
+      "mask_pixels": 12388,
+      "valid_depth_pixels": 12388,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        486.60813957859386,
+        313.96218552814804,
+        804.4742282788477,
+        464.2499064662827
+      ],
+      "cad_corner_depth_range_m": [
+        0.7217471583962342,
+        0.902005639265656
+      ],
+      "camera_position_world_m": [
+        1.6030306816101074,
+        0.23259595539328748,
+        1.6816949322602621
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.8,
+      "r_m": 0.8,
+      "s": 0.246875,
+      "s_pre_occlusion": 0.246875,
+      "mask_bbox_xyxy": [
+        492,
+        338,
+        807,
+        453
+      ],
+      "mask_pixels": 14092,
+      "valid_depth_pixels": 14092,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        475.2279752927911,
+        311.12922934326974,
+        816.6273173958728,
+        471.52382846011216
+      ],
+      "cad_corner_depth_range_m": [
+        0.6717471583962341,
+        0.852005639265656
+      ],
+      "camera_position_world_m": [
+        1.6030306816101074,
+        0.20045657490896052,
+        1.6433927101043133
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.75,
+      "r_m": 0.75,
+      "s": 0.26484375,
+      "s_pre_occlusion": 0.26484375,
+      "mask_bbox_xyxy": [
+        482,
+        336,
+        820,
+        460
+      ],
+      "mask_pixels": 16131,
+      "valid_depth_pixels": 16131,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        462.01745856675257,
+        307.92040769168,
+        830.7133534323673,
+        479.8833499779405
+      ],
+      "cad_corner_depth_range_m": [
+        0.6217471583962344,
+        0.8020056392656563
+      ],
+      "camera_position_world_m": [
+        1.6030306816101074,
+        0.16831719442463355,
+        1.6050904879483645
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.7,
+      "r_m": 0.7,
+      "s": 0.2859375,
+      "s_pre_occlusion": 0.2859375,
+      "mask_bbox_xyxy": [
+        470,
+        335,
+        835,
+        468
+      ],
+      "mask_pixels": 18682,
+      "valid_depth_pixels": 18682,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        446.4963896093579,
+        304.2556032218756,
+        847.2333302422306,
+        489.59110025585585
+      ],
+      "cad_corner_depth_range_m": [
+        0.5717471583962344,
+        0.7520056392656562
+      ],
+      "camera_position_world_m": [
+        1.6030306816101074,
+        0.13617781394030654,
+        1.5667882657924155
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.65,
+      "r_m": 0.65,
+      "s": 0.31015625,
+      "s_pre_occlusion": 0.31015625,
+      "mask_bbox_xyxy": [
+        456,
+        333,
+        852,
+        477
+      ],
+      "mask_pixels": 21932,
+      "valid_depth_pixels": 21932,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        428.0004948752203,
+        300.03018719944765,
+        866.8777487347132,
+        501.0018531055
+      ],
+      "cad_corner_depth_range_m": [
+        0.5217471583962341,
+        0.702005639265656
+      ],
+      "camera_position_world_m": [
+        1.6030306816101074,
+        0.10403843345597963,
+        1.5284860436364665
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.6,
+      "r_m": 0.6,
+      "s": 0.3390625,
+      "s_pre_occlusion": 0.3390625,
+      "mask_bbox_xyxy": [
+        440,
+        330,
+        873,
+        488
+      ],
+      "mask_pixels": 26040,
+      "valid_depth_pixels": 26040,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        405.5838781176547,
+        295.10486928567883,
+        890.625579537021,
+        514.6068240113145
+      ],
+      "cad_corner_depth_range_m": [
+        0.4717471583962341,
+        0.652005639265656
+      ],
+      "camera_position_world_m": [
+        1.6030306816101074,
+        0.07189905297165261,
+        1.4901838214805176
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.55,
+      "r_m": 0.55,
+      "s": 0.37421875,
+      "s_pre_occlusion": 0.37421875,
+      "mask_bbox_xyxy": [
+        421,
+        328,
+        899,
+        502
+      ],
+      "mask_pixels": 31484,
+      "valid_depth_pixels": 31484,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        377.85208227439995,
+        289.2900479819879,
+        919.912473297673,
+        531.1062397255499
+      ],
+      "cad_corner_depth_range_m": [
+        0.4217471583962344,
+        0.6020056392656563
+      ],
+      "camera_position_world_m": [
+        1.6030306816101074,
+        0.039759672487325703,
+        1.4518815993245688
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.5,
+      "r_m": 0.5,
+      "s": 0.4171875,
+      "s_pre_occlusion": 0.4171875,
+      "mask_bbox_xyxy": [
+        398,
+        324,
+        931,
+        518
+      ],
+      "mask_pixels": 38823,
+      "valid_depth_pixels": 38823,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        342.66043227573095,
+        282.32084060099436,
+        956.9322126000843,
+        551.533738682316
+      ],
+      "cad_corner_depth_range_m": [
+        0.37174715839623423,
+        0.5520056392656562
+      ],
+      "camera_position_world_m": [
+        1.6030306816101074,
+        0.007620292002998685,
+        1.4135793771686198
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.45,
+      "r_m": 0.45,
+      "s": 0.471875,
+      "s_pre_occlusion": 0.471875,
+      "mask_bbox_xyxy": [
+        369,
+        320,
+        972,
+        539
+      ],
+      "mask_pixels": 49094,
+      "valid_depth_pixels": 49094,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        296.53110992151323,
+        273.81560287127314,
+        1005.2132666962654,
+        577.4816264385479
+      ],
+      "cad_corner_depth_range_m": [
+        0.3217471583962343,
+        0.5020056392656562
+      ],
+      "camera_position_world_m": [
+        1.6030306816101074,
+        -0.024519088481328277,
+        1.375277155012671
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.4,
+      "r_m": 0.4,
+      "s": 0.5421875,
+      "s_pre_occlusion": 0.5421875,
+      "mask_bbox_xyxy": [
+        333,
+        315,
+        1026,
+        566
+      ],
+      "mask_pixels": 64150,
+      "valid_depth_pixels": 64150,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        233.42669843427274,
+        263.2036245599542,
+        1070.8158898140753,
+        611.5372834629717
+      ],
+      "cad_corner_depth_range_m": [
+        0.2717471583962344,
+        0.45200563926565623
+      ],
+      "camera_position_world_m": [
+        1.6030306816101074,
+        -0.05665846896565524,
+        1.3369749328567222
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.35,
+      "r_m": 0.35,
+      "s": 0.63984375,
+      "s_pre_occlusion": 0.63984375,
+      "mask_bbox_xyxy": [
+        284,
+        309,
+        1102,
+        602
+      ],
+      "mask_pixels": 87535,
+      "valid_depth_pixels": 87535,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        141.8644650098139,
+        249.59150091020405,
+        1165.099296183162,
+        658.204403447842
+      ],
+      "cad_corner_depth_range_m": [
+        0.2217471583962342,
+        0.4020056392656561
+      ],
+      "camera_position_world_m": [
+        1.6030306816101074,
+        -0.08879784944998223,
+        1.2986727107007732
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.3,
+      "r_m": 0.3,
+      "s": 0.78046875,
+      "s_pre_occlusion": 0.78046875,
+      "mask_bbox_xyxy": [
+        218,
+        300,
+        1216,
+        654
+      ],
+      "mask_pixels": 127010,
+      "valid_depth_pixels": 127010,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.04140470328551138,
+      "projected_cad_aabb_xyxy_unclipped": [
+        -3.0099945262510346,
+        231.49751024843775,
+        1312.133467853537,
+        726.0802525956952
+      ],
+      "cad_corner_depth_range_m": [
+        0.1717471583962341,
+        0.352005639265656
+      ],
+      "camera_position_world_m": [
+        1.6030306816101074,
+        -0.12093722993430919,
+        1.2603704885448241
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation"
+      ]
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.25,
+      "r_m": 0.25,
+      "s": 0.90546875,
+      "s_pre_occlusion": 0.90546875,
+      "mask_bbox_xyxy": [
+        121,
+        288,
+        1279,
+        719
+      ],
+      "mask_pixels": 183751,
+      "valid_depth_pixels": 183751,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.4322032146757916,
+      "projected_cad_aabb_xyxy_unclipped": [
+        -266.88062731554373,
+        206.2719125308054,
+        1573.3833780530047,
+        833.8743078035709
+      ],
+      "cad_corner_depth_range_m": [
+        0.12174715839623412,
+        0.302005639265656
+      ],
+      "camera_position_world_m": [
+        1.6030306816101074,
+        -0.15307661041863616,
+        1.2220682663888753
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation"
+      ]
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.2,
+      "r_m": 0.2,
+      "s": 1.0,
+      "s_pre_occlusion": 1.0,
+      "mask_bbox_xyxy": [
+        0,
+        269,
+        1279,
+        719
+      ],
+      "mask_pixels": 234758,
+      "valid_depth_pixels": 234758,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.7338302259077504,
+      "projected_cad_aabb_xyxy_unclipped": [
+        -898.5297738294173,
+        168.66355507761452,
+        2166.447792305267,
+        1031.4688118409904
+      ],
+      "cad_corner_depth_range_m": [
+        0.07174715839623426,
+        0.2520056392656561
+      ],
+      "camera_position_world_m": [
+        1.6030306816101074,
+        -0.18521599090296312,
+        1.1837660442329265
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation"
+      ]
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.15,
+      "r_m": 0.15,
+      "s": 1.0,
+      "s_pre_occlusion": 1.0,
+      "mask_bbox_xyxy": [
+        0,
+        243,
+        1279,
+        671
+      ],
+      "mask_pixels": 294508,
+      "valid_depth_pixels": 294508,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.9625934658961799,
+      "projected_cad_aabb_xyxy_unclipped": [
+        -4434.692397484563,
+        106.58898324853402,
+        4823.513549264621,
+        2368.3110288920925
+      ],
+      "cad_corner_depth_range_m": [
+        0.02174715839623408,
+        0.20200563926565593
+      ],
+      "camera_position_world_m": [
+        1.6030306816101074,
+        -0.2173553713872901,
+        1.1454638220769775
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.12,
+      "r_m": 0.12,
+      "s": 1.0,
+      "s_pre_occlusion": 1.0,
+      "mask_bbox_xyxy": [
+        0,
+        223,
+        1279,
+        719
+      ],
+      "mask_pixels": 362560,
+      "valid_depth_pixels": 362560,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 1.0,
+      "projected_cad_aabb_xyxy_unclipped": null,
+      "cad_corner_depth_range_m": [
+        -0.00825284160376582,
+        0.17200563926565604
+      ],
+      "camera_position_world_m": [
+        1.6030306816101074,
+        -0.23663899967788626,
+        1.1224824887834082
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.1,
+      "r_m": 0.1,
+      "s": 1.0,
+      "s_pre_occlusion": 1.0,
+      "mask_bbox_xyxy": [
+        0,
+        197,
+        1279,
+        719
+      ],
+      "mask_pixels": 400995,
+      "valid_depth_pixels": 400995,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 1.0,
+      "projected_cad_aabb_xyxy_unclipped": null,
+      "cad_corner_depth_range_m": [
+        -0.02825284160376584,
+        0.152005639265656
+      ],
+      "camera_position_world_m": [
+        1.6030306816101074,
+        -0.24949475187161707,
+        1.1071615999210287
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.09,
+      "r_m": 0.09,
+      "s": 1.0,
+      "s_pre_occlusion": 1.0,
+      "mask_bbox_xyxy": [
+        0,
+        178,
+        1279,
+        719
+      ],
+      "mask_pixels": 426170,
+      "valid_depth_pixels": 426170,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 1.0,
+      "projected_cad_aabb_xyxy_unclipped": null,
+      "cad_corner_depth_range_m": [
+        -0.03825284160376588,
+        0.14200563926565601
+      ],
+      "camera_position_world_m": [
+        1.6030306816101074,
+        -0.2559226279684825,
+        1.0995011554898388
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.08,
+      "r_m": 0.08,
+      "s": 1.0,
+      "s_pre_occlusion": 1.0,
+      "mask_bbox_xyxy": [
+        0,
+        153,
+        1279,
+        719
+      ],
+      "mask_pixels": 452783,
+      "valid_depth_pixels": 452783,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 1.0,
+      "projected_cad_aabb_xyxy_unclipped": null,
+      "cad_corner_depth_range_m": [
+        -0.04825284160376567,
+        0.13200563926565614
+      ],
+      "camera_position_world_m": [
+        1.6030306816101074,
+        -0.2623505040653478,
+        1.0918407110586492
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.95,
+      "r_m": 0.95,
+      "s": 0.21171875,
+      "s_pre_occlusion": 0.21171875,
+      "mask_bbox_xyxy": [
+        520,
+        344,
+        790,
+        412
+      ],
+      "mask_pixels": 9334,
+      "valid_depth_pixels": 9334,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        515.651936755613,
+        315.06399652834045,
+        801.3241820813623,
+        458.2691829168973
+      ],
+      "cad_corner_depth_range_m": [
+        0.7526373885836714,
+        1.079545305725879
+      ],
+      "camera_position_world_m": [
+        2.1032444269025525,
+        0.28235801517700543,
+        1.5754547701426245
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.9,
+      "r_m": 0.9,
+      "s": 0.2234375,
+      "s_pre_occlusion": 0.2234375,
+      "mask_bbox_xyxy": [
+        513,
+        343,
+        798,
+        415
+      ],
+      "mask_pixels": 10462,
+      "valid_depth_pixels": 10462,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        508.3704986937348,
+        312.8282886618627,
+        810.5005326671417,
+        464.9572061697787
+      ],
+      "cad_corner_depth_range_m": [
+        0.7026373885836716,
+        1.0295453057258792
+      ],
+      "camera_position_world_m": [
+        2.0769173876766343,
+        0.2509826715971488,
+        1.5467759483250725
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.85,
+      "r_m": 0.85,
+      "s": 0.2375,
+      "s_pre_occlusion": 0.2375,
+      "mask_bbox_xyxy": [
+        505,
+        342,
+        808,
+        418
+      ],
+      "mask_pixels": 11766,
+      "valid_depth_pixels": 11766,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        500.179377604387,
+        310.35569194934493,
+        820.7801470103961,
+        472.6167561756745
+      ],
+      "cad_corner_depth_range_m": [
+        0.6526373885836716,
+        0.9795453057258793
+      ],
+      "camera_position_world_m": [
+        2.050590348450716,
+        0.2196073280172922,
+        1.51809712650752
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.8,
+      "r_m": 0.8,
+      "s": 0.253125,
+      "s_pre_occlusion": 0.253125,
+      "mask_bbox_xyxy": [
+        495,
+        341,
+        818,
+        422
+      ],
+      "mask_pixels": 13321,
+      "valid_depth_pixels": 13321,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        490.8967427895128,
+        307.60645012506234,
+        832.3747173923298,
+        481.47610398029246
+      ],
+      "cad_corner_depth_range_m": [
+        0.6026373885836716,
+        0.9295453057258792
+      ],
+      "camera_position_world_m": [
+        2.024263309224798,
+        0.1882319844374355,
+        1.4894183046899676
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.75,
+      "r_m": 0.75,
+      "s": 0.2703125,
+      "s_pre_occlusion": 0.2703125,
+      "mask_bbox_xyxy": [
+        485,
+        340,
+        830,
+        426
+      ],
+      "mask_pixels": 15235,
+      "valid_depth_pixels": 15235,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        480.2888443234645,
+        304.5313835429701,
+        845.5537956035413,
+        491.84111061049447
+      ],
+      "cad_corner_depth_range_m": [
+        0.5526373885836713,
+        0.879545305725879
+      ],
+      "camera_position_world_m": [
+        1.9979362699988799,
+        0.15685664085757883,
+        1.4607394828724154
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.7,
+      "r_m": 0.7,
+      "s": 0.29140625,
+      "s_pre_occlusion": 0.29140625,
+      "mask_bbox_xyxy": [
+        472,
+        338,
+        844,
+        430
+      ],
+      "mask_pixels": 17583,
+      "valid_depth_pixels": 17583,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        468.0500575305938,
+        301.06892129241464,
+        860.6660103481569,
+        504.131254883724
+      ],
+      "cad_corner_depth_range_m": [
+        0.5026373885836712,
+        0.8295453057258789
+      ],
+      "camera_position_world_m": [
+        1.9716092307729616,
+        0.12548129727772223,
+        1.4320606610548632
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.65,
+      "r_m": 0.65,
+      "s": 0.31484375,
+      "s_pre_occlusion": 0.31484375,
+      "mask_bbox_xyxy": [
+        458,
+        337,
+        860,
+        436
+      ],
+      "mask_pixels": 20537,
+      "valid_depth_pixels": 20537,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        453.7729569607992,
+        297.1409362311883,
+        878.1703602522283,
+        518.9377911672009
+      ],
+      "cad_corner_depth_range_m": [
+        0.4526373885836714,
+        0.7795453057258791
+      ],
+      "camera_position_world_m": [
+        1.9452821915470435,
+        0.09410595369786556,
+        1.4033818392373107
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.6,
+      "r_m": 0.6,
+      "s": 0.3421875,
+      "s_pre_occlusion": 0.3421875,
+      "mask_bbox_xyxy": [
+        441,
+        335,
+        878,
+        442
+      ],
+      "mask_pixels": 24287,
+      "valid_depth_pixels": 24287,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        436.90208003350597,
+        292.6467790278324,
+        898.6836443356249,
+        537.1217045646459
+      ],
+      "cad_corner_depth_range_m": [
+        0.4026373885836714,
+        0.7295453057258791
+      ],
+      "camera_position_world_m": [
+        1.9189551523211252,
+        0.06273061011800884,
+        1.3747030174197585
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.55,
+      "r_m": 0.55,
+      "s": 0.37578125,
+      "s_pre_occlusion": 0.37578125,
+      "mask_bbox_xyxy": [
+        420,
+        333,
+        900,
+        450
+      ],
+      "mask_pixels": 29181,
+      "valid_depth_pixels": 29181,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        416.65997308424016,
+        287.4545320782977,
+        923.0546517739174,
+        559.9873259854949
+      ],
+      "cad_corner_depth_range_m": [
+        0.35263738858367155,
+        0.6795453057258792
+      ],
+      "camera_position_world_m": [
+        1.8926281130952072,
+        0.03135526653815224,
+        1.3460241956022063
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.5,
+      "r_m": 0.5,
+      "s": 0.4171875,
+      "s_pre_occlusion": 0.4171875,
+      "mask_bbox_xyxy": [
+        394,
+        330,
+        927,
+        458
+      ],
+      "mask_pixels": 35740,
+      "valid_depth_pixels": 35740,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        391.92398258976607,
+        281.3878445668914,
+        952.4845522207405,
+        589.6098597336712
+      ],
+      "cad_corner_depth_range_m": [
+        0.3026373885836713,
+        0.629545305725879
+      ],
+      "camera_position_world_m": [
+        1.866301073869289,
+        -2.0077041704424925e-05,
+        1.3173453737846539
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.45,
+      "r_m": 0.45,
+      "s": 0.4671875,
+      "s_pre_occlusion": 0.4671875,
+      "mask_bbox_xyxy": [
+        362,
+        327,
+        959,
+        469
+      ],
+      "mask_pixels": 44823,
+      "valid_depth_pixels": 44823,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        358.2313647056451,
+        274.2055045037954,
+        988.7309397337533,
+        629.5036084486268
+      ],
+      "cad_corner_depth_range_m": [
+        0.25263738858367146,
+        0.5795453057258791
+      ],
+      "camera_position_world_m": [
+        1.8399740346433708,
+        -0.03139542062156109,
+        1.2886665519671017
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.4,
+      "r_m": 0.4,
+      "s": 0.5328125,
+      "s_pre_occlusion": 0.5328125,
+      "mask_bbox_xyxy": [
+        319,
+        323,
+        1000,
+        483
+      ],
+      "mask_pixels": 57929,
+      "valid_depth_pixels": 57929,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        313.5388453595377,
+        265.56859957223503,
+        1034.4722273024277,
+        686.1310731249553
+      ],
+      "cad_corner_depth_range_m": [
+        0.20263738858367142,
+        0.5295453057258791
+      ],
+      "camera_position_world_m": [
+        1.8136469954174528,
+        -0.06277076420141775,
+        1.2599877301495492
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.35,
+      "r_m": 0.35,
+      "s": 0.61953125,
+      "s_pre_occlusion": 0.61953125,
+      "mask_bbox_xyxy": [
+        261,
+        317,
+        1053,
+        501
+      ],
+      "mask_pixels": 77877,
+      "valid_depth_pixels": 77877,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.103924224660357,
+      "projected_cad_aabb_xyxy_unclipped": [
+        251.96024875667882,
+        254.98547832348112,
+        1094.0015657882525,
+        772.8150352051429
+      ],
+      "cad_corner_depth_range_m": [
+        0.15263738858367137,
+        0.479545305725879
+      ],
+      "camera_position_world_m": [
+        1.7873199561915345,
+        -0.09414610778127439,
+        1.231308908331997
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation"
+      ]
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.3,
+      "r_m": 0.3,
+      "s": 0.74453125,
+      "s_pre_occlusion": 0.74453125,
+      "mask_bbox_xyxy": [
+        173,
+        310,
+        1125,
+        525
+      ],
+      "mask_pixels": 110545,
+      "valid_depth_pixels": 110545,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.29853868396106453,
+      "projected_cad_aabb_xyxy_unclipped": [
+        161.69652566345343,
+        241.71478016326472,
+        1174.659640394027,
+        922.1303767522617
+      ],
+      "cad_corner_depth_range_m": [
+        0.1026373885836714,
+        0.4295453057258791
+      ],
+      "camera_position_world_m": [
+        1.7609929169656164,
+        -0.12552145136113108,
+        1.2026300865144446
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation"
+      ]
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.25,
+      "r_m": 0.25,
+      "s": 0.94140625,
+      "s_pre_occlusion": 0.94140625,
+      "mask_bbox_xyxy": [
+        23,
+        301,
+        1227,
+        558
+      ],
+      "mask_pixels": 173794,
+      "valid_depth_pixels": 173794,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.5537661227670461,
+      "projected_cad_aabb_xyxy_unclipped": [
+        -104.98562091500423,
+        224.5838441727449,
+        1290.1222530086513,
+        1240.347968998302
+      ],
+      "cad_corner_depth_range_m": [
+        0.05263738858367131,
+        0.37954530572587897
+      ],
+      "camera_position_world_m": [
+        1.7346658777396982,
+        -0.1568967949409877,
+        1.1739512646968924
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.2,
+      "r_m": 0.2,
+      "s": 1.0,
+      "s_pre_occlusion": 1.0,
+      "mask_bbox_xyxy": [
+        0,
+        282,
+        1279,
+        608
+      ],
+      "mask_pixels": 234097,
+      "valid_depth_pixels": 234097,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.9969507153367982,
+      "projected_cad_aabb_xyxy_unclipped": [
+        -14219.05333024428,
+        201.62168159757923,
+        1469.1145741005143,
+        14034.373058562096
+      ],
+      "cad_corner_depth_range_m": [
+        0.0026373885836714003,
+        0.32954530572587903
+      ],
+      "camera_position_world_m": [
+        1.70833883851378,
+        -0.18827213852084437,
+        1.1452724428793402
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.15,
+      "r_m": 0.15,
+      "s": 1.0,
+      "s_pre_occlusion": 1.0,
+      "mask_bbox_xyxy": [
+        0,
+        253,
+        1279,
+        593
+      ],
+      "mask_pixels": 291156,
+      "valid_depth_pixels": 291156,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 1.0,
+      "projected_cad_aabb_xyxy_unclipped": null,
+      "cad_corner_depth_range_m": [
+        -0.0473626114163286,
+        0.279545305725879
+      ],
+      "camera_position_world_m": [
+        1.6820117992878618,
+        -0.21964748210070104,
+        1.1165936210617877
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.12,
+      "r_m": 0.12,
+      "s": 1.0,
+      "s_pre_occlusion": 1.0,
+      "mask_bbox_xyxy": [
+        0,
+        212,
+        1279,
+        608
+      ],
+      "mask_pixels": 353362,
+      "valid_depth_pixels": 353362,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 1.0,
+      "projected_cad_aabb_xyxy_unclipped": null,
+      "cad_corner_depth_range_m": [
+        -0.07736261141632872,
+        0.24954530572587885
+      ],
+      "camera_position_world_m": [
+        1.666215575752311,
+        -0.238472688248615,
+        1.0993863279712563
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.1,
+      "r_m": 0.1,
+      "s": 1.0,
+      "s_pre_occlusion": 1.0,
+      "mask_bbox_xyxy": [
+        0,
+        186,
+        1279,
+        661
+      ],
+      "mask_pixels": 421030,
+      "valid_depth_pixels": 421030,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 1.0,
+      "projected_cad_aabb_xyxy_unclipped": null,
+      "cad_corner_depth_range_m": [
+        -0.09736261141632846,
+        0.22954530572587922
+      ],
+      "camera_position_world_m": [
+        1.6556847600619438,
+        -0.25102282568055767,
+        1.0879147992442355
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.09,
+      "r_m": 0.09,
+      "s": 1.0,
+      "s_pre_occlusion": 1.0,
+      "mask_bbox_xyxy": [
+        0,
+        190,
+        1279,
+        699
+      ],
+      "mask_pixels": 448212,
+      "valid_depth_pixels": 448212,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 1.0,
+      "projected_cad_aabb_xyxy_unclipped": null,
+      "cad_corner_depth_range_m": [
+        -0.10736261141632863,
+        0.219545305725879
+      ],
+      "camera_position_world_m": [
+        1.65041935221676,
+        -0.257297894396529,
+        1.082179034880725
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.08,
+      "r_m": 0.08,
+      "s": 0.95,
+      "s_pre_occlusion": 0.95,
+      "mask_bbox_xyxy": [
+        64,
+        193,
+        1279,
+        719
+      ],
+      "mask_pixels": 449328,
+      "valid_depth_pixels": 449328,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 1.0,
+      "projected_cad_aabb_xyxy_unclipped": null,
+      "cad_corner_depth_range_m": [
+        -0.11736261141632875,
+        0.2095453057258792
+      ],
+      "camera_position_world_m": [
+        1.6451539443715766,
+        -0.26357296311250034,
+        1.0764432705172144
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.95,
+      "r_m": 0.95,
+      "s": 0.16796875,
+      "s_pre_occlusion": 0.16796875,
+      "mask_bbox_xyxy": [
+        524,
+        311,
+        738,
+        483
+      ],
+      "mask_pixels": 9593,
+      "valid_depth_pixels": 9593,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        481.56078304698974,
+        305.37651603217967,
+        766.5295379873043,
+        480.5838687368182
+      ],
+      "cad_corner_depth_range_m": [
+        0.8099085856284659,
+        1.0409323414090863
+      ],
+      "camera_position_world_m": [
+        1.3449595884496324,
+        -0.006216360421559597,
+        1.8915495532939484
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.9,
+      "r_m": 0.9,
+      "s": 0.178125,
+      "s_pre_occlusion": 0.178125,
+      "mask_bbox_xyxy": [
+        517,
+        309,
+        744,
+        490
+      ],
+      "mask_pixels": 10735,
+      "valid_depth_pixels": 10735,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        472.25871171282404,
+        302.46369401860676,
+        774.0906589252968,
+        487.9509933887437
+      ],
+      "cad_corner_depth_range_m": [
+        0.7599085856284657,
+        0.9909323414090861
+      ],
+      "camera_position_world_m": [
+        1.3585422775633416,
+        -0.022403578969912852,
+        1.8462341639421158
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.85,
+      "r_m": 0.85,
+      "s": 0.1890625,
+      "s_pre_occlusion": 0.1890625,
+      "mask_bbox_xyxy": [
+        510,
+        306,
+        751,
+        499
+      ],
+      "mask_pixels": 12093,
+      "valid_depth_pixels": 12093,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        461.79234822617315,
+        299.2195139729766,
+        782.608862098929,
+        496.27267448833703
+      ],
+      "cad_corner_depth_range_m": [
+        0.7099085856284658,
+        0.9409323414090862
+      ],
+      "camera_position_world_m": [
+        1.3721249666770508,
+        -0.03859079751826611,
+        1.8009187745902833
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.8,
+      "r_m": 0.8,
+      "s": 0.20078125,
+      "s_pre_occlusion": 0.20078125,
+      "mask_bbox_xyxy": [
+        502,
+        303,
+        758,
+        509
+      ],
+      "mask_pixels": 13723,
+      "valid_depth_pixels": 13723,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        449.9285066061526,
+        295.58402371287247,
+        792.278145972539,
+        505.74728612592645
+      ],
+      "cad_corner_depth_range_m": [
+        0.6599085856284659,
+        0.8909323414090864
+      ],
+      "camera_position_world_m": [
+        1.38570765579076,
+        -0.054778016066619306,
+        1.7556033852384507
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.75,
+      "r_m": 0.75,
+      "s": 0.21484375,
+      "s_pre_occlusion": 0.21484375,
+      "mask_bbox_xyxy": [
+        493,
+        299,
+        767,
+        520
+      ],
+      "mask_pixels": 15711,
+      "valid_depth_pixels": 15711,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        436.3672758842487,
+        291.4818800705102,
+        803.3487389910351,
+        516.6322611841816
+      ],
+      "cad_corner_depth_range_m": [
+        0.6099085856284657,
+        0.8409323414090862
+      ],
+      "camera_position_world_m": [
+        1.3992903449044691,
+        -0.07096523461497256,
+        1.7102879958866182
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.7,
+      "r_m": 0.7,
+      "s": 0.23125,
+      "s_pre_occlusion": 0.23125,
+      "mask_bbox_xyxy": [
+        483,
+        295,
+        778,
+        533
+      ],
+      "mask_pixels": 18160,
+      "valid_depth_pixels": 18160,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        420.7163149852422,
+        286.81707118104714,
+        816.1490638018932,
+        529.2678369980581
+      ],
+      "cad_corner_depth_range_m": [
+        0.5599085856284658,
+        0.7909323414090863
+      ],
+      "camera_position_world_m": [
+        1.4128730340181783,
+        -0.08715245316332579,
+        1.6649726065347856
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.65,
+      "r_m": 0.65,
+      "s": 0.25,
+      "s_pre_occlusion": 0.25,
+      "mask_bbox_xyxy": [
+        471,
+        290,
+        790,
+        548
+      ],
+      "mask_pixels": 21230,
+      "valid_depth_pixels": 21230,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        402.4522724418191,
+        281.46530713113526,
+        831.1188693868825,
+        544.1132597124227
+      ],
+      "cad_corner_depth_range_m": [
+        0.5099085856284659,
+        0.7409323414090863
+      ],
+      "camera_position_world_m": [
+        1.4264557231318875,
+        -0.10333967171167902,
+        1.6196572171829533
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.6,
+      "r_m": 0.6,
+      "s": 0.271875,
+      "s_pre_occlusion": 0.271875,
+      "mask_bbox_xyxy": [
+        458,
+        285,
+        805,
+        566
+      ],
+      "mask_pixels": 25168,
+      "valid_depth_pixels": 25168,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        380.8611219311484,
+        275.26278166801563,
+        848.8607693236619,
+        561.8038043103727
+      ],
+      "cad_corner_depth_range_m": [
+        0.4599085856284658,
+        0.6909323414090863
+      ],
+      "camera_position_world_m": [
+        1.4400384122455967,
+        -0.11952689026003224,
+        1.5743418278311208
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.55,
+      "r_m": 0.55,
+      "s": 0.29921875,
+      "s_pre_occlusion": 0.29921875,
+      "mask_bbox_xyxy": [
+        441,
+        278,
+        823,
+        589
+      ],
+      "mask_pixels": 30338,
+      "valid_depth_pixels": 30338,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        354.9426235459077,
+        267.98911152111236,
+        870.2233329327175,
+        583.2440526913864
+      ],
+      "cad_corner_depth_range_m": [
+        0.4099085856284661,
+        0.6409323414090866
+      ],
+      "camera_position_world_m": [
+        1.453621101359306,
+        -0.13571410880838544,
+        1.5290264384792884
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.5,
+      "r_m": 0.5,
+      "s": 0.33203125,
+      "s_pre_occlusion": 0.33203125,
+      "mask_bbox_xyxy": [
+        422,
+        270,
+        846,
+        616
+      ],
+      "mask_pixels": 37313,
+      "valid_depth_pixels": 37313,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        323.2509431173999,
+        259.34060150121593,
+        896.4408271749269,
+        609.7675169616103
+      ],
+      "cad_corner_depth_range_m": [
+        0.35990858562846606,
+        0.5909323414090865
+      ],
+      "camera_position_world_m": [
+        1.4672037904730153,
+        -0.1519013273567387,
+        1.4837110491274559
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.45,
+      "r_m": 0.45,
+      "s": 0.37265625,
+      "s_pre_occlusion": 0.37265625,
+      "mask_bbox_xyxy": [
+        399,
+        261,
+        875,
+        652
+      ],
+      "mask_pixels": 47044,
+      "valid_depth_pixels": 47044,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        283.61542037126134,
+        248.88676735340349,
+        929.380447384215,
+        643.4250655840374
+      ],
+      "cad_corner_depth_range_m": [
+        0.30990858562846596,
+        0.5409323414090864
+      ],
+      "camera_position_world_m": [
+        1.4807864795867245,
+        -0.16808854590509192,
+        1.4383956597756233
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.4,
+      "r_m": 0.4,
+      "s": 0.4265625,
+      "s_pre_occlusion": 0.4265625,
+      "mask_bbox_xyxy": [
+        369,
+        250,
+        914,
+        701
+      ],
+      "mask_pixels": 61238,
+      "valid_depth_pixels": 61238,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        232.6212729051578,
+        235.99645896498768,
+        972.0076812830007,
+        687.5422489864961
+      ],
+      "cad_corner_depth_range_m": [
+        0.2599085856284659,
+        0.49093234140908637
+      ],
+      "camera_position_world_m": [
+        1.4943691687004337,
+        -0.18427576445344515,
+        1.3930802704237908
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.35,
+      "r_m": 0.35,
+      "s": 0.496875,
+      "s_pre_occlusion": 0.496875,
+      "mask_bbox_xyxy": [
+        332,
+        235,
+        967,
+        719
+      ],
+      "mask_pixels": 80677,
+      "valid_depth_pixels": 80677,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.05470003452868577,
+      "projected_cad_aabb_xyxy_unclipped": [
+        164.56917411306767,
+        219.70551451067868,
+        1029.3330543424242,
+        747.891808519882
+      ],
+      "cad_corner_depth_range_m": [
+        0.20990858562846573,
+        0.4409323414090862
+      ],
+      "camera_position_world_m": [
+        1.5079518578141429,
+        -0.20046298300179838,
+        1.3477648810719582
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation"
+      ]
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.3,
+      "r_m": 0.3,
+      "s": 0.58515625,
+      "s_pre_occlusion": 0.58515625,
+      "mask_bbox_xyxy": [
+        283,
+        217,
+        1031,
+        719
+      ],
+      "mask_pixels": 101170,
+      "valid_depth_pixels": 101170,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.20497307527457498,
+      "projected_cad_aabb_xyxy_unclipped": [
+        69.18104111843263,
+        198.4637549529673,
+        1110.5422186064188,
+        853.2041528669222
+      ],
+      "cad_corner_depth_range_m": [
+        0.15990858562846572,
+        0.3909323414090863
+      ],
+      "camera_position_world_m": [
+        1.521534546927852,
+        -0.21665020155015163,
+        1.3024494917201257
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation"
+      ]
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.25,
+      "r_m": 0.25,
+      "s": 0.71484375,
+      "s_pre_occlusion": 0.71484375,
+      "mask_bbox_xyxy": [
+        216,
+        191,
+        1130,
+        719
+      ],
+      "mask_pixels": 136381,
+      "valid_depth_pixels": 136381,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.44412462049632684,
+      "projected_cad_aabb_xyxy_unclipped": [
+        -74.1537186278041,
+        169.6099840212124,
+        1317.7086508107272,
+        1077.8017809975545
+      ],
+      "cad_corner_depth_range_m": [
+        0.10990858562846596,
+        0.34093234140908646
+      ],
+      "camera_position_world_m": [
+        1.5351172360415613,
+        -0.23283742009850483,
+        1.2571341023682934
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation"
+      ]
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.2,
+      "r_m": 0.2,
+      "s": 0.88125,
+      "s_pre_occlusion": 0.88125,
+      "mask_bbox_xyxy": [
+        117,
+        155,
+        1244,
+        719
+      ],
+      "mask_pixels": 186820,
+      "valid_depth_pixels": 186820,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.7780128010581748,
+      "projected_cad_aabb_xyxy_unclipped": [
+        -313.72086071097704,
+        128.15938279777833,
+        1883.7449239893087,
+        1677.2999776769416
+      ],
+      "cad_corner_depth_range_m": [
+        0.059908585628465766,
+        0.29093234140908636
+      ],
+      "camera_position_world_m": [
+        1.5486999251552704,
+        -0.2490246386468581,
+        1.2118187130164608
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.15,
+      "r_m": 0.15,
+      "s": 1.0,
+      "s_pre_occlusion": 1.0,
+      "mask_bbox_xyxy": [
+        0,
+        98,
+        1279,
+        719
+      ],
+      "mask_pixels": 260694,
+      "valid_depth_pixels": 260694,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.9886749933603398,
+      "projected_cad_aabb_xyxy_unclipped": [
+        -795.4058707338158,
+        63.55923811089542,
+        8162.365156198775,
+        8327.088489828995
+      ],
+      "cad_corner_depth_range_m": [
+        0.009908585628465829,
+        0.2409323414090862
+      ],
+      "camera_position_world_m": [
+        1.5622826142689799,
+        -0.2652118571952113,
+        1.1665033236646283
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.12,
+      "r_m": 0.12,
+      "s": 1.0,
+      "s_pre_occlusion": 1.0,
+      "mask_bbox_xyxy": [
+        0,
+        52,
+        1279,
+        719
+      ],
+      "mask_pixels": 297288,
+      "valid_depth_pixels": 297288,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 1.0,
+      "projected_cad_aabb_xyxy_unclipped": null,
+      "cad_corner_depth_range_m": [
+        -0.020091414371534173,
+        0.2109323414090862
+      ],
+      "camera_position_world_m": [
+        1.5704322277372054,
+        -0.2749241883242233,
+        1.1393140900535288
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.1,
+      "r_m": 0.1,
+      "s": 1.0,
+      "s_pre_occlusion": 1.0,
+      "mask_bbox_xyxy": [
+        0,
+        35,
+        1279,
+        719
+      ],
+      "mask_pixels": 327561,
+      "valid_depth_pixels": 327561,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 1.0,
+      "projected_cad_aabb_xyxy_unclipped": null,
+      "cad_corner_depth_range_m": [
+        -0.040091414371533796,
+        0.1909323414090864
+      ],
+      "camera_position_world_m": [
+        1.575865303382689,
+        -0.28139907574356454,
+        1.121187934312796
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.09,
+      "r_m": 0.09,
+      "s": 0.97578125,
+      "s_pre_occlusion": 0.97578125,
+      "mask_bbox_xyxy": [
+        0,
+        17,
+        1248,
+        719
+      ],
+      "mask_pixels": 345607,
+      "valid_depth_pixels": 345607,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 1.0,
+      "projected_cad_aabb_xyxy_unclipped": null,
+      "cad_corner_depth_range_m": [
+        -0.05009141437153413,
+        0.18093234140908618
+      ],
+      "camera_position_world_m": [
+        1.5785818412054309,
+        -0.2846365194532352,
+        1.1121248564424293
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "hose",
+      "class_id": 2,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.08,
+      "r_m": 0.08,
+      "s": 0.87109375,
+      "s_pre_occlusion": 0.87109375,
+      "mask_bbox_xyxy": [
+        0,
+        8,
+        1114,
+        719
+      ],
+      "mask_pixels": 367619,
+      "valid_depth_pixels": 367619,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 1.0,
+      "projected_cad_aabb_xyxy_unclipped": null,
+      "cad_corner_depth_range_m": [
+        -0.0600914143715339,
+        0.1709323414090864
+      ],
+      "camera_position_world_m": [
+        1.5812983790281727,
+        -0.2878739631629058,
+        1.103061778572063
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    }
+  ],
+  "warnings": [
+    "hose 在当前 D405 深度范围和代表视角中无法达到 far 目标尺度 0.150。",
+    "hose 的 mid 区间不能在全部代表视角完整覆盖；阶段四应按视角使用具体搜索边界。",
+    "hose 的 near 区间不能在全部代表视角完整覆盖；阶段四应按视角使用具体搜索边界。",
+    "hose 在当前 D405 深度范围和代表视角中无法达到 pre_grasp 目标尺度 0.650。"
+  ],
+  "issues": [],
+  "outputs": {
+    "calibration_json": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/output/radius_calibration/shards/hose.json",
+    "curves": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/output/radius_calibration/shards/hose_curves.png",
+    "reference_previews": [
+      "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/output/radius_calibration/preview/hose_scale_reference.png"
+    ]
+  }
+}

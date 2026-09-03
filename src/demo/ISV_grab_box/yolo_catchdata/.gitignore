@@ -1,0 +1,8 @@
+__pycache__/
+*.py[cod]
+
+# Generated datasets can be large. Phase-1 validation reports remain trackable.
+output/dataset/
+output/manifest.jsonl
+output/statistics.json
+output/preview/

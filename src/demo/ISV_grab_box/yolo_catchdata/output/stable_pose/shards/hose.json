@@ -1,0 +1,183 @@
+{
+  "schema_version": 1,
+  "artifact_kind": "stable_pose_shard",
+  "generated_at_utc": "2026-09-02T14:24:32.453784+00:00",
+  "status": "pass",
+  "class": "hose",
+  "class_id": 2,
+  "pose_id": "physics_drop_table_box_v1",
+  "asset": {
+    "path": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/yolo_scene/hose.usd",
+    "sha256": "65a6293bde39741951201542aa94ef117ceae0d4c5a765d666cf3190e528b1b2",
+    "meters_per_unit": 0.001,
+    "visual_geometry": "original_usd_render_mesh",
+    "visual_mesh_count": 1,
+    "authored_collision_count_before_runtime": 0,
+    "runtime_collision_count": 1
+  },
+  "scene": {
+    "path": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/yolo_scene/lab_yolo_grab_data.usd",
+    "table_box_prim_path": "/World/Environment/Geometry/box/table_box",
+    "table_colliders_before_runtime": 5,
+    "table_colliders_after_runtime": 5,
+    "floor_z_m": 1.0075
+  },
+  "physics": {
+    "dynamic_collision_approximation": "convexDecomposition",
+    "table_collision_approximation": "authored_collision_meshes",
+    "convex_decomposition": {
+      "max_convex_hulls": 128,
+      "hull_vertex_limit": 64,
+      "voxel_resolution": 500000,
+      "error_percentage": 1.0,
+      "shrink_wrap": true
+    },
+    "mass_kg": 0.5,
+    "drop_height_m": 0.06,
+    "initial_euler_xyz_deg": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "physics_dt_s": 0.008333333333333333,
+    "linear_speed_threshold_m_s": 0.003,
+    "angular_speed_threshold_deg_s": 1.0
+  },
+  "pose": {
+    "initial_world_from_asset": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        1.6004990768432619
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -0.31000000667572025
+      ],
+      [
+        -0.0,
+        0.0,
+        1.0,
+        1.104852493286133
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "settled_world_from_asset": [
+      [
+        0.997563161954016,
+        -0.059281863245903746,
+        0.036788566191138364,
+        1.6030306816101074
+      ],
+      [
+        0.06465943855632889,
+        0.9836131535416149,
+        -0.1682983101088651,
+        -0.313773512840271
+      ],
+      [
+        -0.02620868020114961,
+        0.17026692241892832,
+        0.9850493795805876,
+        1.0305571556091309
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "settled_world_from_object": [
+      [
+        0.997563161954016,
+        -0.059281863245903746,
+        0.036788566191138364,
+        1.6030306816101074
+      ],
+      [
+        0.06465943855632889,
+        0.9836131535416149,
+        -0.1682983101088651,
+        -0.313773512840271
+      ],
+      [
+        -0.02620868020114961,
+        0.17026692241892832,
+        0.9850493795805876,
+        1.0305571556091309
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "settled_frame": 179,
+    "stable_consecutive_frames": 60,
+    "final_linear_speed_m_s": 0.0,
+    "final_angular_speed_deg_s": 0.0,
+    "translation_change_m": 0.0744341693848275,
+    "rotation_change_deg": 10.544570865016492,
+    "final_world_bounds_m": {
+      "min": [
+        1.4339412474196729,
+        -0.3386348668392709,
+        1.0058480935981788
+      ],
+      "max": [
+        1.7667468729826687,
+        -0.19497497744149306,
+        1.0805329518044011
+      ],
+      "center": [
+        1.600344060201171,
+        -0.266804922140382,
+        1.0431905227012899
+      ],
+      "size": [
+        0.33280562556299587,
+        0.14365988939777785,
+        0.07468485820622228
+      ],
+      "method": "exact_transformed_visual_mesh_vertices",
+      "mesh_count": 1,
+      "vertex_count": 59508
+    },
+    "estimated_support_contacts_m": {
+      "floor": 0.0016519064018212237
+    },
+    "sampling_center_world_m": [
+      1.6030306816101074,
+      -0.313773512840271,
+      1.0305571556091309
+    ]
+  },
+  "gpu": {
+    "available": true,
+    "gpus": [
+      {
+        "name": "NVIDIA GeForce RTX 5060 Laptop GPU",
+        "driver_version": "595.84",
+        "memory_total_mib": 8151
+      }
+    ]
+  },
+  "issues": [],
+  "outputs": {
+    "shard": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/output/stable_pose/shards/hose.json",
+    "report": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/output/stable_pose/shards/hose_report.md",
+    "rgb": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/output/stable_pose/preview/hose_settled_rgb.png",
+    "mask": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/output/stable_pose/preview/hose_settled_mask.png",
+    "preview": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/output/stable_pose/preview/hose_settled_reference.png"
+  }
+}

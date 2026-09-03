@@ -1,0 +1,428 @@
+{
+  "schema_version": 1,
+  "artifact_kind": "workspace_radius_selection",
+  "generated_at_utc": "2026-09-03T01:39:43.214870+00:00",
+  "status": "pass",
+  "definition": {
+    "radius": "camera_optical_center_to_object_sampling_center_m",
+    "primary_variables": [
+      "r",
+      "theta",
+      "phi"
+    ],
+    "observed_variables": [
+      "s_pre_occlusion",
+      "mask_pixels",
+      "depth_valid_ratio",
+      "truncation_ratio"
+    ]
+  },
+  "radius_range_m": {
+    "min": 0.12,
+    "max": 0.5
+  },
+  "radius_layers_m": [
+    0.5,
+    0.45,
+    0.4,
+    0.35,
+    0.3,
+    0.25,
+    0.2,
+    0.15,
+    0.12
+  ],
+  "baseline_viewpoint": {
+    "theta_deg": 0.0,
+    "phi_deg": 50.0,
+    "psi_deg": 0.0
+  },
+  "thresholds": {
+    "massive_truncation": 0.2,
+    "near_depth_failure_m": 0.07
+  },
+  "classes": {
+    "left": {
+      "effective_r_min_m": 0.3,
+      "first_failed_layer_below": {
+        "r_m": 0.25,
+        "s_pre_occlusion": 0.78984375,
+        "truncation_ratio": 0.24421522664260154,
+        "nearest_depth_m": 0.17556712463341892,
+        "valid": false,
+        "reasons": [
+          "明显出画"
+        ]
+      },
+      "layers": [
+        {
+          "r_m": 0.5,
+          "s_pre_occlusion": 0.43671875,
+          "truncation_ratio": 0.0,
+          "nearest_depth_m": 0.4255671246334187,
+          "valid": true,
+          "reasons": []
+        },
+        {
+          "r_m": 0.45,
+          "s_pre_occlusion": 0.48203125,
+          "truncation_ratio": 0.0,
+          "nearest_depth_m": 0.375567124633419,
+          "valid": true,
+          "reasons": []
+        },
+        {
+          "r_m": 0.4,
+          "s_pre_occlusion": 0.5375,
+          "truncation_ratio": 0.0,
+          "nearest_depth_m": 0.3255671246334189,
+          "valid": true,
+          "reasons": []
+        },
+        {
+          "r_m": 0.35,
+          "s_pre_occlusion": 0.60859375,
+          "truncation_ratio": 0.0,
+          "nearest_depth_m": 0.2755671246334189,
+          "valid": true,
+          "reasons": []
+        },
+        {
+          "r_m": 0.3,
+          "s_pre_occlusion": 0.7015625,
+          "truncation_ratio": 0.08163232009535037,
+          "nearest_depth_m": 0.22556712463341874,
+          "valid": true,
+          "reasons": []
+        },
+        {
+          "r_m": 0.25,
+          "s_pre_occlusion": 0.78984375,
+          "truncation_ratio": 0.24421522664260154,
+          "nearest_depth_m": 0.17556712463341892,
+          "valid": false,
+          "reasons": [
+            "明显出画"
+          ]
+        },
+        {
+          "r_m": 0.2,
+          "s_pre_occlusion": 0.83671875,
+          "truncation_ratio": 0.4783423247575075,
+          "nearest_depth_m": 0.12556712463341893,
+          "valid": false,
+          "reasons": [
+            "明显出画"
+          ]
+        },
+        {
+          "r_m": 0.15,
+          "s_pre_occlusion": 0.903125,
+          "truncation_ratio": 0.7175737858453757,
+          "nearest_depth_m": 0.07556712463341875,
+          "valid": false,
+          "reasons": [
+            "明显出画"
+          ]
+        },
+        {
+          "r_m": 0.12,
+          "s_pre_occlusion": 0.971875,
+          "truncation_ratio": 0.8375051708427795,
+          "nearest_depth_m": 0.04556712463341884,
+          "valid": false,
+          "reasons": [
+            "明显出画",
+            "进入近距失效区"
+          ]
+        }
+      ]
+    },
+    "right": {
+      "effective_r_min_m": 0.3,
+      "first_failed_layer_below": {
+        "r_m": 0.25,
+        "s_pre_occlusion": 0.79609375,
+        "truncation_ratio": 0.2566051372345438,
+        "nearest_depth_m": 0.16398349456788683,
+        "valid": false,
+        "reasons": [
+          "明显出画"
+        ]
+      },
+      "layers": [
+        {
+          "r_m": 0.5,
+          "s_pre_occlusion": 0.4375,
+          "truncation_ratio": 0.0,
+          "nearest_depth_m": 0.4139834945678868,
+          "valid": true,
+          "reasons": []
+        },
+        {
+          "r_m": 0.45,
+          "s_pre_occlusion": 0.48125,
+          "truncation_ratio": 0.0,
+          "nearest_depth_m": 0.3639834945678871,
+          "valid": true,
+          "reasons": []
+        },
+        {
+          "r_m": 0.4,
+          "s_pre_occlusion": 0.53359375,
+          "truncation_ratio": 0.0,
+          "nearest_depth_m": 0.313983494567887,
+          "valid": true,
+          "reasons": []
+        },
+        {
+          "r_m": 0.35,
+          "s_pre_occlusion": 0.59921875,
+          "truncation_ratio": 0.0,
+          "nearest_depth_m": 0.2639834945678869,
+          "valid": true,
+          "reasons": []
+        },
+        {
+          "r_m": 0.3,
+          "s_pre_occlusion": 0.6828125,
+          "truncation_ratio": 0.05920602068637737,
+          "nearest_depth_m": 0.21398349456788682,
+          "valid": true,
+          "reasons": []
+        },
+        {
+          "r_m": 0.25,
+          "s_pre_occlusion": 0.79609375,
+          "truncation_ratio": 0.2566051372345438,
+          "nearest_depth_m": 0.16398349456788683,
+          "valid": false,
+          "reasons": [
+            "明显出画"
+          ]
+        },
+        {
+          "r_m": 0.2,
+          "s_pre_occlusion": 0.88515625,
+          "truncation_ratio": 0.49596887572284565,
+          "nearest_depth_m": 0.11398349456788694,
+          "valid": false,
+          "reasons": [
+            "明显出画"
+          ]
+        },
+        {
+          "r_m": 0.15,
+          "s_pre_occlusion": 0.965625,
+          "truncation_ratio": 0.8030208224274124,
+          "nearest_depth_m": 0.06398349456788677,
+          "valid": false,
+          "reasons": [
+            "明显出画",
+            "进入近距失效区"
+          ]
+        },
+        {
+          "r_m": 0.12,
+          "s_pre_occlusion": 1.0,
+          "truncation_ratio": 0.9295294153640599,
+          "nearest_depth_m": 0.03398349456788689,
+          "valid": false,
+          "reasons": [
+            "明显出画",
+            "进入近距失效区"
+          ]
+        }
+      ]
+    },
+    "hose": {
+      "effective_r_min_m": 0.3,
+      "first_failed_layer_below": {
+        "r_m": 0.25,
+        "s_pre_occlusion": 0.90546875,
+        "truncation_ratio": 0.4322032146757916,
+        "nearest_depth_m": 0.12174715839623412,
+        "valid": false,
+        "reasons": [
+          "明显出画"
+        ]
+      },
+      "layers": [
+        {
+          "r_m": 0.5,
+          "s_pre_occlusion": 0.4171875,
+          "truncation_ratio": 0.0,
+          "nearest_depth_m": 0.37174715839623423,
+          "valid": true,
+          "reasons": []
+        },
+        {
+          "r_m": 0.45,
+          "s_pre_occlusion": 0.471875,
+          "truncation_ratio": 0.0,
+          "nearest_depth_m": 0.3217471583962343,
+          "valid": true,
+          "reasons": []
+        },
+        {
+          "r_m": 0.4,
+          "s_pre_occlusion": 0.5421875,
+          "truncation_ratio": 0.0,
+          "nearest_depth_m": 0.2717471583962344,
+          "valid": true,
+          "reasons": []
+        },
+        {
+          "r_m": 0.35,
+          "s_pre_occlusion": 0.63984375,
+          "truncation_ratio": 0.0,
+          "nearest_depth_m": 0.2217471583962342,
+          "valid": true,
+          "reasons": []
+        },
+        {
+          "r_m": 0.3,
+          "s_pre_occlusion": 0.78046875,
+          "truncation_ratio": 0.04140470328551138,
+          "nearest_depth_m": 0.1717471583962341,
+          "valid": true,
+          "reasons": []
+        },
+        {
+          "r_m": 0.25,
+          "s_pre_occlusion": 0.90546875,
+          "truncation_ratio": 0.4322032146757916,
+          "nearest_depth_m": 0.12174715839623412,
+          "valid": false,
+          "reasons": [
+            "明显出画"
+          ]
+        },
+        {
+          "r_m": 0.2,
+          "s_pre_occlusion": 1.0,
+          "truncation_ratio": 0.7338302259077504,
+          "nearest_depth_m": 0.07174715839623426,
+          "valid": false,
+          "reasons": [
+            "明显出画"
+          ]
+        },
+        {
+          "r_m": 0.15,
+          "s_pre_occlusion": 1.0,
+          "truncation_ratio": 0.9625934658961799,
+          "nearest_depth_m": 0.02174715839623408,
+          "valid": false,
+          "reasons": [
+            "明显出画",
+            "进入近距失效区"
+          ]
+        },
+        {
+          "r_m": 0.12,
+          "s_pre_occlusion": 1.0,
+          "truncation_ratio": 1.0,
+          "nearest_depth_m": -0.00825284160376582,
+          "valid": false,
+          "reasons": [
+            "明显出画",
+            "进入近距失效区"
+          ]
+        }
+      ]
+    },
+    "outhandle": {
+      "effective_r_min_m": 0.12,
+      "first_failed_layer_below": {
+        "r_m": 0.1,
+        "s_pre_occlusion": 0.4796875,
+        "truncation_ratio": 0.0,
+        "nearest_depth_m": 0.05479547772643454,
+        "valid": false,
+        "reasons": [
+          "进入近距失效区"
+        ]
+      },
+      "layers": [
+        {
+          "r_m": 0.5,
+          "s_pre_occlusion": 0.0796875,
+          "truncation_ratio": 0.0,
+          "nearest_depth_m": 0.4547954777264346,
+          "valid": true,
+          "reasons": []
+        },
+        {
+          "r_m": 0.45,
+          "s_pre_occlusion": 0.08828125,
+          "truncation_ratio": 0.0,
+          "nearest_depth_m": 0.4047954777264346,
+          "valid": true,
+          "reasons": []
+        },
+        {
+          "r_m": 0.4,
+          "s_pre_occlusion": 0.1,
+          "truncation_ratio": 0.0,
+          "nearest_depth_m": 0.3547954777264347,
+          "valid": true,
+          "reasons": []
+        },
+        {
+          "r_m": 0.35,
+          "s_pre_occlusion": 0.11484375,
+          "truncation_ratio": 0.0,
+          "nearest_depth_m": 0.3047954777264345,
+          "valid": true,
+          "reasons": []
+        },
+        {
+          "r_m": 0.3,
+          "s_pre_occlusion": 0.134375,
+          "truncation_ratio": 0.0,
+          "nearest_depth_m": 0.2547954777264344,
+          "valid": true,
+          "reasons": []
+        },
+        {
+          "r_m": 0.25,
+          "s_pre_occlusion": 0.16328125,
+          "truncation_ratio": 0.0,
+          "nearest_depth_m": 0.20479547772643442,
+          "valid": true,
+          "reasons": []
+        },
+        {
+          "r_m": 0.2,
+          "s_pre_occlusion": 0.2078125,
+          "truncation_ratio": 0.0,
+          "nearest_depth_m": 0.15479547772643454,
+          "valid": true,
+          "reasons": []
+        },
+        {
+          "r_m": 0.15,
+          "s_pre_occlusion": 0.28828125,
+          "truncation_ratio": 0.0,
+          "nearest_depth_m": 0.10479547772643445,
+          "valid": true,
+          "reasons": []
+        },
+        {
+          "r_m": 0.12,
+          "s_pre_occlusion": 0.37890625,
+          "truncation_ratio": 0.0,
+          "nearest_depth_m": 0.07479547772643445,
+          "valid": true,
+          "reasons": []
+        }
+      ]
+    }
+  },
+  "issues": [],
+  "outputs": {
+    "config": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/configs/workspace_calibration.json",
+    "report": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/output/workspace_calibration/radius_selection_report.md"
+  }
+}

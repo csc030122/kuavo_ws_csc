@@ -1,0 +1,6017 @@
+{
+  "schema_version": 1,
+  "artifact_kind": "radius_calibration_shard",
+  "generated_at_utc": "2026-09-02T14:27:34.420812+00:00",
+  "status": "pass",
+  "definition": {
+    "r": "camera_optical_center_to_object_sampling_center_m",
+    "s": "s_pre_occlusion",
+    "s_pre_occlusion": "full_unoccluded_instance_mask_bbox_width_over_image_width",
+    "truncation_ratio": "fraction_of_projected_cad_aabb_area_outside_image",
+    "external_occluders_hidden": true,
+    "isolated_calibration_stage": true,
+    "stable_pose_source": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/configs/stable_poses.json",
+    "stable_pose_is_physics_settled_in_real_table_box": true,
+    "visual_geometry_simplified": false,
+    "collision_approximation_used_only_for_settling": "convexDecomposition"
+  },
+  "environment": {
+    "renderer": "RaytracedLighting",
+    "gpu": {
+      "available": true,
+      "gpus": [
+        {
+          "name": "NVIDIA GeForce RTX 5060 Laptop GPU",
+          "driver_version": "595.84",
+          "memory_total_mib": 8151
+        }
+      ]
+    },
+    "texture_assets": {
+      "all_present": true,
+      "files": [
+        {
+          "path": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/isaac_sim/materials/epoxy_floor/epoxy_light_gray_albedo.png",
+          "exists": true,
+          "size_bytes": 905675
+        },
+        {
+          "path": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/isaac_sim/materials/epoxy_floor/epoxy_light_gray_normal.png",
+          "exists": true,
+          "size_bytes": 148442
+        },
+        {
+          "path": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/isaac_sim/materials/epoxy_floor/epoxy_light_gray_roughness.png",
+          "exists": true,
+          "size_bytes": 1197299
+        },
+        {
+          "path": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/isaac_sim/materials/epoxy_floor/epoxy_orange_peel_detail_normal.png",
+          "exists": true,
+          "size_bytes": 1838921
+        }
+      ]
+    }
+  },
+  "camera": {
+    "name": "right_wrist_d405",
+    "resolution": [
+      1280,
+      720
+    ],
+    "intrinsics_source": "nominal_d405_fov_pending_real_calibration",
+    "intrinsics": {
+      "fx": 710.7920094906834,
+      "fy": 649.4571918977125,
+      "cx": 639.5,
+      "cy": 359.5,
+      "K": [
+        [
+          710.7920094906834,
+          0.0,
+          639.5
+        ],
+        [
+          0.0,
+          649.4571918977125,
+          359.5
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ]
+    },
+    "clipping_range_m": [
+      0.07,
+      1.0
+    ]
+  },
+  "source_scene_path_for_later_collection": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/yolo_scene/lab_yolo_grab_data.usd",
+  "stable_pose_path": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/configs/stable_poses.json",
+  "object_pose_id": "physics_drop_table_box_v1",
+  "radii_m": [
+    0.95,
+    0.9,
+    0.85,
+    0.8,
+    0.75,
+    0.7,
+    0.65,
+    0.6,
+    0.55,
+    0.5,
+    0.45,
+    0.4,
+    0.35,
+    0.3,
+    0.25,
+    0.2,
+    0.15,
+    0.12,
+    0.1,
+    0.09,
+    0.08
+  ],
+  "representative_viewpoints": [
+    {
+      "id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0
+    },
+    {
+      "id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0
+    },
+    {
+      "id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0
+    }
+  ],
+  "quality_thresholds": {
+    "min_mask_pixels": 200,
+    "min_valid_depth_ratio": 0.95,
+    "max_truncation_ratio": 0.02
+  },
+  "scale_bins": {
+    "far": [
+      0.1,
+      0.2
+    ],
+    "mid": [
+      0.2,
+      0.35
+    ],
+    "near": [
+      0.35,
+      0.55
+    ],
+    "pre_grasp": [
+      0.55,
+      0.75
+    ]
+  },
+  "classes": {
+    "right": {
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "asset_path": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/yolo_scene/right.usd",
+      "sampling_center_world_m": [
+        1.615536093711853,
+        -0.25855743885040283,
+        1.0442581176757812
+      ],
+      "record_count": 63,
+      "usable_record_count": 28,
+      "observed_usable_radius_range_m": [
+        0.35,
+        0.8
+      ],
+      "observed_usable_scale_range": [
+        0.265625,
+        0.59921875
+      ],
+      "aggregate_scale_bins": {
+        "far": {
+          "scale_range": [
+            0.1,
+            0.2
+          ],
+          "target_scale": 0.15000000000000002,
+          "representative_viewpoints": 3,
+          "viewpoints_reaching_target": 0,
+          "target_reachable": false,
+          "full_bin_reachable_in_all_viewpoints": false,
+          "r0_m": null,
+          "search_bounds_m": null
+        },
+        "mid": {
+          "scale_range": [
+            0.2,
+            0.35
+          ],
+          "target_scale": 0.275,
+          "representative_viewpoints": 3,
+          "viewpoints_reaching_target": 1,
+          "target_reachable": true,
+          "full_bin_reachable_in_all_viewpoints": false,
+          "r0_m": 0.7727272727272727,
+          "search_bounds_m": [
+            0.5499999999999999,
+            0.8
+          ]
+        },
+        "near": {
+          "scale_range": [
+            0.35,
+            0.55
+          ],
+          "target_scale": 0.45,
+          "representative_viewpoints": 3,
+          "viewpoints_reaching_target": 3,
+          "target_reachable": true,
+          "full_bin_reachable_in_all_viewpoints": false,
+          "r0_m": 0.4737704918032787,
+          "search_bounds_m": [
+            0.35,
+            0.7000000000000001
+          ]
+        },
+        "pre_grasp": {
+          "scale_range": [
+            0.55,
+            0.75
+          ],
+          "target_scale": 0.65,
+          "representative_viewpoints": 3,
+          "viewpoints_reaching_target": 0,
+          "target_reachable": false,
+          "full_bin_reachable_in_all_viewpoints": false,
+          "r0_m": null,
+          "search_bounds_m": null
+        }
+      },
+      "viewpoints": {
+        "frontal_mid": {
+          "angles_deg": {
+            "theta": 0.0,
+            "phi": 50.0,
+            "psi": 0.0
+          },
+          "usable_record_count": 10,
+          "observed_usable_scale_range": [
+            0.2859375,
+            0.59921875
+          ],
+          "monotonic_violation_count": 0,
+          "scale_bins": {
+            "far": {
+              "scale_range": [
+                0.1,
+                0.2
+              ],
+              "target_scale": 0.15000000000000002,
+              "target_reachable": false,
+              "full_bin_reachable": false,
+              "r0_m": null,
+              "search_bounds_m": null,
+              "radius_at_scale_lower_m": null,
+              "radius_at_scale_upper_m": null,
+              "observed_usable_scale_range": [
+                0.2859375,
+                0.59921875
+              ]
+            },
+            "mid": {
+              "scale_range": [
+                0.2,
+                0.35
+              ],
+              "target_scale": 0.275,
+              "target_reachable": false,
+              "full_bin_reachable": false,
+              "r0_m": null,
+              "search_bounds_m": null,
+              "radius_at_scale_lower_m": null,
+              "radius_at_scale_upper_m": 0.6411764705882353,
+              "observed_usable_scale_range": [
+                0.2859375,
+                0.59921875
+              ]
+            },
+            "near": {
+              "scale_range": [
+                0.35,
+                0.55
+              ],
+              "target_scale": 0.45,
+              "target_reachable": true,
+              "full_bin_reachable": true,
+              "r0_m": 0.4857142857142857,
+              "search_bounds_m": [
+                0.35,
+                0.7000000000000001
+              ],
+              "radius_at_scale_lower_m": 0.6411764705882353,
+              "radius_at_scale_upper_m": 0.38749999999999996,
+              "observed_usable_scale_range": [
+                0.2859375,
+                0.59921875
+              ]
+            },
+            "pre_grasp": {
+              "scale_range": [
+                0.55,
+                0.75
+              ],
+              "target_scale": 0.65,
+              "target_reachable": false,
+              "full_bin_reachable": false,
+              "r0_m": null,
+              "search_bounds_m": null,
+              "radius_at_scale_lower_m": 0.38749999999999996,
+              "radius_at_scale_upper_m": null,
+              "observed_usable_scale_range": [
+                0.2859375,
+                0.59921875
+              ]
+            }
+          },
+          "records": [
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.95,
+              "r_m": 0.95,
+              "s": 0.22421875,
+              "s_pre_occlusion": 0.22421875,
+              "mask_bbox_xyxy": [
+                526,
+                303,
+                812,
+                408
+              ],
+              "mask_pixels": 10479,
+              "valid_depth_pixels": 10479,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                479.1466032279527,
+                287.58745779555323,
+                836.4358651511446,
+                422.5061874836591
+              ],
+              "cad_corner_depth_range_m": [
+                0.8639834945678869,
+                1.1006470436710374
+              ],
+              "camera_position_world_m": [
+                1.615536093711853,
+                0.35209079035180957,
+                1.7720003386388103
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.9,
+              "r_m": 0.9,
+              "s": 0.25546875,
+              "s_pre_occlusion": 0.25546875,
+              "mask_bbox_xyxy": [
+                496,
+                289,
+                822,
+                411
+              ],
+              "mask_pixels": 12738,
+              "valid_depth_pixels": 12738,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                469.64541099008113,
+                283.9541470340991,
+                848.087132039068,
+                426.10653179694606
+              ],
+              "cad_corner_depth_range_m": [
+                0.8139834945678871,
+                1.0506470436710376
+              ],
+              "camera_position_world_m": [
+                1.615536093711853,
+                0.3199514098674826,
+                1.7336981164828615
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.85,
+              "r_m": 0.85,
+              "s": 0.26953125,
+              "s_pre_occlusion": 0.26953125,
+              "mask_bbox_xyxy": [
+                488,
+                286,
+                832,
+                414
+              ],
+              "mask_pixels": 14260,
+              "valid_depth_pixels": 14260,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                458.94738302521773,
+                279.9341609451608,
+                861.2037341072072,
+                430.143280291453
+              ],
+              "cad_corner_depth_range_m": [
+                0.763983494567887,
+                1.0006470436710373
+              ],
+              "camera_position_world_m": [
+                1.615536093711853,
+                0.28781202938315564,
+                1.6953958943269125
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.8,
+              "r_m": 0.8,
+              "s": 0.2859375,
+              "s_pre_occlusion": 0.2859375,
+              "mask_bbox_xyxy": [
+                479,
+                281,
+                844,
+                417
+              ],
+              "mask_pixels": 16039,
+              "valid_depth_pixels": 16039,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                446.81117618057056,
+                275.4623022998771,
+                876.0806552356108,
+                434.7008980473776
+              ],
+              "cad_corner_depth_range_m": [
+                0.7139834945678869,
+                0.9506470436710374
+              ],
+              "camera_position_world_m": [
+                1.615536093711853,
+                0.2556726488988287,
+                1.6570936721709637
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.75,
+              "r_m": 0.75,
+              "s": 0.30234375,
+              "s_pre_occlusion": 0.30234375,
+              "mask_bbox_xyxy": [
+                470,
+                277,
+                856,
+                421
+              ],
+              "mask_pixels": 18187,
+              "valid_depth_pixels": 18187,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                432.92588186324485,
+                270.4578438474095,
+                893.0977513159286,
+                439.8871507843906
+              ],
+              "cad_corner_depth_range_m": [
+                0.663983494567887,
+                0.9006470436710374
+              ],
+              "camera_position_world_m": [
+                1.615536093711853,
+                0.22353326841450172,
+                1.618791450015015
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.7,
+              "r_m": 0.7,
+              "s": 0.32265625,
+              "s_pre_occlusion": 0.32265625,
+              "mask_bbox_xyxy": [
+                459,
+                271,
+                871,
+                426
+              ],
+              "mask_pixels": 20807,
+              "valid_depth_pixels": 20807,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                416.88401492326864,
+                264.81961143753153,
+                912.7526399345059,
+                445.8417346993435
+              ],
+              "cad_corner_depth_range_m": [
+                0.6139834945678871,
+                0.8506470436710376
+              ],
+              "camera_position_world_m": [
+                1.615536093711853,
+                0.1913938879301747,
+                1.5804892278590659
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.65,
+              "r_m": 0.65,
+              "s": 0.3453125,
+              "s_pre_occlusion": 0.3453125,
+              "mask_bbox_xyxy": [
+                447,
+                265,
+                888,
+                431
+              ],
+              "mask_pixels": 24029,
+              "valid_depth_pixels": 24029,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                398.14085732721196,
+                258.41907281275985,
+                935.7101695668291,
+                452.7490486111649
+              ],
+              "cad_corner_depth_range_m": [
+                0.5639834945678867,
+                0.8006470436710371
+              ],
+              "camera_position_world_m": [
+                1.615536093711853,
+                0.1592545074458478,
+                1.5421870057031168
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.6,
+              "r_m": 0.6,
+              "s": 0.371875,
+              "s_pre_occlusion": 0.371875,
+              "mask_bbox_xyxy": [
+                433,
+                258,
+                908,
+                437
+              ],
+              "mask_pixels": 28047,
+              "valid_depth_pixels": 28047,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                375.9513752649497,
+                251.09041990786403,
+                962.8791132070621,
+                460.85762980745625
+              ],
+              "cad_corner_depth_range_m": [
+                0.513983494567887,
+                0.7506470436710374
+              ],
+              "camera_position_world_m": [
+                1.615536093711853,
+                0.12711512696152077,
+                1.503884783547168
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.55,
+              "r_m": 0.55,
+              "s": 0.4015625,
+              "s_pre_occlusion": 0.4015625,
+              "mask_bbox_xyxy": [
+                417,
+                250,
+                930,
+                444
+              ],
+              "mask_pixels": 33190,
+              "valid_depth_pixels": 33190,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                349.26881589609394,
+                242.6159995256122,
+                995.5353311189903,
+                470.5106960415493
+              ],
+              "cad_corner_depth_range_m": [
+                0.46398349456788696,
+                0.7006470436710375
+              ],
+              "camera_position_world_m": [
+                1.615536093711853,
+                0.09497574647719387,
+                1.4655825613912192
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.5,
+              "r_m": 0.5,
+              "s": 0.4375,
+              "s_pre_occlusion": 0.4375,
+              "mask_bbox_xyxy": [
+                398,
+                241,
+                957,
+                453
+              ],
+              "mask_pixels": 39882,
+              "valid_depth_pixels": 39882,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                315.85409582274946,
+                232.70433121132896,
+                1035.527941076882,
+                482.19597712055
+              ],
+              "cad_corner_depth_range_m": [
+                0.4139834945678868,
+                0.6506470436710373
+              ],
+              "camera_position_world_m": [
+                1.615536093711853,
+                0.06283636599286685,
+                1.4272803392352702
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.45,
+              "r_m": 0.45,
+              "s": 0.48125,
+              "s_pre_occlusion": 0.48125,
+              "mask_bbox_xyxy": [
+                375,
+                229,
+                990,
+                464
+              ],
+              "mask_pixels": 48895,
+              "valid_depth_pixels": 48895,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                271.3952248839073,
+                220.95590442336248,
+                1085.6420235076594,
+                496.6307215457996
+              ],
+              "cad_corner_depth_range_m": [
+                0.3639834945678871,
+                0.6006470436710376
+              ],
+              "camera_position_world_m": [
+                1.615536093711853,
+                0.030696985508539887,
+                1.3889781170793214
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.4,
+              "r_m": 0.4,
+              "s": 0.53359375,
+              "s_pre_occlusion": 0.53359375,
+              "mask_bbox_xyxy": [
+                348,
+                215,
+                1030,
+                478
+              ],
+              "mask_pixels": 61286,
+              "valid_depth_pixels": 61286,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                212.77673354844882,
+                206.80801929824827,
+                1150.276606896152,
+                514.9147080577101
+              ],
+              "cad_corner_depth_range_m": [
+                0.313983494567887,
+                0.5506470436710375
+              ],
+              "camera_position_world_m": [
+                1.615536093711853,
+                -0.0014423949757870758,
+                1.3506758949233726
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.35,
+              "r_m": 0.35,
+              "s": 0.59921875,
+              "s_pre_occlusion": 0.59921875,
+              "mask_bbox_xyxy": [
+                315,
+                199,
+                1081,
+                496
+              ],
+              "mask_pixels": 79176,
+              "valid_depth_pixels": 79176,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                131.95287993024192,
+                185.83473730204437,
+                1236.811834573517,
+                538.8244976288704
+              ],
+              "cad_corner_depth_range_m": [
+                0.2639834945678869,
+                0.5006470436710374
+              ],
+              "camera_position_world_m": [
+                1.615536093711853,
+                -0.033581775460114066,
+                1.3123736727674236
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.3,
+              "r_m": 0.3,
+              "s": 0.6828125,
+              "s_pre_occlusion": 0.6828125,
+              "mask_bbox_xyxy": [
+                274,
+                177,
+                1147,
+                521
+              ],
+              "mask_pixels": 106347,
+              "valid_depth_pixels": 106347,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.05920602068637737,
+              "projected_cad_aabb_xyxy_unclipped": [
+                13.357957201578301,
+                145.25561155016084,
+                1358.649350033194,
+                571.4286850053209
+              ],
+              "cad_corner_depth_range_m": [
+                0.21398349456788682,
+                0.45064704367103725
+              ],
+              "camera_position_world_m": [
+                1.615536093711853,
+                -0.06572115594444103,
+                1.2740714506114745
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.25,
+              "r_m": 0.25,
+              "s": 0.79609375,
+              "s_pre_occlusion": 0.79609375,
+              "mask_bbox_xyxy": [
+                220,
+                149,
+                1238,
+                558
+              ],
+              "mask_pixels": 150713,
+              "valid_depth_pixels": 150713,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.2566051372345438,
+              "projected_cad_aabb_xyxy_unclipped": [
+                -177.5582214200474,
+                79.9306259428003,
+                1542.9271680566476,
+                618.5234774336532
+              ],
+              "cad_corner_depth_range_m": [
+                0.16398349456788683,
+                0.4006470436710373
+              ],
+              "camera_position_world_m": [
+                1.615536093711853,
+                -0.09786053642876799,
+                1.2357692284555257
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.2,
+              "r_m": 0.2,
+              "s": 0.88515625,
+              "s_pre_occlusion": 0.88515625,
+              "mask_bbox_xyxy": [
+                147,
+                111,
+                1279,
+                617
+              ],
+              "mask_pixels": 224955,
+              "valid_depth_pixels": 224955,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.49596887572284565,
+              "projected_cad_aabb_xyxy_unclipped": [
+                -535.9689827840173,
+                -42.70527635035671,
+                1854.1824458371725,
+                692.5292338535893
+              ],
+              "cad_corner_depth_range_m": [
+                0.11398349456788694,
+                0.3506470436710374
+              ],
+              "camera_position_world_m": [
+                1.615536093711853,
+                -0.12999991691309495,
+                1.197467006299577
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.15,
+              "r_m": 0.15,
+              "s": 0.965625,
+              "s_pre_occlusion": 0.965625,
+              "mask_bbox_xyxy": [
+                44,
+                56,
+                1279,
+                719
+              ],
+              "mask_pixels": 368098,
+              "valid_depth_pixels": 368098,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.8030208224274124,
+              "projected_cad_aabb_xyxy_unclipped": [
+                -1454.5410229035542,
+                -357.0092066582091,
+                2492.639502483152,
+                825.7385298402143
+              ],
+              "cad_corner_depth_range_m": [
+                0.06398349456788677,
+                0.30064704367103723
+              ],
+              "camera_position_world_m": [
+                1.615536093711853,
+                -0.16213929739742194,
+                1.159164784143628
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.12,
+              "r_m": 0.12,
+              "s": 1.0,
+              "s_pre_occlusion": 1.0,
+              "mask_bbox_xyxy": [
+                0,
+                10,
+                1279,
+                719
+              ],
+              "mask_pixels": 491697,
+              "valid_depth_pixels": 491697,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.9295294153640599,
+              "projected_cad_aabb_xyxy_unclipped": [
+                -3303.1216790692106,
+                -989.5302723422074,
+                3346.274646136911,
+                972.9682630788154
+              ],
+              "cad_corner_depth_range_m": [
+                0.03398349456788689,
+                0.2706470436710373
+              ],
+              "camera_position_world_m": [
+                1.615536093711853,
+                -0.1814229256880181,
+                1.1361834508500586
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.1,
+              "r_m": 0.1,
+              "s": 1.0,
+              "s_pre_occlusion": 1.0,
+              "mask_bbox_xyxy": [
+                0,
+                81,
+                1279,
+                719
+              ],
+              "mask_pixels": 570893,
+              "valid_depth_pixels": 570893,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.983188654770446,
+              "projected_cad_aabb_xyxy_unclipped": [
+                -8942.086474212012,
+                -2918.991131776101,
+                4545.91590179364,
+                1136.5548927359093
+              ],
+              "cad_corner_depth_range_m": [
+                0.013983494567886832,
+                0.25064704367103735
+              ],
+              "camera_position_world_m": [
+                1.615536093711853,
+                -0.1942786778817489,
+                1.120862561987679
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.09,
+              "r_m": 0.09,
+              "s": 1.0,
+              "s_pre_occlusion": 1.0,
+              "mask_bbox_xyxy": [
+                0,
+                139,
+                1279,
+                719
+              ],
+              "mask_pixels": 590547,
+              "valid_depth_pixels": 590547,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.9980910956079768,
+              "projected_cad_aabb_xyxy_unclipped": [
+                -32995.30485049589,
+                -11149.179665748105,
+                5658.018405413373,
+                1313.9874650179852
+              ],
+              "cad_corner_depth_range_m": [
+                0.003983494567886759,
+                0.24064704367103718
+              ],
+              "camera_position_world_m": [
+                1.615536093711853,
+                -0.20070655397861428,
+                1.1132021175564892
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "frontal_mid",
+              "theta_deg": 0.0,
+              "phi_deg": 50.0,
+              "psi_deg": 0.0,
+              "theta": 0.0,
+              "phi": 50.0,
+              "psi": 0.0,
+              "r": 0.08,
+              "r_m": 0.08,
+              "s": 1.0,
+              "s_pre_occlusion": 1.0,
+              "mask_bbox_xyxy": [
+                0,
+                165,
+                1279,
+                719
+              ],
+              "mask_pixels": 574950,
+              "valid_depth_pixels": 574950,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 1.0,
+              "projected_cad_aabb_xyxy_unclipped": null,
+              "cad_corner_depth_range_m": [
+                -0.006016505432113186,
+                0.23064704367103742
+              ],
+              "camera_position_world_m": [
+                1.615536093711853,
+                -0.2071344300754797,
+                1.1055416731252996
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            }
+          ]
+        },
+        "left_low_roll": {
+          "angles_deg": {
+            "theta": -40.0,
+            "phi": 35.0,
+            "psi": -20.0
+          },
+          "usable_record_count": 9,
+          "observed_usable_scale_range": [
+            0.2828125,
+            0.58125
+          ],
+          "monotonic_violation_count": 0,
+          "scale_bins": {
+            "far": {
+              "scale_range": [
+                0.1,
+                0.2
+              ],
+              "target_scale": 0.15000000000000002,
+              "target_reachable": false,
+              "full_bin_reachable": false,
+              "r0_m": null,
+              "search_bounds_m": null,
+              "radius_at_scale_lower_m": null,
+              "radius_at_scale_upper_m": null,
+              "observed_usable_scale_range": [
+                0.2828125,
+                0.58125
+              ]
+            },
+            "mid": {
+              "scale_range": [
+                0.2,
+                0.35
+              ],
+              "target_scale": 0.275,
+              "target_reachable": false,
+              "full_bin_reachable": false,
+              "r0_m": null,
+              "search_bounds_m": null,
+              "radius_at_scale_lower_m": null,
+              "radius_at_scale_upper_m": 0.5987179487179488,
+              "observed_usable_scale_range": [
+                0.2828125,
+                0.58125
+              ]
+            },
+            "near": {
+              "scale_range": [
+                0.35,
+                0.55
+              ],
+              "target_scale": 0.45,
+              "target_reachable": true,
+              "full_bin_reachable": true,
+              "r0_m": 0.46,
+              "search_bounds_m": [
+                0.35,
+                0.65
+              ],
+              "radius_at_scale_lower_m": 0.5987179487179488,
+              "radius_at_scale_upper_m": 0.3727272727272727,
+              "observed_usable_scale_range": [
+                0.2828125,
+                0.58125
+              ]
+            },
+            "pre_grasp": {
+              "scale_range": [
+                0.55,
+                0.75
+              ],
+              "target_scale": 0.65,
+              "target_reachable": false,
+              "full_bin_reachable": false,
+              "r0_m": null,
+              "search_bounds_m": null,
+              "radius_at_scale_lower_m": 0.3727272727272727,
+              "radius_at_scale_upper_m": null,
+              "observed_usable_scale_range": [
+                0.2828125,
+                0.58125
+              ]
+            }
+          },
+          "records": [
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.95,
+              "r_m": 0.95,
+              "s": 0.190625,
+              "s_pre_occlusion": 0.190625,
+              "mask_bbox_xyxy": [
+                465,
+                310,
+                708,
+                403
+              ],
+              "mask_pixels": 8923,
+              "valid_depth_pixels": 8923,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                459.91752608444995,
+                302.5321415465997,
+                798.7135932507799,
+                405.072526997021
+              ],
+              "cad_corner_depth_range_m": [
+                0.7861645333405906,
+                1.1911014379286686
+              ],
+              "camera_position_world_m": [
+                2.115749839004298,
+                0.3375740891668736,
+                1.5891557322092749
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.9,
+              "r_m": 0.9,
+              "s": 0.2203125,
+              "s_pre_occlusion": 0.2203125,
+              "mask_bbox_xyxy": [
+                455,
+                307,
+                736,
+                405
+              ],
+              "mask_pixels": 10270,
+              "valid_depth_pixels": 10270,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                449.82288865816156,
+                298.6629074370121,
+                806.7728248401007,
+                408.14786326175124
+              ],
+              "cad_corner_depth_range_m": [
+                0.7361645333405904,
+                1.1411014379286686
+              ],
+              "camera_position_world_m": [
+                2.08942279977838,
+                0.306198745587017,
+                1.5604769103917229
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.85,
+              "r_m": 0.85,
+              "s": 0.25078125,
+              "s_pre_occlusion": 0.25078125,
+              "mask_bbox_xyxy": [
+                444,
+                304,
+                764,
+                408
+              ],
+              "mask_pixels": 12576,
+              "valid_depth_pixels": 12576,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                438.52578494427394,
+                294.2297802782241,
+                815.6914588720153,
+                411.66829686012636
+              ],
+              "cad_corner_depth_range_m": [
+                0.6861645333405906,
+                1.0911014379286685
+              ],
+              "camera_position_world_m": [
+                2.0630957605524616,
+                0.2748234020071604,
+                1.5317980885741704
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.8,
+              "r_m": 0.8,
+              "s": 0.265625,
+              "s_pre_occlusion": 0.265625,
+              "mask_bbox_xyxy": [
+                432,
+                300,
+                771,
+                411
+              ],
+              "mask_pixels": 14448,
+              "valid_depth_pixels": 14448,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                425.7977523497408,
+                289.0998008231425,
+                825.614702034756,
+                415.7379951878694
+              ],
+              "cad_corner_depth_range_m": [
+                0.6361645333405908,
+                1.041101437928669
+              ],
+              "camera_position_world_m": [
+                2.0367687213265437,
+                0.24344805842730366,
+                1.503119266756618
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.75,
+              "r_m": 0.75,
+              "s": 0.2828125,
+              "s_pre_occlusion": 0.2828125,
+              "mask_bbox_xyxy": [
+                417,
+                296,
+                778,
+                415
+              ],
+              "mask_pixels": 16428,
+              "valid_depth_pixels": 16428,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                411.3485394198675,
+                283.09464397958163,
+                836.7224260009602,
+                420.49638071167215
+              ],
+              "cad_corner_depth_range_m": [
+                0.5861645333405906,
+                0.9911014379286688
+              ],
+              "camera_position_world_m": [
+                2.0104416821006255,
+                0.212072714847447,
+                1.4744404449390658
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.7,
+              "r_m": 0.7,
+              "s": 0.3015625,
+              "s_pre_occlusion": 0.3015625,
+              "mask_bbox_xyxy": [
+                401,
+                291,
+                786,
+                419
+              ],
+              "mask_pixels": 18857,
+              "valid_depth_pixels": 18857,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                394.80370215397556,
+                275.96946586080776,
+                849.2401683912419,
+                426.13442452895805
+              ],
+              "cad_corner_depth_range_m": [
+                0.5361645333405904,
+                0.9411014379286684
+              ],
+              "camera_position_world_m": [
+                1.9841146428747072,
+                0.1806973712675904,
+                1.4457616231215136
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.65,
+              "r_m": 0.65,
+              "s": 0.32421875,
+              "s_pre_occlusion": 0.32421875,
+              "mask_bbox_xyxy": [
+                382,
+                286,
+                796,
+                424
+              ],
+              "mask_pixels": 21846,
+              "valid_depth_pixels": 21846,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                375.67169029148937,
+                267.37869787890384,
+                863.4546070589145,
+                432.92089656388646
+              ],
+              "cad_corner_depth_range_m": [
+                0.48616453334059057,
+                0.8911014379286687
+              ],
+              "camera_position_world_m": [
+                1.9577876036487891,
+                0.14932202768773373,
+                1.4170828013039611
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.6,
+              "r_m": 0.6,
+              "s": 0.34921875,
+              "s_pre_occlusion": 0.34921875,
+              "mask_bbox_xyxy": [
+                360,
+                280,
+                806,
+                429
+              ],
+              "mask_pixels": 25639,
+              "valid_depth_pixels": 25639,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                353.2941834579326,
+                256.81831354233964,
+                879.7357841238572,
+                441.2464756446393
+              ],
+              "cad_corner_depth_range_m": [
+                0.43616453334059063,
+                0.8411014379286688
+              ],
+              "camera_position_world_m": [
+                1.9314605644228708,
+                0.11794668410787701,
+                1.388403979486409
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.55,
+              "r_m": 0.55,
+              "s": 0.3796875,
+              "s_pre_occlusion": 0.3796875,
+              "mask_bbox_xyxy": [
+                333,
+                272,
+                818,
+                436
+              ],
+              "mask_pixels": 30520,
+              "valid_depth_pixels": 30520,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                326.76881042452607,
+                243.52324400690185,
+                898.5697839223369,
+                451.70170919855246
+              ],
+              "cad_corner_depth_range_m": [
+                0.3861645333405906,
+                0.7911014379286687
+              ],
+              "camera_position_world_m": [
+                1.9051335251969528,
+                0.0865713405280204,
+                1.3597251576688567
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.5,
+              "r_m": 0.5,
+              "s": 0.415625,
+              "s_pre_occlusion": 0.415625,
+              "mask_bbox_xyxy": [
+                301,
+                263,
+                832,
+                444
+              ],
+              "mask_pixels": 36965,
+              "valid_depth_pixels": 36965,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                294.8245047594987,
+                226.2732451981946,
+                920.6080898603532,
+                465.2235721296835
+              ],
+              "cad_corner_depth_range_m": [
+                0.33616453334059043,
+                0.7411014379286684
+              ],
+              "camera_position_world_m": [
+                1.8788064859710345,
+                0.05519599694816374,
+                1.3310463358513043
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.45,
+              "r_m": 0.45,
+              "s": 0.45859375,
+              "s_pre_occlusion": 0.45859375,
+              "mask_bbox_xyxy": [
+                262,
+                252,
+                848,
+                455
+              ],
+              "mask_pixels": 45738,
+              "valid_depth_pixels": 45738,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                255.61177793313163,
+                202.99524613126619,
+                946.7444753677819,
+                483.39315072886023
+              ],
+              "cad_corner_depth_range_m": [
+                0.2861645333405907,
+                0.6911014379286688
+              ],
+              "camera_position_world_m": [
+                1.8524794467451164,
+                0.023820653368307076,
+                1.302367514033752
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.4,
+              "r_m": 0.4,
+              "s": 0.5125,
+              "s_pre_occlusion": 0.5125,
+              "mask_bbox_xyxy": [
+                212,
+                237,
+                867,
+                468
+              ],
+              "mask_pixels": 58086,
+              "valid_depth_pixels": 58086,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                206.33145463245643,
+                169.86055997519,
+                978.2391860205563,
+                509.1039864006035
+              ],
+              "cad_corner_depth_range_m": [
+                0.23616453334059065,
+                0.6411014379286687
+              ],
+              "camera_position_world_m": [
+                1.8261524075191984,
+                -0.007554690211549586,
+                1.2736886922161996
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.35,
+              "r_m": 0.35,
+              "s": 0.58125,
+              "s_pre_occlusion": 0.58125,
+              "mask_bbox_xyxy": [
+                147,
+                219,
+                890,
+                486
+              ],
+              "mask_pixels": 76375,
+              "valid_depth_pixels": 76375,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                141.2967921162686,
+                118.92727085135283,
+                1016.9282222977031,
+                548.2805275928331
+              ],
+              "cad_corner_depth_range_m": [
+                0.18616453334059052,
+                0.5911014379286685
+              ],
+              "camera_position_world_m": [
+                1.79982536829328,
+                -0.03893003379140622,
+                1.2450098703986474
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.3,
+              "r_m": 0.3,
+              "s": 0.67265625,
+              "s_pre_occlusion": 0.67265625,
+              "mask_bbox_xyxy": [
+                58,
+                194,
+                918,
+                510
+              ],
+              "mask_pixels": 105253,
+              "valid_depth_pixels": 105253,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.03219814654404385,
+              "projected_cad_aabb_xyxy_unclipped": [
+                -35.45164627174256,
+                30.588287400023262,
+                1065.594534235832,
+                615.2545312164413
+              ],
+              "cad_corner_depth_range_m": [
+                0.13616453334059045,
+                0.5411014379286686
+              ],
+              "camera_position_world_m": [
+                1.773498329067362,
+                -0.07030537737126291,
+                1.216331048581095
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.25,
+              "r_m": 0.25,
+              "s": 0.7453125,
+              "s_pre_occlusion": 0.7453125,
+              "mask_bbox_xyxy": [
+                0,
+                158,
+                953,
+                547
+              ],
+              "mask_pixels": 149698,
+              "valid_depth_pixels": 149698,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.4258934846364809,
+              "projected_cad_aabb_xyxy_unclipped": [
+                -414.2216083629796,
+                -160.27429831134793,
+                1128.6689016270323,
+                755.8784021083793
+              ],
+              "cad_corner_depth_range_m": [
+                0.08616453334059067,
+                0.49110143792866867
+              ],
+              "camera_position_world_m": [
+                1.7471712898414438,
+                -0.10168072095111955,
+                1.1876522267635428
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.2,
+              "r_m": 0.2,
+              "s": 0.78125,
+              "s_pre_occlusion": 0.78125,
+              "mask_bbox_xyxy": [
+                0,
+                135,
+                999,
+                606
+              ],
+              "mask_pixels": 211623,
+              "valid_depth_pixels": 211623,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.8664960400385266,
+              "projected_cad_aabb_xyxy_unclipped": [
+                -1871.0655256330197,
+                -878.8986663022347,
+                1213.661477344674,
+                1240.0262831796335
+              ],
+              "cad_corner_depth_range_m": [
+                0.036164533340590645,
+                0.44110143792866874
+              ],
+              "camera_position_world_m": [
+                1.7208442506155257,
+                -0.1330560645309762,
+                1.1589734049459905
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.15,
+              "r_m": 0.15,
+              "s": 0.82890625,
+              "s_pre_occlusion": 0.82890625,
+              "mask_bbox_xyxy": [
+                0,
+                121,
+                1060,
+                719
+              ],
+              "mask_pixels": 338100,
+              "valid_depth_pixels": 338100,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 1.0,
+              "projected_cad_aabb_xyxy_unclipped": null,
+              "cad_corner_depth_range_m": [
+                -0.013835466659409545,
+                0.39110143792866847
+              ],
+              "camera_position_world_m": [
+                1.6945172113896074,
+                -0.16443140811083287,
+                1.1302945831284381
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.12,
+              "r_m": 0.12,
+              "s": 0.86640625,
+              "s_pre_occlusion": 0.86640625,
+              "mask_bbox_xyxy": [
+                0,
+                122,
+                1108,
+                719
+              ],
+              "mask_pixels": 450428,
+              "valid_depth_pixels": 450428,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 1.0,
+              "projected_cad_aabb_xyxy_unclipped": null,
+              "cad_corner_depth_range_m": [
+                -0.043835466659409406,
+                0.36110143792866845
+              ],
+              "camera_position_world_m": [
+                1.6787209878540565,
+                -0.18325661425874684,
+                1.1130872900379067
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.1,
+              "r_m": 0.1,
+              "s": 0.896875,
+              "s_pre_occlusion": 0.896875,
+              "mask_bbox_xyxy": [
+                0,
+                176,
+                1147,
+                719
+              ],
+              "mask_pixels": 434235,
+              "valid_depth_pixels": 434235,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 1.0,
+              "projected_cad_aabb_xyxy_unclipped": null,
+              "cad_corner_depth_range_m": [
+                -0.06383546665940942,
+                0.3411014379286687
+              ],
+              "camera_position_world_m": [
+                1.6681901721636894,
+                -0.1958067516906895,
+                1.101615761310886
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.09,
+              "r_m": 0.09,
+              "s": 0.9265625,
+              "s_pre_occlusion": 0.9265625,
+              "mask_bbox_xyxy": [
+                0,
+                169,
+                1185,
+                719
+              ],
+              "mask_pixels": 450698,
+              "valid_depth_pixels": 450698,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 1.0,
+              "projected_cad_aabb_xyxy_unclipped": null,
+              "cad_corner_depth_range_m": [
+                -0.07383546665940954,
+                0.3311014379286684
+              ],
+              "camera_position_world_m": [
+                1.6629247643185057,
+                -0.20208182040666084,
+                1.0958799969473754
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "left_low_roll",
+              "theta_deg": -40.0,
+              "phi_deg": 35.0,
+              "psi_deg": -20.0,
+              "theta": -40.0,
+              "phi": 35.0,
+              "psi": -20.0,
+              "r": 0.08,
+              "r_m": 0.08,
+              "s": 0.9859375,
+              "s_pre_occlusion": 0.9859375,
+              "mask_bbox_xyxy": [
+                0,
+                161,
+                1261,
+                719
+              ],
+              "mask_pixels": 467594,
+              "valid_depth_pixels": 467594,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 1.0,
+              "projected_cad_aabb_xyxy_unclipped": null,
+              "cad_corner_depth_range_m": [
+                -0.08383546665940945,
+                0.3211014379286688
+              ],
+              "camera_position_world_m": [
+                1.6576593564733222,
+                -0.20835688912263217,
+                1.0901442325838648
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            }
+          ]
+        },
+        "right_high_roll": {
+          "angles_deg": {
+            "theta": 40.0,
+            "phi": 65.0,
+            "psi": 20.0
+          },
+          "usable_record_count": 9,
+          "observed_usable_scale_range": [
+            0.265625,
+            0.5328125
+          ],
+          "monotonic_violation_count": 0,
+          "scale_bins": {
+            "far": {
+              "scale_range": [
+                0.1,
+                0.2
+              ],
+              "target_scale": 0.15000000000000002,
+              "target_reachable": false,
+              "full_bin_reachable": false,
+              "r0_m": null,
+              "search_bounds_m": null,
+              "radius_at_scale_lower_m": null,
+              "radius_at_scale_upper_m": null,
+              "observed_usable_scale_range": [
+                0.265625,
+                0.5328125
+              ]
+            },
+            "mid": {
+              "scale_range": [
+                0.2,
+                0.35
+              ],
+              "target_scale": 0.275,
+              "target_reachable": true,
+              "full_bin_reachable": false,
+              "r0_m": 0.7727272727272727,
+              "search_bounds_m": [
+                0.5499999999999999,
+                0.8
+              ],
+              "radius_at_scale_lower_m": null,
+              "radius_at_scale_upper_m": 0.6069444444444444,
+              "observed_usable_scale_range": [
+                0.265625,
+                0.5328125
+              ]
+            },
+            "near": {
+              "scale_range": [
+                0.35,
+                0.55
+              ],
+              "target_scale": 0.45,
+              "target_reachable": true,
+              "full_bin_reachable": false,
+              "r0_m": 0.4737704918032787,
+              "search_bounds_m": [
+                0.4,
+                0.7000000000000001
+              ],
+              "radius_at_scale_lower_m": 0.6069444444444444,
+              "radius_at_scale_upper_m": null,
+              "observed_usable_scale_range": [
+                0.265625,
+                0.5328125
+              ]
+            },
+            "pre_grasp": {
+              "scale_range": [
+                0.55,
+                0.75
+              ],
+              "target_scale": 0.65,
+              "target_reachable": false,
+              "full_bin_reachable": false,
+              "r0_m": null,
+              "search_bounds_m": null,
+              "radius_at_scale_lower_m": null,
+              "radius_at_scale_upper_m": null,
+              "observed_usable_scale_range": [
+                0.265625,
+                0.5328125
+              ]
+            }
+          },
+          "records": [
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.95,
+              "r_m": 0.95,
+              "s": 0.21015625,
+              "s_pre_occlusion": 0.21015625,
+              "mask_bbox_xyxy": [
+                563,
+                275,
+                831,
+                413
+              ],
+              "mask_pixels": 11929,
+              "valid_depth_pixels": 11929,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                482.7130026683891,
+                244.30647846116,
+                842.0926363504403,
+                473.0982481587122
+              ],
+              "cad_corner_depth_range_m": [
+                0.8228690930066841,
+                1.1166652401768304
+              ],
+              "camera_position_world_m": [
+                1.357465000551378,
+                0.04899971356830857,
+                1.9052505153605988
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.9,
+              "r_m": 0.9,
+              "s": 0.23359375,
+              "s_pre_occlusion": 0.23359375,
+              "mask_bbox_xyxy": [
+                544,
+                244,
+                842,
+                416
+              ],
+              "mask_pixels": 14258,
+              "valid_depth_pixels": 14258,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                474.1990825799973,
+                238.52290531033447,
+                853.1178965619514,
+                479.8306646859642
+              ],
+              "cad_corner_depth_range_m": [
+                0.7728690930066839,
+                1.06666524017683
+              ],
+              "camera_position_world_m": [
+                1.3710476896650872,
+                0.03281249501995531,
+                1.8599351260087662
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.85,
+              "r_m": 0.85,
+              "s": 0.24921875,
+              "s_pre_occlusion": 0.24921875,
+              "mask_bbox_xyxy": [
+                536,
+                238,
+                854,
+                419
+              ],
+              "mask_pixels": 15989,
+              "valid_depth_pixels": 15989,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                464.7074147221622,
+                232.1278755436567,
+                865.4122284200181,
+                487.4113492069139
+              ],
+              "cad_corner_depth_range_m": [
+                0.7228690930066838,
+                1.0166652401768301
+              ],
+              "camera_position_world_m": [
+                1.3846303787787964,
+                0.016625276471602057,
+                1.8146197366569337
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.8,
+              "r_m": 0.8,
+              "s": 0.265625,
+              "s_pre_occlusion": 0.265625,
+              "mask_bbox_xyxy": [
+                530,
+                231,
+                869,
+                423
+              ],
+              "mask_pixels": 18038,
+              "valid_depth_pixels": 18038,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                454.05931027308975,
+                225.0190097024731,
+                879.2081291188573,
+                496.0114002540845
+              ],
+              "cad_corner_depth_range_m": [
+                0.6728690930066838,
+                0.9666652401768301
+              ],
+              "camera_position_world_m": [
+                1.3982130678925055,
+                0.00043805792324885795,
+                1.769304347305101
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.75,
+              "r_m": 0.75,
+              "s": 0.2828125,
+              "s_pre_occlusion": 0.2828125,
+              "mask_bbox_xyxy": [
+                524,
+                223,
+                885,
+                427
+              ],
+              "mask_pixels": 20538,
+              "valid_depth_pixels": 20538,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                442.0297140091738,
+                217.0697213726614,
+                894.7985816858809,
+                505.8512480205053
+              ],
+              "cad_corner_depth_range_m": [
+                0.6228690930066837,
+                0.9166652401768299
+              ],
+              "camera_position_world_m": [
+                1.4117957570062147,
+                -0.015749160625104397,
+                1.7239889579532686
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.7,
+              "r_m": 0.7,
+              "s": 0.30234375,
+              "s_pre_occlusion": 0.30234375,
+              "mask_bbox_xyxy": [
+                517,
+                215,
+                903,
+                432
+              ],
+              "mask_pixels": 23549,
+              "valid_depth_pixels": 23549,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                428.33112202666865,
+                208.12161323772915,
+                912.5580930704355,
+                517.2198147797048
+              ],
+              "cad_corner_depth_range_m": [
+                0.5728690930066835,
+                0.8666652401768298
+              ],
+              "camera_position_world_m": [
+                1.425378446119924,
+                -0.031936379173457624,
+                1.678673568601436
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.65,
+              "r_m": 0.65,
+              "s": 0.32578125,
+              "s_pre_occlusion": 0.32578125,
+              "mask_bbox_xyxy": [
+                509,
+                205,
+                925,
+                437
+              ],
+              "mask_pixels": 27293,
+              "valid_depth_pixels": 27293,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                412.5903066939811,
+                197.97381470371099,
+                932.9731696571098,
+                530.5033577262295
+              ],
+              "cad_corner_depth_range_m": [
+                0.5228690930066838,
+                0.8166652401768301
+              ],
+              "camera_position_world_m": [
+                1.4389611352336331,
+                -0.04812359772181085,
+                1.6333581792496037
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.6,
+              "r_m": 0.6,
+              "s": 0.35390625,
+              "s_pre_occlusion": 0.35390625,
+              "mask_bbox_xyxy": [
+                499,
+                194,
+                951,
+                444
+              ],
+              "mask_pixels": 32036,
+              "valid_depth_pixels": 32036,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                394.2283350016339,
+                186.36772280167844,
+                962.2106312406695,
+                546.230227559729
+              ],
+              "cad_corner_depth_range_m": [
+                0.4728690930066838,
+                0.7666652401768301
+              ],
+              "camera_position_world_m": [
+                1.4525438243473423,
+                -0.06431081627016408,
+                1.5880427898977711
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.55,
+              "r_m": 0.55,
+              "s": 0.3859375,
+              "s_pre_occlusion": 0.3859375,
+              "mask_bbox_xyxy": [
+                489,
+                181,
+                982,
+                452
+              ],
+              "mask_pixels": 38113,
+              "valid_depth_pixels": 38113,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                369.69976662946016,
+                172.9646553750349,
+                1000.367904564446,
+                565.1428267733347
+              ],
+              "cad_corner_depth_range_m": [
+                0.42286909300668396,
+                0.7166652401768302
+              ],
+              "camera_position_world_m": [
+                1.4661265134610515,
+                -0.08049803481851728,
+                1.5427274005459388
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.5,
+              "r_m": 0.5,
+              "s": 0.425,
+              "s_pre_occlusion": 0.425,
+              "mask_bbox_xyxy": [
+                476,
+                165,
+                1019,
+                461
+              ],
+              "mask_pixels": 46123,
+              "valid_depth_pixels": 46123,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                339.72005912239143,
+                157.312253381471,
+                1048.7586013710024,
+                588.3182249853477
+              ],
+              "cad_corner_depth_range_m": [
+                0.37286909300668397,
+                0.6666652401768302
+              ],
+              "camera_position_world_m": [
+                1.479709202574761,
+                -0.09668525336687053,
+                1.4974120111941063
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.45,
+              "r_m": 0.45,
+              "s": 0.47265625,
+              "s_pre_occlusion": 0.47265625,
+              "mask_bbox_xyxy": [
+                462,
+                147,
+                1066,
+                472
+              ],
+              "mask_pixels": 57001,
+              "valid_depth_pixels": 57001,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                302.244889256767,
+                138.79241846106936,
+                1112.1370123486258,
+                617.3806912239148
+              ],
+              "cad_corner_depth_range_m": [
+                0.32286909300668387,
+                0.61666524017683
+              ],
+              "camera_position_world_m": [
+                1.49329189168847,
+                -0.11287247191522376,
+                1.4520966218422737
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.4,
+              "r_m": 0.4,
+              "s": 0.5328125,
+              "s_pre_occlusion": 0.5328125,
+              "mask_bbox_xyxy": [
+                445,
+                125,
+                1126,
+                486
+              ],
+              "mask_pixels": 72228,
+              "valid_depth_pixels": 72228,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.0,
+              "projected_cad_aabb_xyxy_unclipped": [
+                254.06165372356696,
+                116.53775275495414,
+                1198.7420959696292,
+                654.8997541500246
+              ],
+              "cad_corner_depth_range_m": [
+                0.27286909300668394,
+                0.5666652401768302
+              ],
+              "camera_position_world_m": [
+                1.5068745808021793,
+                -0.129059690463577,
+                1.4067812324904412
+              ],
+              "usable_for_solver": true,
+              "reject_reasons": []
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.35,
+              "r_m": 0.35,
+              "s": 0.61328125,
+              "s_pre_occlusion": 0.61328125,
+              "mask_bbox_xyxy": [
+                423,
+                98,
+                1207,
+                504
+              ],
+              "mask_pixels": 94661,
+              "valid_depth_pixels": 94661,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.03985078302007872,
+              "projected_cad_aabb_xyxy_unclipped": [
+                189.8158096452712,
+                89.29177569810878,
+                1324.206351336986,
+                705.1949078477194
+              ],
+              "cad_corner_depth_range_m": [
+                0.22286909300668378,
+                0.5166652401768301
+              ],
+              "camera_position_world_m": [
+                1.5204572699158885,
+                -0.14524690901193021,
+                1.3614658431386086
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.3,
+              "r_m": 0.3,
+              "s": 0.68984375,
+              "s_pre_occlusion": 0.68984375,
+              "mask_bbox_xyxy": [
+                397,
+                65,
+                1279,
+                529
+              ],
+              "mask_pixels": 127711,
+              "valid_depth_pixels": 127711,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.2367055674167331,
+              "projected_cad_aabb_xyxy_unclipped": [
+                99.86869014438378,
+                55.16320916264368,
+                1522.2482162614779,
+                776.1310652704054
+              ],
+              "cad_corner_depth_range_m": [
+                0.1728690930066838,
+                0.4666652401768301
+              ],
+              "camera_position_world_m": [
+                1.5340399590295977,
+                -0.16143412756028347,
+                1.316150453786776
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.25,
+              "r_m": 0.25,
+              "s": 0.71640625,
+              "s_pre_occlusion": 0.71640625,
+              "mask_bbox_xyxy": [
+                363,
+                21,
+                1279,
+                563
+              ],
+              "mask_pixels": 170578,
+              "valid_depth_pixels": 170578,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.4586149276572512,
+              "projected_cad_aabb_xyxy_unclipped": [
+                -35.05841591893284,
+                11.167133797442773,
+                1881.471270106866,
+                883.695271278348
+              ],
+              "cad_corner_depth_range_m": [
+                0.12286909300668385,
+                0.41666524017683015
+              ],
+              "camera_position_world_m": [
+                1.5476226481433069,
+                -0.17762134610863667,
+                1.2708350644349438
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.2,
+              "r_m": 0.2,
+              "s": 0.75078125,
+              "s_pre_occlusion": 0.75078125,
+              "mask_bbox_xyxy": [
+                319,
+                0,
+                1279,
+                614
+              ],
+              "mask_pixels": 239458,
+              "valid_depth_pixels": 239458,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.7272816794660154,
+              "projected_cad_aabb_xyxy_unclipped": [
+                -259.95406582255555,
+                -60.259198199251216,
+                2733.6647165059767,
+                1066.1303867181787
+              ],
+              "cad_corner_depth_range_m": [
+                0.07286909300668386,
+                0.3666652401768303
+              ],
+              "camera_position_world_m": [
+                1.561205337257016,
+                -0.19380856465698992,
+                1.2255196750831112
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.15,
+              "r_m": 0.15,
+              "s": 0.8015625,
+              "s_pre_occlusion": 0.8015625,
+              "mask_bbox_xyxy": [
+                254,
+                0,
+                1279,
+                699
+              ],
+              "mask_pixels": 370723,
+              "valid_depth_pixels": 370723,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 0.9487512320015483,
+              "projected_cad_aabb_xyxy_unclipped": [
+                -709.809650896136,
+                -270.19879030421487,
+                7312.256259016866,
+                1966.6147314758064
+              ],
+              "cad_corner_depth_range_m": [
+                0.02286909300668405,
+                0.3166652401768301
+              ],
+              "camera_position_world_m": [
+                1.5747880263707255,
+                -0.20999578320534315,
+                1.1802042857312787
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.12,
+              "r_m": 0.12,
+              "s": 0.85234375,
+              "s_pre_occlusion": 0.85234375,
+              "mask_bbox_xyxy": [
+                189,
+                0,
+                1279,
+                719
+              ],
+              "mask_pixels": 489012,
+              "valid_depth_pixels": 489012,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 1.0,
+              "projected_cad_aabb_xyxy_unclipped": null,
+              "cad_corner_depth_range_m": [
+                -0.0071309069933159705,
+                0.28666524017683015
+              ],
+              "camera_position_world_m": [
+                1.582937639838951,
+                -0.21970811433435508,
+                1.1530150521201792
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.1,
+              "r_m": 0.1,
+              "s": 0.90234375,
+              "s_pre_occlusion": 0.90234375,
+              "mask_bbox_xyxy": [
+                125,
+                0,
+                1279,
+                719
+              ],
+              "mask_pixels": 556056,
+              "valid_depth_pixels": 556056,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 1.0,
+              "projected_cad_aabb_xyxy_unclipped": null,
+              "cad_corner_depth_range_m": [
+                -0.027130906993315843,
+                0.26666524017683
+              ],
+              "camera_position_world_m": [
+                1.5883707154844346,
+                -0.22618300175369638,
+                1.1348888963794463
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.09,
+              "r_m": 0.09,
+              "s": 0.93984375,
+              "s_pre_occlusion": 0.93984375,
+              "mask_bbox_xyxy": [
+                77,
+                0,
+                1279,
+                719
+              ],
+              "mask_pixels": 582200,
+              "valid_depth_pixels": 582200,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 1.0,
+              "projected_cad_aabb_xyxy_unclipped": null,
+              "cad_corner_depth_range_m": [
+                -0.03713090699331596,
+                0.2566652401768301
+              ],
+              "camera_position_world_m": [
+                1.5910872533071765,
+                -0.229420445463367,
+                1.1258258185090797
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            },
+            {
+              "class": "right",
+              "class_id": 1,
+              "object_pose_id": "physics_drop_table_box_v1",
+              "viewpoint_id": "right_high_roll",
+              "theta_deg": 40.0,
+              "phi_deg": 65.0,
+              "psi_deg": 20.0,
+              "theta": 40.0,
+              "phi": 65.0,
+              "psi": 20.0,
+              "r": 0.08,
+              "r_m": 0.08,
+              "s": 0.99140625,
+              "s_pre_occlusion": 0.99140625,
+              "mask_bbox_xyxy": [
+                11,
+                0,
+                1279,
+                719
+              ],
+              "mask_pixels": 619739,
+              "valid_depth_pixels": 619739,
+              "depth_valid_ratio": 1.0,
+              "truncation_ratio": 1.0,
+              "projected_cad_aabb_xyxy_unclipped": null,
+              "cad_corner_depth_range_m": [
+                -0.04713090699331581,
+                0.24666524017683014
+              ],
+              "camera_position_world_m": [
+                1.5938037911299183,
+                -0.23265788917303767,
+                1.1167627406387133
+              ],
+              "usable_for_solver": false,
+              "reject_reasons": [
+                "fov_truncation",
+                "cad_corner_outside_depth_range"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "records": [
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.95,
+      "r_m": 0.95,
+      "s": 0.22421875,
+      "s_pre_occlusion": 0.22421875,
+      "mask_bbox_xyxy": [
+        526,
+        303,
+        812,
+        408
+      ],
+      "mask_pixels": 10479,
+      "valid_depth_pixels": 10479,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        479.1466032279527,
+        287.58745779555323,
+        836.4358651511446,
+        422.5061874836591
+      ],
+      "cad_corner_depth_range_m": [
+        0.8639834945678869,
+        1.1006470436710374
+      ],
+      "camera_position_world_m": [
+        1.615536093711853,
+        0.35209079035180957,
+        1.7720003386388103
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.9,
+      "r_m": 0.9,
+      "s": 0.25546875,
+      "s_pre_occlusion": 0.25546875,
+      "mask_bbox_xyxy": [
+        496,
+        289,
+        822,
+        411
+      ],
+      "mask_pixels": 12738,
+      "valid_depth_pixels": 12738,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        469.64541099008113,
+        283.9541470340991,
+        848.087132039068,
+        426.10653179694606
+      ],
+      "cad_corner_depth_range_m": [
+        0.8139834945678871,
+        1.0506470436710376
+      ],
+      "camera_position_world_m": [
+        1.615536093711853,
+        0.3199514098674826,
+        1.7336981164828615
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.85,
+      "r_m": 0.85,
+      "s": 0.26953125,
+      "s_pre_occlusion": 0.26953125,
+      "mask_bbox_xyxy": [
+        488,
+        286,
+        832,
+        414
+      ],
+      "mask_pixels": 14260,
+      "valid_depth_pixels": 14260,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        458.94738302521773,
+        279.9341609451608,
+        861.2037341072072,
+        430.143280291453
+      ],
+      "cad_corner_depth_range_m": [
+        0.763983494567887,
+        1.0006470436710373
+      ],
+      "camera_position_world_m": [
+        1.615536093711853,
+        0.28781202938315564,
+        1.6953958943269125
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.8,
+      "r_m": 0.8,
+      "s": 0.2859375,
+      "s_pre_occlusion": 0.2859375,
+      "mask_bbox_xyxy": [
+        479,
+        281,
+        844,
+        417
+      ],
+      "mask_pixels": 16039,
+      "valid_depth_pixels": 16039,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        446.81117618057056,
+        275.4623022998771,
+        876.0806552356108,
+        434.7008980473776
+      ],
+      "cad_corner_depth_range_m": [
+        0.7139834945678869,
+        0.9506470436710374
+      ],
+      "camera_position_world_m": [
+        1.615536093711853,
+        0.2556726488988287,
+        1.6570936721709637
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.75,
+      "r_m": 0.75,
+      "s": 0.30234375,
+      "s_pre_occlusion": 0.30234375,
+      "mask_bbox_xyxy": [
+        470,
+        277,
+        856,
+        421
+      ],
+      "mask_pixels": 18187,
+      "valid_depth_pixels": 18187,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        432.92588186324485,
+        270.4578438474095,
+        893.0977513159286,
+        439.8871507843906
+      ],
+      "cad_corner_depth_range_m": [
+        0.663983494567887,
+        0.9006470436710374
+      ],
+      "camera_position_world_m": [
+        1.615536093711853,
+        0.22353326841450172,
+        1.618791450015015
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.7,
+      "r_m": 0.7,
+      "s": 0.32265625,
+      "s_pre_occlusion": 0.32265625,
+      "mask_bbox_xyxy": [
+        459,
+        271,
+        871,
+        426
+      ],
+      "mask_pixels": 20807,
+      "valid_depth_pixels": 20807,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        416.88401492326864,
+        264.81961143753153,
+        912.7526399345059,
+        445.8417346993435
+      ],
+      "cad_corner_depth_range_m": [
+        0.6139834945678871,
+        0.8506470436710376
+      ],
+      "camera_position_world_m": [
+        1.615536093711853,
+        0.1913938879301747,
+        1.5804892278590659
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.65,
+      "r_m": 0.65,
+      "s": 0.3453125,
+      "s_pre_occlusion": 0.3453125,
+      "mask_bbox_xyxy": [
+        447,
+        265,
+        888,
+        431
+      ],
+      "mask_pixels": 24029,
+      "valid_depth_pixels": 24029,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        398.14085732721196,
+        258.41907281275985,
+        935.7101695668291,
+        452.7490486111649
+      ],
+      "cad_corner_depth_range_m": [
+        0.5639834945678867,
+        0.8006470436710371
+      ],
+      "camera_position_world_m": [
+        1.615536093711853,
+        0.1592545074458478,
+        1.5421870057031168
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.6,
+      "r_m": 0.6,
+      "s": 0.371875,
+      "s_pre_occlusion": 0.371875,
+      "mask_bbox_xyxy": [
+        433,
+        258,
+        908,
+        437
+      ],
+      "mask_pixels": 28047,
+      "valid_depth_pixels": 28047,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        375.9513752649497,
+        251.09041990786403,
+        962.8791132070621,
+        460.85762980745625
+      ],
+      "cad_corner_depth_range_m": [
+        0.513983494567887,
+        0.7506470436710374
+      ],
+      "camera_position_world_m": [
+        1.615536093711853,
+        0.12711512696152077,
+        1.503884783547168
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.55,
+      "r_m": 0.55,
+      "s": 0.4015625,
+      "s_pre_occlusion": 0.4015625,
+      "mask_bbox_xyxy": [
+        417,
+        250,
+        930,
+        444
+      ],
+      "mask_pixels": 33190,
+      "valid_depth_pixels": 33190,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        349.26881589609394,
+        242.6159995256122,
+        995.5353311189903,
+        470.5106960415493
+      ],
+      "cad_corner_depth_range_m": [
+        0.46398349456788696,
+        0.7006470436710375
+      ],
+      "camera_position_world_m": [
+        1.615536093711853,
+        0.09497574647719387,
+        1.4655825613912192
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.5,
+      "r_m": 0.5,
+      "s": 0.4375,
+      "s_pre_occlusion": 0.4375,
+      "mask_bbox_xyxy": [
+        398,
+        241,
+        957,
+        453
+      ],
+      "mask_pixels": 39882,
+      "valid_depth_pixels": 39882,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        315.85409582274946,
+        232.70433121132896,
+        1035.527941076882,
+        482.19597712055
+      ],
+      "cad_corner_depth_range_m": [
+        0.4139834945678868,
+        0.6506470436710373
+      ],
+      "camera_position_world_m": [
+        1.615536093711853,
+        0.06283636599286685,
+        1.4272803392352702
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.45,
+      "r_m": 0.45,
+      "s": 0.48125,
+      "s_pre_occlusion": 0.48125,
+      "mask_bbox_xyxy": [
+        375,
+        229,
+        990,
+        464
+      ],
+      "mask_pixels": 48895,
+      "valid_depth_pixels": 48895,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        271.3952248839073,
+        220.95590442336248,
+        1085.6420235076594,
+        496.6307215457996
+      ],
+      "cad_corner_depth_range_m": [
+        0.3639834945678871,
+        0.6006470436710376
+      ],
+      "camera_position_world_m": [
+        1.615536093711853,
+        0.030696985508539887,
+        1.3889781170793214
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.4,
+      "r_m": 0.4,
+      "s": 0.53359375,
+      "s_pre_occlusion": 0.53359375,
+      "mask_bbox_xyxy": [
+        348,
+        215,
+        1030,
+        478
+      ],
+      "mask_pixels": 61286,
+      "valid_depth_pixels": 61286,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        212.77673354844882,
+        206.80801929824827,
+        1150.276606896152,
+        514.9147080577101
+      ],
+      "cad_corner_depth_range_m": [
+        0.313983494567887,
+        0.5506470436710375
+      ],
+      "camera_position_world_m": [
+        1.615536093711853,
+        -0.0014423949757870758,
+        1.3506758949233726
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.35,
+      "r_m": 0.35,
+      "s": 0.59921875,
+      "s_pre_occlusion": 0.59921875,
+      "mask_bbox_xyxy": [
+        315,
+        199,
+        1081,
+        496
+      ],
+      "mask_pixels": 79176,
+      "valid_depth_pixels": 79176,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        131.95287993024192,
+        185.83473730204437,
+        1236.811834573517,
+        538.8244976288704
+      ],
+      "cad_corner_depth_range_m": [
+        0.2639834945678869,
+        0.5006470436710374
+      ],
+      "camera_position_world_m": [
+        1.615536093711853,
+        -0.033581775460114066,
+        1.3123736727674236
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.3,
+      "r_m": 0.3,
+      "s": 0.6828125,
+      "s_pre_occlusion": 0.6828125,
+      "mask_bbox_xyxy": [
+        274,
+        177,
+        1147,
+        521
+      ],
+      "mask_pixels": 106347,
+      "valid_depth_pixels": 106347,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.05920602068637737,
+      "projected_cad_aabb_xyxy_unclipped": [
+        13.357957201578301,
+        145.25561155016084,
+        1358.649350033194,
+        571.4286850053209
+      ],
+      "cad_corner_depth_range_m": [
+        0.21398349456788682,
+        0.45064704367103725
+      ],
+      "camera_position_world_m": [
+        1.615536093711853,
+        -0.06572115594444103,
+        1.2740714506114745
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.25,
+      "r_m": 0.25,
+      "s": 0.79609375,
+      "s_pre_occlusion": 0.79609375,
+      "mask_bbox_xyxy": [
+        220,
+        149,
+        1238,
+        558
+      ],
+      "mask_pixels": 150713,
+      "valid_depth_pixels": 150713,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.2566051372345438,
+      "projected_cad_aabb_xyxy_unclipped": [
+        -177.5582214200474,
+        79.9306259428003,
+        1542.9271680566476,
+        618.5234774336532
+      ],
+      "cad_corner_depth_range_m": [
+        0.16398349456788683,
+        0.4006470436710373
+      ],
+      "camera_position_world_m": [
+        1.615536093711853,
+        -0.09786053642876799,
+        1.2357692284555257
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.2,
+      "r_m": 0.2,
+      "s": 0.88515625,
+      "s_pre_occlusion": 0.88515625,
+      "mask_bbox_xyxy": [
+        147,
+        111,
+        1279,
+        617
+      ],
+      "mask_pixels": 224955,
+      "valid_depth_pixels": 224955,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.49596887572284565,
+      "projected_cad_aabb_xyxy_unclipped": [
+        -535.9689827840173,
+        -42.70527635035671,
+        1854.1824458371725,
+        692.5292338535893
+      ],
+      "cad_corner_depth_range_m": [
+        0.11398349456788694,
+        0.3506470436710374
+      ],
+      "camera_position_world_m": [
+        1.615536093711853,
+        -0.12999991691309495,
+        1.197467006299577
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.15,
+      "r_m": 0.15,
+      "s": 0.965625,
+      "s_pre_occlusion": 0.965625,
+      "mask_bbox_xyxy": [
+        44,
+        56,
+        1279,
+        719
+      ],
+      "mask_pixels": 368098,
+      "valid_depth_pixels": 368098,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.8030208224274124,
+      "projected_cad_aabb_xyxy_unclipped": [
+        -1454.5410229035542,
+        -357.0092066582091,
+        2492.639502483152,
+        825.7385298402143
+      ],
+      "cad_corner_depth_range_m": [
+        0.06398349456788677,
+        0.30064704367103723
+      ],
+      "camera_position_world_m": [
+        1.615536093711853,
+        -0.16213929739742194,
+        1.159164784143628
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.12,
+      "r_m": 0.12,
+      "s": 1.0,
+      "s_pre_occlusion": 1.0,
+      "mask_bbox_xyxy": [
+        0,
+        10,
+        1279,
+        719
+      ],
+      "mask_pixels": 491697,
+      "valid_depth_pixels": 491697,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.9295294153640599,
+      "projected_cad_aabb_xyxy_unclipped": [
+        -3303.1216790692106,
+        -989.5302723422074,
+        3346.274646136911,
+        972.9682630788154
+      ],
+      "cad_corner_depth_range_m": [
+        0.03398349456788689,
+        0.2706470436710373
+      ],
+      "camera_position_world_m": [
+        1.615536093711853,
+        -0.1814229256880181,
+        1.1361834508500586
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.1,
+      "r_m": 0.1,
+      "s": 1.0,
+      "s_pre_occlusion": 1.0,
+      "mask_bbox_xyxy": [
+        0,
+        81,
+        1279,
+        719
+      ],
+      "mask_pixels": 570893,
+      "valid_depth_pixels": 570893,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.983188654770446,
+      "projected_cad_aabb_xyxy_unclipped": [
+        -8942.086474212012,
+        -2918.991131776101,
+        4545.91590179364,
+        1136.5548927359093
+      ],
+      "cad_corner_depth_range_m": [
+        0.013983494567886832,
+        0.25064704367103735
+      ],
+      "camera_position_world_m": [
+        1.615536093711853,
+        -0.1942786778817489,
+        1.120862561987679
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.09,
+      "r_m": 0.09,
+      "s": 1.0,
+      "s_pre_occlusion": 1.0,
+      "mask_bbox_xyxy": [
+        0,
+        139,
+        1279,
+        719
+      ],
+      "mask_pixels": 590547,
+      "valid_depth_pixels": 590547,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.9980910956079768,
+      "projected_cad_aabb_xyxy_unclipped": [
+        -32995.30485049589,
+        -11149.179665748105,
+        5658.018405413373,
+        1313.9874650179852
+      ],
+      "cad_corner_depth_range_m": [
+        0.003983494567886759,
+        0.24064704367103718
+      ],
+      "camera_position_world_m": [
+        1.615536093711853,
+        -0.20070655397861428,
+        1.1132021175564892
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "frontal_mid",
+      "theta_deg": 0.0,
+      "phi_deg": 50.0,
+      "psi_deg": 0.0,
+      "theta": 0.0,
+      "phi": 50.0,
+      "psi": 0.0,
+      "r": 0.08,
+      "r_m": 0.08,
+      "s": 1.0,
+      "s_pre_occlusion": 1.0,
+      "mask_bbox_xyxy": [
+        0,
+        165,
+        1279,
+        719
+      ],
+      "mask_pixels": 574950,
+      "valid_depth_pixels": 574950,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 1.0,
+      "projected_cad_aabb_xyxy_unclipped": null,
+      "cad_corner_depth_range_m": [
+        -0.006016505432113186,
+        0.23064704367103742
+      ],
+      "camera_position_world_m": [
+        1.615536093711853,
+        -0.2071344300754797,
+        1.1055416731252996
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.95,
+      "r_m": 0.95,
+      "s": 0.190625,
+      "s_pre_occlusion": 0.190625,
+      "mask_bbox_xyxy": [
+        465,
+        310,
+        708,
+        403
+      ],
+      "mask_pixels": 8923,
+      "valid_depth_pixels": 8923,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        459.91752608444995,
+        302.5321415465997,
+        798.7135932507799,
+        405.072526997021
+      ],
+      "cad_corner_depth_range_m": [
+        0.7861645333405906,
+        1.1911014379286686
+      ],
+      "camera_position_world_m": [
+        2.115749839004298,
+        0.3375740891668736,
+        1.5891557322092749
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.9,
+      "r_m": 0.9,
+      "s": 0.2203125,
+      "s_pre_occlusion": 0.2203125,
+      "mask_bbox_xyxy": [
+        455,
+        307,
+        736,
+        405
+      ],
+      "mask_pixels": 10270,
+      "valid_depth_pixels": 10270,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        449.82288865816156,
+        298.6629074370121,
+        806.7728248401007,
+        408.14786326175124
+      ],
+      "cad_corner_depth_range_m": [
+        0.7361645333405904,
+        1.1411014379286686
+      ],
+      "camera_position_world_m": [
+        2.08942279977838,
+        0.306198745587017,
+        1.5604769103917229
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.85,
+      "r_m": 0.85,
+      "s": 0.25078125,
+      "s_pre_occlusion": 0.25078125,
+      "mask_bbox_xyxy": [
+        444,
+        304,
+        764,
+        408
+      ],
+      "mask_pixels": 12576,
+      "valid_depth_pixels": 12576,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        438.52578494427394,
+        294.2297802782241,
+        815.6914588720153,
+        411.66829686012636
+      ],
+      "cad_corner_depth_range_m": [
+        0.6861645333405906,
+        1.0911014379286685
+      ],
+      "camera_position_world_m": [
+        2.0630957605524616,
+        0.2748234020071604,
+        1.5317980885741704
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.8,
+      "r_m": 0.8,
+      "s": 0.265625,
+      "s_pre_occlusion": 0.265625,
+      "mask_bbox_xyxy": [
+        432,
+        300,
+        771,
+        411
+      ],
+      "mask_pixels": 14448,
+      "valid_depth_pixels": 14448,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        425.7977523497408,
+        289.0998008231425,
+        825.614702034756,
+        415.7379951878694
+      ],
+      "cad_corner_depth_range_m": [
+        0.6361645333405908,
+        1.041101437928669
+      ],
+      "camera_position_world_m": [
+        2.0367687213265437,
+        0.24344805842730366,
+        1.503119266756618
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.75,
+      "r_m": 0.75,
+      "s": 0.2828125,
+      "s_pre_occlusion": 0.2828125,
+      "mask_bbox_xyxy": [
+        417,
+        296,
+        778,
+        415
+      ],
+      "mask_pixels": 16428,
+      "valid_depth_pixels": 16428,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        411.3485394198675,
+        283.09464397958163,
+        836.7224260009602,
+        420.49638071167215
+      ],
+      "cad_corner_depth_range_m": [
+        0.5861645333405906,
+        0.9911014379286688
+      ],
+      "camera_position_world_m": [
+        2.0104416821006255,
+        0.212072714847447,
+        1.4744404449390658
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.7,
+      "r_m": 0.7,
+      "s": 0.3015625,
+      "s_pre_occlusion": 0.3015625,
+      "mask_bbox_xyxy": [
+        401,
+        291,
+        786,
+        419
+      ],
+      "mask_pixels": 18857,
+      "valid_depth_pixels": 18857,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        394.80370215397556,
+        275.96946586080776,
+        849.2401683912419,
+        426.13442452895805
+      ],
+      "cad_corner_depth_range_m": [
+        0.5361645333405904,
+        0.9411014379286684
+      ],
+      "camera_position_world_m": [
+        1.9841146428747072,
+        0.1806973712675904,
+        1.4457616231215136
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.65,
+      "r_m": 0.65,
+      "s": 0.32421875,
+      "s_pre_occlusion": 0.32421875,
+      "mask_bbox_xyxy": [
+        382,
+        286,
+        796,
+        424
+      ],
+      "mask_pixels": 21846,
+      "valid_depth_pixels": 21846,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        375.67169029148937,
+        267.37869787890384,
+        863.4546070589145,
+        432.92089656388646
+      ],
+      "cad_corner_depth_range_m": [
+        0.48616453334059057,
+        0.8911014379286687
+      ],
+      "camera_position_world_m": [
+        1.9577876036487891,
+        0.14932202768773373,
+        1.4170828013039611
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.6,
+      "r_m": 0.6,
+      "s": 0.34921875,
+      "s_pre_occlusion": 0.34921875,
+      "mask_bbox_xyxy": [
+        360,
+        280,
+        806,
+        429
+      ],
+      "mask_pixels": 25639,
+      "valid_depth_pixels": 25639,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        353.2941834579326,
+        256.81831354233964,
+        879.7357841238572,
+        441.2464756446393
+      ],
+      "cad_corner_depth_range_m": [
+        0.43616453334059063,
+        0.8411014379286688
+      ],
+      "camera_position_world_m": [
+        1.9314605644228708,
+        0.11794668410787701,
+        1.388403979486409
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.55,
+      "r_m": 0.55,
+      "s": 0.3796875,
+      "s_pre_occlusion": 0.3796875,
+      "mask_bbox_xyxy": [
+        333,
+        272,
+        818,
+        436
+      ],
+      "mask_pixels": 30520,
+      "valid_depth_pixels": 30520,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        326.76881042452607,
+        243.52324400690185,
+        898.5697839223369,
+        451.70170919855246
+      ],
+      "cad_corner_depth_range_m": [
+        0.3861645333405906,
+        0.7911014379286687
+      ],
+      "camera_position_world_m": [
+        1.9051335251969528,
+        0.0865713405280204,
+        1.3597251576688567
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.5,
+      "r_m": 0.5,
+      "s": 0.415625,
+      "s_pre_occlusion": 0.415625,
+      "mask_bbox_xyxy": [
+        301,
+        263,
+        832,
+        444
+      ],
+      "mask_pixels": 36965,
+      "valid_depth_pixels": 36965,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        294.8245047594987,
+        226.2732451981946,
+        920.6080898603532,
+        465.2235721296835
+      ],
+      "cad_corner_depth_range_m": [
+        0.33616453334059043,
+        0.7411014379286684
+      ],
+      "camera_position_world_m": [
+        1.8788064859710345,
+        0.05519599694816374,
+        1.3310463358513043
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.45,
+      "r_m": 0.45,
+      "s": 0.45859375,
+      "s_pre_occlusion": 0.45859375,
+      "mask_bbox_xyxy": [
+        262,
+        252,
+        848,
+        455
+      ],
+      "mask_pixels": 45738,
+      "valid_depth_pixels": 45738,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        255.61177793313163,
+        202.99524613126619,
+        946.7444753677819,
+        483.39315072886023
+      ],
+      "cad_corner_depth_range_m": [
+        0.2861645333405907,
+        0.6911014379286688
+      ],
+      "camera_position_world_m": [
+        1.8524794467451164,
+        0.023820653368307076,
+        1.302367514033752
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.4,
+      "r_m": 0.4,
+      "s": 0.5125,
+      "s_pre_occlusion": 0.5125,
+      "mask_bbox_xyxy": [
+        212,
+        237,
+        867,
+        468
+      ],
+      "mask_pixels": 58086,
+      "valid_depth_pixels": 58086,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        206.33145463245643,
+        169.86055997519,
+        978.2391860205563,
+        509.1039864006035
+      ],
+      "cad_corner_depth_range_m": [
+        0.23616453334059065,
+        0.6411014379286687
+      ],
+      "camera_position_world_m": [
+        1.8261524075191984,
+        -0.007554690211549586,
+        1.2736886922161996
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.35,
+      "r_m": 0.35,
+      "s": 0.58125,
+      "s_pre_occlusion": 0.58125,
+      "mask_bbox_xyxy": [
+        147,
+        219,
+        890,
+        486
+      ],
+      "mask_pixels": 76375,
+      "valid_depth_pixels": 76375,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        141.2967921162686,
+        118.92727085135283,
+        1016.9282222977031,
+        548.2805275928331
+      ],
+      "cad_corner_depth_range_m": [
+        0.18616453334059052,
+        0.5911014379286685
+      ],
+      "camera_position_world_m": [
+        1.79982536829328,
+        -0.03893003379140622,
+        1.2450098703986474
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.3,
+      "r_m": 0.3,
+      "s": 0.67265625,
+      "s_pre_occlusion": 0.67265625,
+      "mask_bbox_xyxy": [
+        58,
+        194,
+        918,
+        510
+      ],
+      "mask_pixels": 105253,
+      "valid_depth_pixels": 105253,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.03219814654404385,
+      "projected_cad_aabb_xyxy_unclipped": [
+        -35.45164627174256,
+        30.588287400023262,
+        1065.594534235832,
+        615.2545312164413
+      ],
+      "cad_corner_depth_range_m": [
+        0.13616453334059045,
+        0.5411014379286686
+      ],
+      "camera_position_world_m": [
+        1.773498329067362,
+        -0.07030537737126291,
+        1.216331048581095
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.25,
+      "r_m": 0.25,
+      "s": 0.7453125,
+      "s_pre_occlusion": 0.7453125,
+      "mask_bbox_xyxy": [
+        0,
+        158,
+        953,
+        547
+      ],
+      "mask_pixels": 149698,
+      "valid_depth_pixels": 149698,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.4258934846364809,
+      "projected_cad_aabb_xyxy_unclipped": [
+        -414.2216083629796,
+        -160.27429831134793,
+        1128.6689016270323,
+        755.8784021083793
+      ],
+      "cad_corner_depth_range_m": [
+        0.08616453334059067,
+        0.49110143792866867
+      ],
+      "camera_position_world_m": [
+        1.7471712898414438,
+        -0.10168072095111955,
+        1.1876522267635428
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.2,
+      "r_m": 0.2,
+      "s": 0.78125,
+      "s_pre_occlusion": 0.78125,
+      "mask_bbox_xyxy": [
+        0,
+        135,
+        999,
+        606
+      ],
+      "mask_pixels": 211623,
+      "valid_depth_pixels": 211623,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.8664960400385266,
+      "projected_cad_aabb_xyxy_unclipped": [
+        -1871.0655256330197,
+        -878.8986663022347,
+        1213.661477344674,
+        1240.0262831796335
+      ],
+      "cad_corner_depth_range_m": [
+        0.036164533340590645,
+        0.44110143792866874
+      ],
+      "camera_position_world_m": [
+        1.7208442506155257,
+        -0.1330560645309762,
+        1.1589734049459905
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.15,
+      "r_m": 0.15,
+      "s": 0.82890625,
+      "s_pre_occlusion": 0.82890625,
+      "mask_bbox_xyxy": [
+        0,
+        121,
+        1060,
+        719
+      ],
+      "mask_pixels": 338100,
+      "valid_depth_pixels": 338100,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 1.0,
+      "projected_cad_aabb_xyxy_unclipped": null,
+      "cad_corner_depth_range_m": [
+        -0.013835466659409545,
+        0.39110143792866847
+      ],
+      "camera_position_world_m": [
+        1.6945172113896074,
+        -0.16443140811083287,
+        1.1302945831284381
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.12,
+      "r_m": 0.12,
+      "s": 0.86640625,
+      "s_pre_occlusion": 0.86640625,
+      "mask_bbox_xyxy": [
+        0,
+        122,
+        1108,
+        719
+      ],
+      "mask_pixels": 450428,
+      "valid_depth_pixels": 450428,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 1.0,
+      "projected_cad_aabb_xyxy_unclipped": null,
+      "cad_corner_depth_range_m": [
+        -0.043835466659409406,
+        0.36110143792866845
+      ],
+      "camera_position_world_m": [
+        1.6787209878540565,
+        -0.18325661425874684,
+        1.1130872900379067
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.1,
+      "r_m": 0.1,
+      "s": 0.896875,
+      "s_pre_occlusion": 0.896875,
+      "mask_bbox_xyxy": [
+        0,
+        176,
+        1147,
+        719
+      ],
+      "mask_pixels": 434235,
+      "valid_depth_pixels": 434235,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 1.0,
+      "projected_cad_aabb_xyxy_unclipped": null,
+      "cad_corner_depth_range_m": [
+        -0.06383546665940942,
+        0.3411014379286687
+      ],
+      "camera_position_world_m": [
+        1.6681901721636894,
+        -0.1958067516906895,
+        1.101615761310886
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.09,
+      "r_m": 0.09,
+      "s": 0.9265625,
+      "s_pre_occlusion": 0.9265625,
+      "mask_bbox_xyxy": [
+        0,
+        169,
+        1185,
+        719
+      ],
+      "mask_pixels": 450698,
+      "valid_depth_pixels": 450698,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 1.0,
+      "projected_cad_aabb_xyxy_unclipped": null,
+      "cad_corner_depth_range_m": [
+        -0.07383546665940954,
+        0.3311014379286684
+      ],
+      "camera_position_world_m": [
+        1.6629247643185057,
+        -0.20208182040666084,
+        1.0958799969473754
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "left_low_roll",
+      "theta_deg": -40.0,
+      "phi_deg": 35.0,
+      "psi_deg": -20.0,
+      "theta": -40.0,
+      "phi": 35.0,
+      "psi": -20.0,
+      "r": 0.08,
+      "r_m": 0.08,
+      "s": 0.9859375,
+      "s_pre_occlusion": 0.9859375,
+      "mask_bbox_xyxy": [
+        0,
+        161,
+        1261,
+        719
+      ],
+      "mask_pixels": 467594,
+      "valid_depth_pixels": 467594,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 1.0,
+      "projected_cad_aabb_xyxy_unclipped": null,
+      "cad_corner_depth_range_m": [
+        -0.08383546665940945,
+        0.3211014379286688
+      ],
+      "camera_position_world_m": [
+        1.6576593564733222,
+        -0.20835688912263217,
+        1.0901442325838648
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.95,
+      "r_m": 0.95,
+      "s": 0.21015625,
+      "s_pre_occlusion": 0.21015625,
+      "mask_bbox_xyxy": [
+        563,
+        275,
+        831,
+        413
+      ],
+      "mask_pixels": 11929,
+      "valid_depth_pixels": 11929,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        482.7130026683891,
+        244.30647846116,
+        842.0926363504403,
+        473.0982481587122
+      ],
+      "cad_corner_depth_range_m": [
+        0.8228690930066841,
+        1.1166652401768304
+      ],
+      "camera_position_world_m": [
+        1.357465000551378,
+        0.04899971356830857,
+        1.9052505153605988
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.9,
+      "r_m": 0.9,
+      "s": 0.23359375,
+      "s_pre_occlusion": 0.23359375,
+      "mask_bbox_xyxy": [
+        544,
+        244,
+        842,
+        416
+      ],
+      "mask_pixels": 14258,
+      "valid_depth_pixels": 14258,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        474.1990825799973,
+        238.52290531033447,
+        853.1178965619514,
+        479.8306646859642
+      ],
+      "cad_corner_depth_range_m": [
+        0.7728690930066839,
+        1.06666524017683
+      ],
+      "camera_position_world_m": [
+        1.3710476896650872,
+        0.03281249501995531,
+        1.8599351260087662
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.85,
+      "r_m": 0.85,
+      "s": 0.24921875,
+      "s_pre_occlusion": 0.24921875,
+      "mask_bbox_xyxy": [
+        536,
+        238,
+        854,
+        419
+      ],
+      "mask_pixels": 15989,
+      "valid_depth_pixels": 15989,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        464.7074147221622,
+        232.1278755436567,
+        865.4122284200181,
+        487.4113492069139
+      ],
+      "cad_corner_depth_range_m": [
+        0.7228690930066838,
+        1.0166652401768301
+      ],
+      "camera_position_world_m": [
+        1.3846303787787964,
+        0.016625276471602057,
+        1.8146197366569337
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.8,
+      "r_m": 0.8,
+      "s": 0.265625,
+      "s_pre_occlusion": 0.265625,
+      "mask_bbox_xyxy": [
+        530,
+        231,
+        869,
+        423
+      ],
+      "mask_pixels": 18038,
+      "valid_depth_pixels": 18038,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        454.05931027308975,
+        225.0190097024731,
+        879.2081291188573,
+        496.0114002540845
+      ],
+      "cad_corner_depth_range_m": [
+        0.6728690930066838,
+        0.9666652401768301
+      ],
+      "camera_position_world_m": [
+        1.3982130678925055,
+        0.00043805792324885795,
+        1.769304347305101
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.75,
+      "r_m": 0.75,
+      "s": 0.2828125,
+      "s_pre_occlusion": 0.2828125,
+      "mask_bbox_xyxy": [
+        524,
+        223,
+        885,
+        427
+      ],
+      "mask_pixels": 20538,
+      "valid_depth_pixels": 20538,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        442.0297140091738,
+        217.0697213726614,
+        894.7985816858809,
+        505.8512480205053
+      ],
+      "cad_corner_depth_range_m": [
+        0.6228690930066837,
+        0.9166652401768299
+      ],
+      "camera_position_world_m": [
+        1.4117957570062147,
+        -0.015749160625104397,
+        1.7239889579532686
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.7,
+      "r_m": 0.7,
+      "s": 0.30234375,
+      "s_pre_occlusion": 0.30234375,
+      "mask_bbox_xyxy": [
+        517,
+        215,
+        903,
+        432
+      ],
+      "mask_pixels": 23549,
+      "valid_depth_pixels": 23549,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        428.33112202666865,
+        208.12161323772915,
+        912.5580930704355,
+        517.2198147797048
+      ],
+      "cad_corner_depth_range_m": [
+        0.5728690930066835,
+        0.8666652401768298
+      ],
+      "camera_position_world_m": [
+        1.425378446119924,
+        -0.031936379173457624,
+        1.678673568601436
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.65,
+      "r_m": 0.65,
+      "s": 0.32578125,
+      "s_pre_occlusion": 0.32578125,
+      "mask_bbox_xyxy": [
+        509,
+        205,
+        925,
+        437
+      ],
+      "mask_pixels": 27293,
+      "valid_depth_pixels": 27293,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        412.5903066939811,
+        197.97381470371099,
+        932.9731696571098,
+        530.5033577262295
+      ],
+      "cad_corner_depth_range_m": [
+        0.5228690930066838,
+        0.8166652401768301
+      ],
+      "camera_position_world_m": [
+        1.4389611352336331,
+        -0.04812359772181085,
+        1.6333581792496037
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.6,
+      "r_m": 0.6,
+      "s": 0.35390625,
+      "s_pre_occlusion": 0.35390625,
+      "mask_bbox_xyxy": [
+        499,
+        194,
+        951,
+        444
+      ],
+      "mask_pixels": 32036,
+      "valid_depth_pixels": 32036,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        394.2283350016339,
+        186.36772280167844,
+        962.2106312406695,
+        546.230227559729
+      ],
+      "cad_corner_depth_range_m": [
+        0.4728690930066838,
+        0.7666652401768301
+      ],
+      "camera_position_world_m": [
+        1.4525438243473423,
+        -0.06431081627016408,
+        1.5880427898977711
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.55,
+      "r_m": 0.55,
+      "s": 0.3859375,
+      "s_pre_occlusion": 0.3859375,
+      "mask_bbox_xyxy": [
+        489,
+        181,
+        982,
+        452
+      ],
+      "mask_pixels": 38113,
+      "valid_depth_pixels": 38113,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        369.69976662946016,
+        172.9646553750349,
+        1000.367904564446,
+        565.1428267733347
+      ],
+      "cad_corner_depth_range_m": [
+        0.42286909300668396,
+        0.7166652401768302
+      ],
+      "camera_position_world_m": [
+        1.4661265134610515,
+        -0.08049803481851728,
+        1.5427274005459388
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.5,
+      "r_m": 0.5,
+      "s": 0.425,
+      "s_pre_occlusion": 0.425,
+      "mask_bbox_xyxy": [
+        476,
+        165,
+        1019,
+        461
+      ],
+      "mask_pixels": 46123,
+      "valid_depth_pixels": 46123,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        339.72005912239143,
+        157.312253381471,
+        1048.7586013710024,
+        588.3182249853477
+      ],
+      "cad_corner_depth_range_m": [
+        0.37286909300668397,
+        0.6666652401768302
+      ],
+      "camera_position_world_m": [
+        1.479709202574761,
+        -0.09668525336687053,
+        1.4974120111941063
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.45,
+      "r_m": 0.45,
+      "s": 0.47265625,
+      "s_pre_occlusion": 0.47265625,
+      "mask_bbox_xyxy": [
+        462,
+        147,
+        1066,
+        472
+      ],
+      "mask_pixels": 57001,
+      "valid_depth_pixels": 57001,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        302.244889256767,
+        138.79241846106936,
+        1112.1370123486258,
+        617.3806912239148
+      ],
+      "cad_corner_depth_range_m": [
+        0.32286909300668387,
+        0.61666524017683
+      ],
+      "camera_position_world_m": [
+        1.49329189168847,
+        -0.11287247191522376,
+        1.4520966218422737
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.4,
+      "r_m": 0.4,
+      "s": 0.5328125,
+      "s_pre_occlusion": 0.5328125,
+      "mask_bbox_xyxy": [
+        445,
+        125,
+        1126,
+        486
+      ],
+      "mask_pixels": 72228,
+      "valid_depth_pixels": 72228,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.0,
+      "projected_cad_aabb_xyxy_unclipped": [
+        254.06165372356696,
+        116.53775275495414,
+        1198.7420959696292,
+        654.8997541500246
+      ],
+      "cad_corner_depth_range_m": [
+        0.27286909300668394,
+        0.5666652401768302
+      ],
+      "camera_position_world_m": [
+        1.5068745808021793,
+        -0.129059690463577,
+        1.4067812324904412
+      ],
+      "usable_for_solver": true,
+      "reject_reasons": []
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.35,
+      "r_m": 0.35,
+      "s": 0.61328125,
+      "s_pre_occlusion": 0.61328125,
+      "mask_bbox_xyxy": [
+        423,
+        98,
+        1207,
+        504
+      ],
+      "mask_pixels": 94661,
+      "valid_depth_pixels": 94661,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.03985078302007872,
+      "projected_cad_aabb_xyxy_unclipped": [
+        189.8158096452712,
+        89.29177569810878,
+        1324.206351336986,
+        705.1949078477194
+      ],
+      "cad_corner_depth_range_m": [
+        0.22286909300668378,
+        0.5166652401768301
+      ],
+      "camera_position_world_m": [
+        1.5204572699158885,
+        -0.14524690901193021,
+        1.3614658431386086
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.3,
+      "r_m": 0.3,
+      "s": 0.68984375,
+      "s_pre_occlusion": 0.68984375,
+      "mask_bbox_xyxy": [
+        397,
+        65,
+        1279,
+        529
+      ],
+      "mask_pixels": 127711,
+      "valid_depth_pixels": 127711,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.2367055674167331,
+      "projected_cad_aabb_xyxy_unclipped": [
+        99.86869014438378,
+        55.16320916264368,
+        1522.2482162614779,
+        776.1310652704054
+      ],
+      "cad_corner_depth_range_m": [
+        0.1728690930066838,
+        0.4666652401768301
+      ],
+      "camera_position_world_m": [
+        1.5340399590295977,
+        -0.16143412756028347,
+        1.316150453786776
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.25,
+      "r_m": 0.25,
+      "s": 0.71640625,
+      "s_pre_occlusion": 0.71640625,
+      "mask_bbox_xyxy": [
+        363,
+        21,
+        1279,
+        563
+      ],
+      "mask_pixels": 170578,
+      "valid_depth_pixels": 170578,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.4586149276572512,
+      "projected_cad_aabb_xyxy_unclipped": [
+        -35.05841591893284,
+        11.167133797442773,
+        1881.471270106866,
+        883.695271278348
+      ],
+      "cad_corner_depth_range_m": [
+        0.12286909300668385,
+        0.41666524017683015
+      ],
+      "camera_position_world_m": [
+        1.5476226481433069,
+        -0.17762134610863667,
+        1.2708350644349438
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.2,
+      "r_m": 0.2,
+      "s": 0.75078125,
+      "s_pre_occlusion": 0.75078125,
+      "mask_bbox_xyxy": [
+        319,
+        0,
+        1279,
+        614
+      ],
+      "mask_pixels": 239458,
+      "valid_depth_pixels": 239458,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.7272816794660154,
+      "projected_cad_aabb_xyxy_unclipped": [
+        -259.95406582255555,
+        -60.259198199251216,
+        2733.6647165059767,
+        1066.1303867181787
+      ],
+      "cad_corner_depth_range_m": [
+        0.07286909300668386,
+        0.3666652401768303
+      ],
+      "camera_position_world_m": [
+        1.561205337257016,
+        -0.19380856465698992,
+        1.2255196750831112
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.15,
+      "r_m": 0.15,
+      "s": 0.8015625,
+      "s_pre_occlusion": 0.8015625,
+      "mask_bbox_xyxy": [
+        254,
+        0,
+        1279,
+        699
+      ],
+      "mask_pixels": 370723,
+      "valid_depth_pixels": 370723,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 0.9487512320015483,
+      "projected_cad_aabb_xyxy_unclipped": [
+        -709.809650896136,
+        -270.19879030421487,
+        7312.256259016866,
+        1966.6147314758064
+      ],
+      "cad_corner_depth_range_m": [
+        0.02286909300668405,
+        0.3166652401768301
+      ],
+      "camera_position_world_m": [
+        1.5747880263707255,
+        -0.20999578320534315,
+        1.1802042857312787
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.12,
+      "r_m": 0.12,
+      "s": 0.85234375,
+      "s_pre_occlusion": 0.85234375,
+      "mask_bbox_xyxy": [
+        189,
+        0,
+        1279,
+        719
+      ],
+      "mask_pixels": 489012,
+      "valid_depth_pixels": 489012,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 1.0,
+      "projected_cad_aabb_xyxy_unclipped": null,
+      "cad_corner_depth_range_m": [
+        -0.0071309069933159705,
+        0.28666524017683015
+      ],
+      "camera_position_world_m": [
+        1.582937639838951,
+        -0.21970811433435508,
+        1.1530150521201792
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.1,
+      "r_m": 0.1,
+      "s": 0.90234375,
+      "s_pre_occlusion": 0.90234375,
+      "mask_bbox_xyxy": [
+        125,
+        0,
+        1279,
+        719
+      ],
+      "mask_pixels": 556056,
+      "valid_depth_pixels": 556056,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 1.0,
+      "projected_cad_aabb_xyxy_unclipped": null,
+      "cad_corner_depth_range_m": [
+        -0.027130906993315843,
+        0.26666524017683
+      ],
+      "camera_position_world_m": [
+        1.5883707154844346,
+        -0.22618300175369638,
+        1.1348888963794463
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.09,
+      "r_m": 0.09,
+      "s": 0.93984375,
+      "s_pre_occlusion": 0.93984375,
+      "mask_bbox_xyxy": [
+        77,
+        0,
+        1279,
+        719
+      ],
+      "mask_pixels": 582200,
+      "valid_depth_pixels": 582200,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 1.0,
+      "projected_cad_aabb_xyxy_unclipped": null,
+      "cad_corner_depth_range_m": [
+        -0.03713090699331596,
+        0.2566652401768301
+      ],
+      "camera_position_world_m": [
+        1.5910872533071765,
+        -0.229420445463367,
+        1.1258258185090797
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    },
+    {
+      "class": "right",
+      "class_id": 1,
+      "object_pose_id": "physics_drop_table_box_v1",
+      "viewpoint_id": "right_high_roll",
+      "theta_deg": 40.0,
+      "phi_deg": 65.0,
+      "psi_deg": 20.0,
+      "theta": 40.0,
+      "phi": 65.0,
+      "psi": 20.0,
+      "r": 0.08,
+      "r_m": 0.08,
+      "s": 0.99140625,
+      "s_pre_occlusion": 0.99140625,
+      "mask_bbox_xyxy": [
+        11,
+        0,
+        1279,
+        719
+      ],
+      "mask_pixels": 619739,
+      "valid_depth_pixels": 619739,
+      "depth_valid_ratio": 1.0,
+      "truncation_ratio": 1.0,
+      "projected_cad_aabb_xyxy_unclipped": null,
+      "cad_corner_depth_range_m": [
+        -0.04713090699331581,
+        0.24666524017683014
+      ],
+      "camera_position_world_m": [
+        1.5938037911299183,
+        -0.23265788917303767,
+        1.1167627406387133
+      ],
+      "usable_for_solver": false,
+      "reject_reasons": [
+        "fov_truncation",
+        "cad_corner_outside_depth_range"
+      ]
+    }
+  ],
+  "warnings": [
+    "right 在当前 D405 深度范围和代表视角中无法达到 far 目标尺度 0.150。",
+    "right 的 mid 区间不能在全部代表视角完整覆盖；阶段四应按视角使用具体搜索边界。",
+    "right 的 near 区间不能在全部代表视角完整覆盖；阶段四应按视角使用具体搜索边界。",
+    "right 在当前 D405 深度范围和代表视角中无法达到 pre_grasp 目标尺度 0.650。"
+  ],
+  "issues": [],
+  "outputs": {
+    "calibration_json": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/output/radius_calibration/shards/right.json",
+    "curves": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/output/radius_calibration/shards/right_curves.png",
+    "reference_previews": [
+      "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/output/radius_calibration/preview/right_scale_reference.png"
+    ]
+  }
+}

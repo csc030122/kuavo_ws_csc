@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "artifact_kind": "right_wrist_radius_extremes",
+  "generated_at_utc": "2026-09-03T03:15:20.067473+00:00",
+  "status": "preview",
+  "scene": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/yolo_scene/lab_yolo_grab_data.usd",
+  "camera_prim": "/World/SyntheticData/DetachedRightWrist/r_hand_tripod/r_hand_camera_link/right_wrist_d405_rgb",
+  "camera_source_prim": "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_hand_tripod/r_hand_camera_link/right_wrist_d405_rgb",
+  "camera_is_attached_to_real_dexterous_hand": true,
+  "wrist_orientation_source": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_data/scripts/render_right_wrist_capture_pose.py",
+  "placement_method": "detached_r7_wrist_rig_no_ik",
+  "optical_roll_deg": 0.0,
+  "optical_axis_target": "workpiece_sampling_center",
+  "roll_zero_definition": "four_finger_direction_closest_to_world_minus_y",
+  "inverse_kinematics": false,
+  "trajectory_planning": false,
+  "collision_checking": false,
+  "hidden_upstream_arm_prims": [
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/r_arm_pitch",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/r_arm_roll",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/r_arm_yaw",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/r_forearm",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/r_hand_yaw",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/r_hand_roll"
+  ],
+  "hidden_original_wrist_prims": [
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/zarm_r7_end_effector/sphere",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/cylinder",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/s49_r_hand_pitch/s49_r_hand_pitch",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_hand_tripod/r_hand_camera_link/r_hand_camera/l_hand_camera",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_hand_tripod/r_hand_tripod/r_hand_tripod",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_palm/r_palm/r_palm",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_thumb_prox/r_thumb_dist/r_thumb_dist/r_thumb_dist",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_thumb_prox/r_thumb_dist/r_thumb_dist_1/r_thumb_dist",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_thumb_prox/r_thumb_prox/r_thumb_prox",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_thumb_prox/r_thumb_prox_1/r_thumb_prox",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_index_prox/r_index_dist/r_index_dist/r_index_dist",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_index_prox/r_index_dist/r_index_dist_1/r_index_dist",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_index_prox/r_index_prox/r_index_prox",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_index_prox/r_index_prox_1/r_index_prox",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_middle_prox/r_middle_dist/r_middle_dist/r_middle_dist",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_middle_prox/r_middle_dist/r_middle_dist_1/r_middle_dist",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_middle_prox/r_middle_prox/r_middle_prox",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_middle_prox/r_middle_prox_1/r_middle_prox",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_ring_prox/r_ring_dist/r_ring_dist/r_ring_dist",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_ring_prox/r_ring_dist/r_ring_dist_1/r_ring_dist",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_ring_prox/r_ring_prox/r_ring_prox",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_ring_prox/r_ring_prox_1/r_ring_prox",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_little_prox/r_little_dist/r_little_dist/r_little_dist",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_little_prox/r_little_dist/r_little_dist_1/r_little_dist",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_little_prox/r_little_prox/r_little_prox",
+    "/World/Robot/Geometry/base_link/base_to_joint/knee_link_1/leg_link/waist_link/waist_yaw_link/zarm_r1_link/zarm_r2_link/zarm_r3_link/zarm_r4_link/zarm_r5_link/zarm_r6_link/zarm_r7_link/r_little_prox/r_little_prox_1/r_little_prox"
+  ],
+  "radius_range_m": {
+    "min": 0.12,
+    "max": 0.5
+  },
+  "viewpoint": {
+    "theta_deg": 0.0,
+    "phi_deg": 65.0,
+    "psi_deg": 0.0
+  },
+  "captures": [
+    {
+      "class": "left",
+      "radius_key": "r_max",
+      "requested_r_m": 0.5,
+      "actual_r_m": 0.5000000000000003,
+      "optical_roll_deg": 0.0,
+      "camera_psi_at_roll_zero_deg": -110.5,
+      "finger_direction_world": [
+        -0.0030312746244559046,
+        -0.9506210435157029,
+        -0.31033923857493007
+      ],
+      "sampling_center_world_m": [
+        1.5747202634811401,
+        -0.2022840529680252,
+        1.0225987434387207
+      ],
+      "camera_position_world_m": [
+        1.5747202634811408,
+        0.00902507790232443,
+        1.4757526369570462
+      ],
+      "camera_forward_world": [
+        -6.05164785491526e-17,
+        -0.42261826174069944,
+        -0.90630778703665
+      ],
+      "reference_joint_positions_deg": [
+        -86.348167,
+        -48.620611,
+        81.393436,
+        -126.305789,
+        24.460575,
+        41.660079,
+        0.316566
+      ],
+      "placement": {
+        "method": "detached_r7_wrist_rig_no_ik",
+        "position_error_m": 8.049116928532385e-16,
+        "radius_error_m": 3.3306690738754696e-16,
+        "target_ray_dot": 1.0000000000000002
+      },
+      "mask_pixels": 31912,
+      "visible_bbox_xyxy": [
+        572,
+        65,
+        802,
+        623
+      ],
+      "visible_bbox_width_ratio": 0.18046875,
+      "depth_valid_ratio": 1.0,
+      "files": {
+        "reference": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/output/workspace_calibration/wrist_extremes/images/left_r_max_reference.png",
+        "rgb": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/output/workspace_calibration/wrist_extremes/images/left_r_max_rgb.png",
+        "mask": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/output/workspace_calibration/wrist_extremes/images/left_r_max_mask.png",
+        "depth": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/output/workspace_calibration/wrist_extremes/images/left_r_max_depth.npy"
+      }
+    }
+  ],
+  "outputs": {
+    "contact_sheet": null,
+    "metadata": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/output/workspace_calibration/wrist_extremes/right_wrist_radius_extremes_preview.json",
+    "report": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/output/workspace_calibration/wrist_extremes/right_wrist_radius_extremes_report_preview.md",
+    "image_dir": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/output/workspace_calibration/wrist_extremes/images"
+  }
+}

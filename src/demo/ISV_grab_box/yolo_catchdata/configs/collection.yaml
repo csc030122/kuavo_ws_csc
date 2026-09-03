@@ -1,0 +1,124 @@
+schema_version: 1
+
+dataset:
+  dataset_seed: 20260902
+  split_percent: {train: 70, val: 15, test: 15}
+  output_root: ../output/dataset
+  manifest: ../output/manifest.jsonl
+  statistics: ../output/statistics.json
+  preview_dir: ../output/preview
+
+pose:
+  target: canonical_object_in_opencv_camera
+  rotation: rodrigues_vector
+  rotation_unit: radian
+  translation_unit: meter
+
+mask:
+  background_value: 0
+  foreground_value: 255
+  source_of_truth: binary_png
+
+sampling:
+  primary_variable: camera_radius_m
+  strategy: approach_workspace_coverage
+  theta_deg: [-60, -40, -20, 0, 20, 40, 60]
+  phi_deg: [20, 35, 50, 65, 80]
+  psi_deg: [-30, 0, 30]
+  jitter_deg: {theta: 5, phi: 5, psi: 5}
+  # 尺度只用于数据分布诊断和定向补采，不再反求相机半径。
+  scale_bins_role: diagnostic_only
+  scale_bins:
+    far: [0.10, 0.20]
+    mid: [0.20, 0.35]
+    near: [0.35, 0.55]
+    pre_grasp: [0.55, 0.75]
+  scale_solver:
+    tolerance: 0.02
+    damping_eta: 0.85
+    max_iterations: 3
+    measured_scale: s_pre_occlusion
+
+stable_pose:
+  output: stable_poses.json
+  report_dir: ../output/stable_pose
+  pose_id: physics_drop_table_box_v1
+  # 可视网格始终使用原始 USD；下列近似仅用于 PhysX 碰撞。
+  visual_geometry: original_usd_render_mesh
+  dynamic_collision_approximation: convexDecomposition
+  convex_decomposition:
+    max_convex_hulls: 128
+    hull_vertex_limit: 64
+    voxel_resolution: 500000
+    error_percentage: 1.0
+    shrink_wrap: true
+  table_collision_approximation: authored_collision_meshes
+  drop_height_m: 0.06
+  initial_euler_xyz_deg: [0.0, 0.0, 0.0]
+  mass_kg: 0.5
+  physics_dt_s: 0.008333333333333333
+  minimum_frames: 120
+  maximum_frames: 960
+  stable_consecutive_frames: 60
+  linear_speed_threshold_m_s: 0.003
+  angular_speed_threshold_deg_s: 1.0
+  renderer: RaytracedLighting
+  warmup_frames: 6
+  rt_subframes: 1
+
+radius_calibration:
+  role: legacy_diagnostic_only
+  output: radius_calibration.json
+  report_dir: ../output/radius_calibration
+  stable_pose_config: stable_poses.json
+  object_pose_id: physics_drop_table_box_v1
+  # r 为相机光心到工件 sampling center 的距离，按从远到近扫描。
+  radii_m: [0.95, 0.90, 0.85, 0.80, 0.75, 0.70, 0.65, 0.60, 0.55, 0.50,
+            0.45, 0.40, 0.35, 0.30, 0.25, 0.20, 0.15, 0.12, 0.10, 0.09, 0.08]
+  representative_viewpoints:
+    - {id: frontal_mid, theta_deg: 0.0, phi_deg: 50.0, psi_deg: 0.0}
+    - {id: left_low_roll, theta_deg: -40.0, phi_deg: 35.0, psi_deg: -20.0}
+    - {id: right_high_roll, theta_deg: 40.0, phi_deg: 65.0, psi_deg: 20.0}
+  renderer: RaytracedLighting
+  warmup_frames: 6
+  rt_subframes: 1
+  quality:
+    min_mask_pixels: 200
+    min_valid_depth_ratio: 0.95
+    max_truncation_ratio: 0.02
+  radius_margin_m: 0.05
+
+workspace_calibration:
+  output: workspace_calibration.json
+  report_dir: ../output/workspace_calibration
+  definition:
+    radius: camera_optical_center_to_object_sampling_center_m
+    primary_variables: [r, theta, phi]
+    observed_variables: [s_pre_occlusion, mask_pixels, depth_valid_ratio, truncation_ratio]
+  # 全局范围覆盖四类工件；每类真正可用的下界由 Omega_class(r) 决定。
+  radius_range_m: {min: 0.12, max: 0.50}
+  radius_layers_m: [0.50, 0.45, 0.40, 0.35, 0.30, 0.25, 0.20, 0.15, 0.12]
+  radius_layer_policy: denser_near_camera
+  radius_min_selection:
+    baseline_viewpoint: {theta_deg: 0.0, phi_deg: 50.0, psi_deg: 0.0}
+    massive_truncation_threshold: 0.20
+    near_depth_failure_threshold_m: 0.07
+    source: phase3_rendered_observations
+  # 这里只是后续网格扫描的候选包络，不是最终有效角度范围。
+  candidate_angle_grid:
+    theta_deg: {min: -60.0, max: 60.0, step: 10.0}
+    phi_deg: {min: 20.0, max: 80.0, step: 10.0}
+    psi_deg: 0.0
+  output_domain: omega_class_by_radius
+
+smoke:
+  groups_per_class: 20
+  viewpoints_per_group: 5
+  require_marginal_coverage: true
+  require_cartesian_coverage: false
+
+randomness:
+  hash_algorithm: sha256
+  group_streams: [object]
+  candidate_streams: [viewpoint, lighting, material, exposure, occlusion]
+  candidate_key: [dataset_seed, scene_group_id, viewpoint_id, attempt_id]
