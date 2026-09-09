@@ -1,0 +1,93 @@
+schema_version: 1
+
+scene:
+  usd: ../yolo_scene/lab_yolo_grab_data_s63_mount_corrected.usd
+  expected_meters_per_unit: 1.0
+  expected_up_axis: Z
+
+table_box:
+  asset_usd: ../yolo_scene/box(2).usd
+  scene_prim_path: /World/Environment/Geometry/box/table_box
+  # Frozen from the composed lab scene.
+  center_world_m: [1.6, -0.26, 1.0]
+  robot_base_world_m: [1.6, 0.30, 0.015]
+  outer_bounds_world_m:
+    min: [1.2975, -0.4625, 0.9950]
+    max: [1.9025, -0.0575, 1.2150]
+  inner_bounds_world_m:
+    min_xy: [1.3325, -0.4275]
+    max_xy: [1.8675, -0.0925]
+  floor_z_m: 1.0075
+  wall_clearance_m: 0.01
+
+sampling_frame:
+  convention: right_handed
+  origin: current_object_sampling_center
+  x_axis: horizontal_table_box_to_robot
+  z_axis_world: [0.0, 0.0, 1.0]
+  # Columns are +X_S, +Y_S, +Z_S expressed in World.
+  rotation_world_from_sampling:
+    - [0.0, -1.0, 0.0]
+    - [1.0,  0.0, 0.0]
+    - [0.0,  0.0, 1.0]
+
+classes:
+  - class_id: 0
+    name: left
+    usd: ../yolo_scene/left.usd
+    expected_default_prim: /left
+    canonical_frame_version: canonical_v2_user_adjusted
+    asset_from_canonical:
+      - [1.0, 0.0, 0.0, 0.0]
+      - [0.0, 1.0, 0.0, 0.0]
+      - [0.0, 0.0, 1.0, 0.0]
+      - [0.0, 0.0, 0.0, 1.0]
+    sampling_center_canonical_m: [0.0, 0.0, 0.0]
+    expected_size_m:
+      min: [0.35, 0.15, 0.03]
+      max: [0.50, 0.30, 0.15]
+
+  - class_id: 1
+    name: right
+    usd: ../yolo_scene/right.usd
+    expected_default_prim: /right
+    canonical_frame_version: canonical_v2_user_adjusted
+    asset_from_canonical:
+      - [1.0, 0.0, 0.0, 0.0]
+      - [0.0, 1.0, 0.0, 0.0]
+      - [0.0, 0.0, 1.0, 0.0]
+      - [0.0, 0.0, 0.0, 1.0]
+    sampling_center_canonical_m: [0.0, 0.0, 0.0]
+    expected_size_m:
+      min: [0.35, 0.15, 0.04]
+      max: [0.50, 0.30, 0.16]
+
+  - class_id: 2
+    name: hose
+    usd: ../yolo_scene/hose.usd
+    expected_default_prim: /hose
+    canonical_frame_version: canonical_v2_user_adjusted
+    asset_from_canonical:
+      - [1.0, 0.0, 0.0, 0.0]
+      - [0.0, 1.0, 0.0, 0.0]
+      - [0.0, 0.0, 1.0, 0.0]
+      - [0.0, 0.0, 0.0, 1.0]
+    sampling_center_canonical_m: [0.0, 0.0, 0.0]
+    expected_size_m:
+      min: [0.25, 0.10, 0.03]
+      max: [0.42, 0.24, 0.14]
+
+  - class_id: 3
+    name: outhandle
+    usd: ../yolo_scene/outhandle.usd
+    expected_default_prim: /outhandle
+    canonical_frame_version: canonical_v2_user_adjusted
+    asset_from_canonical:
+      - [1.0, 0.0, 0.0, 0.0]
+      - [0.0, 1.0, 0.0, 0.0]
+      - [0.0, 0.0, 1.0, 0.0]
+      - [0.0, 0.0, 0.0, 1.0]
+    sampling_center_canonical_m: [0.0, 0.0, 0.0]
+    expected_size_m:
+      min: [0.04, 0.04, 0.02]
+      max: [0.14, 0.14, 0.10]

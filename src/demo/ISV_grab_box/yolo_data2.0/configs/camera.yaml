@@ -1,0 +1,56 @@
+schema_version: 1
+
+camera:
+  # 顶层 name/prim_path 仅为旧的右手验证脚本保留。正式采集按 hand_sides
+  # 选择真实的左右腕侧置相机，并把对应 name 写入 6D 位姿标签。
+  name: right_wrist_d405
+  model: Intel RealSense D405
+  prim_path: /World/SyntheticData/Cameras/right_wrist_d405
+  hand_sides:
+    right:
+      name: right_wrist_d405
+      detached_prim_path: /World/ManualInspection/RightWrist/r_hand_tripod/r_hand_camera_link/right_wrist_d405_rgb
+    left:
+      name: left_wrist_d405
+      detached_prim_path: /World/ManualInspection/LeftWrist/l_hand_tripod/l_hand_camera_link/left_wrist_d405_rgb
+  resolution: [1280, 720]
+  intrinsics:
+    # D405 公开规格的标称视场角，仅用于合成数据链路验证。
+    # 真机采集前必须用目标设备的标定结果替换。
+    source: nominal_d405_fov_pending_real_calibration
+    horizontal_fov_degrees: 84.0
+    vertical_fov_degrees: 58.0
+    principal_point: image_center
+  distortion:
+    model: pending_real_calibration
+    coefficients: []
+  clipping_range_m: [0.07, 1.0]
+  visibility_measurement:
+    # 在相同分辨率上扩大视场，中央 1/factor 区域对应真实相机画面。
+    # 对工件实际渲染 Mesh 的完整 mask 与中央裁剪 mask 求面积比。
+    method: target_only_wide_fov_rendered_mesh
+    # 4x 在近距离长工件上仍会让参考 silhouette 触边；8x 把参考视场扩到
+    # 接近半球，减少“完整工件面积”分母不完整造成的误判。
+    wide_fov_span_factor: 8.0
+  phase2_validation:
+    class_name: hose
+    radius_m: 0.55
+    elevation_degrees: 55.0
+    azimuth_degrees: 0.0
+    renderer: RaytracedLighting
+    warmup_frames: 8
+    rt_subframes: 8
+    min_mask_pixels: 1000
+    min_valid_depth_ratio: 0.95
+    min_mask_inside_projected_bbox_ratio: 0.95
+  depth:
+    annotator: distance_to_image_plane
+    representation: z_depth
+    dtype: float32
+    unit: meter
+    invalid_values: [0.0, .nan]
+  optical_frame:
+    convention: opencv
+    x: image_right
+    y: image_down
+    z: camera_forward

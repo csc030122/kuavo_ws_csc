@@ -1,0 +1,97 @@
+#usda 1.0
+(
+    defaultPrim = "World"
+    documentation = "S63 wrist-camera mount correction. This stage sublayers lab_yolo_grab_data.usd and removes the erroneous +/-90 deg Z rotation between zarm_*7_link and *_hand_tripod. Repository basis: biped_s49.urdf and biped_s63_Dhand_fixed.xml."
+    endTimeCode = 86400
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    startTimeCode = 0
+    subLayers = [
+        @./lab_yolo_grab_data.usd@
+    ]
+    timeCodesPerSecond = 24
+    upAxis = "Z"
+)
+
+over "World"
+{
+    over "Robot"
+    {
+        over "Geometry"
+        {
+            over "base_link"
+            {
+                over "base_to_joint"
+                {
+                    over "knee_link_1"
+                    {
+                        over "leg_link"
+                        {
+                            over "waist_link"
+                            {
+                                over "waist_yaw_link"
+                                {
+                                    over "zarm_l1_link"
+                                    {
+                                        over "zarm_l2_link"
+                                        {
+                                            over "zarm_l3_link"
+                                            {
+                                                over "zarm_l4_link"
+                                                {
+                                                    over "zarm_l5_link"
+                                                    {
+                                                        over "zarm_l6_link"
+                                                        {
+                                                            over "zarm_l7_link"
+                                                            {
+                                                                over "l_hand_tripod"
+                                                                {
+                                                                    custom string kuavo:wristMountSource = "src/kuavo_assets/models/biped_s49/urdf/biped_s49.urdf + src/demo/ISV_grab_box/biped_s63/xml/robots/biped_s63_Dhand_fixed.xml"
+                                                                    custom bool kuavo:wristMountVerified = true
+                                                                    quatf xformOp:orient = (1, 0, 0, 0)
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    over "zarm_r1_link"
+                                    {
+                                        over "zarm_r2_link"
+                                        {
+                                            over "zarm_r3_link"
+                                            {
+                                                over "zarm_r4_link"
+                                                {
+                                                    over "zarm_r5_link"
+                                                    {
+                                                        over "zarm_r6_link"
+                                                        {
+                                                            over "zarm_r7_link"
+                                                            {
+                                                                over "r_hand_tripod"
+                                                                {
+                                                                    custom string kuavo:wristMountSource = "src/kuavo_assets/models/biped_s49/urdf/biped_s49.urdf + src/demo/ISV_grab_box/biped_s63/xml/robots/biped_s63_Dhand_fixed.xml"
+                                                                    custom bool kuavo:wristMountVerified = true
+                                                                    quatf xformOp:orient = (1, 0, 0, 0)
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

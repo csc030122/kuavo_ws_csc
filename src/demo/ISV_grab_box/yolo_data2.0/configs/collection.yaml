@@ -1,0 +1,259 @@
+schema_version: 1
+
+dataset:
+  dataset_seed: 20260902
+  split_percent: {train: 70, val: 15, test: 15}
+  output_root: ../output/dataset
+  manifest: ../output/manifest.jsonl
+  statistics: ../output/statistics.json
+  preview_dir: ../output/preview
+
+pose:
+  target: canonical_object_in_opencv_camera
+  rotation: rodrigues_vector
+  rotation_unit: radian
+  translation_unit: meter
+
+mask:
+  background_value: 0
+  foreground_value: 255
+  source_of_truth: binary_png
+
+stable_pose:
+  output: stable_poses.json
+  report_dir: ../output/stable_pose
+  pose_id: physics_drop_table_box_v1
+  # 可视网格始终使用原始 USD。PhysX 不支持动态非凸刚体直接使用三角网格，
+  # 所以自由落体阶段从实际 Mesh 生成高精度凸分解；静态手/工件检查直接使用三角 Mesh。
+  visual_geometry: original_usd_render_mesh
+  dynamic_collision_approximation: convexDecomposition
+  convex_decomposition:
+    max_convex_hulls: 128
+    hull_vertex_limit: 64
+    voxel_resolution: 500000
+    error_percentage: 1.0
+    shrink_wrap: true
+  table_collision_approximation: authored_collision_meshes
+  # 当前只需要工件落在箱底，不采集靠壁/剧烈翻滚姿态；低高度释放可显著减少横向漂移。
+  drop_height_m: 0.02
+  initial_euler_xyz_deg: [0.0, 0.0, 0.0]
+  mass_kg: 0.5
+  physics_dt_s: 0.008333333333333333
+  minimum_frames: 60
+  maximum_frames: 480
+  stable_consecutive_frames: 30
+  linear_speed_threshold_m_s: 0.003
+  angular_speed_threshold_deg_s: 1.0
+  renderer: RaytracedLighting
+  warmup_frames: 6
+  rt_subframes: 1
+
+# 第一阶段只随机工件在箱内的平面位置和下列 yaw。手掌姿态从每类右手人工基准或
+# 按 S63 左右掌坐标系自动生成的左手镜像 grasp/pregrasp 参考传递；相机始终使用
+# 当前手侧的真实固定外参，采集器不执行 look-at。
+approach_open:
+  reference_dir: ../output/manual_wrist/references
+  hand_branches:
+    supported: [right, left]
+    mode: independent_output_roots_and_manifests
+    reference_filename: "{hand_side}_wrist_{class_name}_approach_reference.json"
+  required_snapshots: [grasp, pregrasp]
+  object_translation:
+    frame: world
+    axes: [x, y]
+    strategy: centered_exact_mesh_with_wall_clearance
+    # 初始释放时离侧壁至少 2 cm；最终验收仍要求至少保留 1 cm。
+    boundary_margin_m: 0.02
+    keep_reference_z: true
+    mixture:
+      # 当前阶段不采集靠壁姿态，所有工件只在箱体中心安全域内释放。
+      centered_probability: 1.00
+      centered_scale: 0.65
+      centered_scale_by_class: {left: 0.05, right: 0.08, hose: 0.25, outhandle: 0.65}
+    # 计划只采样候选中心；Isaac 实例化工件后，根据当前支撑面和 yaw 下的
+    # 实际 Mesh 顶点求可行位置并检查箱内边界。
+  object_yaw:
+    rotation_axis_world: [0.0, 0.0, 1.0]
+    classes:
+      outhandle:
+        sampling: uniform_0_to_360_deg
+        hand_transport: fixed_reference_orientation
+        symmetry_order: 1
+      left:
+        # 长工件只在箱体长轴附近随机，避免窄边方向无法在不靠壁的条件下放入箱内。
+        sampling: box_long_axis_bands
+        band_centers_deg: [0.0, 180.0]
+        band_half_width_deg: 8.0
+        hand_transport: follow_object_yaw_modulo_180_deg
+        symmetry_order: 2
+      right:
+        sampling: box_long_axis_bands
+        band_centers_deg: [0.0, 180.0]
+        band_half_width_deg: 12.0
+        hand_transport: follow_object_yaw_modulo_180_deg
+        symmetry_order: 2
+      hose:
+        sampling: box_long_axis_bands
+        band_centers_deg: [0.0, 180.0]
+        band_half_width_deg: 20.0
+        hand_transport: follow_object_yaw_modulo_180_deg
+        symmetry_order: 2
+  palm_pose:
+    grip_anchor: object_sampling_center
+    keep_reference_roll_pitch: true
+    keep_reference_finger_joints: true
+    # 相机保持真实固定外参；移动整只手沿“工件中心→侧置相机”的射线后退。
+    # 当相机退到 table_box 内壁范围外时，再把整只手竖直抬高到目标视线越过箱沿，
+    # 避免箱壁挡住工件；不旋转相机，也不执行 look-at。
+    translation_path: box_clearance_camera_ray_from_settled_object
+    table_box_line_of_sight:
+      enabled: true
+      clearance_above_wall_m: 0.02
+      maximum_vertical_lift_m: 0.30
+    distance_from_grasp_m: {min: 0.0, max: 0.50}
+    distance_sampling: stratify_far_to_near_then_uniform_within_stage
+    # 小尺寸 outhandle 使用更近的距离层，避免在侧置 D405 中只剩很少像素。
+    # 其他三类沿用下面的 default 范围。
+    distance_sampling_by_class:
+      default:
+        # grasp 是右手标定/左手镜像的精确终点；pre_grasp 从 2 cm 开始，避免和终点层重叠。
+        grasp: {min: 0.00, max: 0.00}
+        pre_grasp: {min: 0.02, max: 0.10}
+        near: {min: 0.10, max: 0.20}
+        approach: {min: 0.20, max: 0.35}
+        far: {min: 0.35, max: 0.50}
+      outhandle:
+        grasp: {min: 0.00, max: 0.00}
+        pre_grasp: {min: 0.01, max: 0.06}
+        near: {min: 0.06, max: 0.12}
+        approach: {min: 0.12, max: 0.18}
+        far: {min: 0.18, max: 0.25}
+    # 对长工件，物体转 180° 时有效手掌 yaw 增量为 0°；中间角度选离参考
+    # 手姿态最近的等价解，因此有效手掌 yaw 始终在 [-90°, 90°)。
+    elongated_effective_yaw_range_deg: [-90.0, 90.0]
+  # 在保存的 grasp/pregrasp 参考位姿周围生成一个随距离收缩的空间漏斗。
+  # 横向偏移在接近方向的法平面内采样，姿态扰动在手掌局部坐标系内施加。
+  hand_randomization:
+    enabled: true
+    distribution: centered_mixture_with_coverage_tail
+    stages:
+      far:      {lateral_offset_m: 0.07, orientation_delta_deg: 10.0}
+      approach: {lateral_offset_m: 0.05, orientation_delta_deg: 8.0}
+      near:     {lateral_offset_m: 0.03, orientation_delta_deg: 5.0}
+      pre_grasp: {lateral_offset_m: 0.015, orientation_delta_deg: 3.0}
+      # 终点层保留右手基准/左手镜像的手掌相对位姿，不叠加空间漏斗扰动。
+      grasp:     {lateral_offset_m: 0.00, orientation_delta_deg: 0.0}
+    mixture:
+      # 以中心区域为主，各层仍保留 10%--25% 的全范围尾部，
+      # 用于覆盖轨迹边界，同时减少明显跑出画面的无效样本。
+      centered_probability_by_stage:
+        far: 0.90
+        approach: 0.85
+        near: 0.80
+        pre_grasp: 0.75
+        grasp: 1.00
+      centered_scale_by_stage:
+        far: 0.55
+        approach: 0.65
+        near: 0.75
+        pre_grasp: 0.80
+        grasp: 0.00
+      # 同样的绝对扰动对小 outhandle 过大；按工件尺度缩放后仍保留完整尾部模式。
+      limit_scale_by_class: {left: 1.0, right: 0.80, hose: 0.90, outhandle: 0.45}
+    apply_to:
+      lateral_offset: true
+      roll: true
+      pitch: true
+      yaw: true
+    # 四指和拇指基准角保持不变；第一阶段的姿态扰动只作用于手掌刚体。
+    keep_finger_joints: true
+  rejection:
+    reject_mesh_outside_inner_box: true
+    reject_invalid_depth: true
+    reject_empty_mask: true
+    # 用真实场景 Mask / 工件单独宽视场完整 Mesh 投影计算有效可见比例；因此出画、
+    # 手遮挡和 table_box 遮挡都会计入。目标约一半，默认硬下限为 45%，给宽视场
+    # 缩放栅格化留 5% 容差；hose 使用下方实测例外，不使用 CAD AABB。
+    visible_fraction_of_full_mask:
+      min: 0.45
+      # hose 是长曲面工件；40% 投影在近距离仍有十万级 mask 像素，视觉上可用。
+      # 低于 40% 的样本仍拒绝，不把约 29% 或空画面的 grasp 混入数据集。
+      min_by_class: {hose: 0.40}
+      target: 0.50
+      preferred_max: 1.00
+    # 6D 粗位姿只要求可见 mask 中至少一半具有有效 Z-depth；空深度仍会拒绝。
+    depth_valid_ratio:
+      min: 0.50
+      # hose 抓取终点非常靠近侧置 D405，部分表面小于 7 cm 近裁剪距离；
+      # 30% 仍对应约 8 万个有效深度像素，足够做粗 6D 位姿估计。
+      min_by_stage_class:
+        grasp: {hose: 0.30}
+    visibility_reference:
+      # 8x 宽视场仍触边说明完整投影无法可靠测量，正式数据直接拒绝。
+      # 无论是否触边，对应类别的 visible_fraction 硬下限都会执行。
+      reject_if_wide_mask_touches_border: true
+      reject_if_missing: true
+    # 只设温和安全底线，过滤小于 500 px、肉眼近乎不可见而无法训练分割的样本；
+    # 主门槛仍是相对完整投影比例，不恢复旧的 5000 px 严格限制。
+    min_mask_pixels: 500
+    retry:
+      # 每次 retry 会重新启动一个 Isaac Sim 进程；默认只重试一次，避免
+      # 少量失败候选拖慢整批采集。需要更高通过率时可临时调到 2。
+      max_attempts: 1
+      truncated_distance_step_m: 0.06
+      occluded_distance_step_m: 0.05
+      empty_mask_distance_step_m: 0.06
+      depth_invalid_distance_step_m: 0.03
+      small_mask_distance_step_m: 0.03
+      perturbation_scale_after_retry: 0.80
+      # 空 mask 不沿用失败的横向偏移，而是从当前阶段中心子域确定性重采。
+      empty_mask_resample_perturbation: true
+      empty_mask_resample_scale: 0.55
+  quota_collection:
+    # 正式第一批：4 类 × 5 层 × 每格 20 张 = 400 张通过样本。
+    accepted_per_class_stage: 20
+    samples_per_class_per_round: 25
+    max_rounds: 8
+    # 防止单个 Isaac/RTX 子进程卡住整批；超时后终止其整个进程组并在下一轮补采。
+    child_process_timeout_s: 180
+    # Isaac 包装进程偶尔会返回 0 却不产出分片；只对这种 missing 情况最多重启两次。
+    stable_process_max_attempts: 3
+    # 每轮只给尚未收满的 class × stage 分配候选；每个活跃格至少一个。
+    candidate_allocation: missing_cells_only_round_robin
+  support_pose:
+    mode: physics_settle_then_freeze
+    contact_plane: table_box_floor
+    world_down: [0.0, 0.0, -1.0]
+    # 计划生成器按完整支撑面循环后才推进 yaw 带，覆盖 face × yaw 的组合，
+    # 避免两套分层都直接按 group_index 轮转而产生固定相关性。
+    classes:
+      outhandle:
+        allowed_support_faces: ["+x", "-x", "+y", "-y", "+z", "-z"]
+        face_sampling: balanced
+        in_plane_yaw_sampling: uniform_0_to_360_deg
+      left:
+        allowed_support_faces: ["+z", "-z"]
+        face_sampling: balanced
+        in_plane_yaw_sampling: box_long_axis_bands
+      right:
+        allowed_support_faces: ["+z", "-z"]
+        face_sampling: balanced
+        in_plane_yaw_sampling: box_long_axis_bands
+      hose:
+        allowed_support_faces: ["+z", "-z"]
+        face_sampling: balanced
+        in_plane_yaw_sampling: box_long_axis_bands
+    validation:
+      # 请求支撑面只控制释放姿态；最终只要工件静止在箱底，就不因翻到其它面而拒绝。
+      require_allowed_support_face_after_settle: false
+      floor_penetration_tolerance_m: 0.001
+      floor_contact_tolerance_m: 0.003
+      # 凸分解碰撞体与原始可视网格存在毫米级误差。物理稳定后只沿世界 +Z
+      # 做小幅贴底修正，保留真实翻滚姿态并确保最终可视网格不穿底。
+      floor_snap_after_settle: true
+      floor_snap_max_m: 0.004
+      wall_penetration_tolerance_m: 0.001
+      wall_clearance_m: 0.01
+      wall_contact_is_allowed: false
+      use_transformed_visual_mesh_vertices: true
+      use_table_box_authored_collision: true

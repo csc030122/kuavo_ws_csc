@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "artifact_kind": "open_hand_approach_reference",
+  "status": "complete",
+  "generated_at_utc": "2026-09-07T09:19:24.679293+00:00",
+  "hand_side": "right",
+  "class_name": "right",
+  "reference_output": "/home/csc/workspace/projects/kuavo_ws_csc/src/demo/ISV_grab_box/yolo_catchdata/output/manual_wrist/references/right_wrist_right_approach_reference.json",
+  "hand_state": {
+    "stage": "approach_open",
+    "description_zh": "四指张开，大拇指 CMC=90°；其余关节由用户确认并冻结。",
+    "camera_follows_hand": true,
+    "camera_look_at_object": false
+  },
+  "snapshots": {
+    "grasp": {
+      "stage": "grasp",
+      "captured_at_utc": "2026-09-07T09:19:20.272177+00:00",
+      "world_from_palm": {
+        "path": "/World/ManualInspection/RightWrist/r_palm",
+        "translation_m": [
+          1.6173964732929886,
+          -0.1430021578512637,
+          1.1332214871383026
+        ],
+        "quaternion_wxyz": [
+          -0.22982335638443935,
+          0.9720904318244232,
+          -0.0159402777193926,
+          0.04435453485074883
+        ]
+      },
+      "world_from_camera_rgb": {
+        "path": "/World/ManualInspection/RightWrist/r_hand_tripod/r_hand_camera_link/right_wrist_d405_rgb",
+        "translation_m": [
+          1.7333301418622291,
+          -0.1758025782299099,
+          1.1116993968226638
+        ],
+        "quaternion_wxyz": [
+          0.8513317710920298,
+          -0.36347915049099017,
+          0.32503178264462895,
+          -0.1935754709629057
+        ]
+      },
+      "world_from_object": {
+        "path": "/World/ManualInspection/Workpieces/right",
+        "translation_m": [
+          1.6180861435166431,
+          -0.24204388961433848,
+          1.0399032984877605
+        ],
+        "quaternion_wxyz": [
+          0.9496930241584791,
+          0.3078108718232397,
+          -0.05745116975681184,
+          0.005915246885256418
+        ]
+      },
+      "palm_from_object": {
+        "parent_path": "/World/ManualInspection/RightWrist/r_palm",
+        "child_path": "/World/ManualInspection/Workpieces/right",
+        "translation_m": [
+          -0.0015882049316742197,
+          0.13034978024932614,
+          0.039044039272491005
+        ],
+        "quaternion_wxyz": [
+          -0.0821365205892658,
+          0.9963835588819607,
+          -0.020439338072292385,
+          -0.007458487405244136
+        ]
+      },
+      "finger_joint_deg": {
+        "THUMB_CMC": 90.0,
+        "THUMB_MCP": 1.4,
+        "INDEX_MCP": 0.0,
+        "INDEX_PIP": 0.0,
+        "MIDDLE_MCP": 0.0,
+        "MIDDLE_PIP": 0.0,
+        "RING_MCP": 0.0,
+        "RING_PIP": 0.0,
+        "LITTLE_MCP": 0.0,
+        "LITTLE_PIP": 0.0
+      }
+    },
+    "pregrasp": {
+      "stage": "pregrasp",
+      "captured_at_utc": "2026-09-07T09:19:24.678991+00:00",
+      "world_from_palm": {
+        "path": "/World/ManualInspection/RightWrist/r_palm",
+        "translation_m": [
+          1.616889664492738,
+          -0.07022067544418498,
+          1.2017969854118702
+        ],
+        "quaternion_wxyz": [
+          -0.22982335638443935,
+          0.9720904318244232,
+          -0.015940277719392597,
+          0.04435453485074883
+        ]
+      },
+      "world_from_camera_rgb": {
+        "path": "/World/ManualInspection/RightWrist/r_hand_tripod/r_hand_camera_link/right_wrist_d405_rgb",
+        "translation_m": [
+          1.7328233330619784,
+          -0.10302109582283119,
+          1.1802748950962314
+        ],
+        "quaternion_wxyz": [
+          0.8513317710920298,
+          -0.36347915049099006,
+          0.32503178264462873,
+          -0.1935754709629056
+        ]
+      },
+      "world_from_object": {
+        "path": "/World/ManualInspection/Workpieces/right",
+        "translation_m": [
+          1.6180861435166431,
+          -0.24204388961433848,
+          1.0399032984877605
+        ],
+        "quaternion_wxyz": [
+          0.9496930241584791,
+          0.3078108718232397,
+          -0.05745116975681184,
+          0.005915246885256418
+        ]
+      },
+      "palm_from_object": {
+        "parent_path": "/World/ManualInspection/RightWrist/r_palm",
+        "child_path": "/World/ManualInspection/Workpieces/right",
+        "translation_m": [
+          -0.0027553080026307963,
+          0.22613819255897338,
+          0.06773581401053685
+        ],
+        "quaternion_wxyz": [
+          -0.0821365205892658,
+          0.9963835588819607,
+          -0.020439338072292385,
+          -0.00745848740524414
+        ]
+      },
+      "finger_joint_deg": {
+        "THUMB_CMC": 90.0,
+        "THUMB_MCP": 1.4,
+        "INDEX_MCP": 0.0,
+        "INDEX_PIP": 0.0,
+        "MIDDLE_MCP": 0.0,
+        "MIDDLE_PIP": 0.0,
+        "RING_MCP": 0.0,
+        "RING_PIP": 0.0,
+        "LITTLE_MCP": 0.0,
+        "LITTLE_PIP": 0.0
+      }
+    }
+  },
+  "approach": {
+    "direction_world_from_pregrasp_to_grasp": [
+      0.005068088002506691,
+      -0.7278148240707876,
+      -0.6857549827356761
+    ],
+    "backward_direction_world": [
+      -0.005068088002506691,
+      0.7278148240707876,
+      0.6857549827356761
+    ],
+    "grasp_to_pregrasp_distance_m": 0.09999999999999994,
+    "object_pose_change_between_snapshots_m": 0.0,
+    "object_pose_consistent": true,
+    "sampling_rule": "palm = grasp_palm - d*a + lateral_offset; orientation = grasp_orientation * local_delta_rotation",
+    "suggested_distance_layers_m": {
+      "pre_grasp": [
+        0.02,
+        0.08
+      ],
+      "near": [
+        0.08,
+        0.2
+      ],
+      "approach": [
+        0.2,
+        0.35
+      ],
+      "far": [
+        0.35,
+        0.5
+      ]
+    }
+  }
+}
